@@ -33,7 +33,6 @@ class Datos:
             ("Visualizar Proveedores", self.visualizar_proveedores),
             ("Agregar Categoría", self.agregar_categoria),
             ("Borrar Categoría", self.borrar_categoria),
-            ("Editar Categoría", self.editar_categoria),
             ("Visualizar Categorías", self.visualizar_categorias),
             
         ]
@@ -781,16 +780,178 @@ class Datos:
         self.minimarket.mostrar_arbol_proveedores()
 
     def agregar_categoria(self):
-        print("Agregar Categoría")
+        # Crear una ventana secundaria
+        ventana = Toplevel()
+        ventana.title("Agregar Categoria")
+        ventana.geometry("1200x300")  # Ajusta el tamaño según necesites
+        ventana.resizable(False, False)  # Evita que se redimensione
+        ventana.configure(bg="white")
+
+        # Hacer la ventana modal
+        ventana.grab_set()
+
+        # Centrar la ventana en la pantalla
+        ventana.update_idletasks()
+        screen_width = ventana.winfo_screenwidth()
+
+        # Ajustar el ancho de la ventana según el ancho de la pantalla
+        
+        ancho_ventana = 600
+
+        alto_ventana = 320
+        x = (ventana.winfo_screenwidth() // 2) - (ancho_ventana // 2)
+        y = (ventana.winfo_screenheight() // 2) - (alto_ventana // 2)
+        ventana.geometry(f"{ancho_ventana}x{alto_ventana}+{x}+{y}")
+
+        # Crear un frame contenedor central en la ventana secundaria
+        frame = Frame(ventana, bg="white")
+        frame.pack(fill="both", expand=False)
+
+        # Título central
+        Label(frame, text="Ingrese el nombre de la categoría:", bg="white", font=("Segoe UI", 16, "bold")).grid(
+            row=0, column=0, columnspan=5, pady=(10, 30)
+        )
+
+        # Etiquetas e Inputs
+        Label(frame, text="Nombre de la categoria:", bg="white", font=("Segoe UI", 12)).grid(row=1, column=0, padx=(140, 0), pady=5)
+        input_nombre = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16))
+        input_nombre.grid(row=2, column=0, padx=(155,10), pady=5)
+
+
+        # Crear el Label de advertencia
+        advertencia_label = tk.Label(ventana, text="", font=("Segoe UI", 12, "bold"), fg="red", bg="white")
+        advertencia_label.pack(pady=5)
+
+        # Crear un frame para los botones
+        button_frame = tk.Frame(ventana, bg="white")
+        button_frame.pack(pady=(0, 30))
+
+        def on_yes():
+            nombre_categoria = input_nombre.get()
+
+            # Verifica si los valores de precio y cantidad son válidos (números enteros o decimales)
+            if not bool(re.match("^[A-Za-z0-9 ]*$", nombre_categoria)):
+                advertencia_label.config(text="No acepta ',.-/()'")
+                return
+
+            if  not nombre_categoria:
+                advertencia_label.config(text="No acepta vacios")
+                return
+            
+
+            if cargar_categoria(nombre_categoria):
+                messagebox.showinfo("Proveedor", "Categoria cargada con éxito")
+
+            else: 
+                advertencia_label.config(text="Categoría ya existente")
+                return
+
+            
+            on_no()
+
+        def on_no():
+            ventana.destroy()
+
+        # Botones
+        btn_yes = tk.Button(button_frame, text="Aceptar", command=on_yes, width=12, relief="groove", bg="#d7d7d7", fg="black", font=("Segoe UI", 12,    "bold"))
+        btn_yes.pack(side=tk.LEFT, padx=15)
+
+        btn_no = tk.Button(button_frame, text="Cancelar", command=on_no, width=12, relief="groove", bg="#ef3232", fg="black", font=("Segoe UI", 12,     "bold"))
+        btn_no.pack(side=tk.LEFT, padx=15)
+
+        # Configurar peso de filas y columnas para centrar
+        for i in range(4):
+            frame.grid_columnconfigure(i, weight=2)
+        frame.grid_rowconfigure(0, weight=1)
+
+        # Vincular el evento de cierre de la ventana a la función on_no
+        ventana.protocol("WM_DELETE_WINDOW", on_no)
 
     def borrar_categoria(self):
-        print("Borrar Categoría")
+        # Crear la ventana
+        ventana = tk.Toplevel()
+        ventana.title("Borrar Categoría")
+        ventana.geometry("300x150")  # Tamaño de la ventana
+        ventana.resizable(False, False)  # Evita que se redimensione
 
-    def editar_categoria(self):
-        pass
+        # Hacer la ventana modal
+        ventana.grab_set()
+
+        # Configurar el color de fondo de la ventana a blanco
+        ventana.configure(bg="white")
+        
+
+        # Obtener el tamaño de la pantalla
+        screen_width = ventana.winfo_screenwidth()
+        screen_height = ventana.winfo_screenheight()
+
+        # Calcular las coordenadas para centrar la ventana
+
+        if screen_width < 1100:
+
+            window_width = 400
+            window_height = 270
+        else:
+            window_width = 500
+            window_height = 290
+
+        x_cordinate = int((screen_width / 2) - (window_width / 2))
+        y_cordinate = int((screen_height / 2) - (window_height / 2))
+
+        # Ubicar la ventana en el centro de la pantalla
+        ventana.geometry(f"{window_width}x{window_height}+{x_cordinate}+{y_cordinate}")
+
+        # Label para el nombre del producto
+        label_nombre = tk.Label(ventana, text="Nombre de la categoría:", bg="white", font=("Segoe UI", 16))
+        label_nombre.pack(pady=10)
+
+        # Entry para el nombre del prodveedor con fondo #d7d7d7
+        entry_nombre = tk.Entry(ventana, bg="#d7d7d7", font=("Segoe UI", 16), width=25)
+        entry_nombre.pack(pady=5)
+
+            # Crear el Label de advertencia
+        advertencia_label = tk.Label(ventana, text="", font=("Segoe UI", 12, "bold"), fg="red", bg="white")
+        advertencia_label.pack()
+        
+        # Función para confirmar y devolver el valor ingresado
+        def confirmar():
+            nombre_categ = entry_nombre.get()
+
+            if not nombre_categ:  # Verificar si está vacío
+                advertencia_label.config(text="No admite nombre vacío")
+                return  # No hacer nada más si está vacío
+
+            if bool(re.match("^[A-Za-z0-9 ]*$", nombre_categ)):  # Verificar si contiene letras y números
+                v = buscar_categoria(nombre_categ) # creada, y sida true lo borra al instante, si hace falta en otra instancia crear otra funcion solo para borrar
+                if v:
+                    messagebox.showinfo("Borrar Categoria", "Catgoría borrada con éxito.")
+                    ventana.destroy()  # Cerrar la ventana
+                else:
+                    advertencia_label.config(text="No se encontro la categoría")
+
+            else:
+                advertencia_label.config(text="Solo admite letras y números.")
+
+        # Botón de borrar
+        boton_confirmar = tk.Button(ventana, text="Borrar", command=confirmar, bg="#ef3232", relief="groove", font=("Segoe UI", 16, "bold"), fg="black", width=12)
+        boton_confirmar.pack(pady=10)
+
+        def cerrar():
+            ventana.destroy()  # Cerrar la ventana
+
+        # Botón para cerrar la ventana
+        boton_cerrar = tk.Button(ventana, text="Cerrar", command=cerrar, bg="lightgrey", font=("Segoe UI", 14, "bold"), fg="black", relief="groove")
+        boton_cerrar.pack(pady=5)
+
+        ventana.protocol("WM_DELETE_WINDOW", cerrar)
+
+        # Iniciar el bucle principal de la ventana
+        ventana.mainloop()
+
     
     def visualizar_categorias(self):
-        pass
+        self.minimarket.mostrar_arbol_categorias()
+
 
     def borrar_datos(self):
         print("Borrar Datos")
@@ -1328,7 +1489,7 @@ class Minimarket:
                     tree.insert("", "end", values=("", "", ""))
                     tree.insert("", "end", values=(f"{i[0]} {i[1]} {i[2]}"))
             else:
-                tree.insert("", "end", values=("No se encontraron productos", "", ""))
+                tree.insert("", "end", values=("No se encontraron proveedores", "", ""))
 
         def mostrar_todos_los_proveedores(s = mostrar_proveedores()): # cambiar por funcion que traiga todos los datos
             # Limpiar la tabla para mostrar los productos
@@ -1350,6 +1511,188 @@ class Minimarket:
         # Mostrar todos los productos inmediatamente cuando se abre el Entry    
         mostrar_todos_los_proveedores()
 
+    def mostrar_arbol_categorias(self):
+        # derribar frame derecho antes de sobreescribirlo
+        self.borrar_frame_derecho()
+
+        # Estilo personalizado para agrandar la fuente de la tabla y aumentar la altura de las filas
+        style = ttk.Style()
+        style.configure("Treeview.Heading", font=("Segoe UI", 16, "bold"))  # Agranda la fuente de los encabezados
+        style.configure("Treeview", font=("Segoe UI", 14), rowheight=30)   # Agranda la fuente de las filas y ajusta la altura
+        style.configure("Rojo.TLabel", foreground="red")
+        
+        # Frame derecho para mostrar la tabla
+        self.frame_derecho = tk.Frame(self.master, padx=10, pady=10)
+        self.frame_derecho.place(x=320, y=0, width=max(self.master.winfo_width() - 320, 480), height=max(self.master.winfo_height(), 600))
+
+        # Título para la tabla
+        label_tabla = tk.Label(self.frame_derecho, text="Categorías", font=("Segoe UI", 24, "bold"), fg="black", relief="flat")
+        label_tabla.pack(pady=20)
+
+        # Tabla (Treeview) para mostrar los productos
+        tree = ttk.Treeview(self.frame_derecho, columns=("nombre"), show="headings", height=10)
+
+        # Definir las columnas con doble clic
+        tree.heading("nombre", text="Nombre", command=lambda: contador_clic("nombre"))
+       
+        # Definir el ancho de las columnas
+        tree.column("nombre", width=100, anchor="center")
+
+        # Empaquetar la tabla
+        tree.pack(fill=tk.BOTH, expand=True)
+
+        # funciones para copiar columna:
+
+        # Inicializar un diccionario para contar los clics en cada columna
+        click_counter = {"nombre": 0}
+
+        # Función para contar clics y copiar la columna si hay dos clics consecutivos
+        def contador_clic(columna):
+            # Incrementar el contador para la columna seleccionada
+            click_counter[columna] += 1
+
+            # Si se hace clic dos veces, copiar la columna y resetear el contador
+            if click_counter[columna] == 2:
+                copiar_columna(columna)
+                click_counter[columna] = 0
+            else:
+                # Resetear los contadores de las demás columnas
+                for col in click_counter:
+                    if col != columna:
+                        click_counter[col] = 0
+
+        # Función para copiar la columna seleccionada al portapapeles
+        def copiar_columna(columna):
+            # Obtener los índices de las filas y el índice de la columna
+            valores_columna = []
+            columna_index = tree["columns"].index(columna)
+
+            # Extraer todos los valores de la columna seleccionada
+            for item in tree.get_children():
+                valor = tree.item(item)['values'][columna_index]
+                valores_columna.append(str(valor))
+
+            # Unir los valores con saltos de línea y copiarlos al portapapeles
+            self.master.clipboard_clear()  # Limpiar el portapapeles
+            self.master.clipboard_append("\n".join(valores_columna))  # Copiar al portapapeles
+            self.master.update()  # Actualizar la ventana para asegurar que el portapapeles se copie
+
+            # Mostrar mensaje emergente
+            mostrar_mensaje_copiado()      
+
+        # Variable para realizar seguimiento de los clics
+        global primer_click
+        primer_click = None
+
+        # Función para copiar una fila completa al portapapeles
+        def copiar_fila(event):
+            global primer_click
+
+            # Identificar la fila sobre la que se ha hecho clic
+            item = tree.identify_row(event.y)
+
+            # Si no se ha hecho clic sobre ninguna fila (fuera del área de filas)
+            if not item:
+                return
+
+            # Si ya se ha hecho un primer clic en esta fila
+            if primer_click == item:
+                # Obtener los valores de la fila
+                valores_fila = tree.item(item)['values']
+
+                # Unir los valores con tabuladores o saltos de línea, y copiarlos al portapapeles
+                fila_copiada = "\t".join(str(valor) for valor in valores_fila)  # Usa tabuladores para separar los valores
+                self.master.clipboard_clear()  # Limpiar el portapapeles
+                self.master.clipboard_append(fila_copiada)  # Copiar al portapapeles
+                self.master.update()  # Actualizar la ventana para asegurar que el portapapeles se copie
+
+                # Mostrar mensaje emergente
+                mostrar_mensaje_copiado()
+
+                # Reiniciar el contador de clics
+                primer_click = None
+            else:
+                # Si es el primer clic en la fila, guardamos esa fila
+                primer_click = item      
+
+        # Función para mostrar el mensaje "Copiado al portapapeles"
+        def mostrar_mensaje_copiado():
+            # Crear la ventana del mensaje
+            mensaje = tk.Toplevel(self.master)
+            mensaje.title("Mensaje Copiado")
+
+            # Obtener las dimensiones de la ventana principal
+            ventana_width = self.master.winfo_width()
+            ventana_height = self.master.winfo_height()
+
+            # Obtener las dimensiones del mensaje
+            mensaje_width = 300
+            mensaje_height = 50
+
+            # Calcular la posición para centrar el mensaje
+            position_top = self.master.winfo_rooty() + (ventana_height // 2) - (mensaje_height // 2)
+            position_left = self.master.winfo_rootx() + (ventana_width // 2) - (mensaje_width // 2)
+
+            # Hacer la ventana pequeña, sin bordes y transparente
+            mensaje.geometry(f"{mensaje_width}x{mensaje_height}+{position_left}+{position_top}")
+            mensaje.overrideredirect(True)  # Eliminar los bordes de la ventana
+            mensaje.config(bg="black")  # Fondo negro semitransparente
+            mensaje.attributes("-alpha", 0.7)  # Hacerla semi-transparente
+
+            # Etiqueta con el mensaje
+            label = tk.Label(mensaje, text="Copiado al portapapeles", fg="white", font=("Arial", 16, "bold"), bg="black")
+            label.pack(expand=True)
+
+            # Cerrar el mensaje después de 2 segundos
+            mensaje.after(2000, mensaje.destroy)  # 2000 ms = 2 segundos
+                
+        # Asociar el evento de clic en la fila
+        tree.bind("<ButtonRelease-1>", copiar_fila)
+
+
+        def mostrar_categorias():
+            all_data = traer_todas_las_categorias()
+            return all_data
+        
+        def actualizar_filtro(event=None):
+            all_data2 = traer_todas_las_categorias()
+                # Obtener el texto ingresado en el Entry
+            texto_busqueda = mostrar_categorias.entry_busqueda.get().lower()
+            # Limpiar la tabla para mostrar los nuevos resultados
+            for item in tree.get_children():
+                tree.delete(item)
+            # Filtrar productos que contengan el texto ingresado
+            if texto_busqueda == "":
+                categorias_a_mostrar = all_data2  # Mostrar todos los productos si no se ha ingresado texto
+            else:
+                categorias_a_mostrar = [p for p in all_data2 if texto_busqueda in p[0].lower()]
+            # Insertar los productos filtrados en la tabla
+            if categorias_a_mostrar:
+                for i in categorias_a_mostrar:
+                    
+                    # Insertar una fila vacía para crear espacio
+                    tree.insert("", "end", values=(""))
+                    tree.insert("", "end", values=(f"{i[0]}"))
+            else:
+                tree.insert("", "end", values=("No se encontraron categorias"))
+
+        def mostrar_todas_las_categorias(s = mostrar_categorias()): # cambiar por funcion que traiga todos los datos
+            # Limpiar la tabla para mostrar los productos
+            for item in tree.get_children():
+                tree.delete(item)
+            # Configurar el tag para texto en rojo
+            # Insertar todos los productos en la tabla
+            for i in s:
+                tree.insert("", "end", values=(""))
+                tree.insert("", "end", values=(f"{i[0]}"))
+        
+        mostrar_categorias.entry_busqueda = ttk.Entry(self.frame_derecho, font=("Segoe UI", 14))
+        mostrar_categorias.entry_busqueda.place(x=60, y=50)  # Ajustar la posición
+        mostrar_categorias.entry_busqueda.bind("<KeyRelease>", actualizar_filtro)  # Detectar cada tecla que el usuario presiona
+
+        
+        # Mostrar todos los productos inmediatamente cuando se abre el Entry    
+        mostrar_todas_las_categorias()
 
     def mostrar_id_inicio(self, username):
         # Simular la obtención del ID del usuario

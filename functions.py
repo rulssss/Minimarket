@@ -302,3 +302,40 @@ def actualizar_proveedor(nombre_proveedor, num_proveedor, mail_producto):
     query_data2 = f"UPDATE proveedores SET telefono = {num_proveedor}, mail = '{mail_producto}' WHERE nombre_proveedor = '{nombre_proveedor}'"
     cursor.execute(query_data2)
     cursor.close()
+
+
+def cargar_categoria(nombre_categoria):
+    cursor= connection2.cursor()
+    query_data2 = f"INSERT INTO categorias(nombre_descrip) VALUES('{nombre_categoria}')"
+
+    try:
+        cursor.execute(query_data2)
+        cursor.close()
+        return True
+    except errors.UniqueViolation:
+        return False
+    
+def buscar_categoria(nombre_categ):
+    cursor= connection2.cursor()
+    query_data2 = f"SELECT EXISTS (SELECT 1 FROM categorias WHERE nombre_descrip = '{nombre_categ}') AS existe" # ve si existe y devuelve true o false, ver el fetchone
+    cursor.execute(query_data2)
+    data = cursor.fetchone()[0]
+
+    if data:
+        query_data3 = f"DELETE FROM categorias WHERE nombre_descrip = '{nombre_categ}'"
+        cursor.execute(query_data3)
+        cursor.close()
+        return True
+        
+    else: 
+        cursor.close()
+        return False
+
+
+def traer_todas_las_categorias():
+    cursor= connection2.cursor()
+    query_data2 = f"SELECT nombre_descrip FROM categorias ORDER BY nombre_descrip"
+    cursor.execute(query_data2)
+    data = cursor.fetchall()
+    cursor.close()
+    return data
