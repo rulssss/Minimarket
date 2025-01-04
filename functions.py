@@ -240,10 +240,18 @@ def traer_todos_los_productos():
 
 
 
-def actualizar_producto(nombre_producto, precio_producto):
+def actualizar_producto(nombre_producto, precio_producto, categoria_producto, proveedor_producto):
     
     cursor= connection2.cursor()
-    query_data2 = f"UPDATE productos SET precio = {precio_producto} WHERE nombre = '{nombre_producto}'"
+    query_search = f"SELECT id_categoria FROM categorias WHERE nombre_descrip = '{categoria_producto}'"
+    cursor.execute(query_search)
+    categ = cursor.fetchall()[0][0]
+
+    query_search2 = f"SELECT id_proveedor FROM proveedores WHERE nombre_proveedor = '{proveedor_producto}'"
+    cursor.execute(query_search2)
+    prov = cursor.fetchall()[0][0]
+
+    query_data2 = f"UPDATE productos SET precio = {precio_producto}, id_categoria = {categ}, id_proveedor = {prov}  WHERE nombre = '{nombre_producto}'"
     cursor.execute(query_data2)
     cursor.close()
     

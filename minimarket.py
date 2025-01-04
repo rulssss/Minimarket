@@ -25,7 +25,7 @@ class Datos:
         botones = [
             ("Agregar Producto", self.agregar_producto),
             ("Borrar Producto", self.borrar_producto),
-            ("Actualizar Precio", self.actualizar_precio),
+            ("Editar Producto", self.editar_producto),
             ("Visualizar Productos", self.visualizar_productos),
             ("Agregar Proveedor", self.agregar_proveedor),
             ("Borrar Proveedor", self.borrar_proveedor),
@@ -259,7 +259,7 @@ class Datos:
         # Iniciar el bucle principal de la ventana
         ventana.mainloop()
 
-    def actualizar_precio(self):
+    def editar_producto(self):
         
         def filtrar_productos():
             value = combobox_nombre.get().lower()
@@ -280,7 +280,7 @@ class Datos:
             filtro_timer = confirm_window.after(1200, filtrar_productos)  # Esperar 1500 milisegundos
 
         confirm_window = Toplevel()
-        confirm_window.title("Actualizar Precio")
+        confirm_window.title("Editar Producto")
         confirm_window.geometry("1200x300")  # Ajusta el tamaño según necesites
         confirm_window.resizable(False, False)  # Evita que se redimensione
         confirm_window.configure(bg="white")
@@ -312,7 +312,7 @@ class Datos:
         frame.pack(fill="both", expand=False)
 
         # Título central
-        Label(frame, text="Actualizar el precio del producto:", bg="white", font=("Segoe UI", 16, "bold")).grid(
+        Label(frame, text="Editar Producto:", bg="white", font=("Segoe UI", 16, "bold")).grid(
             row=0, column=0, columnspan=5, pady=(10, 30)
         )
 
@@ -339,15 +339,24 @@ class Datos:
         entry_cantidad = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16), state='readonly')
         entry_cantidad.grid(row=2, column=2, padx=10, pady=5)
 
-        # Campo de categoria no editable
+         # Combobox para categorias
+        categorias_tuplas = traer_categorias()
+        categorias = [categoria[0] for categoria in categorias_tuplas]
         Label(frame, text="Categoria", bg="white", font=("Segoe UI", 12)).grid(row=1, column=3, padx=10, pady=5)
-        entry_categoria = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16), state='readonly')
-        entry_categoria.grid(row=2, column=3, padx=10, pady=5)
+        combobox_busqueda1 = ttk.Combobox(frame, font=("Segoe UI", 16), state="readonly", height=5)
+        combobox_busqueda1['values'] = categorias
+        combobox_busqueda1.grid(row=2, column=3, padx=10, pady=5)
+        combobox_busqueda1.option_add('*TCombobox*Listbox.font', ('Segoe UI', 15))
 
-        # Campo de proveedor no editable
-        Label(frame, text="Proveedor", bg="white", font=("Segoe UI", 12)).grid(row=1, column=4, padx=10, pady=5)
-        entry_proveedor = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16), state='readonly')
-        entry_proveedor.grid(row=2, column=4, padx=10, pady=5)
+         # Combobox para proveedores
+        proveedores_tuplas = traer_proveedores()
+        proveedores = [proveedor[0] for proveedor in proveedores_tuplas]
+        Label(frame, text="Proveedores", bg="white", font=("Segoe UI", 12)).grid(row=1, column=4, padx=10, pady=5)
+        combobox_busqueda2 = ttk.Combobox(frame, font=("Segoe UI", 16), state="readonly", height=5)
+        combobox_busqueda2['values'] = proveedores
+        combobox_busqueda2.grid(row=2, column=4, padx=10, pady=5)
+        combobox_busqueda2.option_add('*TCombobox*Listbox.font', ('Segoe UI', 15))
+        
 
         # Crear el Label de advertencia
         advertencia_label = tk.Label(confirm_window, text="", font=("Segoe UI", 12, "bold"), fg="red", bg="white")
@@ -369,26 +378,30 @@ class Datos:
                     entry_cantidad.insert(0, producto[2])  # Cantidad
                     entry_cantidad.config(state='readonly')
 
-                    entry_categoria.config(state='normal')
-                    entry_categoria.delete(0, tk.END)
-                    entry_categoria.insert(0, producto[3])  # Categoria
-                    entry_categoria.config(state='readonly')
+                    combobox_busqueda1.config(state='normal')
+                    combobox_busqueda1.delete(0, tk.END)
+                    combobox_busqueda1.insert(0, producto[3])  # Categoria
+                    combobox_busqueda1.config(state='readonly')
 
-                    entry_proveedor.config(state='normal')
-                    entry_proveedor.delete(0, tk.END)
-                    entry_proveedor.insert(0, producto[4])  # Proveedor
-                    entry_proveedor.config(state='readonly')
+                    combobox_busqueda2.config(state='normal')
+                    combobox_busqueda2.delete(0, tk.END)
+                    combobox_busqueda2.insert(0, producto[4])  # Proveedor
+                    combobox_busqueda2.config(state='readonly')
 
         combobox_nombre.bind("<<ComboboxSelected>>", cargar_datos_producto)
 
         def on_yes():
             nombre_producto = combobox_nombre.get()
             precio_producto = entry_precio.get()
+            categoria_producto = combobox_busqueda1.get()
+            proveedor_producto = combobox_busqueda2.get()
 
             producto_seleccionado = combobox_nombre.get()
             for producto in productos:
                 if producto[0] == producto_seleccionado:
                     precio_anterior = producto[1]
+                    categ_ant = producto[3]
+                    prov_ant = producto[4]
 
             def es_numero_decimal(valor):
                 try:
@@ -398,14 +411,14 @@ class Datos:
                     return False
 
             if es_numero_decimal(precio_producto):
-                if (float(precio_anterior) == float(precio_producto)):
-                    advertencia_label.config(text="Actualice el precio por favor")
+                if (float(precio_anterior) == float(precio_producto)) and (categ_ant == categoria_producto) and (prov_ant == proveedor_producto):
+                    advertencia_label.config(text="Actualice el producto por favor")
                 else:
-                    actualizar_producto(nombre_producto, precio_producto)
+                    actualizar_producto(nombre_producto, precio_producto, categoria_producto, proveedor_producto)
                     on_no()
                 return
             else:
-                advertencia_label.config(text="Debe ingresar solo números")
+                advertencia_label.config(text="Seleccione un producto")
                 return
 
         def on_no():
