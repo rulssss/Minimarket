@@ -295,3 +295,10 @@ def traer_todos_los_proveedores():
     data = cursor.fetchall()
     cursor.close()
     return data
+
+
+def actualizar_proveedor(nombre_proveedor, num_proveedor, mail_producto):
+    cursor= connection2.cursor()
+    query_data2 = f"UPDATE proveedores SET telefono = {num_proveedor}, mail = '{mail_producto}' WHERE nombre_proveedor = '{nombre_proveedor}'"
+    cursor.execute(query_data2)
+    cursor.close()

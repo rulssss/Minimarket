@@ -627,7 +627,155 @@ class Datos:
         ventana.mainloop()
 
     def editar_proveedor(self):
-        pass
+        def filtrar_productos():
+            value = combobox_nombre.get().lower()
+            if value == '':
+                combobox_nombre['values'] = proveedor_list
+            else:
+                data = []
+                for item in proveedor_list:
+                    if value in item.lower():
+                        data.append(item)
+                combobox_nombre['values'] = data
+            combobox_nombre.event_generate('<Down>')
+
+        def on_key_release(event):
+            global filtro_timer
+            if filtro_timer:
+                confirm_window.after_cancel(filtro_timer)  # Cancelar temporizador anterior
+            filtro_timer = confirm_window.after(1200, filtrar_productos)  # Esperar 1500 milisegundos
+
+        confirm_window = Toplevel()
+        confirm_window.title("Editar Producto")
+        confirm_window.geometry("1200x300")  # Ajusta el tamaño según necesites
+        confirm_window.resizable(False, False)  # Evita que se redimensione
+        confirm_window.configure(bg="white")
+
+        # Inicializar filtro_timer
+        global filtro_timer
+        filtro_timer = None
+
+        # Hacer la ventana modal
+        confirm_window.grab_set()
+
+        # Centrar la ventana en la pantalla
+        confirm_window.update_idletasks()
+        screen_width = confirm_window.winfo_screenwidth()
+
+        # Ajustar el ancho de la ventana según el ancho de la pantalla
+        if screen_width < 1100:
+            ancho_ventana = 700
+        else:
+            ancho_ventana = 900
+
+        alto_ventana = 320
+        x = (confirm_window.winfo_screenwidth() // 2) - (ancho_ventana // 2)
+        y = (confirm_window.winfo_screenheight() // 2) - (alto_ventana // 2)
+        confirm_window.geometry(f"{ancho_ventana}x{alto_ventana}+{x}+{y}")
+
+        # Crear un frame contenedor central en la ventana secundaria
+        frame = Frame(confirm_window, bg="white")
+        frame.pack(fill="both", expand=False)
+
+        # Título central
+        Label(frame, text="Editar Proveedor:", bg="white", font=("Segoe UI", 16, "bold")).grid(
+            row=0, column=0, columnspan=5, pady=(10, 30)
+        )
+
+        # Etiquetas e Inputs
+        Label(frame, text="Nombre del proveedor", bg="white", font=("Segoe UI", 12)).grid(row=1, column=0, padx=10, pady=5)
+        combobox_nombre = ttk.Combobox(frame, font=("Segoe UI", 16), state="normal", height=5)
+        combobox_nombre.grid(row=2, column=0, padx=(30,10), pady=5)
+
+        proveedores = traer_todos_los_proveedores()  # Obtener los productos
+        proveedor_list = [proveedor[0] for proveedor in proveedores]  # Lista con los nombres de los productos
+        combobox_nombre['values'] = proveedor_list
+        combobox_nombre.option_add('*TCombobox*Listbox.font', ('Segoe UI', 16))
+
+        # Vincular la función de autocompletar al evento de escritura
+        combobox_nombre.bind('<KeyRelease>', on_key_release)
+
+        # Campo de precio editable
+        Label(frame, text="Número de telefono", bg="white", font=("Segoe UI", 12)).grid(row=1, column=1, padx=10, pady=5)
+        entry_num = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16))
+        entry_num.grid(row=2, column=1, padx=10, pady=5)
+
+        # Campo de cantidad no editable
+        Label(frame, text="Mail", bg="white", font=("Segoe UI", 12)).grid(row=1, column=2, padx=10, pady=5)
+        entry_mail = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16))
+        entry_mail.grid(row=2, column=2, padx=10, pady=5)
+
+
+        # Crear el Label de advertencia
+        advertencia_label = tk.Label(confirm_window, text="", font=("Segoe UI", 12, "bold"), fg="red", bg="white")
+        advertencia_label.pack(pady=5)
+
+        # Crear un frame para los botones
+        button_frame = tk.Frame(confirm_window, bg="white")
+        button_frame.pack(pady=(0, 30))
+
+        def cargar_datos_proveedor(event):
+            proveedor_seleccionado = combobox_nombre.get()
+            for proveedor in proveedores:
+                if proveedor[0] == proveedor_seleccionado:
+                    entry_num.delete(0, tk.END)
+                    entry_num.insert(0, proveedor[1])  # Precio actual
+
+                    entry_mail.config(state='normal')
+                    entry_mail.delete(0, tk.END)
+                    entry_mail.insert(0, proveedor[2])  # Cantidad
+                    
+
+        combobox_nombre.bind("<<ComboboxSelected>>", cargar_datos_proveedor)
+
+        def on_yes():
+            nombre_proveedor = combobox_nombre.get()
+            num_proveedor = entry_num.get()
+            mail_producto = entry_mail.get()
+
+            proveedor_seleccionado = combobox_nombre.get()
+            for proveedor in proveedores:
+                if proveedor[0] == proveedor_seleccionado:
+                    num_anterior = proveedor[1]
+                    mail_ant = proveedor[2]
+                    
+
+            def es_numero_decimal(valor):
+                try:
+                    float(valor)  # Intenta convertir a número flotante
+                    return True
+                except ValueError:
+                    return False
+
+            if es_numero_decimal(num_proveedor):
+                if (float(num_anterior) == float(num_proveedor)) and (mail_ant == mail_producto):
+                    advertencia_label.config(text="Actualice el producto por favor")
+                else:
+                    actualizar_proveedor(nombre_proveedor, num_proveedor, mail_producto)
+                    on_no()
+                return
+            else:
+                advertencia_label.config(text="Seleccione un producto")
+                return
+
+        def on_no():
+            confirm_window.destroy()  # Cerrar la ventana
+
+        # Botones
+        btn_yes = tk.Button(button_frame, text="Aceptar", command=on_yes, width=12, relief="groove", bg="#d7d7d7", fg="black", font=("Segoe UI", 12, "bold"))
+        btn_yes.pack(side=tk.LEFT, padx=15)
+
+        btn_no = tk.Button(button_frame, text="Cancelar", command=on_no, width=12, relief="groove", bg="#ef3232", fg="black", font=("Segoe UI", 12, "bold"))
+        btn_no.pack(side=tk.LEFT, padx=15)
+
+        # Configurar peso de filas y columnas para centrar
+        for i in range(5):
+            frame.grid_columnconfigure(i, weight=1)
+        frame.grid_rowconfigure(0, weight=1)
+
+        # Vincular el evento de cierre de la ventana a la función on_no
+        confirm_window.protocol("WM_DELETE_WINDOW", on_no)
+        confirm_window.mainloop()
 
     def visualizar_proveedores(self):
         self.minimarket.mostrar_arbol_proveedores()
