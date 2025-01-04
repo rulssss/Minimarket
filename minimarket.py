@@ -29,28 +29,23 @@ class Datos:
             ("Visualizar Productos", self.visualizar_productos),
             ("Agregar Proveedor", self.agregar_proveedor),
             ("Borrar Proveedor", self.borrar_proveedor),
+            ("Editar Proveedor", self.editar_proveedor),
             ("Visualizar Proveedores", self.visualizar_proveedores),
             ("Agregar Categoría", self.agregar_categoria),
             ("Borrar Categoría", self.borrar_categoria),
+            ("Editar Categoría", self.editar_categoria),
             ("Visualizar Categorías", self.visualizar_categorias),
             
         ]
 
         c = 0
-        bandera = False
         for texto, comando in botones:
             c += 1  
-            
     
             tk.Button(self.master,text=texto,command=comando,height=1,  width=20,  bg="#e0e0e0",  fg="black", font=("Segoe UI", 12, "bold"),  activebackground="#c0c0c0",  activeforeground="white", relief="groove",  bd=2  ).pack(pady=9)
             if c == 4:
                 c = 0
-                bandera = True
-                # Agregar una línea sutil estilo "hr"
-                tk.Frame(self.master, bg="gray", height=2, width=300).pack(pady=10, fill="x") 
-              
-            if bandera == True and c == 3:
-                c = 0
+
                 # Agregar una línea sutil estilo "hr"
                 tk.Frame(self.master, bg="gray", height=2, width=300).pack(pady=10, fill="x") 
        
@@ -550,6 +545,7 @@ class Datos:
         ventana.protocol("WM_DELETE_WINDOW", on_no)
 
     def borrar_proveedor(self):
+
         # Crear la ventana
         ventana = tk.Toplevel()
         ventana.title("Borrar Producto")
@@ -630,6 +626,9 @@ class Datos:
         # Iniciar el bucle principal de la ventana
         ventana.mainloop()
 
+    def editar_proveedor(self):
+        pass
+
     def visualizar_proveedores(self):
         self.minimarket.mostrar_arbol_proveedores()
 
@@ -638,6 +637,9 @@ class Datos:
 
     def borrar_categoria(self):
         print("Borrar Categoría")
+
+    def editar_categoria(self):
+        pass
     
     def visualizar_categorias(self):
         pass
@@ -1156,7 +1158,6 @@ class Minimarket:
 
         def mostrar_proveedores():
             all_data = traer_todos_los_proveedores()
-            print(all_data)
             return all_data
    
         def actualizar_filtro(event=None):
