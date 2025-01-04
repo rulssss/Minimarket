@@ -631,7 +631,7 @@ class Datos:
         ventana.mainloop()
 
     def visualizar_proveedores(self):
-        pass
+        self.minimarket.mostrar_arbol_proveedores()
 
     def agregar_categoria(self):
         print("Agregar Categoría")
@@ -796,9 +796,9 @@ class Minimarket:
 
     
 
-    def mostrar_arbol_productos(self, bandera=False):
+    def mostrar_arbol_productos(self):
         # Limpiar el área derecha si ya hay contenido
-        self.ocultar_arbol_productos()
+        self.borrar_frame_derecho()
 
         # Estilo personalizado para agrandar la fuente de la tabla y aumentar la altura de las filas
         style = ttk.Style()
@@ -995,23 +995,211 @@ class Minimarket:
             
 
      
-        mostrar_productos.entry_busqueda = ttk.Entry(self.master, font=("Segoe UI", 14))
-        mostrar_productos.entry_busqueda.place(x=390, y=50)  # Ajustar la posición
+        mostrar_productos.entry_busqueda = ttk.Entry(self.frame_derecho, font=("Segoe UI", 14))
+        mostrar_productos.entry_busqueda.place(x=60, y=50)  # Ajustar la posición
         mostrar_productos.entry_busqueda.bind("<KeyRelease>", actualizar_filtro)  # Detectar cada tecla que el usuario presiona
 
         
-        # Mostrar todos los productos   inmediatamente cuando se abre el Entry    
+        # Mostrar todos los productos inmediatamente cuando se abre el Entry    
         mostrar_todos_los_productos()
         
-            
-         
 
-        
-
-    def ocultar_arbol_productos(self):
+    def borrar_frame_derecho(self):
         if hasattr(self, 'frame_derecho'):
             self.frame_derecho.destroy()
-    
+            
+            
+
+    def mostrar_arbol_proveedores(self):
+        # derribar frame derecho antes de sobreescribirlo
+        self.borrar_frame_derecho()
+
+        # Estilo personalizado para agrandar la fuente de la tabla y aumentar la altura de las filas
+        style = ttk.Style()
+        style.configure("Treeview.Heading", font=("Segoe UI", 16, "bold"))  # Agranda la fuente de los encabezados
+        style.configure("Treeview", font=("Segoe UI", 14), rowheight=30)   # Agranda la fuente de las filas y ajusta la altura
+        style.configure("Rojo.TLabel", foreground="red")
+        
+        # Frame derecho para mostrar la tabla
+        self.frame_derecho = tk.Frame(self.master, padx=10, pady=10)
+        self.frame_derecho.place(x=320, y=0, width=max(self.master.winfo_width() - 320, 480), height=max(self.master.winfo_height(), 600))
+
+        # Título para la tabla
+        label_tabla = tk.Label(self.frame_derecho, text="Proveedores", font=("Segoe UI", 24, "bold"), fg="black", relief="flat")
+        label_tabla.pack(pady=20)
+
+        # Tabla (Treeview) para mostrar los productos
+        tree = ttk.Treeview(self.frame_derecho, columns=("nombre", "telefono", "mail"), show="headings", height=10)
+
+        # Definir las columnas con doble clic
+        tree.heading("nombre", text="Nombre", command=lambda: contador_clic("nombre"))
+        tree.heading("telefono", text="Telefono", command=lambda: contador_clic("telefono"))
+        tree.heading("mail", text="Mail", command=lambda: contador_clic("mail"))
+       
+
+        # Definir el ancho de las columnas
+        tree.column("nombre", width=100, anchor="center")
+        tree.column("telefono", width=100, anchor="center")
+        tree.column("mail", width=100, anchor="center")
+
+        # Empaquetar la tabla
+        tree.pack(fill=tk.BOTH, expand=True)
+
+        # funciones para copiar columna:
+
+        # Inicializar un diccionario para contar los clics en cada columna
+        click_counter = {"nombre": 0, "telefono": 0, "mail": 0}
+
+        # Función para contar clics y copiar la columna si hay dos clics consecutivos
+        def contador_clic(columna):
+            # Incrementar el contador para la columna seleccionada
+            click_counter[columna] += 1
+
+            # Si se hace clic dos veces, copiar la columna y resetear el contador
+            if click_counter[columna] == 2:
+                copiar_columna(columna)
+                click_counter[columna] = 0
+            else:
+                # Resetear los contadores de las demás columnas
+                for col in click_counter:
+                    if col != columna:
+                        click_counter[col] = 0
+
+        # Función para copiar la columna seleccionada al portapapeles
+        def copiar_columna(columna):
+            # Obtener los índices de las filas y el índice de la columna
+            valores_columna = []
+            columna_index = tree["columns"].index(columna)
+
+            # Extraer todos los valores de la columna seleccionada
+            for item in tree.get_children():
+                valor = tree.item(item)['values'][columna_index]
+                valores_columna.append(str(valor))
+
+            # Unir los valores con saltos de línea y copiarlos al portapapeles
+            self.master.clipboard_clear()  # Limpiar el portapapeles
+            self.master.clipboard_append("\n".join(valores_columna))  # Copiar al portapapeles
+            self.master.update()  # Actualizar la ventana para asegurar que el portapapeles se copie
+
+            # Mostrar mensaje emergente
+            mostrar_mensaje_copiado()
+
+        # Variable para realizar seguimiento de los clics
+        global primer_click
+        primer_click = None
+
+        # Función para copiar una fila completa al portapapeles
+        def copiar_fila(event):
+            global primer_click
+
+            # Identificar la fila sobre la que se ha hecho clic
+            item = tree.identify_row(event.y)
+
+            # Si no se ha hecho clic sobre ninguna fila (fuera del área de filas)
+            if not item:
+                return
+
+            # Si ya se ha hecho un primer clic en esta fila
+            if primer_click == item:
+                # Obtener los valores de la fila
+                valores_fila = tree.item(item)['values']
+
+                # Unir los valores con tabuladores o saltos de línea, y copiarlos al portapapeles
+                fila_copiada = "\t".join(str(valor) for valor in valores_fila)  # Usa tabuladores para separar los valores
+                self.master.clipboard_clear()  # Limpiar el portapapeles
+                self.master.clipboard_append(fila_copiada)  # Copiar al portapapeles
+                self.master.update()  # Actualizar la ventana para asegurar que el portapapeles se copie
+
+                # Mostrar mensaje emergente
+                mostrar_mensaje_copiado()
+
+                # Reiniciar el contador de clics
+                primer_click = None
+            else:
+                # Si es el primer clic en la fila, guardamos esa fila
+                primer_click = item
+
+        # Función para mostrar el mensaje "Copiado al portapapeles"
+        def mostrar_mensaje_copiado():
+            # Crear la ventana del mensaje
+            mensaje = tk.Toplevel(self.master)
+            mensaje.title("Mensaje Copiado")
+
+            # Obtener las dimensiones de la ventana principal
+            ventana_width = self.master.winfo_width()
+            ventana_height = self.master.winfo_height()
+
+            # Obtener las dimensiones del mensaje
+            mensaje_width = 300
+            mensaje_height = 50
+
+            # Calcular la posición para centrar el mensaje
+            position_top = self.master.winfo_rooty() + (ventana_height // 2) - (mensaje_height // 2)
+            position_left = self.master.winfo_rootx() + (ventana_width // 2) - (mensaje_width // 2)
+
+            # Hacer la ventana pequeña, sin bordes y transparente
+            mensaje.geometry(f"{mensaje_width}x{mensaje_height}+{position_left}+{position_top}")
+            mensaje.overrideredirect(True)  # Eliminar los bordes de la ventana
+            mensaje.config(bg="black")  # Fondo negro semitransparente
+            mensaje.attributes("-alpha", 0.7)  # Hacerla semi-transparente
+
+            # Etiqueta con el mensaje
+            label = tk.Label(mensaje, text="Copiado al portapapeles", fg="white", font=("Arial", 16, "bold"), bg="black")
+            label.pack(expand=True)
+
+            # Cerrar el mensaje después de 2 segundos
+            mensaje.after(2000, mensaje.destroy)  # 2000 ms = 2 segundos
+
+        # Asociar el evento de clic en la fila
+        tree.bind("<ButtonRelease-1>", copiar_fila)
+
+
+        def mostrar_proveedores():
+            all_data = traer_todos_los_proveedores()
+            print(all_data)
+            return all_data
+   
+        def actualizar_filtro(event=None):
+            all_data2 = traer_todos_los_proveedores()
+                # Obtener el texto ingresado en el Entry
+            texto_busqueda = mostrar_proveedores.entry_busqueda.get().lower()
+            # Limpiar la tabla para mostrar los nuevos resultados
+            for item in tree.get_children():
+                tree.delete(item)
+            # Filtrar productos que contengan el texto ingresado
+            if texto_busqueda == "":
+                proveedores_a_mostrar = all_data2  # Mostrar todos los productos si no se ha ingresado texto
+            else:
+                proveedores_a_mostrar = [p for p in all_data2 if texto_busqueda in p[0].lower()]
+            # Insertar los productos filtrados en la tabla
+            if proveedores_a_mostrar:
+                for i in proveedores_a_mostrar:
+                    
+                    # Insertar una fila vacía para crear espacio
+                    tree.insert("", "end", values=("", "", ""))
+                    tree.insert("", "end", values=(f"{i[0]} {i[1]} {i[2]}"))
+            else:
+                tree.insert("", "end", values=("No se encontraron productos", "", ""))
+
+        def mostrar_todos_los_proveedores(s = mostrar_proveedores()): # cambiar por funcion que traiga todos los datos
+            # Limpiar la tabla para mostrar los productos
+            for item in tree.get_children():
+                tree.delete(item)
+            # Configurar el tag para texto en rojo
+            # Insertar todos los productos en la tabla
+            for i in s:
+                tree.insert("", "end", values=("", "", ""))
+                tree.insert("", "end", values=(f"{i[0]} {i[1]} {i[2]}"))
+            
+
+     
+        mostrar_proveedores.entry_busqueda = ttk.Entry(self.frame_derecho, font=("Segoe UI", 14))
+        mostrar_proveedores.entry_busqueda.place(x=60, y=50)  # Ajustar la posición
+        mostrar_proveedores.entry_busqueda.bind("<KeyRelease>", actualizar_filtro)  # Detectar cada tecla que el usuario presiona
+
+        
+        # Mostrar todos los productos inmediatamente cuando se abre el Entry    
+        mostrar_todos_los_proveedores()
 
 
     def mostrar_id_inicio(self, username):

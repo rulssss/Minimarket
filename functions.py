@@ -285,3 +285,13 @@ def buscar_proveedor(nombre_prov):
     else: 
         cursor.close()
         return False
+    
+
+
+def traer_todos_los_proveedores():
+    cursor= connection2.cursor()
+    query_data2 = f"SELECT nombre_proveedor, telefono, mail FROM proveedores ORDER BY nombre_proveedor"
+    cursor.execute(query_data2)
+    data = cursor.fetchall()
+    cursor.close()
+    return data
