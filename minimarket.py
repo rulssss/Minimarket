@@ -62,6 +62,7 @@ class Datos:
         ventana.geometry("1200x300")  # Ajusta el tamaño según necesites
         ventana.resizable(False, False)  # Evita que se redimensione
         ventana.configure(bg="white")
+        ventana.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
 
         # Hacer la ventana modal
         ventana.grab_set()
@@ -178,6 +179,7 @@ class Datos:
         ventana.title("Borrar Producto")
         ventana.geometry("300x150")  # Tamaño de la ventana
         ventana.resizable(False, False)  # Evita que se redimensione
+        ventana.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
 
         # Hacer la ventana modal
         ventana.grab_set()
@@ -279,6 +281,7 @@ class Datos:
         confirm_window.geometry("1200x300")  # Ajusta el tamaño según necesites
         confirm_window.resizable(False, False)  # Evita que se redimensione
         confirm_window.configure(bg="white")
+        confirm_window.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
 
         # Inicializar filtro_timer
         global filtro_timer
@@ -443,10 +446,11 @@ class Datos:
         
         # Crear una ventana secundaria
         ventana = Toplevel()
-        ventana.title("Añadir Producto")
+        ventana.title("Añadir Proveedor")
         ventana.geometry("1200x300")  # Ajusta el tamaño según necesites
         ventana.resizable(False, False)  # Evita que se redimensione
         ventana.configure(bg="white")
+        ventana.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
 
         # Hacer la ventana modal
         ventana.grab_set()
@@ -550,9 +554,10 @@ class Datos:
 
         # Crear la ventana
         ventana = tk.Toplevel()
-        ventana.title("Borrar Producto")
+        ventana.title("Borrar Proveedor")
         ventana.geometry("300x150")  # Tamaño de la ventana
         ventana.resizable(False, False)  # Evita que se redimensione
+        ventana.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
 
         # Hacer la ventana modal
         ventana.grab_set()
@@ -652,6 +657,7 @@ class Datos:
         confirm_window.geometry("1200x300")  # Ajusta el tamaño según necesites
         confirm_window.resizable(False, False)  # Evita que se redimensione
         confirm_window.configure(bg="white")
+        confirm_window.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
 
         # Inicializar filtro_timer
         global filtro_timer
@@ -789,6 +795,7 @@ class Datos:
         ventana.geometry("1200x300")  # Ajusta el tamaño según necesites
         ventana.resizable(False, False)  # Evita que se redimensione
         ventana.configure(bg="white")
+        ventana.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
 
         # Hacer la ventana modal
         ventana.grab_set()
@@ -876,7 +883,7 @@ class Datos:
         ventana.title("Borrar Categoría")
         ventana.geometry("300x150")  # Tamaño de la ventana
         ventana.resizable(False, False)  # Evita que se redimensione
-
+        ventana.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
         
         
 
@@ -966,6 +973,7 @@ class Datos:
         confirm_window.geometry("400x250")  # Ajustar el tamaño
         confirm_window.config(bg="white")
         confirm_window.resizable(False, False)  # Evitar que se redimensione
+        confirm_window.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
 
         confirm_window.grab_set()  # Hacer la ventana modal
 
@@ -1060,10 +1068,22 @@ class Administracion:
     # Lista para almacenar los productos seleccionados
     productos_seleccionados = []
 
+    global facturero_abierto
+    facturero_abierto = False
+
     # Métodos de ejemplo para los botones
     def facturero(self):
 
+        global facturero_abierto
+
+
         self.minimarket.mostrar_arbol_productos()
+
+        if facturero_abierto:
+            return
+        
+        facturero_abierto = True
+
 
 
         # Crear la ventana principal
@@ -1273,13 +1293,16 @@ class Administracion:
 
         # Botón "Cerrar"
         def cerrar_ventana():
+            global facturero_abierto
 
             s = False
             actualizar_cantidad_productos(self.productos_seleccionados, s, l=True, m= False)
+
             self.minimarket.mostrar_arbol_productos()
     
             self.productos_seleccionados.clear()
 
+            facturero_abierto = False
             ventana_facturero.destroy()
 
         # Botón "Cerrar"
@@ -1297,8 +1320,256 @@ class Administracion:
 
         ventana_facturero.mainloop()
 
+    # Lista para almacenar los productos seleccionados
+    compras_seleccionadas = []
+    global compra_abierto
+    compra_abierto = False
+
     def compras(self):
-        print("Compras")
+
+        global compra_abierto
+        
+    
+        self.minimarket.mostrar_arbol_productos()
+            
+    
+        # Evitar que se abra más de una vez
+        if compra_abierto:
+            return  # No hacer nada si la ventana ya está abierta
+        
+        # Cambiar el estado a abierto
+        compra_abierto = True
+    
+    
+        # Crear la ventana principal
+        ventana_compra = tk.Toplevel()
+        ventana_compra.title("Compras")
+    
+        # Centrar la ventana
+        ventana_compra_width = 600  # Ancho deseado
+        ventana_compra_height = 670  # Alto deseado
+        screen_width = ventana_compra.winfo_screenwidth()
+        screen_height = ventana_compra.winfo_screenheight()
+        x_coordinate = int((screen_width / 2) - (ventana_compra_width / 2))
+        y_coordinate = int((screen_height / 2) - (ventana_compra_height / 2))
+        ventana_compra.geometry(f"{ventana_compra_width}x{ventana_compra_height}+{x_coordinate}+{y_coordinate}")
+        ventana_compra.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
+    
+        # Crear el frame superior
+        frame_superior = tk.Frame(ventana_compra, bd=2, relief="groove")
+        frame_superior.pack(side="top", fill="x", padx=10, pady=10)
+    
+        # Crear combobox para el nombre del producto
+        tk.Label(frame_superior, text="Nombre del producto:", font=("Segoe UI", 13)).grid(row=0, column=0, padx=5, pady=5, sticky="e")
+        
+    
+        # Llenar el combobox con los nombres de los productos
+        productos = traer_todos_los_productos()
+        nombres_productos = [producto[0] for producto in productos]  # Extraer los nombres de los productos
+        nombre_producto_combobox = ttk.Combobox(frame_superior, values=nombres_productos, font=("Segoe UI", 13), height=5)
+        nombre_producto_combobox.option_add('*TCombobox*Listbox.font', ('Segoe UI', 16))
+        nombre_producto_combobox.grid(row=0, column=1, padx=5, pady=5)
+    
+        # Variable para manejar el retraso
+        filtro_id = None
+    
+        # Función para filtrar productos con retraso
+        def filtrar_productos_con_retraso(event):
+            nonlocal filtro_id
+            if filtro_id:
+                ventana_compra.after_cancel(filtro_id)  # Cancelar el filtro anterior si existe
+    
+            filtro_id = ventana_compra.after(1000, lambda: filtrar_productos(event))  # Esperar 1 segundo antes de filtrar
+    
+        # Función para filtrar productos y permitir escritura continua
+        def filtrar_productos(event):
+            entrada = nombre_producto_combobox.get().lower()  # Captura el texto ingresado
+            filtrados = [prod for prod in nombres_productos if entrada in prod.lower()]  # Filtrar productos
+            nombre_producto_combobox['values'] = filtrados  # Actualizar las opciones del combobox
+    
+            # Resaltar el texto en el combobox
+            nombre_producto_combobox.selection_range(0, 'end')
+            
+            if filtrados:
+                nombre_producto_combobox.event_generate('<Down>')  # Mostrar opciones filtradas
+        
+        # Vincular el evento KeyRelease para que espere 1 segundo antes de filtrar
+        nombre_producto_combobox.bind('<KeyRelease>', filtrar_productos_con_retraso)
+    
+        # Crear campos de entrada solo para mostrar los datos (readonly)
+        tk.Label(frame_superior, text="Precio de venta:", font=("Segoe UI", 13)).grid(row=1, column=0, padx=5, pady=5, sticky="e")
+        precio_producto = tk.Entry(frame_superior, state="readonly", font=("Segoe UI", 13) )
+        precio_producto.grid(row=1, column=1, padx=5, pady=5)
+    
+        tk.Label(frame_superior, text="Cantidad:", font=("Segoe UI", 13)).grid(row=2, column=0, padx=5, pady=5, sticky="e")
+        cantidad_producto = tk.Entry(frame_superior, font=("Segoe UI", 13))  # Estado normal para permitir edición
+        cantidad_producto.grid(row=2, column=1, padx=5, pady=5)
+        cantidad_producto.insert(0, "")  # Valor predeterminado de 0
+    
+        tk.Label(frame_superior, text="Categoría:", font=("Segoe UI", 13)).grid(row=3, column=0, padx=5, pady=5, sticky="e")
+        categoria = tk.Entry(frame_superior, state="readonly", font=("Segoe UI", 13))
+        categoria.grid(row=3, column=1, padx=5, pady=5)
+    
+        tk.Label(frame_superior, text="Proveedor:", font=("Segoe UI", 13)).grid(row=4, column=0, padx=5, pady=5, sticky="e")
+        proveedor_producto = tk.Entry(frame_superior, state="readonly", font=("Segoe UI", 13))
+        proveedor_producto.grid(row=4, column=1, padx=5, pady=5)
+    
+        # Crear el área de texto para mostrar los productos añadidos
+        tk.Label(ventana_compra, text="Productos seleccionados:",font=("Segoe UI", 13) ).pack(pady=5)
+        result_text = tk.Text(ventana_compra, height=8, width=55, state="normal", font=("Segoe UI", 16))
+        result_text.pack(padx=10, pady=5)
+        result_text.config(state="disabled")  # Iniciar en estado "disabled" (no editable)
+    
+        # Función para actualizar los datos del producto seleccionado
+        def actualizar_datos_producto(event):
+            # Obtener el nombre seleccionado del combobox
+            nombre_seleccionado = nombre_producto_combobox.get()
+            # Buscar los datos del producto seleccionado
+            for producto in productos:
+                if producto[0] == nombre_seleccionado:
+                    # Actualizar los campos con los datos del producto seleccionado
+                    precio_producto.config(state="normal")
+                    precio_producto.delete(0, tk.END)
+                    precio_producto.insert(0, producto[1])  # Precio
+                    precio_producto.config(state="readonly")
+    
+                    cantidad_producto.delete(0, tk.END)
+                    cantidad_producto.insert(0, "")  # Dejar cantidad editable con valor predeterminado 0
+    
+                    categoria.config(state="normal")
+                    categoria.delete(0, tk.END)
+                    categoria.insert(0, producto[3])  # Precio de venta
+                    categoria.config(state="readonly")
+    
+                    proveedor_producto.config(state="normal")
+                    proveedor_producto.delete(0, tk.END)
+                    proveedor_producto.insert(0, producto[4])  # Proveedor
+                    proveedor_producto.config(state="readonly")
+                    break
+                
+        # Función para añadir el producto seleccionado al arreglo y mostrarlo en el área de texto
+        def añadir_producto():
+        
+           nombre_seleccionado = nombre_producto_combobox.get()
+           cantidad_seleccionada = cantidad_producto.get()  # Obtener la cantidad modificada por el usuario
+           if nombre_seleccionado and cantidad_seleccionada.isdigit():
+               for producto in productos:
+                   if producto[0] == nombre_seleccionado:
+                        
+                        # Obtener la hora actual
+                        hora_actual = datetime.now().strftime("%H:%M:%S")
+                        
+    
+                        # Convertir la hora actual a un objeto de tipo time para poder compararlo
+                        hora_objeto = datetime.strptime(hora_actual, "%H:%M:%S").time()
+    
+                        # Definir la hora de comparación (12:00:00)
+                        hora_comparacion = datetime.strptime("12:00:00", "%H:%M:%S").time()
+    
+                        # Comparar si la hora actual es mayor a las 12:00
+                        if hora_objeto > hora_comparacion:
+                            hora = "Tarde"
+                        else:
+                            hora = "Manana"
+                       
+                        producto_modificado = (producto[0], producto[1], int(cantidad_seleccionada), producto[3], producto[4], hora)
+                        
+                        s = False
+                        d = controlar_cantidades(producto_modificado, s) 
+                        
+                        if d:
+                            tk.messagebox.showerror("Añadir Producto", "Asegurese de que haya una cantidad razonable.")
+    
+                        else:
+                            self.compras_seleccionadas.append(producto_modificado)
+                            
+                            # Insertar el producto en el área de texto y en tabla
+                            actualizar_cantidad_productos(self.compras_seleccionadas, s, l = False, m= False)
+                            
+                            self.minimarket.mostrar_arbol_productos()
+
+                            result_text.config(state="normal")  # Permitir escritura temporal
+                            result_text.insert(tk.END, f"{producto_modificado}\n")  # Mostrar producto en el Text
+                            result_text.config(state="disabled")  # Bloquear nuevamente para no permitir ediciones
+                            result_text.see(tk.END)  # Desplazarse al final automáticamente
+                            break
+                            
+                        
+                        
+        # Función para borrar el último producto añadido
+        def borrar_ultimo_producto():
+            if self.compras_seleccionadas:
+                s = True
+                
+                actualizar_cantidad_productos([self.compras_seleccionadas[-1]], s, l=False, m= False)
+
+                self.minimarket.mostrar_arbol_productos()
+                
+                self.compras_seleccionadas.pop()  # Eliminar el último producto añadido
+                # Limpiar y actualizar el área de texto
+                result_text.config(state="normal")
+                result_text.delete(1.0, tk.END)  # Borrar todo el contenido del área de texto
+                for producto in self.compras_seleccionadas:
+                    result_text.insert(tk.END, f"{producto}\n")  # Reinsertar los productos restantes
+                result_text.config(state="disabled")
+                result_text.see(tk.END)
+    
+        def procesar_productos():
+            global facturero_abierto
+            s = False
+            
+            añadir_a_registro(self.compras_seleccionadas, s)
+            #limpia el arreglo
+            self.compras_seleccionadas.clear()
+
+            self.minimarket.mostrar_arbol_productos() #muestra todos los prod actualizados
+
+            cerrar_ventana()
+        
+        
+    
+        # Crear botón "Borrar Último Agregado"
+        boton_borrar = tk.Button(frame_superior, text="Borrar Último Agregado", font=("Segoe UI", 10, "bold"),relief="groove", fg="black", bg="#ef3232", command=borrar_ultimo_producto)
+        boton_borrar.grid(row=5, column=0, padx=5, pady=5, sticky="w")  # Posicionar a la izquierda
+    
+        # Crear botón "Añadir"
+        boton_añadir = tk.Button(frame_superior, text="Añadir", font=("Segoe UI", 13, "bold"), command=añadir_producto, relief="groove", fg="black", bg="#d7d7d7")
+        boton_añadir.grid(row=5, column=1, padx=5, pady=5)
+    
+        # Crear frame inferior para botones "Procesar" y "Cerrar"
+        frame_botones = tk.Frame(ventana_compra)
+        frame_botones.pack(pady=10)
+    
+        # Botón "Cerrar"
+        def cerrar_ventana():
+        
+            s = False
+            actualizar_cantidad_productos(self.compras_seleccionadas, s, l=True, m= True)
+            self.minimarket.mostrar_arbol_productos() 
+
+            global compra_abierto
+            self.compras_seleccionadas.clear()
+            compra_abierto = False  # Cambiar el estado a cerrado
+            
+            ventana_compra.destroy()
+    
+        # Botón "Cerrar"
+        boton_cerrar = tk.Button(frame_botones, text="Cerrar", font=("Segoe UI", 13, "bold"), command=cerrar_ventana, relief="groove", fg="black", bg="#ef3232")
+        boton_cerrar.pack(side="left", padx=20)
+    
+        
+    
+        # Botón "Procesar"
+        boton_procesar = tk.Button(frame_botones, text="Procesar", font=("Segoe UI", 13, "bold"), command=procesar_productos,  relief="groove", fg="black", bg="#d7d7d7")
+        boton_procesar.pack(side="right", padx=20)
+    
+        # Vincular el evento de selección en el combobox
+        nombre_producto_combobox.bind("<<ComboboxSelected>>", actualizar_datos_producto)
+    
+    
+        ventana_compra.mainloop()
+
+        
 
 ## ventana para el minimarket 
 
@@ -1312,6 +1583,7 @@ class Minimarket:
         screen_height = self.master.winfo_screenheight() # minimo = 864   # 768
         self.master.geometry(f"{screen_width}x{screen_height}")
         self.master.minsize(800, 600)  # Tamaño mínimo de la ventana
+        self.master.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
 
 
         # Mostrar ID del usuario de forma transparente y bienvenida
