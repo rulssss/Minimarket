@@ -151,6 +151,7 @@ class Datos:
             
 
             cargar_producto_actualizacion(nombre_producto, precio_producto, cantidad_producto, categoria_producto, proveedor_producto)
+            self.minimarket.mostrar_arbol_productos() # mostrar productos actualizados
             on_no()
 
         def on_no():
@@ -512,6 +513,7 @@ class Datos:
             if  not nombre_proveedor or not num_telefono:
                 advertencia_label.config(text="No acepta vacios")
                 return
+    
             
             
 
@@ -522,6 +524,7 @@ class Datos:
                 messagebox.showerror("Error", "Esta queriendo ingresar un campo ya existente")
                 return
 
+            self.minimarket.mostrar_arbol_proveedores()
             
             on_no()
 
@@ -796,9 +799,9 @@ class Datos:
 
         # Ajustar el ancho de la ventana según el ancho de la pantalla
         
-        ancho_ventana = 600
+        ancho_ventana = 500
 
-        alto_ventana = 320
+        alto_ventana = 300
         x = (ventana.winfo_screenwidth() // 2) - (ancho_ventana // 2)
         y = (ventana.winfo_screenheight() // 2) - (alto_ventana // 2)
         ventana.geometry(f"{ancho_ventana}x{alto_ventana}+{x}+{y}")
@@ -813,9 +816,9 @@ class Datos:
         )
 
         # Etiquetas e Inputs
-        Label(frame, text="Nombre de la categoria:", bg="white", font=("Segoe UI", 12)).grid(row=1, column=0, padx=(140, 0), pady=5)
-        input_nombre = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16))
-        input_nombre.grid(row=2, column=0, padx=(155,10), pady=5)
+        Label(frame, text="Nombre de la categoria:", bg="white", font=("Segoe UI", 12)).grid(row=1, column=0, padx=(100, 0), pady=5)
+        input_nombre = Entry(frame, width=23, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16))
+        input_nombre.grid(row=2, column=0, padx=(105,0), pady=5)
 
 
         # Crear el Label de advertencia
@@ -846,7 +849,7 @@ class Datos:
                 advertencia_label.config(text="Categoría ya existente")
                 return
 
-            
+            self.minimarket.mostrar_arbol_categorias()
             on_no()
 
         def on_no():
@@ -1054,7 +1057,7 @@ class Administracion:
 
     # Métodos de ejemplo para los botones
     def facturero(self):
-        print("Facturero")
+        pass
 
     def compras(self):
         print("Compras")
