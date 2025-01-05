@@ -1,6 +1,7 @@
 import psycopg2
 from psycopg2 import errors
 from tkinter import messagebox
+import tkinter as tk
 
 
 #################################################
@@ -339,3 +340,70 @@ def traer_todas_las_categorias():
     data = cursor.fetchall()
     cursor.close()
     return data
+
+
+def ventana_confirmacion():
+    resultado = tk.BooleanVar()
+    
+    # Crear una nueva ventana (modal)
+    confirm_window = tk.Toplevel()
+    confirm_window.title("Confirmación")
+    confirm_window.geometry("400x200")  # Ajustar el tamaño a uno más grande
+    confirm_window.config(bg="white")  # Fondo blanco, típico de ventanas de Windows
+    confirm_window.grab_set()  # Bloquear la ventana principal hasta que se cierre la ventana emergente
+    confirm_window.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
+
+    # Centrando la ventana
+    screen_width = confirm_window.winfo_screenwidth()
+    screen_height = confirm_window.winfo_screenheight()
+    window_width =500
+    window_height = 200
+    position_x = (screen_width // 2) - (window_width // 2)
+    position_y = (screen_height // 2) - (window_height // 2)
+    confirm_window.geometry(f"{window_width}x{window_height}+{position_x}+{position_y}")
+
+    # Etiqueta con el mensaje
+    label = tk.Label(confirm_window, text="¡ATENCION!\n Esta a punto de borrar todos los datos.", font=("Segoe UI", 12), bg="white")
+    label.pack(pady=(40, 0))  # Ajustar el espaciado para mayor separación
+    
+
+    # Función para manejar el botón "Sí"
+    def on_yes():
+        resultado.set(True)
+        confirm_window.destroy()
+
+    # Función para manejar el botón "No"
+    def on_no():
+        resultado.set(False)
+        confirm_window.destroy()
+
+    # Crear el marco para los botones
+    button_frame = tk.Frame(confirm_window, bg="white")
+    button_frame.pack(pady=20)
+
+    # Botones
+    btn_yes = tk.Button(button_frame, text="Aceptar", command=on_yes, width=12, relief="groove", bg="#d7d7d7", fg="black", font=("Segoe UI", 12,    "bold"))
+    btn_yes.pack(side=tk.LEFT, padx=15)
+    btn_no = tk.Button(button_frame, text="Cancelar", command=on_no, width=12, relief="groove", bg="#ef3232", fg="black", font=("Segoe UI", 12,     "bold"))
+    btn_no.pack(side=tk.LEFT, padx=15)
+
+    confirm_window.wait_window()
+
+    return resultado.get()
+
+def clear_data():
+    
+    v = ventana_confirmacion()
+    cursor = connection2.cursor()
+    if v:
+        
+        query_data2 = f"TRUNCATE categorias CASCADE"
+        cursor.execute(query_data2)
+
+        query_data3 = f"TRUNCATE proveedores CASCADE"
+        cursor.execute(query_data3)
+        
+            
+    cursor.close()
+
+    messagebox.showinfo("Datos borrados", "Los datos seleccionados han sido borrados.")

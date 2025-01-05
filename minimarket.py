@@ -954,7 +954,57 @@ class Datos:
 
 
     def borrar_datos(self):
-        print("Borrar Datos")
+        
+
+
+        # Crear una nueva ventana para la selección
+        confirm_window = tk.Toplevel()
+        confirm_window.title("Borrar Datos")
+        confirm_window.geometry("400x250")  # Ajustar el tamaño
+        confirm_window.config(bg="white")
+        confirm_window.resizable(False, False)  # Evitar que se redimensione
+
+        confirm_window.grab_set()  # Hacer la ventana modal
+
+        # Centrando la ventana
+        screen_width = confirm_window.winfo_screenwidth()
+        screen_height = confirm_window.winfo_screenheight()
+        window_width = 400
+        window_height = 200
+        position_x = (screen_width // 2) - (window_width // 2)
+        position_y = (screen_height // 2) - (window_height // 2)
+        confirm_window.geometry(f"{window_width}x{window_height}+{position_x}+{position_y}")
+        confirm_window.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
+
+
+        # Crear etiquetas y casillas de verificación para seleccionar qué borrar
+        label = tk.Label(confirm_window, text="¿Desea borrar todos los datos?", font=("Segoe UI", 14), bg="white")
+        label.pack(pady=10)
+
+
+        # Función para manejar el botón "Aceptar"
+        def on_accept():
+            # Pasar las selecciones como parámetros a la función clear_data
+            clear_data()
+            confirm_window.destroy()
+
+        # Función para manejar el botón "Cancelar"
+        def on_cancel():
+            confirm_window.destroy()
+
+        # Crear el marco para los botones
+        button_frame = tk.Frame(confirm_window, bg="white")
+        button_frame.pack(pady=20)
+
+        # Botones
+        btn_yes = tk.Button(button_frame, text="Aceptar", command=on_accept, width=12, relief="groove", bg="#d7d7d7", fg="black", font=("Segoe UI", 12,    "bold"))
+        btn_yes.pack(side=tk.LEFT, padx=15)
+
+        btn_no = tk.Button(button_frame, text="Cancelar", command=on_cancel, width=12, relief="groove", bg="#ef3232", fg="black", font=("Segoe UI", 12,     "bold"))
+        btn_no.pack(side=tk.LEFT, padx=15)
+
+
+        confirm_window.mainloop()
 
     
 
