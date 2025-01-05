@@ -1065,6 +1065,13 @@ class Administracion:
         for texto, comando in botones:
             tk.Button(self.master,text=texto,command=comando,height=1,  width=20,  bg="#e0e0e0",  fg="black", font=("Segoe UI", 12, "bold"),  activebackground="#c0c0c0",  activeforeground="white", relief="groove",  bd=2  ).pack(pady=9)
 
+        # Crear el widget Text para el anotador
+        self.text_anotador = tk.Text(self.master, font=("Segoe UI", 12), height=10)
+        self.text_anotador.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+
+        # Cargar las notas guardadas
+        self.minimarket.cargar_notas()
+        
     # Lista para almacenar los productos seleccionados
     productos_seleccionados = []
 
@@ -1569,7 +1576,6 @@ class Administracion:
     
         ventana_compra.mainloop()
 
-        
 
 ## ventana para el minimarket 
 
@@ -1585,14 +1591,12 @@ class Minimarket:
         self.master.minsize(800, 600)  # Tamaño mínimo de la ventana
         self.master.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
 
-
         # Mostrar ID del usuario de forma transparente y bienvenida
         self.mostrar_id_inicio(username)
         
         ######### Crear el Notebook vertical a la izquierda #########
         self.notebook = ttk.Notebook(self.master, style="CustomNotebook.TNotebook")
         self.notebook.place(x=0, y=0, width=310, height=screen_height)
-
 
         # Mostrar pestañas según el tipo de cuenta
         if account_type:  # Si es True, mostrar todas las pestañas
@@ -1661,6 +1665,9 @@ class Minimarket:
 
         # Vincular el evento de cambio de tamaño de la ventana
         self.master.bind("<Configure>", self.ajustar_tamano)
+
+        # Vincular el evento de cierre de la ventana para guardar las notas
+        self.master.protocol("WM_DELETE_WINDOW", self.guardar_notas_y_cerrar)
 
     def ajustar_tamano(self, event):
         # Ajustar el tamaño del notebook y el frame derecho
@@ -2286,6 +2293,22 @@ class Minimarket:
     def mostrar_administracion(self):
         self.administracion.mostrar()
 
+    def cargar_notas(self):
+        try:
+            with open("notas.txt", "r") as file:
+                notas = file.read()
+                self.administracion.text_anotador.insert(tk.END, notas)
+        except FileNotFoundError:
+            pass
+
+    def guardar_notas(self):
+        with open("notas.txt", "w") as file:
+            notas = self.administracion.text_anotador.get(1.0, tk.END)
+            file.write(notas)
+
+    def guardar_notas_y_cerrar(self):
+        self.guardar_notas()
+        self.master.destroy()
 
 
 
