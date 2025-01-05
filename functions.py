@@ -406,4 +406,4 @@ def clear_data():
             
     cursor.close()
 
-    messagebox.showinfo("Datos borrados", "Los datos seleccionados han sido borrados.")
+    messagebox.showinfo("Datos borrados", "Todos los datos han sido borrados.")

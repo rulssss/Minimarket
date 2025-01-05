@@ -970,7 +970,7 @@ class Datos:
         screen_width = confirm_window.winfo_screenwidth()
         screen_height = confirm_window.winfo_screenheight()
         window_width = 400
-        window_height = 200
+        window_height = 150
         position_x = (screen_width // 2) - (window_width // 2)
         position_y = (screen_height // 2) - (window_height // 2)
         confirm_window.geometry(f"{window_width}x{window_height}+{position_x}+{position_y}")
