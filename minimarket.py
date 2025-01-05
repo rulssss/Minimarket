@@ -1782,9 +1782,11 @@ class Minimarket:
         self.master.title("rls")
 
         # Configurar la ventana para que tome el tamaño de la pantalla sin ser pantalla completa
-        screen_width = self.master.winfo_screenwidth() #minimo = 1152  # 1024 
-        screen_height = self.master.winfo_screenheight() # minimo = 864   # 768
+        screen_width = self.master.winfo_screenwidth()
+        screen_height = self.master.winfo_screenheight()
         self.master.geometry(f"{screen_width}x{screen_height}")
+        self.master.update_idletasks()  # Asegura que la geometría se actualice
+        self.master.state('zoomed')  # Maximiza la ventana
         self.master.minsize(800, 600)  # Tamaño mínimo de la ventana
         self.master.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
 
