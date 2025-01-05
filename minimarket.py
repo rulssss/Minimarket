@@ -1054,7 +1054,7 @@ class BuscarDatos:
 
 
         # Establecer la ventana en pantalla completa
-        ventana.geometry(f"{ventana.winfo_screenwidth()}x{ventana.winfo_screenheight()}+0+0")
+        ventana.state('zoomed')
 
         main_frame = tk.Frame(ventana, bg="white")
         main_frame.grid(row=0, column=0, padx=20, pady=20, sticky='nsew')
