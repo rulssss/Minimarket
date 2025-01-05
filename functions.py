@@ -334,7 +334,7 @@ def buscar_categoria(nombre_categ):
 
 def traer_todas_las_categorias():
     cursor= connection2.cursor()
-    query_data2 = f"SELECT nombre_descrip FROM categorias ORDER BY nombre_descrip"
+    query_data2 = f"SELECT id_categoria, nombre_descrip FROM categorias ORDER BY nombre_descrip"
     cursor.execute(query_data2)
     data = cursor.fetchall()
     cursor.close()

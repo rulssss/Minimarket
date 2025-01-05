@@ -1520,7 +1520,7 @@ class Minimarket:
         style.configure("Treeview.Heading", font=("Segoe UI", 16, "bold"))  # Agranda la fuente de los encabezados
         style.configure("Treeview", font=("Segoe UI", 14), rowheight=30)   # Agranda la fuente de las filas y ajusta la altura
         style.configure("Rojo.TLabel", foreground="red")
-        
+
         # Frame derecho para mostrar la tabla
         self.frame_derecho = tk.Frame(self.master, padx=10, pady=10)
         self.frame_derecho.place(x=320, y=0, width=max(self.master.winfo_width() - 320, 480), height=max(self.master.winfo_height(), 600))
@@ -1530,13 +1530,16 @@ class Minimarket:
         label_tabla.pack(pady=20)
 
         # Tabla (Treeview) para mostrar los productos
-        tree = ttk.Treeview(self.frame_derecho, columns=("nombre"), show="headings", height=10)
+        tree = ttk.Treeview(self.frame_derecho, columns=("ID", "nombre"), show="headings", height=10)
 
         # Definir las columnas con doble clic
+        tree.heading("ID", text="id", command=lambda: contador_clic("ID"))
         tree.heading("nombre", text="Nombre", command=lambda: contador_clic("nombre"))
-       
+
         # Definir el ancho de las columnas
+        tree.column("ID", width=100, anchor="center")
         tree.column("nombre", width=100, anchor="center")
+        
 
         # Empaquetar la tabla
         tree.pack(fill=tk.BOTH, expand=True)
@@ -1544,7 +1547,7 @@ class Minimarket:
         # funciones para copiar columna:
 
         # Inicializar un diccionario para contar los clics en cada columna
-        click_counter = {"nombre": 0}
+        click_counter = {"ID": 0, "nombre": 0}
 
         # Función para contar clics y copiar la columna si hay dos clics consecutivos
         def contador_clic(columna):
@@ -1561,6 +1564,7 @@ class Minimarket:
                     if col != columna:
                         click_counter[col] = 0
 
+        
         # Función para copiar la columna seleccionada al portapapeles
         def copiar_columna(columna):
             # Obtener los índices de las filas y el índice de la columna
@@ -1578,7 +1582,7 @@ class Minimarket:
             self.master.update()  # Actualizar la ventana para asegurar que el portapapeles se copie
 
             # Mostrar mensaje emergente
-            mostrar_mensaje_copiado()      
+            mostrar_mensaje_copiado()
 
         # Variable para realizar seguimiento de los clics
         global primer_click
@@ -1613,7 +1617,7 @@ class Minimarket:
                 primer_click = None
             else:
                 # Si es el primer clic en la fila, guardamos esa fila
-                primer_click = item      
+                primer_click = item
 
         # Función para mostrar el mensaje "Copiado al portapapeles"
         def mostrar_mensaje_copiado():
@@ -1645,36 +1649,14 @@ class Minimarket:
 
             # Cerrar el mensaje después de 2 segundos
             mensaje.after(2000, mensaje.destroy)  # 2000 ms = 2 segundos
-                
+
         # Asociar el evento de clic en la fila
         tree.bind("<ButtonRelease-1>", copiar_fila)
-
 
         def mostrar_categorias():
             all_data = traer_todas_las_categorias()
             return all_data
-        
-        def actualizar_filtro(event=None):
-            all_data2 = traer_todas_las_categorias()
-                # Obtener el texto ingresado en el Entry
-            texto_busqueda = mostrar_categorias.entry_busqueda.get().lower()
-            # Limpiar la tabla para mostrar los nuevos resultados
-            for item in tree.get_children():
-                tree.delete(item)
-            # Filtrar productos que contengan el texto ingresado
-            if texto_busqueda == "":
-                categorias_a_mostrar = all_data2  # Mostrar todos los productos si no se ha ingresado texto
-            else:
-                categorias_a_mostrar = [p for p in all_data2 if texto_busqueda in p[0].lower()]
-            # Insertar los productos filtrados en la tabla
-            if categorias_a_mostrar:
-                for i in categorias_a_mostrar:
-                    
-                    # Insertar una fila vacía para crear espacio
-                    tree.insert("", "end", values=(""))
-                    tree.insert("", "end", values=(f"{i[0]}"))
-            else:
-                tree.insert("", "end", values=("No se encontraron categorias"))
+
 
         def mostrar_todas_las_categorias(s = mostrar_categorias()): # cambiar por funcion que traiga todos los datos
             # Limpiar la tabla para mostrar los productos
@@ -1683,16 +1665,14 @@ class Minimarket:
             # Configurar el tag para texto en rojo
             # Insertar todos los productos en la tabla
             for i in s:
-                tree.insert("", "end", values=(""))
-                tree.insert("", "end", values=(f"{i[0]}"))
-        
-        mostrar_categorias.entry_busqueda = ttk.Entry(self.frame_derecho, font=("Segoe UI", 14))
-        mostrar_categorias.entry_busqueda.place(x=60, y=50)  # Ajustar la posición
-        mostrar_categorias.entry_busqueda.bind("<KeyRelease>", actualizar_filtro)  # Detectar cada tecla que el usuario presiona
+                tree.insert("", "end", values=("", ""))
+                tree.insert("", "end", values=(i[0], i[1]))
 
         
         # Mostrar todos los productos inmediatamente cuando se abre el Entry    
         mostrar_todas_las_categorias()
+
+
 
     def mostrar_id_inicio(self, username):
         # Simular la obtención del ID del usuario
