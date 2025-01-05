@@ -2,6 +2,7 @@ import psycopg2
 from psycopg2 import errors
 from tkinter import messagebox
 import tkinter as tk
+from datetime import datetime
 
 
 #################################################
@@ -407,3 +408,129 @@ def clear_data():
     cursor.close()
 
     messagebox.showinfo("Datos borrados", "Todos los datos han sido borrados.")
+
+
+def controlar_cantidades(producto_modificado, s):
+    
+    nombre = producto_modificado[0]
+    cantidad = int(producto_modificado[2])
+
+    cursor = connection2.cursor()
+    query_update_data = f"SELECT stock FROM productos WHERE nombre='{nombre}'"
+    cursor.execute(query_update_data)
+    data = cursor.fetchall()
+    cursor.close()
+      
+    op = data[0][0] - cantidad
+    
+    if s:
+        
+        if op >= 0 and cantidad > 0:
+            d = True
+        else:
+            d = False
+            messagebox.showinfo("Error", f"Cantidad de el producto insuficiente.\nCantidad restante: {data[0][0]}")
+            
+    else:
+        d = False
+        
+
+    return d
+
+
+def actualizar_cantidad_productos(productos_modificado, s, l, m):
+    
+
+    cursor = connection2.cursor()
+
+    if l:
+
+        for i in productos_modificado:
+            nombre = i[0] # nombre
+            cantidad = i[2]  # Cantidad del producto
+
+            if m:
+                query_update_data = f"UPDATE productos SET stock=stock-{cantidad} WHERE nombre='{nombre}'"
+                cursor.execute(query_update_data)
+
+
+            else:
+                
+                query_update_data = f"UPDATE productos SET stock=stock+{cantidad} WHERE nombre='{nombre}'"
+                cursor.execute(query_update_data)
+
+
+    else:
+       
+        nombre = productos_modificado[0][0] # nombre
+        
+        cantidad = int(productos_modificado[0][2])  # Cantidad del producto
+
+
+        if s:
+            
+            query_update_data = f"UPDATE productos SET stock=stock-{cantidad} WHERE nombre='{nombre}'"
+            cursor.execute(query_update_data)
+
+        else:
+            query_update_data = f"UPDATE productos SET stock=stock+{cantidad} WHERE nombre='{nombre}'"
+            cursor.execute(query_update_data)
+
+    cursor.close()
+
+
+
+def añadir_a_registro(productos_seleccionados, s):
+    cursor = connection2.cursor()
+    # Recorrer cada producto en productos_seleccionados
+    for producto in productos_seleccionados:
+        # Asignar las variables correspondientes
+        nombre = producto[0]  # Nombre del producto
+        total_venta = float(producto[2]) * int(producto[1])   # Precio del producto
+        precio = float(producto[2]) # precio unitario
+        cantidad = producto[1]  # Cantidad del producto
+        fecha = datetime.now().strftime("%Y-%m-%d")
+        hora_actual = datetime.now().strftime("%I:%M:%S %p")
+        metodo_pago = producto[5]
+        
+        
+        if s:
+            # query para la tabla de la venta
+            query_add_datatoventas = f"INSERT INTO ventas(fecha, total, hora, metodo_pago) VALUES('{fecha}', {total_venta},'{hora_actual}', '{metodo_pago}')"
+            cursor.execute(query_add_datatoventas)
+
+            query_search_id= f"SELECT id_venta FROM ventas ORDER BY id_venta DESC LIMIT 1"
+            cursor.execute(query_search_id)
+            data = cursor.fetchall()
+            id_venta = data[0][0]
+
+            query_search_idprod= f"SELECT id_producto FROM productos WHERE nombre = '{nombre}'"
+            cursor.execute(query_search_idprod)
+            data = cursor.fetchall()
+            id_prod = data[0][0]
+            
+
+            query_add_data = f"INSERT INTO detalle_ventas(id_venta, id_producto, cantidad, precio_unitario) VALUES({id_venta},{id_prod},{cantidad},{precio})"
+            cursor.execute(query_add_data)
+            
+
+        else:
+
+            # query para la tabla de compras
+            query_add_datatoventas = f"INSERT INTO compras(fecha, total, hora) VALUES('{fecha}', {total_venta}, '{hora_actual}')"
+            cursor.execute(query_add_datatoventas)
+
+            query_search_id= f"SELECT id_compra FROM compras ORDER BY id_compra DESC LIMIT 1"
+            cursor.execute(query_search_id)
+            data = cursor.fetchall()
+            id_compra = data[0][0]
+
+            query_search_idprod= f"SELECT id_producto FROM productos WHERE nombre = '{nombre}'"
+            cursor.execute(query_search_idprod)
+            data = cursor.fetchall()
+            id_prod = data[0][0]
+
+            query_add_data = f"INSERT INTO detalle_compras(id_compra, id_producto, cantidad, precio_unitario) VALUES({id_compra},{id_prod},{cantidad},{precio})"
+            cursor.execute(query_add_data)
+
+    cursor.close()
