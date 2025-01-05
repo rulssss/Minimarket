@@ -579,3 +579,32 @@ def totales(ventas_filtradas, compras_filtradas):
         
 
     return f"Ventas Contado: $ {round(total_contado, 2)}", f"Ventas Mercado Pago: $ {round(total_mercado_pago, 2)}", f"Ventas Cuenta Corriente: $ {round(total_cuenta_corriente, 2)}", f"Compras Total: $ {round(total_compras, 2)}"
+
+
+def traer_detalles(s, id):
+
+    cursor = connection2.cursor()
+
+    if s:
+        
+        query_search_data = f"SELECT * FROM detalle_ventas WHERE id_venta={id}"
+        cursor.execute(query_search_data)
+        data = cursor.fetchall()
+        
+    else:
+    
+        query_search_data = f"SELECT * FROM detalle_compras WHERE id_compra={id}"
+        cursor.execute(query_search_data)
+        data = cursor.fetchall()
+        
+
+    cursor.close()
+    return data
+
+
+def mostrar_detalles(ventas_compras, tipo):
+        detalles_texto = "\n".join([
+            f"id_detalle: {detalle[0]} | id_{'venta' if tipo else 'compra'}: {detalle[1]} | id_producto: {detalle[2]} | Cantidad: {detalle[4]:.0f} | Precio Unitario: ${detalle[3]:.2f}"
+            for detalle in ventas_compras
+        ])
+        return detalles_texto if detalles_texto else "No hay registros disponibles."

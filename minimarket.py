@@ -1039,27 +1039,32 @@ class BuscarDatos:
         for texto, comando in botones:
             tk.Button(self.master,text=texto,command=comando,height=1,  width=20,  bg="#e0e0e0",  fg="black", font=("Segoe UI", 12, "bold"),  activebackground="#c0c0c0",  activeforeground="white", relief="groove",  bd=2  ).pack(pady=9)
 
-    global datos_dia_abierto
-    datos_dia_abierto = False
 
-    # Métodos de ejemplo para los botones
     def datos_por_dia(self):
-        global datos_dia_abierto
-
-        if datos_dia_abierto:
-            return
-
-        datos_dia_abierto = True
+        
+        
         ventana = tk.Toplevel()
         ventana.title("Seleccionar Fecha")
         ventana.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
         ventana.configure(bg="white")
         ventana.resizable(False, False)
+        # Hacer la ventana modal
+        ventana.grab_set()
+
+
+
         # Establecer la ventana en pantalla completa
         ventana.geometry(f"{ventana.winfo_screenwidth()}x{ventana.winfo_screenheight()}+0+0")
 
         main_frame = tk.Frame(ventana, bg="white")
-        main_frame.pack(pady=20, padx=20, fill='both', expand=True)
+        main_frame.grid(row=0, column=0, padx=20, pady=20, sticky='nsew')
+
+        sub_frame2 = tk.Frame(ventana, bg="white")
+        sub_frame2.grid(row=0, column=1, padx=20, pady=20, sticky='nsew')
+
+        ventana.grid_columnconfigure(0, weight=0) #subframe2
+        ventana.grid_columnconfigure(1, weight=5) #mainframe
+        ventana.grid_rowconfigure(0, weight=1)
 
         label_fecha = tk.Label(main_frame, text="Seleccione una Fecha:", bg="white", font=("Segoe UI", 16))
         label_fecha.pack(pady=10)
@@ -1074,11 +1079,59 @@ class BuscarDatos:
         fecha_frame = tk.Frame(main_frame, bg="white")
         fecha_frame.pack(pady=5)
 
-        sub_frame2 = tk.Frame(main_frame, bg="lightgreen")
-        sub_frame2.pack(side=tk.RIGHT, padx=5, pady=5, fill='both', expand=True)
+        label2 = tk.Label(sub_frame2, text="Inserte el ID de venta o compra para ver su detalle", font=("Segoe UI", 16))
+        label2.pack(pady=10)
 
-        label2 = tk.Label(sub_frame2, text="Frame 2", bg="lightgreen")
-        label2.pack(pady=20)
+        # ComboBox para seleccionar entre "Venta" y "Compra"
+        tipo_var = tk.StringVar()
+        combobox_tipo = ttk.Combobox(sub_frame2, textvariable=tipo_var, values=["Venta", "Compra"],width=10, state="readonly", font=("Segoe UI", 16))
+        combobox_tipo.set("Venta")
+        combobox_tipo.pack(pady=10)
+
+        # Entry para ingresar el ID de venta o compra
+        id_var = tk.StringVar()
+        entry_id = tk.Entry(sub_frame2, textvariable=id_var, font=("Segoe UI", 16), width=8, bg="#d3d3d3", bd=3, relief="groove")
+        entry_id.pack(pady=10)
+
+        resultados_frame = tk.Frame(sub_frame2, bg="white")
+        resultados_frame.pack(pady=20, fill='x')
+
+        text_resultado = tk.Text(resultados_frame, bg="white", font=("Segoe UI", 18), height=10, width=100, state=tk.DISABLED)
+        text_resultado.pack(fill=tk.BOTH, expand=True)
+
+        # Función para buscar detalles
+        def buscar_detalle():
+            id_seleccionado = entry_id.get().strip()  # Obtener directamente el valor del Entry
+
+            if id_seleccionado.isdigit():
+                s = True if combobox_tipo.get() == "Venta" else False
+                detalles = traer_detalles(s=s, id=int(id_seleccionado))
+
+                detalles_texto = mostrar_detalles(detalles, s)
+
+                # Mostrar los detalles en el Text widget
+                text_resultado.config(state=tk.NORMAL)
+                text_resultado.delete(1.0, tk.END)
+                text_resultado.insert(tk.END, detalles_texto)
+                text_resultado.config(state=tk.DISABLED)
+            else:
+                # Mostrar mensaje de error si el ID no es un número válido
+                text_resultado.config(state=tk.NORMAL)
+                text_resultado.delete(1.0, tk.END)
+                text_resultado.insert(tk.END, "Por favor, ingrese un ID numérico válido.")
+                text_resultado.config(state=tk.DISABLED)
+
+        # Función para cerrar la ventana
+        def cerrar():
+            global datos_dia_abierto
+            datos_dia_abierto = False
+            ventana.destroy()
+
+        boton_buscar = tk.Button(sub_frame2, text="Buscar", command=buscar_detalle, bg="#32ef32", font=("Segoe UI", 14, "bold"), cursor="hand2", fg="black", relief="groove",width=10)
+        boton_buscar.pack(pady=10)
+
+        boton_cerrar = tk.Button(sub_frame2, text="Cerrar", command=cerrar, bg="#ef3232", font=("Segoe UI", 14, "bold"), cursor="hand2", fg="black", relief="groove", height=4, width=15)
+        boton_cerrar.pack(pady=(110, 10))
 
         fecha_frame.option_add('*TCombobox*Listbox.font', ('Segoe UI', 16))
         # Combobox para seleccionar el día
@@ -1181,16 +1234,9 @@ class BuscarDatos:
                 text_compras.insert(tk.END, compras_texto if compras_texto else "No hay compras para esta fecha.")
                 text_compras.config(state=tk.DISABLED)
 
-        def cerrar():
-            global datos_dia_abierto
-            datos_dia_abierto = False
-            ventana.destroy()
-
-        boton_aceptar = tk.Button(main_frame, text="Aceptar", command=aceptar, bg="#32ef32", font=("Segoe UI", 14, "bold"), cursor="hand2", fg="black", relief="flat")
+        boton_aceptar = tk.Button(main_frame, text="Aceptar", command=aceptar, bg="#32ef32", font=("Segoe UI", 14, "bold"), cursor="hand2", fg="black", relief="groove", width=10)
         boton_aceptar.pack(pady=10)
 
-        boton_cerrar = tk.Button(main_frame, text="Cerrar", command=cerrar, bg="lightgrey", font=("Segoe UI", 14, "bold"), cursor="hand2", fg="black", relief="flat")
-        boton_cerrar.pack(pady=10)
 
         ventana.mainloop()
 
