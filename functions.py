@@ -534,3 +534,48 @@ def añadir_a_registro(productos_seleccionados, s):
             cursor.execute(query_add_data)
 
     cursor.close()
+
+
+def traer_todos_losdatos_ventaocompra(s):
+
+    cursor = connection2.cursor()
+    if s:
+        query_update_data = f"SELECT * FROM ventas ORDER BY id_venta DESC"
+        cursor.execute(query_update_data)
+        data = cursor.fetchall()
+        
+        
+    else:
+        query_update_data = f"SELECT * FROM compras ORDER BY id_compra DESC"
+        cursor.execute(query_update_data)
+        data = cursor.fetchall()
+    
+
+    cursor.close()
+    return data
+
+
+def totales(ventas_filtradas, compras_filtradas):
+    total_contado = 0
+    total_mercado_pago = 0
+    total_cuenta_corriente = 0
+    total_compras = 0
+    
+    for venta in ventas_filtradas:
+        metodo_pago = venta[4]
+        precio = venta[2]
+
+        if metodo_pago == 'Contado':
+            total_contado += precio
+        elif metodo_pago == 'Mercado Pago':
+            total_mercado_pago += precio
+        elif metodo_pago == 'Cuenta Corriente':
+            total_cuenta_corriente += precio
+    
+    for compra in compras_filtradas:
+        precio = float(compra[2])  # precio
+        
+        total_compras += precio
+        
+
+    return f"Ventas Contado: $ {round(total_contado, 2)}", f"Ventas Mercado Pago: $ {round(total_mercado_pago, 2)}", f"Ventas Cuenta Corriente: $ {round(total_cuenta_corriente, 2)}", f"Compras Total: $ {round(total_compras, 2)}"

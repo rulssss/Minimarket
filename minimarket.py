@@ -1039,9 +1039,160 @@ class BuscarDatos:
         for texto, comando in botones:
             tk.Button(self.master,text=texto,command=comando,height=1,  width=20,  bg="#e0e0e0",  fg="black", font=("Segoe UI", 12, "bold"),  activebackground="#c0c0c0",  activeforeground="white", relief="groove",  bd=2  ).pack(pady=9)
 
+    global datos_dia_abierto
+    datos_dia_abierto = False
+
     # Métodos de ejemplo para los botones
     def datos_por_dia(self):
-        print("Datos por Día")
+        global datos_dia_abierto
+
+        if datos_dia_abierto:
+            return
+
+        datos_dia_abierto = True
+        ventana = tk.Toplevel()
+        ventana.title("Seleccionar Fecha")
+        ventana.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
+        ventana.configure(bg="white")
+        ventana.resizable(False, False)
+        # Establecer la ventana en pantalla completa
+        ventana.geometry(f"{ventana.winfo_screenwidth()}x{ventana.winfo_screenheight()}+0+0")
+
+        main_frame = tk.Frame(ventana, bg="white")
+        main_frame.pack(pady=20, padx=20, fill='both', expand=True)
+
+        label_fecha = tk.Label(main_frame, text="Seleccione una Fecha:", bg="white", font=("Segoe UI", 16))
+        label_fecha.pack(pady=10)
+
+        # Obtener la fecha actual
+        fecha_actual = datetime.now()
+        dia_actual = fecha_actual.day
+        mes_actual = fecha_actual.month
+        anio_actual = fecha_actual.year
+
+        # Crear un frame para los tres comboboxes
+        fecha_frame = tk.Frame(main_frame, bg="white")
+        fecha_frame.pack(pady=5)
+
+        sub_frame2 = tk.Frame(main_frame, bg="lightgreen")
+        sub_frame2.pack(side=tk.RIGHT, padx=5, pady=5, fill='both', expand=True)
+
+        label2 = tk.Label(sub_frame2, text="Frame 2", bg="lightgreen")
+        label2.pack(pady=20)
+
+        fecha_frame.option_add('*TCombobox*Listbox.font', ('Segoe UI', 16))
+        # Combobox para seleccionar el día
+        dias = list(range(1, 32))
+        combobox_dia = ttk.Combobox(fecha_frame, values=dias, state="readonly", font=("Segoe UI", 16), width=5)
+        combobox_dia.set(dia_actual)  # Valor por defecto
+        combobox_dia.grid(row=0, column=0, padx=5)
+
+        # Combobox para seleccionar el mes
+        meses = list(range(1, 13))
+        combobox_mes = ttk.Combobox(fecha_frame, values=meses, state="readonly", font=("Segoe UI", 16), width=5)
+        combobox_mes.set(mes_actual)  # Valor por defecto
+        combobox_mes.grid(row=0, column=1, padx=5)
+
+        # Combobox para seleccionar el año
+        anios = list(range(2023, anio_actual + 1))
+        combobox_anio = ttk.Combobox(fecha_frame, values=anios, state="readonly", font=("Segoe UI", 16), width=7)
+        combobox_anio.set(anio_actual)  # Valor por defecto
+        combobox_anio.grid(row=0, column=2, padx=5)
+
+        resultados_frame = tk.Frame(main_frame, bg="white")
+        resultados_frame.pack(pady=20, fill='both', expand=True)
+
+        # Espacio para mostrar los resultados de totales()
+        total_contado = tk.Label(resultados_frame, text="", bg="white", font=("Segoe UI", 20, "bold"))
+        total_contado.grid(row=0, column=0, sticky='w', padx=(10, 5))  # Reduced padx to move closer
+
+        total_mercado_pago = tk.Label(resultados_frame, text="", bg="white", font=("Segoe UI", 20, "bold"))
+        total_mercado_pago.grid(row=1, column=0, sticky='w', padx=(10, 5))
+
+        total_cuenta_corriente = tk.Label(resultados_frame, text="", bg="white", font=("Segoe UI", 20, "bold"))
+        total_cuenta_corriente.grid(row=2, column=0, sticky='w', padx=(10, 5))
+
+        # Frame para mostrar los detalles de ventas
+        ventas_frame = tk.Frame(resultados_frame)
+        ventas_frame.grid(row=3, column=0, sticky='w', padx=10, pady=(20, 0), columnspan=2)
+
+        scrollbar_ventas = tk.Scrollbar(ventas_frame)
+        scrollbar_ventas.pack(side=tk.RIGHT, fill=tk.Y)
+
+        text_ventas = tk.Text(ventas_frame, bg="white", font=("Segoe UI", 16), height=6, width=90, yscrollcommand=scrollbar_ventas.set)
+        text_ventas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        text_ventas.config(state=tk.DISABLED)
+
+        scrollbar_ventas.config(command=text_ventas.yview)
+
+        total_compras = tk.Label(resultados_frame, text="", bg="white", font=("Segoe UI", 20, "bold"))
+        total_compras.grid(row=4, column=0, sticky='w', padx=10, pady=(10, 5))
+
+        compras_frame = tk.Frame(resultados_frame)
+        compras_frame.grid(row=5, column=0, sticky='w', padx=10, columnspan=2)
+
+        scrollbar_compras = tk.Scrollbar(compras_frame)
+        scrollbar_compras.pack(side=tk.RIGHT, fill=tk.Y)
+
+        text_compras = tk.Text(compras_frame, bg="white", font=("Segoe UI", 18), height=6, width=76, yscrollcommand=scrollbar_compras.set)
+        text_compras.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        text_compras.config(state=tk.DISABLED)
+
+        scrollbar_compras.config(command=text_compras.yview)
+
+        resultados_frame.columnconfigure(0, weight=1)
+        resultados_frame.rowconfigure(3, weight=1)
+        resultados_frame.rowconfigure(5, weight=1)
+
+        total_contado['text'], total_mercado_pago['text'], total_cuenta_corriente['text'], total_compras['text'] = "Ventas Contado: $ 0","Ventas Mercado Pago: $ 0", "Ventas Cuenta Corriente: $ 0", "Compras Total: $ 0"
+
+        def aceptar():
+            dia_seleccionado = combobox_dia.get()
+            mes_seleccionado = combobox_mes.get()
+            anio_seleccionado = combobox_anio.get()
+
+            if dia_seleccionado and mes_seleccionado and anio_seleccionado:
+                # Combinar los valores en una fecha
+                fecha_seleccionada = f"{anio_seleccionado}-{str(mes_seleccionado).zfill(2)}-{str(dia_seleccionado).zfill(2)}"
+                fecha_seleccionada_date = datetime.strptime(fecha_seleccionada, "%Y-%m-%d").date()
+
+                # Obtener datos de ventas y compras
+                all_data_ventas = traer_todos_losdatos_ventaocompra(True)  # Obtener ventas
+                all_data_compras = traer_todos_losdatos_ventaocompra(False)  # Obtener compras
+
+                # Filtrar ventas y compras por la fecha seleccionada
+                ventas_filtradas = [venta for venta in all_data_ventas if venta[1] == fecha_seleccionada_date]
+                compras_filtradas = [compra for compra in all_data_compras if compra[1] == fecha_seleccionada_date]
+
+                # Llamar a la función totales() y actualizar los labels
+                total_contado['text'], total_mercado_pago['text'], total_cuenta_corriente['text'], total_compras['text'] = totales(ventas_filtradas, compras_filtradas)
+
+                # Mostrar ventas filtradas
+                ventas_texto = "\n".join([f"id_venta: {venta[0]} | Fecha: {venta[1]} | Total: {venta[2]} | Hora: {venta[3]} | Método de Pago: {venta[4]}" for venta in ventas_filtradas])
+                text_ventas.config(state=tk.NORMAL)
+                text_ventas.delete(1.0, tk.END)  # Limpiar el contenido anterior
+                text_ventas.insert(tk.END, ventas_texto if ventas_texto else "No hay ventas para esta fecha.")
+                text_ventas.config(state=tk.DISABLED)
+
+                # Mostrar compras filtradas
+                compras_texto = "\n".join([f"id_compra: {compra[0]} | Fecha: {compra[1]} | Total: {compra[2]} | Hora: {compra[3]}" for compra in compras_filtradas])
+                text_compras.config(state=tk.NORMAL)
+                text_compras.delete(1.0, tk.END)  # Limpiar el contenido anterior
+                text_compras.insert(tk.END, compras_texto if compras_texto else "No hay compras para esta fecha.")
+                text_compras.config(state=tk.DISABLED)
+
+        def cerrar():
+            global datos_dia_abierto
+            datos_dia_abierto = False
+            ventana.destroy()
+
+        boton_aceptar = tk.Button(main_frame, text="Aceptar", command=aceptar, bg="#32ef32", font=("Segoe UI", 14, "bold"), cursor="hand2", fg="black", relief="flat")
+        boton_aceptar.pack(pady=10)
+
+        boton_cerrar = tk.Button(main_frame, text="Cerrar", command=cerrar, bg="lightgrey", font=("Segoe UI", 14, "bold"), cursor="hand2", fg="black", relief="flat")
+        boton_cerrar.pack(pady=10)
+
+        ventana.mainloop()
 
     def datos_por_mes(self):
         print("Datos por Mes")
@@ -1071,7 +1222,7 @@ class Administracion:
 
         # Cargar las notas guardadas
         self.minimarket.cargar_notas()
-        
+
     # Lista para almacenar los productos seleccionados
     productos_seleccionados = []
 
@@ -2302,9 +2453,10 @@ class Minimarket:
             pass
 
     def guardar_notas(self):
-        with open("notas.txt", "w") as file:
-            notas = self.administracion.text_anotador.get(1.0, tk.END)
-            file.write(notas)
+        if hasattr(self.administracion, 'text_anotador'):
+            with open("notas.txt", "w") as file:
+                notas = self.administracion.text_anotador.get(1.0, tk.END)
+                file.write(notas)
 
     def guardar_notas_y_cerrar(self):
         self.guardar_notas()
