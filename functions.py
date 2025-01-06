@@ -587,13 +587,24 @@ def traer_detalles(s, id):
 
     if s:
         
-        query_search_data = f"SELECT * FROM detalle_ventas WHERE id_venta={id}"
+        query_search_data = f"""
+        SELECT dv.id_detalle, dv.id_venta, p.nombre, dv.cantidad, dv.precio_unitario
+        FROM detalle_ventas dv
+        JOIN productos p ON dv.id_producto = p.id_producto
+        WHERE dv.id_venta={id}
+        """
         cursor.execute(query_search_data)
         data = cursor.fetchall()
+       
         
     else:
     
-        query_search_data = f"SELECT * FROM detalle_compras WHERE id_compra={id}"
+        query_search_data = f"""
+        SELECT dc.id_detalle, dc.id_compra, p.nombre, dc.cantidad, dc.precio_unitario
+        FROM detalle_compras dc
+        JOIN productos p ON dc.id_producto = p.id_producto
+        WHERE dc.id_compra={id}
+        """
         cursor.execute(query_search_data)
         data = cursor.fetchall()
         
@@ -604,7 +615,7 @@ def traer_detalles(s, id):
 
 def mostrar_detalles(ventas_compras, tipo):
         detalles_texto = "\n".join([
-            f"id_detalle: {detalle[0]} | id_{'venta' if tipo else 'compra'}: {detalle[1]} | id_producto: {detalle[2]} | Cantidad: {detalle[4]:.0f} | Precio Unitario: ${detalle[3]:.2f}"
+            f"Id detalle: {detalle[0]} | Id {'venta' if tipo else 'compra'}: {detalle[1]} | Producto: {detalle[2]} | Cantidad: {detalle[4]:.0f} | Precio Unitario: ${detalle[3]:.2f}"
             for detalle in ventas_compras
         ])
         return detalles_texto if detalles_texto else "No hay registros disponibles."
