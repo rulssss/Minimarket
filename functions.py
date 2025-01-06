@@ -560,6 +560,7 @@ def totales(ventas_filtradas, compras_filtradas):
     total_mercado_pago = 0
     total_cuenta_corriente = 0
     total_compras = 0
+    total_ventas= 0
     
     for venta in ventas_filtradas:
         metodo_pago = venta[4]
@@ -577,8 +578,9 @@ def totales(ventas_filtradas, compras_filtradas):
         
         total_compras += precio
         
+    total_ventas = total_contado + total_mercado_pago + total_cuenta_corriente
 
-    return f"Ventas Contado: $ {round(total_contado, 2)}", f"Ventas Mercado Pago: $ {round(total_mercado_pago, 2)}", f"Ventas Cuenta Corriente: $ {round(total_cuenta_corriente, 2)}", f"Compras Total: $ {round(total_compras, 2)}"
+    return f"Ventas Total: $ {round(total_ventas, 2)}", f"Ventas Contado: $ {round(total_contado, 2)}", f"Ventas Mercado Pago: $ {round(total_mercado_pago, 2)}", f"Ventas Cuenta Corriente: $ {round(total_cuenta_corriente, 2)}", f"Compras Total: $ {round(total_compras, 2)}"
 
 
 def traer_detalles(s, id):
