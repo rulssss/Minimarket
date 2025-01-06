@@ -1046,8 +1046,13 @@ class BuscarDatos:
         ventana.title("Seleccionar Fecha")
         ventana.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
         ventana.configure(bg="white")
+        ventana.update_idletasks()
+        width = 1000
+        height = 760
+        x = (ventana.winfo_screenwidth() // 2) - (width // 2)
+        y = (ventana.winfo_screenheight() // 2) - (height // 2)
+        ventana.geometry(f"{width}x{height}+{x}+{y}")
         ventana.grab_set()
-        ventana.state('zoomed')
 
         main_frame = tk.Frame(ventana, bg="white")
         main_frame.grid(row=0, column=0, padx=20, pady=20, sticky='nsew')
@@ -1070,7 +1075,7 @@ class BuscarDatos:
         fecha_frame = tk.Frame(main_frame, bg="white")
         fecha_frame.grid(row=1, column=0, pady=5, sticky='n')
 
-        label2 = tk.Label(sub_frame2, text="Inserte el ID de venta o compra para ver su detalle", font=("Segoe UI", 16))
+        label2 = tk.Label(sub_frame2, text="Inserte el ID de venta o compra\n para ver su detalle", font=("Segoe UI", 16))
         label2.grid(row=0, column=0, pady=10, sticky='n')
 
         tipo_var = tk.StringVar()
@@ -1205,7 +1210,7 @@ class BuscarDatos:
                 ventas_filtradas = [venta for venta in all_data_ventas if venta[1] == fecha_seleccionada_date]
                 compras_filtradas = [compra for compra in all_data_compras if compra[1] == fecha_seleccionada_date]
 
-                total_contado['text'], total_mercado_pago['text'], total_cuenta_corriente['text'], total_compras['text'] = totales(ventas_filtradas, compras_filtradas)
+                total_contado['text'], total_mercado_pago['text'], total_cuenta_corriente['text'], total_compras['text'] = totales(ventas_filtradas, compras_filtradas, s=False)
 
                 ventas_texto = "\n".join([f"id_venta: {venta[0]} | Fecha: {venta[1]} | Total: {venta[2]} | Hora: {venta[3]} | Método de Pago: {venta[4]}" for venta in ventas_filtradas])
                 text_ventas.config(state=tk.NORMAL)
@@ -1346,7 +1351,7 @@ class BuscarDatos:
                 ventas_filtradas = [venta for venta in all_data_ventas if fecha_inicio <= venta[1] <= fecha_fin]
                 compras_filtradas = [compra for compra in all_data_compras if fecha_inicio <= compra[1] <= fecha_fin]
 
-                total_ventas['text'], total_contado['text'], total_mercado_pago['text'], total_cuenta_corriente['text'], total_compras['text'] = totales(ventas_filtradas, compras_filtradas)
+                total_ventas['text'], total_contado['text'], total_mercado_pago['text'], total_cuenta_corriente['text'], total_compras['text'] = totales(ventas_filtradas, compras_filtradas, s=True)
                 ventas_texto = "\n".join([f"id_venta: {venta[0]} | Fecha: {venta[1]} | Total: {venta[2]} | Hora: {venta[3]} | Metodo de pago: {venta[4]}" for venta in ventas_filtradas])
                 text_ventas.config(state=tk.NORMAL)
                 text_ventas.delete(1.0, tk.END)

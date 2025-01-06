@@ -555,7 +555,7 @@ def traer_todos_losdatos_ventaocompra(s):
     return data
 
 
-def totales(ventas_filtradas, compras_filtradas):
+def totales(ventas_filtradas, compras_filtradas, s):
     total_contado = 0
     total_mercado_pago = 0
     total_cuenta_corriente = 0
@@ -580,8 +580,10 @@ def totales(ventas_filtradas, compras_filtradas):
         
     total_ventas = total_contado + total_mercado_pago + total_cuenta_corriente
 
-    return f"Ventas Total: $ {round(total_ventas, 2)}", f"Ventas Contado: $ {round(total_contado, 2)}", f"Ventas Mercado Pago: $ {round(total_mercado_pago, 2)}", f"Ventas Cuenta Corriente: $ {round(total_cuenta_corriente, 2)}", f"Compras Total: $ {round(total_compras, 2)}"
-
+    if s:
+        return f"Ventas Total: $ {round(total_ventas, 2)}", f"Ventas Contado: $ {round(total_contado, 2)}", f"Ventas Mercado Pago: $ {round(total_mercado_pago, 2)}", f"Ventas Cuenta Corriente: $ {round(total_cuenta_corriente, 2)}", f"Compras Total: $ {round(total_compras, 2)}"
+    else:
+        return f"Ventas Contado: $ {round(total_contado, 2)}", f"Ventas Mercado Pago: $ {round(total_mercado_pago, 2)}", f"Ventas Cuenta Corriente: $ {round(total_cuenta_corriente, 2)}", f"Compras Total: $ {round(total_compras, 2)}"
 
 def traer_detalles(s, id):
 
