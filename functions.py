@@ -115,8 +115,8 @@ def existe_usuario(username):
     cursor.execute(query_data)
     data = cursor.fetchall()
     cursor.close()
-
-    if data == []:
+    
+    if data != []:
         return True
     else: 
         return False

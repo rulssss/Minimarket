@@ -10,6 +10,7 @@ class Login:
         self.master = master
         self.master.title("Login")
         self.master.geometry("400x300")
+        self.master.resizable(False, False)  # Deshabilitar redimensionamiento
 
         # Centrar la ventana
         self.center_window()
@@ -18,7 +19,6 @@ class Login:
             self.open_login_window()
         else:
             self.create_register_window()
-
 
     def center_window(self):
         window_width = 400
@@ -47,13 +47,11 @@ class Login:
         self.password_entry = tk.Entry(self.master, show="*", font=("Segoe UI", 12))
         self.password_entry.pack(pady=5)
 
-
-         # Crear el botón "Aceptar"
+        # Crear el botón "Registrar"
         register_button = tk.Button(self.master, text="Registrar", command=self.register_user, font=("Segoe UI", 12))
         register_button.pack(pady=10)
-        # Vincular la tecla Enter al comando del botón "Aceptar"
+        # Vincular la tecla Enter al comando del botón "Registrar"
         self.master.bind("<Return>", lambda event: register_button.invoke())
-
 
         tk.Button(self.master, text="< Volver", command=self.open_login_window, font=("Segoe UI", 10)).pack(side="left", anchor="sw", padx=10, pady=10)
 
@@ -64,14 +62,12 @@ class Login:
 
         if not username or not password or not account:
             messagebox.showerror("Error", "Debe ingresar un tipo de usuario, nombre de usuario y contraseña")
-        elif not existe_usuario(username):
+        elif existe_usuario(username):
             messagebox.showerror("Error", "Usuario ya registrado.")
-            
-
         else:
-             ## funcion para enviar el usuario y contrasenia a la base de datos
-            registrar_usuario(username, password, account)  
-            messagebox.showinfo("Registro", f"Administrador {username} registrado correctamente")
+            # Función para enviar el usuario y contraseña a la base de datos
+            registrar_usuario(username, password, account)
+            messagebox.showinfo("Registro", f"{account} {username} registrado correctamente")
             self.open_login_window()
 
     def open_login_window(self):
@@ -91,7 +87,7 @@ class Login:
         self.password_entry = tk.Entry(self.master, show="*", font=("Segoe UI", 12))
         self.password_entry.pack(pady=5)
 
-         # Crear el botón "Aceptar"
+        # Crear el botón "Aceptar"
         aceptar_button = tk.Button(self.master, text="Aceptar", command=self.login, font=("Segoe UI", 12))
         aceptar_button.pack(pady=10)
         # Vincular la tecla Enter al comando del botón "Aceptar"
@@ -111,7 +107,7 @@ class Login:
         self.recover_id_entry.config(validate="key", validatecommand=(validate_id, "%P"))
         self.recover_id_entry.pack(pady=10)
 
-         # Crear el botón "Aceptar"
+        # Crear el botón "Aceptar"
         aceptar_button = tk.Button(self.master, text="Aceptar", command=self.recover_account, font=("Segoe UI", 12))
         aceptar_button.pack(pady=10)
         # Vincular la tecla Enter al comando del botón "Aceptar"
@@ -125,10 +121,10 @@ class Login:
     def recover_account(self):
         global recover_id
         recover_id = self.recover_id_entry.get()
-        
+
         if not recover_id:
             messagebox.showerror("Error", "Debe ingresar el ID de recuperación")
-        elif existencia_de_id(recover_id):
+        elif not existencia_de_id(recover_id):
             messagebox.showerror("Error", "ID Incorrecto")
         else:
             self.open_reset_password_window()
@@ -136,8 +132,6 @@ class Login:
     def open_reset_password_window(self):
         for widget in self.master.winfo_children():
             widget.destroy()
-
-        
 
         tk.Label(self.master, text="Reestablecer Contraseña", font=("Segoe UI", 14)).pack(pady=20)
         tk.Label(self.master, text="Contraseña nueva:", font=("Segoe UI", 12)).pack(pady=5)
@@ -148,12 +142,12 @@ class Login:
         self.repeat_password_entry = tk.Entry(self.master, show="*", font=("Segoe UI", 12))
         self.repeat_password_entry.pack(pady=5)
 
-         # Crear el botón "Aceptar"
+        # Crear el botón "Aceptar"
         aceptar_button = tk.Button(self.master, text="Aceptar", command=self.confirm_password, font=("Segoe UI", 12))
         aceptar_button.pack(pady=10)
         # Vincular la tecla Enter al comando del botón "Aceptar"
         self.master.bind("<Return>", lambda event: aceptar_button.invoke())
-        
+
         tk.Button(self.master, text="<< Volver", command=self.open_login_window, font=("Segoe UI", 10)).pack(side="left", anchor="sw", padx=10, pady=10)
 
     def confirm_password(self):
@@ -176,22 +170,19 @@ class Login:
 
         if not username or not password:
             messagebox.showerror("Error", "Debe ingresar un nombre de usuario y una contraseña")
-        elif not account:
-            messagebox.showerror("Error", "Debe seleccionar un tipo de cuenta")
-        elif existe_usuario(username):
+        elif not existe_usuario(username):
             messagebox.showerror("Error", "Usuario no encontrado.")
-            
         elif verificar_contrasenia(password, username, account):
             messagebox.showerror("Error", "Contraseña incorrecta o tipo de usuario mal seleccionado.")
-
         else:
             messagebox.showinfo("Acceso", f"Accediendo como {account} con usuario {username}")
             self.master.destroy()
             minimarket_root = tk.Tk()
+            minimarket_root.resizable(False, False)  # Deshabilitar redimensionamiento
             if account == "Usuario":
                 account = False
             else:
-                account =  True
+                account = True
             Minimarket(minimarket_root, username, account)
             minimarket_root.mainloop()
 
