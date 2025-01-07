@@ -55,6 +55,50 @@ class Login:
 
         tk.Button(self.master, text="< Volver", command=self.open_login_window, font=("Segoe UI", 10)).pack(side="left", anchor="sw", padx=10, pady=10)
 
+    def id_para_registrar(self):
+        if hay_admin():
+            id_window = tk.Toplevel(self.master)
+            id_window.title("Ingresar ID para Registrar")
+            id_window.geometry("400x200")
+            id_window.resizable(False, False)  # Deshabilitar redimensionamiento
+            id_window.grab_set()  # Bloquear la ventana principal
+            # Centrar la ventana
+            window_width = 400
+            window_height = 200
+            screen_width = id_window.winfo_screenwidth()
+            screen_height = id_window.winfo_screenheight()
+            position_top = int(screen_height / 2 - window_height / 2)
+            position_right = int(screen_width / 2 - window_width / 2)
+            id_window.geometry(f'{window_width}x{window_height}+{position_right}+{position_top}')
+
+            tk.Label(id_window, text="Ingrese el ID para registrar:", font=("Segoe UI", 14)).pack(pady=20)
+            self.id_entry = tk.Entry(id_window, font=("Segoe UI", 12))
+            self.id_entry.pack(pady=10)
+
+            def validar_id():
+                id_value = self.id_entry.get().strip()
+                if id_value == "-1":
+                    id_window.destroy()
+                    self.id_entry = None  # Limpiar la entrada de ID
+                    return True
+                else:
+                    messagebox.showerror("Error", "ID incorrecto")
+                    return False
+
+            # Crear el botón "Aceptar"
+            aceptar_button = tk.Button(id_window, text="Aceptar", command=lambda: self.master.after(0, lambda: validar_id() and id_window.destroy()), font=("Segoe UI", 12))
+            aceptar_button.pack(pady=10)
+            # Vincular la tecla Enter al comando del botón "Aceptar"
+            id_window.bind("<Return>", lambda event: aceptar_button.invoke())
+
+            id_window.wait_window()  # Esperar a que la ventana se cierre
+            return self.id_entry is None  # Retornar True si la entrada de ID fue limpiada (ID correcto)
+            
+            
+        else:
+            return False
+
+
     def register_user(self):
         account = self.account_type.get()
         username = self.username_entry.get()
@@ -64,11 +108,57 @@ class Login:
             messagebox.showerror("Error", "Debe ingresar un tipo de usuario, nombre de usuario y contraseña")
         elif existe_usuario(username):
             messagebox.showerror("Error", "Usuario ya registrado.")
+            
+            
         else:
             # Función para enviar el usuario y contraseña a la base de datos
-            registrar_usuario(username, password, account)
-            messagebox.showinfo("Registro", f"{account} {username} registrado correctamente")
-            self.open_login_window()
+            if hay_admin():
+                id_window = tk.Toplevel(self.master)
+                id_window.title("Ingresar ID para Registrar")
+                id_window.geometry("400x200")
+                id_window.resizable(False, False)  # Deshabilitar redimensionamiento
+                id_window.grab_set()  # Bloquear la ventana principal
+                # Centrar la ventana
+                window_width = 400
+                window_height = 200
+                screen_width = id_window.winfo_screenwidth()
+                screen_height = id_window.winfo_screenheight()
+                position_top = int(screen_height / 2 - window_height / 2)
+                position_right = int(screen_width / 2 - window_width / 2)
+                id_window.geometry(f'{window_width}x{window_height}+{position_right}+{position_top}')
+
+                tk.Label(id_window, text="Ingrese el ID para registrar:", font=("Segoe UI", 14)).pack(pady=20)
+                self.id_entry = tk.Entry(id_window, font=("Segoe UI", 12))
+                self.id_entry.pack(pady=10)
+
+
+                def validar_id():
+                    id_value = self.id_entry.get().strip()
+                    if id_value == "-1":
+                        registrar_usuario(username, password, account)
+                        messagebox.showinfo("Registro", f"{account} {username} registrado correctamente")
+                        id_window.destroy()
+                        self.open_login_window()
+                        self.id_entry = None  # Limpiar la entrada de ID
+                        
+                    else:
+                        messagebox.showerror("Error", "ID incorrecto")
+                        
+
+
+                # Crear el botón "Aceptar"
+                aceptar_button = tk.Button(id_window, text="Aceptar", command=lambda: self.master.after(0, lambda: validar_id() and id_window.destroy()), font=("Segoe UI", 12))
+                aceptar_button.pack(pady=10)
+                # Vincular la tecla Enter al comando del botón "Aceptar"
+                id_window.bind("<Return>", lambda event: aceptar_button.invoke())
+            
+            else:
+                registrar_usuario(username, password, account)
+                messagebox.showinfo("Registro", f"{account} {username} registrado correctamente")
+                self.open_login_window()
+
+                
+        
 
     def open_login_window(self):
         for widget in self.master.winfo_children():

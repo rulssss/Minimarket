@@ -102,7 +102,7 @@ def existencia_de_id(recover_id):
     data = cursor.fetchall()
     cursor.close()
 
-    if data == []:
+    if data != []:
         return True
     else:
         return False    
