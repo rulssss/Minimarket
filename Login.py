@@ -112,7 +112,7 @@ class Login:
             
         else:
             # Función para enviar el usuario y contraseña a la base de datos
-            if hay_admin():
+            if hay_admin() and account == "Administrador":
                 id_window = tk.Toplevel(self.master)
                 id_window.title("Ingresar ID para Registrar")
                 id_window.geometry("400x200")
