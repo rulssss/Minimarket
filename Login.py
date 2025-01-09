@@ -268,7 +268,6 @@ class Login:
             messagebox.showinfo("Acceso", f"Accediendo como {account} con usuario {username}")
             self.master.destroy()
             minimarket_root = tk.Tk()
-            minimarket_root.resizable(False, False)  # Deshabilitar redimensionamiento
             if account == "Usuario":
                 account = False
             else:

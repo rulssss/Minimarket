@@ -77,7 +77,7 @@ class Datos:
         if screen_width < 1100:
             ancho_ventana = 1000
         else:
-            ancho_ventana = 1100
+            ancho_ventana = 1300
 
         alto_ventana = 320
         x = (ventana.winfo_screenwidth() // 2) - (ancho_ventana // 2)
@@ -90,40 +90,46 @@ class Datos:
 
         # Título central
         Label(frame, text="Ingrese los datos del producto:", bg="white", font=("Segoe UI", 16, "bold")).grid(
-            row=0, column=0, columnspan=5, pady=(10, 30)
+            row=0, column=0, columnspan=6, pady=(10, 30)
         )
 
         # Etiquetas e Inputs
-        Label(frame, text="Nombre del producto", bg="white", font=("Segoe UI", 12)).grid(row=1, column=0, padx=10, pady=5)
+        Label(frame, text="ID del producto", bg="white", font=("Segoe UI", 12)).grid(row=1, column=0, padx=10, pady=5)
+        input_id = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16))
+        input_id.grid(row=2, column=0, padx=(30,10), pady=5)
+
+        Label(frame, text="Nombre del producto", bg="white", font=("Segoe UI", 12)).grid(row=1, column=1, padx=10, pady=5)
         input_nombre = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16))
-        input_nombre.grid(row=2, column=0, padx=(30,10), pady=5)
+        input_nombre.grid(row=2, column=1, padx=10, pady=5)
 
+        Label(frame, text="Precio de Compra", bg="white", font=("Segoe UI", 12)).grid(row=1, column=2, padx=10, pady=5)
+        input_precio_compra = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16), validate="key", validatecommand=("%S"))
+        input_precio_compra.grid(row=2, column=2, padx=10, pady=5)
 
+        Label(frame, text="Precio de Venta", bg="white", font=("Segoe UI", 12)).grid(row=1, column=3, padx=10, pady=5)
+        input_precio = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16), validate="key", validatecommand=("%S"))
+        input_precio.grid(row=2, column=3, padx=10, pady=5)
 
-        Label(frame, text="Precio de Venta", bg="white", font=("Segoe UI", 12)).grid(row=1, column=1, padx=10, pady=5)
-        input_precio = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16), validate="key", validatecommand=(    "%S"))
-        input_precio.grid(row=2, column=1, padx=10, pady=5)
-
-        Label(frame, text="Cantidad", bg="white", font=("Segoe UI", 12)).grid(row=1, column=2, padx=10, pady=5)
+        Label(frame, text="Cantidad", bg="white", font=("Segoe UI", 12)).grid(row=1, column=4, padx=10, pady=5)
         input_cantidad = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16), validate="key")
-        input_cantidad.grid(row=2, column=2, padx=10, pady=5)
+        input_cantidad.grid(row=2, column=4, padx=10, pady=5)
 
         # Combobox para categorias
         categorias_tuplas = traer_categorias()
         categorias = [categoria[0] for categoria in categorias_tuplas]
-        Label(frame, text="Categoria", bg="white", font=("Segoe UI", 12)).grid(row=1, column=3, padx=10, pady=5)
+        Label(frame, text="Categoria", bg="white", font=("Segoe UI", 12)).grid(row=1, column=5, padx=10, pady=5)
         combobox_busqueda1 = ttk.Combobox(frame, font=("Segoe UI", 16), state="readonly", height=5)
         combobox_busqueda1['values'] = categorias
-        combobox_busqueda1.grid(row=2, column=3, padx=10, pady=5)
+        combobox_busqueda1.grid(row=2, column=5, padx=10, pady=5)
         combobox_busqueda1.option_add('*TCombobox*Listbox.font', ('Segoe UI', 15))
 
         # Combobox para proveedores
         proveedores_tuplas = traer_proveedores()
         proveedores = [proveedor[0] for proveedor in proveedores_tuplas]
-        Label(frame, text="Proveedores", bg="white", font=("Segoe UI", 12)).grid(row=1, column=4, padx=10, pady=5)
+        Label(frame, text="Proveedores", bg="white", font=("Segoe UI", 12)).grid(row=1, column=6, padx=10, pady=5)
         combobox_busqueda2 = ttk.Combobox(frame, font=("Segoe UI", 16), state="readonly", height=5)
         combobox_busqueda2['values'] = proveedores
-        combobox_busqueda2.grid(row=2, column=4, padx=10, pady=5)
+        combobox_busqueda2.grid(row=2, column=6, padx=(10,30), pady=5)
         combobox_busqueda2.option_add('*TCombobox*Listbox.font', ('Segoe UI', 15))
 
         # Crear el Label de advertencia
@@ -135,8 +141,10 @@ class Datos:
         button_frame.pack(pady=(0, 30))
 
         def on_yes():
+            id_producto = input_id.get()
             nombre_producto = input_nombre.get()
-            precio_producto = input_precio.get()
+            precio_compra_producto = input_precio_compra.get()
+            precio_venta_producto = input_precio.get()
             cantidad_producto = input_cantidad.get()
             categoria_producto = combobox_busqueda1.get()
             proveedor_producto = combobox_busqueda2.get()
@@ -145,30 +153,35 @@ class Datos:
             if not bool(re.match("^[A-Za-z0-9 ]*$", nombre_producto)):
                 advertencia_label.config(text="No acepta ',.-/()'")
                 return
-            if not bool(re.match("^[0-9.]*$",precio_producto)):
+            if not bool(re.match("^[0-9.]*$", precio_compra_producto and precio_venta_producto)):
                 advertencia_label.config(text="Solo acepta números y decimales")
                 return
-            if not cantidad_producto or not nombre_producto or not precio_producto or not categoria_producto or not proveedor_producto:
-                advertencia_label.config(text="No acepta vacios")
+            
+            if not bool(re.match("^[0-9]*$", cantidad_producto and id_producto)):
+                advertencia_label.config(text="Solo acepta números")
                 return
             
+            
+            if not id_producto or not cantidad_producto or not nombre_producto or not precio_compra_producto or not precio_venta_producto or not categoria_producto or not proveedor_producto:
+                advertencia_label.config(text="No acepta vacios")
+                return
 
-            cargar_producto_actualizacion(nombre_producto, precio_producto, cantidad_producto, categoria_producto, proveedor_producto)
-            self.minimarket.mostrar_arbol_productos() # mostrar productos actualizados
+            cargar_producto_actualizacion(id_producto, nombre_producto, precio_compra_producto, precio_venta_producto, cantidad_producto, categoria_producto, proveedor_producto)
+            self.minimarket.mostrar_arbol_productos()  # mostrar productos actualizados
             on_no()
 
         def on_no():
             ventana.destroy()
 
         # Botones
-        btn_yes = tk.Button(button_frame, text="Aceptar", command=on_yes, width=12, relief="groove", bg="#d7d7d7", fg="black", font=("Segoe UI", 12,    "bold"))
+        btn_yes = tk.Button(button_frame, text="Aceptar", command=on_yes, width=12, relief="groove", bg="#d7d7d7", fg="black", font=("Segoe UI", 12, "bold"))
         btn_yes.pack(side=tk.LEFT, padx=15)
 
-        btn_no = tk.Button(button_frame, text="Cancelar", command=on_no, width=12, relief="groove", bg="#ef3232", fg="black", font=("Segoe UI", 12,     "bold"))
+        btn_no = tk.Button(button_frame, text="Cancelar", command=on_no, width=12, relief="groove", bg="#ef3232", fg="black", font=("Segoe UI", 12, "bold"))
         btn_no.pack(side=tk.LEFT, padx=15)
 
         # Configurar peso de filas y columnas para centrar
-        for i in range(5):
+        for i in range(7):
             frame.grid_columnconfigure(i, weight=1)
         frame.grid_rowconfigure(0, weight=1)
 
@@ -315,6 +328,7 @@ class Datos:
         Label(frame, text="Editar Producto:", bg="white", font=("Segoe UI", 16, "bold")).grid(
             row=0, column=0, columnspan=5, pady=(10, 30)
         )
+
 
         # Etiquetas e Inputs
         Label(frame, text="Nombre del producto", bg="white", font=("Segoe UI", 12)).grid(row=1, column=0, padx=10, pady=5)
@@ -2033,19 +2047,23 @@ class Minimarket:
 
 
         # Tabla (Treeview) para mostrar los productos
-        tree = ttk.Treeview(self.frame_derecho, columns=("nombre", "cantidad", "precio", "categoria", "proveedor"), show="headings", height=10)
+        tree = ttk.Treeview(self.frame_derecho, columns=("ID","nombre", "precio compra", "precio venta", "stock", "categoria", "proveedor"), show="headings", height=10)
 
         # Definir las columnas con doble clic
+        tree.heading("ID", text="ID", command=lambda: contador_clic("ID"))
         tree.heading("nombre", text="Nombre", command=lambda: contador_clic("nombre"))
-        tree.heading("cantidad", text="Cantidad", command=lambda: contador_clic("cantidad"))
-        tree.heading("precio", text="Precio", command=lambda: contador_clic("precio"))
+        tree.heading("precio compra", text="Precio compra", command=lambda: contador_clic("precio compra"))
+        tree.heading("precio venta", text="Precio venta", command=lambda: contador_clic("precio venta"))
+        tree.heading("stock", text="Stock", command=lambda: contador_clic("stock"))
         tree.heading("categoria", text="Categoria", command=lambda: contador_clic("categoria"))
         tree.heading("proveedor", text="Proveedor", command=lambda: contador_clic("proveedor"))
 
         # Definir el ancho de las columnas
+        tree.column("ID", width=100, anchor="center")
         tree.column("nombre", width=100, anchor="center")
-        tree.column("cantidad", width=100, anchor="center")
-        tree.column("precio", width=100, anchor="center")
+        tree.column("precio compra", width=100, anchor="center")
+        tree.column("precio venta", width=100, anchor="center")
+        tree.column("stock", width=100, anchor="center")
         tree.column("categoria", width=100, anchor="center")
         tree.column("proveedor", width=100, anchor="center")
 
@@ -2055,7 +2073,7 @@ class Minimarket:
         # funciones para copiar columna:
 
         # Inicializar un diccionario para contar los clics en cada columna
-        click_counter = {"nombre": 0, "cantidad": 0, "precio": 0, "categoria": 0, "proveedor": 0}
+        click_counter = {"ID":0, " nombre": 0, "precio compra": 0, "precio venta": 0, "stock": 0, "categoria": 0, "proveedor": 0}
     
 
         # Función para contar clics y copiar la columna si hay dos clics consecutivos
@@ -2189,10 +2207,10 @@ class Minimarket:
                     # Determina el color según el valor de i[2]
                     tag = ("rojo",) if i[2] < 5 else ()
                     # Insertar una fila vacía para crear espacio
-                    tree.insert("", "end", values=("", "", "", "", ""))
-                    tree.insert("", "end", values=(f"{i[0]}", i[2], f"${i[1]:.2f}", f"{i[3]}", i[4]), tags=tag)
+                    tree.insert("", "end", values=("", "", "", "", "", "", ""))
+                    tree.insert("", "end", values=(i[0], i[1], f"${i[2]:.2f}", f"${i[3]:.2f}", i[4], i[5], i[6]), tags=tag)
             else:
-                tree.insert("", "end", values=("No se encontraron productos", "", "", "", ""))
+                tree.insert("", "end", values=("No se encontraron productos", "", "", "", "", "", ""))
 
         def mostrar_todos_los_productos(s = mostrar_productos()): # cambiar por funcion que traiga todos los datos
             # Limpiar la tabla para mostrar los productos
@@ -2202,12 +2220,12 @@ class Minimarket:
             tree.tag_configure("rojo", foreground="red", font=("Segoe UI", 14, "bold"))
             # Insertar todos los productos en la tabla
             for i in s:
-                tree.insert("", "end", values=("", "", "", "", ""))
+                tree.insert("", "end", values=("", "", "", "", "", "", ""))
                 # Verificar si el valor en la posición 2 es menor a -5
                 # Determina el color según el valor de i[2]
                 tag = ("rojo",) if i[2] < 5 else ()
                 # Insertar el producto con el tag "rojo"
-                tree.insert("", "end", values=(f"{i[0]}", i[2], f"${i[1]:.2f}", f"{i[3]}", i[4]), tags=tag)
+                tree.insert("", "end", values=(f"{i[0]}", i[1], f"${i[2]:.2f}", f"${i[3]:.2f}", i[4], i[5], i[6]), tags=tag)
             
 
      
@@ -2649,7 +2667,7 @@ class Minimarket:
 
 
 
-# Crear la ventana principal
-#root = tk.Tk()
-#app = Minimarket(root, "mariano", True)
-#root.mainloop()
+#Crear la ventana principal
+root = tk.Tk()
+app = Minimarket(root, "mariano", True)
+root.mainloop()

@@ -199,13 +199,13 @@ def traer_id_proveedor(proveedor_producto):
     return data[0][0]
 
 
-def cargar_producto_actualizacion(nombre_producto, precio_producto, cantidad_producto, categoria_producto, proveedor_producto):
+def cargar_producto_actualizacion(id_producto, nombre_producto, precio_compra_producto, precio_venta_producto, cantidad_producto, categoria_producto, proveedor_producto):
     
     categoria_producto = traer_id_categoria(categoria_producto)
     proveedor_producto = traer_id_proveedor(proveedor_producto)
 
     cursor= connection2.cursor()
-    query_data2 = f"INSERT INTO productos(nombre, precio, stock, id_categoria, id_proveedor) VALUES('{nombre_producto}', {precio_producto}, {cantidad_producto}, {categoria_producto}, {proveedor_producto})"
+    query_data2 = f"INSERT INTO productos(id_producto, nombre, precio_de_compra, precio_de_venta, stock, id_categoria, id_proveedor) VALUES({id_producto}, '{nombre_producto}', {precio_compra_producto}, {precio_venta_producto}, {cantidad_producto}, {categoria_producto}, {proveedor_producto})"
     #verifcacion de que el producto existe
     try:
         cursor.execute(query_data2)
@@ -234,7 +234,7 @@ def buscar_producto(nombre_prod):
 
 def traer_todos_los_productos():
     cursor= connection2.cursor()
-    query_data2 = f"SELECT nombre, precio, stock, nombre_descrip, nombre_proveedor FROM productos JOIN categorias ON productos.id_categoria = categorias.id_categoria JOIN proveedores ON productos.id_proveedor = proveedores.id_proveedor ORDER BY productos.nombre"
+    query_data2 = f"SELECT id_producto, nombre, precio_de_compra, precio_de_venta, stock, nombre_descrip, nombre_proveedor FROM productos JOIN categorias ON productos.id_categoria = categorias.id_categoria JOIN proveedores ON productos.id_proveedor = proveedores.id_proveedor ORDER BY productos.nombre"
     cursor.execute(query_data2)
     data = cursor.fetchall()
     cursor.close()
