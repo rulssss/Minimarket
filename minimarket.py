@@ -1468,15 +1468,20 @@ class Administracion:
         # Crear el frame superior
         frame_superior = tk.Frame(ventana_facturero, bd=2, relief="groove")
         frame_superior.pack(side="top", fill="x", padx=10, pady=10)
+
+        # Crear campos de entrada solo para mostrar los datos (readonly)
+        tk.Label(frame_superior, text="ID:", font=("Segoe UI", 13)).grid(row=0, column=0, padx=5, pady=5, sticky="e")
+        producto_id = tk.Entry(frame_superior, state="readonly", font=("Segoe UI", 13))
+        producto_id.grid(row=0, column=1, padx=5, pady=5)
     
         # Crear combobox para el nombre del producto
-        tk.Label(frame_superior, text="Nombre del producto:", font=("Segoe UI", 13)).grid(row=0, column=0, padx=5, pady=5, sticky="e")
+        tk.Label(frame_superior, text="Nombre del producto:", font=("Segoe UI", 13)).grid(row=1, column=0, padx=5, pady=5, sticky="e")
     
         # Llenar el combobox con los nombres de los productos
         productos = traer_todos_los_productos()
         nombres_productos = [producto[1] for producto in productos]  # Extraer los nombres de los productos
         nombre_producto_combobox = ttk.Combobox(frame_superior, values=nombres_productos, font=("Segoe UI", 13), height=5)
-        nombre_producto_combobox.grid(row=0, column=1, padx=5, pady=5)
+        nombre_producto_combobox.grid(row=1, column=1, padx=5, pady=5)
     
         # Variable para manejar el retraso
         filtro_id = None
@@ -1504,10 +1509,6 @@ class Administracion:
         # Vincular el evento KeyRelease para que espere 1 segundo antes de filtrar
         nombre_producto_combobox.bind('<KeyRelease>', filtrar_productos_con_retraso)
     
-        # Crear campos de entrada solo para mostrar los datos (readonly)
-        tk.Label(frame_superior, text="Precio de compra:", font=("Segoe UI", 13)).grid(row=1, column=0, padx=5, pady=5, sticky="e")
-        precio_producto_compra = tk.Entry(frame_superior, state="readonly", font=("Segoe UI", 13))
-        precio_producto_compra.grid(row=1, column=1, padx=5, pady=5)
     
         tk.Label(frame_superior, text="Precio de venta:", font=("Segoe UI", 13)).grid(row=2, column=0, padx=5, pady=5, sticky="e")
         precio_producto_venta = tk.Entry(frame_superior, state="readonly", font=("Segoe UI", 13))
@@ -1555,10 +1556,10 @@ class Administracion:
             for producto in productos:
                 if producto[1] == nombre_seleccionado:
                     # Actualizar los campos con los datos del producto seleccionado
-                    precio_producto_compra.config(state="normal")
-                    precio_producto_compra.delete(0, tk.END)
-                    precio_producto_compra.insert(0, producto[2])  # Precio
-                    precio_producto_compra.config(state="readonly")
+                    producto_id.config(state="normal")
+                    producto_id.delete(0, tk.END)
+                    producto_id.insert(0, producto[0])  # Precio
+                    producto_id.config(state="readonly")
     
                     precio_producto_venta.config(state="normal")
                     precio_producto_venta.delete(0, tk.END)
@@ -1577,6 +1578,8 @@ class Administracion:
                     proveedor_producto.delete(0, tk.END)
                     proveedor_producto.insert(0, producto[6])  # Proveedor
                     proveedor_producto.config(state="readonly")
+
+                    nombre_metodos_combobox.set("Contado")
     
                     break
                 
@@ -1723,7 +1726,7 @@ class Administracion:
     
         # Centrar la ventana
         ventana_compra_width = 600  # Ancho deseado
-        ventana_compra_height = 670  # Alto deseado
+        ventana_compra_height = 700  # Alto deseado
         screen_width = ventana_compra.winfo_screenwidth()
         screen_height = ventana_compra.winfo_screenheight()
         x_coordinate = int((screen_width / 2) - (ventana_compra_width / 2))
@@ -1734,17 +1737,22 @@ class Administracion:
         # Crear el frame superior
         frame_superior = tk.Frame(ventana_compra, bd=2, relief="groove")
         frame_superior.pack(side="top", fill="x", padx=10, pady=10)
-    
-        # Crear combobox para el nombre del producto
-        tk.Label(frame_superior, text="Nombre del producto:", font=("Segoe UI", 13)).grid(row=0, column=0, padx=5, pady=5, sticky="e")
         
+          # Crear campos de entrada solo para mostrar los datos (readonly)
+        tk.Label(frame_superior, text="ID:", font=("Segoe UI", 13)).grid(row=0, column=0, padx=5, pady=5, sticky="e")
+        producto_id = tk.Entry(frame_superior, state="readonly", font=("Segoe UI", 13))
+        producto_id.grid(row=0, column=1, padx=5, pady=5)
+
+        # Crear combobox para el nombre del producto
+        tk.Label(frame_superior, text="Nombre del producto:", font=("Segoe UI", 13)).grid(row=1, column=0, padx=5, pady=5, sticky="e")
+    
     
         # Llenar el combobox con los nombres de los productos
         productos = traer_todos_los_productos()
-        nombres_productos = [producto[0] for producto in productos]  # Extraer los nombres de los productos
+        nombres_productos = [producto[1] for producto in productos]  # Extraer los nombres de los productos
         nombre_producto_combobox = ttk.Combobox(frame_superior, values=nombres_productos, font=("Segoe UI", 13), height=5)
         nombre_producto_combobox.option_add('*TCombobox*Listbox.font', ('Segoe UI', 16))
-        nombre_producto_combobox.grid(row=0, column=1, padx=5, pady=5)
+        nombre_producto_combobox.grid(row=1, column=1, padx=5, pady=5)
     
         # Variable para manejar el retraso
         filtro_id = None
@@ -1772,29 +1780,42 @@ class Administracion:
         # Vincular el evento KeyRelease para que espere 1 segundo antes de filtrar
         nombre_producto_combobox.bind('<KeyRelease>', filtrar_productos_con_retraso)
     
-        # Crear campos de entrada solo para mostrar los datos (readonly)
-        tk.Label(frame_superior, text="Precio de venta:", font=("Segoe UI", 13)).grid(row=1, column=0, padx=5, pady=5, sticky="e")
-        precio_producto = tk.Entry(frame_superior, state="readonly", font=("Segoe UI", 13) )
-        precio_producto.grid(row=1, column=1, padx=5, pady=5)
+        tk.Label(frame_superior, text="Precio de venta:", font=("Segoe UI", 13)).grid(row=2, column=0, padx=5, pady=5, sticky="e")
+        precio_producto_venta = tk.Entry(frame_superior, state="readonly", font=("Segoe UI", 13))
+        precio_producto_venta.grid(row=2, column=1, padx=5, pady=5)
     
-        tk.Label(frame_superior, text="Cantidad:", font=("Segoe UI", 13)).grid(row=2, column=0, padx=5, pady=5, sticky="e")
+        tk.Label(frame_superior, text="Cantidad:", font=("Segoe UI", 13)).grid(row=3, column=0, padx=5, pady=5, sticky="e")
         cantidad_producto = tk.Entry(frame_superior, font=("Segoe UI", 13))  # Estado normal para permitir edición
-        cantidad_producto.grid(row=2, column=1, padx=5, pady=5)
-        cantidad_producto.insert(0, "")  # Valor predeterminado de 0
+        cantidad_producto.grid(row=3, column=1, padx=5, pady=5)
+        cantidad_producto.insert(0, "")  # Valor predeterminado de ""
     
-        tk.Label(frame_superior, text="Categoría:", font=("Segoe UI", 13)).grid(row=3, column=0, padx=5, pady=5, sticky="e")
+        tk.Label(frame_superior, text="Categoría:", font=("Segoe UI", 13)).grid(row=4, column=0, padx=5, pady=5, sticky="e")
         categoria = tk.Entry(frame_superior, state="readonly", font=("Segoe UI", 13))
-        categoria.grid(row=3, column=1, padx=5, pady=5)
+        categoria.grid(row=4, column=1, padx=4, pady=5)
     
-        tk.Label(frame_superior, text="Proveedor:", font=("Segoe UI", 13)).grid(row=4, column=0, padx=5, pady=5, sticky="e")
+        tk.Label(frame_superior, text="Proveedor:", font=("Segoe UI", 13)).grid(row=5, column=0, padx=5, pady=5, sticky="e")
         proveedor_producto = tk.Entry(frame_superior, state="readonly", font=("Segoe UI", 13))
-        proveedor_producto.grid(row=4, column=1, padx=5, pady=5)
+        proveedor_producto.grid(row=5, column=1, padx=5, pady=5)
     
+        # Crear combobox para el metodo de pago:
+        tk.Label(frame_superior, text="Metodo de pago:", font=("Segoe UI", 13)).grid(row=6, column=0, padx=5, pady=5, sticky="e")
+        frame_superior.option_add('*TCombobox*Listbox.font', ('Segoe UI', 16))
+    
+        # Llenar el combobox con los nombres de los metodos de pago
+        metodos = [('Contado',), ('Cuenta Corriente',), ('Mercado Pago',)]
+        nombres_metodos = [metodo[0] for metodo in metodos]  # Extraer los nombres de los productos
+        nombre_metodos_combobox = ttk.Combobox(frame_superior, values=nombres_metodos, state="readonly", font=("Segoe UI", 13), height=5)
+        nombre_metodos_combobox.grid(row=6, column=1, padx=5, pady=5)
+
         # Crear el área de texto para mostrar los productos añadidos
         tk.Label(ventana_compra, text="Productos seleccionados:",font=("Segoe UI", 13) ).pack(pady=5)
         result_text = tk.Text(ventana_compra, height=8, width=55, state="normal", font=("Segoe UI", 16))
         result_text.pack(padx=10, pady=5)
         result_text.config(state="disabled")  # Iniciar en estado "disabled" (no editable)
+
+        # Crear etiqueta para mostrar el total de la compra
+        total_label = tk.Label(ventana_compra, text="Total: $0.00", font=("Segoe UI", 13, "bold"))
+        total_label.pack(side="right", padx=20, pady=10)
     
         # Función para actualizar los datos del producto seleccionado
         def actualizar_datos_producto(event):
@@ -1802,26 +1823,32 @@ class Administracion:
             nombre_seleccionado = nombre_producto_combobox.get()
             # Buscar los datos del producto seleccionado
             for producto in productos:
-                if producto[0] == nombre_seleccionado:
+                if producto[1] == nombre_seleccionado:
                     # Actualizar los campos con los datos del producto seleccionado
-                    precio_producto.config(state="normal")
-                    precio_producto.delete(0, tk.END)
-                    precio_producto.insert(0, producto[1])  # Precio
-                    precio_producto.config(state="readonly")
+                    producto_id.config(state="normal")
+                    producto_id.delete(0, tk.END)
+                    producto_id.insert(0, producto[0])  # id producto
+                    producto_id.config(state="readonly")
+    
+                    precio_producto_venta.config(state="normal")
+                    precio_producto_venta.delete(0, tk.END)
+                    precio_producto_venta.insert(0, producto[3])  # Precio
+                    precio_producto_venta.config(state="readonly")
     
                     cantidad_producto.delete(0, tk.END)
-                    cantidad_producto.insert(0, "")  # Dejar cantidad editable con valor predeterminado 0
+                    cantidad_producto.insert(0, "1")  # Dejar cantidad editable con valor predeterminado 1
     
                     categoria.config(state="normal")
                     categoria.delete(0, tk.END)
-                    categoria.insert(0, producto[3])  # Precio de venta
+                    categoria.insert(0, producto[5])  # categoria
                     categoria.config(state="readonly")
     
                     proveedor_producto.config(state="normal")
                     proveedor_producto.delete(0, tk.END)
-                    proveedor_producto.insert(0, producto[4])  # Proveedor
+                    proveedor_producto.insert(0, producto[6])  # Proveedor
                     proveedor_producto.config(state="readonly")
-                    break
+
+                    nombre_metodos_combobox.set("Contado")
                 
         # Función para añadir el producto seleccionado al arreglo y mostrarlo en el área de texto
         def añadir_producto():
@@ -1830,7 +1857,7 @@ class Administracion:
            cantidad_seleccionada = cantidad_producto.get()  # Obtener la cantidad modificada por el usuario
            if nombre_seleccionado and cantidad_seleccionada.isdigit():
                for producto in productos:
-                   if producto[0] == nombre_seleccionado:
+                   if producto[1] == nombre_seleccionado:
                         
                         # Obtener la hora actual
                         hora_actual = datetime.now().strftime("%H:%M:%S")
@@ -1848,7 +1875,7 @@ class Administracion:
                         else:
                             hora = "Manana"
                        
-                        producto_modificado = (producto[0], producto[1], int(cantidad_seleccionada), producto[3], producto[4], hora)
+                        producto_modificado = (producto[1], f"{float(producto[3]):.2f}", cantidad_seleccionada, producto[5], producto[6], hora)
                         
                         s = False
                         d = controlar_cantidades(producto_modificado, s) 
@@ -1868,6 +1895,10 @@ class Administracion:
                             result_text.insert(tk.END, f"{producto_modificado}\n")  # Mostrar producto en el Text
                             result_text.config(state="disabled")  # Bloquear nuevamente para no permitir ediciones
                             result_text.see(tk.END)  # Desplazarse al final automáticamente
+
+                            # Actualizar el total de la compra
+                            actualizar_total()
+
                             break
                             
                         
@@ -1889,6 +1920,13 @@ class Administracion:
                     result_text.insert(tk.END, f"{producto}\n")  # Reinsertar los productos restantes
                 result_text.config(state="disabled")
                 result_text.see(tk.END)
+
+                # Actualizar el total de la compra
+                actualizar_total()
+
+        def actualizar_total():
+            total = sum(float(producto[1]) * int(producto[2]) for producto in self.compras_seleccionadas)
+            total_label.config(text=f"Total: ${total:.2f}")
     
         def procesar_productos():
             global facturero_abierto
@@ -1904,13 +1942,13 @@ class Administracion:
         
         
     
-        # Crear botón "Borrar Último Agregado"
-        boton_borrar = tk.Button(frame_superior, text="Borrar Último Agregado", font=("Segoe UI", 10, "bold"),relief="groove", fg="black", bg="#ef3232", command=borrar_ultimo_producto)
-        boton_borrar.grid(row=5, column=0, padx=5, pady=5, sticky="w")  # Posicionar a la izquierda
+         # Crear botón "Borrar Último Agregado"
+        boton_borrar = tk.Button(frame_superior, text="Borrar Último Agregado", font=("Segoe UI", 10, "bold"), relief="groove", bg="#ef3232", fg="black", command=borrar_ultimo_producto)
+        boton_borrar.grid(row=7, column=0, padx=5, pady=5, sticky="w")  # Posicionar a la izquierda
     
         # Crear botón "Añadir"
         boton_añadir = tk.Button(frame_superior, text="Añadir", font=("Segoe UI", 13, "bold"), command=añadir_producto, relief="groove", fg="black", bg="#d7d7d7")
-        boton_añadir.grid(row=5, column=1, padx=5, pady=5)
+        boton_añadir.grid(row=7, column=1, padx=5, pady=5)
     
         # Crear frame inferior para botones "Procesar" y "Cerrar"
         frame_botones = tk.Frame(ventana_compra)
