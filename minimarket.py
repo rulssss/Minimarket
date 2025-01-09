@@ -1440,25 +1440,21 @@ class Administracion:
 
     # Métodos de ejemplo para los botones
     def facturero(self):
-
         global facturero_abierto
-
-
+    
         self.minimarket.mostrar_arbol_productos()
-
+    
         if facturero_abierto:
             return
         
         facturero_abierto = True
-
-
-
+    
         # Crear la ventana principal
         ventana_facturero = tk.Toplevel()
         ventana_facturero.title("Facturero")
         ventana_facturero.transient(self.master)
         ventana_facturero.resizable(False, False)  # Evita que se redimensione
-
+    
         # Centrar la ventana
         ventana_facturero_width = 600  # Ancho deseado
         ventana_facturero_height = 700  # Alto deseado
@@ -1468,94 +1464,93 @@ class Administracion:
         y_coordinate = int((screen_height / 2) - (ventana_facturero_height / 2))
         ventana_facturero.geometry(f"{ventana_facturero_width}x{ventana_facturero_height}+{x_coordinate}+{y_coordinate}")
         ventana_facturero.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
-
+    
         # Crear el frame superior
         frame_superior = tk.Frame(ventana_facturero, bd=2, relief="groove")
         frame_superior.pack(side="top", fill="x", padx=10, pady=10)
-
+    
         # Crear combobox para el nombre del producto
-        tk.Label(frame_superior, text="Nombre de el producto:", font=("Segoe UI", 13)).grid(row=0, column=0, padx=5, pady=5, sticky="e")
-
-
+        tk.Label(frame_superior, text="Nombre del producto:", font=("Segoe UI", 13)).grid(row=0, column=0, padx=5, pady=5, sticky="e")
+    
         # Llenar el combobox con los nombres de los productos
         productos = traer_todos_los_productos()
         nombres_productos = [producto[1] for producto in productos]  # Extraer los nombres de los productos
         nombre_producto_combobox = ttk.Combobox(frame_superior, values=nombres_productos, font=("Segoe UI", 13), height=5)
         nombre_producto_combobox.grid(row=0, column=1, padx=5, pady=5)
-
+    
         # Variable para manejar el retraso
         filtro_id = None
-
+    
         # Función para filtrar productos con retraso
         def filtrar_productos_con_retraso(event):
             nonlocal filtro_id
             if filtro_id:
                 ventana_facturero.after_cancel(filtro_id)  # Cancelar el filtro anterior si existe
-
+    
             filtro_id = ventana_facturero.after(1000, lambda: filtrar_productos(event))  # Esperar 1 segundo antes de filtrar
-
+    
         # Función para filtrar productos y permitir escritura continua
         def filtrar_productos(event):
             entrada = nombre_producto_combobox.get().lower()  # Captura el texto ingresado
             filtrados = [prod for prod in nombres_productos if entrada in prod.lower()]  # Filtrar productos
             nombre_producto_combobox['values'] = filtrados  # Actualizar las opciones del combobox
-
+    
             # Resaltar el texto en el combobox
             nombre_producto_combobox.selection_range(0, 'end')
-
+    
             if filtrados:
                 nombre_producto_combobox.event_generate('<Down>')  # Mostrar opciones filtradas
-
-
+    
         # Vincular el evento KeyRelease para que espere 1 segundo antes de filtrar
         nombre_producto_combobox.bind('<KeyRelease>', filtrar_productos_con_retraso)
-
+    
         # Crear campos de entrada solo para mostrar los datos (readonly)
         tk.Label(frame_superior, text="Precio de compra:", font=("Segoe UI", 13)).grid(row=1, column=0, padx=5, pady=5, sticky="e")
-        precio_producto_compra = tk.Entry(frame_superior, state="readonly", font=("Segoe UI", 13) )
+        precio_producto_compra = tk.Entry(frame_superior, state="readonly", font=("Segoe UI", 13))
         precio_producto_compra.grid(row=1, column=1, padx=5, pady=5)
-
+    
         tk.Label(frame_superior, text="Precio de venta:", font=("Segoe UI", 13)).grid(row=2, column=0, padx=5, pady=5, sticky="e")
-        precio_producto_venta = tk.Entry(frame_superior, state="readonly", font=("Segoe UI", 13) )
+        precio_producto_venta = tk.Entry(frame_superior, state="readonly", font=("Segoe UI", 13))
         precio_producto_venta.grid(row=2, column=1, padx=5, pady=5)
-
+    
         tk.Label(frame_superior, text="Cantidad:", font=("Segoe UI", 13)).grid(row=3, column=0, padx=5, pady=5, sticky="e")
         cantidad_producto = tk.Entry(frame_superior, font=("Segoe UI", 13))  # Estado normal para permitir edición
         cantidad_producto.grid(row=3, column=1, padx=5, pady=5)
         cantidad_producto.insert(0, "")  # Valor predeterminado de ""
-
+    
         tk.Label(frame_superior, text="Categoría:", font=("Segoe UI", 13)).grid(row=4, column=0, padx=5, pady=5, sticky="e")
         categoria = tk.Entry(frame_superior, state="readonly", font=("Segoe UI", 13))
         categoria.grid(row=4, column=1, padx=4, pady=5)
-
+    
         tk.Label(frame_superior, text="Proveedor:", font=("Segoe UI", 13)).grid(row=5, column=0, padx=5, pady=5, sticky="e")
         proveedor_producto = tk.Entry(frame_superior, state="readonly", font=("Segoe UI", 13))
         proveedor_producto.grid(row=5, column=1, padx=5, pady=5)
-
+    
         # Crear combobox para el metodo de pago:
-        tk.Label(frame_superior, text="Metodo de pago:", font=("Segoe UI", 13)).grid(row=6, column=0, padx=5, pady=5, sticky="e") ####
+        tk.Label(frame_superior, text="Metodo de pago:", font=("Segoe UI", 13)).grid(row=6, column=0, padx=5, pady=5, sticky="e")
         frame_superior.option_add('*TCombobox*Listbox.font', ('Segoe UI', 16))
-
+    
         # Llenar el combobox con los nombres de los metodos de pago
         metodos = [('Contado',), ('Cuenta Corriente',), ('Mercado Pago',)]
         nombres_metodos = [metodo[0] for metodo in metodos]  # Extraer los nombres de los productos
         nombre_metodos_combobox = ttk.Combobox(frame_superior, values=nombres_metodos, state="readonly", font=("Segoe UI", 13), height=5)
         nombre_metodos_combobox.grid(row=6, column=1, padx=5, pady=5)
-
-
+    
         # Crear el área de texto para mostrar los productos añadidos
-        tk.Label(ventana_facturero, text="Productos seleccionados:",font=("Segoe UI", 13) ).pack(pady=5)
+        tk.Label(ventana_facturero, text="Productos seleccionados:", font=("Segoe UI", 13)).pack(pady=5)
         result_text = tk.Text(ventana_facturero, height=8, width=55, state="normal", font=("Segoe UI", 16))
         result_text.pack(padx=10, pady=5)
         result_text.config(state="disabled")  # Iniciar en estado "disabled" (no editable)
-
-
-
+    
+        # Crear etiqueta para mostrar el total de la compra
+        total_label = tk.Label(ventana_facturero, text="Total: $0.00", font=("Segoe UI", 13, "bold"))
+        total_label.pack(side="right", padx=20, pady=10)
+    
         # Función para actualizar los datos del producto seleccionado
         def actualizar_datos_producto(event):
             # Obtener el nombre seleccionado del combobox
             nombre_seleccionado = nombre_producto_combobox.get()
-
+    
             # Buscar los datos del producto seleccionado
             for producto in productos:
                 if producto[1] == nombre_seleccionado:
@@ -1564,72 +1559,70 @@ class Administracion:
                     precio_producto_compra.delete(0, tk.END)
                     precio_producto_compra.insert(0, producto[2])  # Precio
                     precio_producto_compra.config(state="readonly")
-
+    
                     precio_producto_venta.config(state="normal")
                     precio_producto_venta.delete(0, tk.END)
                     precio_producto_venta.insert(0, producto[3])  # Precio
                     precio_producto_venta.config(state="readonly")
-
+    
                     cantidad_producto.delete(0, tk.END)
                     cantidad_producto.insert(0, "1")  # Dejar cantidad editable con valor predeterminado 1
-
+    
                     categoria.config(state="normal")
                     categoria.delete(0, tk.END)
                     categoria.insert(0, producto[5])  # categoria
                     categoria.config(state="readonly")
-
+    
                     proveedor_producto.config(state="normal")
                     proveedor_producto.delete(0, tk.END)
                     proveedor_producto.insert(0, producto[6])  # Proveedor
                     proveedor_producto.config(state="readonly")
-
+    
                     break
-
+                
         # Función para añadir el producto seleccionado al arreglo y mostrarlo en el área de texto
         def añadir_producto():
-        
-           nombre_seleccionado = nombre_producto_combobox.get()
-           cantidad_seleccionada = cantidad_producto.get()  # Obtener la cantidad modificada por el usuario
-           metodo_pago_seleccionado = nombre_metodos_combobox.get() #obiene el metodo de pago elegido en el combobox
-
-           if nombre_seleccionado and metodo_pago_seleccionado and cantidad_seleccionada.isdigit():
+            nombre_seleccionado = nombre_producto_combobox.get()
+            cantidad_seleccionada = cantidad_producto.get()  # Obtener la cantidad modificada por el usuario
+            metodo_pago_seleccionado = nombre_metodos_combobox.get()  # Obtener el método de pago elegido en el combobox
+    
+            if nombre_seleccionado and metodo_pago_seleccionado and cantidad_seleccionada.isdigit():
                 for producto in productos:
-                   if producto[1] == nombre_seleccionado:
-                
-                        total= float(producto[3]) * int(cantidad_seleccionada)
-                        producto_modificado = (producto[1], f"${float(producto[3]):.2f}", cantidad_seleccionada, producto[5], producto[6], metodo_pago_seleccionado, f"Total: ${total:.2f}")
-                        
-                        #compprobar si la cantidad es accesible, y en caso de error informar que no se puede realizar esa venta
+                    if producto[1] == nombre_seleccionado:
+                        total = float(producto[3]) * int(cantidad_seleccionada)
+                        producto_modificado = (producto[1], f"{float(producto[3]):.2f}", cantidad_seleccionada, producto[5], producto[6], metodo_pago_seleccionado, f"Total: {total:.2f}")
+    
+                        # Comprobar si la cantidad es accesible, y en caso de error informar que no se puede realizar esa venta
                         s = True
-                        d = controlar_cantidades(producto_modificado, s) 
+                        d = controlar_cantidades(producto_modificado, s)
                         if d:
                             self.productos_seleccionados.append(producto_modificado)
-
+    
                             # Insertar el producto en el área de texto y editar tabla
-                            actualizar_cantidad_productos([producto_modificado], s, l=False, m= False)
-
+                            actualizar_cantidad_productos([producto_modificado], s, l=False, m=False)
+    
                             self.minimarket.mostrar_arbol_productos()
-
+    
                             result_text.config(state="normal")  # Permitir escritura temporal
                             result_text.insert(tk.END, f"{producto_modificado}\n")  # Mostrar producto en el Text
                             result_text.config(state="disabled")  # Bloquear nuevamente para no permitir ediciones
                             result_text.see(tk.END)  # Desplazarse al final automáticamente
-
-
+    
+                            # Actualizar el total de la compra
+                            actualizar_total()
+    
                             break
-           else:
-            messagebox.showerror("Error", "Por favor, complete todos los campos correctamente")
-
-
-
+            else:
+                messagebox.showerror("Error", "Por favor, complete todos los campos correctamente")
+    
         # Función para borrar el último producto añadido
         def borrar_ultimo_producto():
             if self.productos_seleccionados:
                 s = False
-                actualizar_cantidad_productos([self.productos_seleccionados[-1]], s, l=False, m= False)
-
+                actualizar_cantidad_productos([self.productos_seleccionados[-1]], s, l=False, m=False)
+    
                 self.minimarket.mostrar_arbol_productos()
-                
+    
                 self.productos_seleccionados.pop()  # Eliminar el último producto añadido
                 # Limpiar y actualizar el área de texto
                 result_text.config(state="normal")
@@ -1638,64 +1631,69 @@ class Administracion:
                     result_text.insert(tk.END, f"{producto}\n")  # Reinsertar los productos restantes
                 result_text.config(state="disabled")
                 result_text.see(tk.END)
-
+    
+                # Actualizar el total de la compra
+                actualizar_total()
+    
+        # Función para actualizar el total de la compra
+        def actualizar_total():
+            total = sum(float(producto[6].replace("Total: ", "")) for producto in self.productos_seleccionados)
+            total_label.config(text=f"Total: ${total:.2f}")
+    
         def procesar_productos():
-
             global facturero_abierto
             s = True
             anadir_a_registro(self.productos_seleccionados, s)
-            #actualizar_cantidad_productos(productos_seleccionados, s)
-
-            #limpia el arreglo
+            # actualizar_cantidad_productos(productos_seleccionados, s)
+    
+            # Limpia el arreglo
             self.productos_seleccionados.clear()
-
-            self.minimarket.mostrar_arbol_productos() #muestra todos los prod actualizados
-            
+    
+            self.minimarket.mostrar_arbol_productos()  # Muestra todos los productos actualizados
+    
             facturero_abierto = False
-
+    
             ventana_facturero.destroy()
-
-
+    
         # Crear botón "Borrar Último Agregado"
-        boton_borrar = tk.Button(frame_superior, text="Borrar Último Agregado", font=("Segoe UI", 10, "bold"),relief="groove", bg="#ef3232", fg="black", command=borrar_ultimo_producto)
+        boton_borrar = tk.Button(frame_superior, text="Borrar Último Agregado", font=("Segoe UI", 10, "bold"), relief="groove", bg="#ef3232", fg="black", command=borrar_ultimo_producto)
         boton_borrar.grid(row=7, column=0, padx=5, pady=5, sticky="w")  # Posicionar a la izquierda
-
+    
         # Crear botón "Añadir"
         boton_añadir = tk.Button(frame_superior, text="Añadir", font=("Segoe UI", 13, "bold"), command=añadir_producto, relief="groove", fg="black", bg="#d7d7d7")
         boton_añadir.grid(row=7, column=1, padx=5, pady=5)
-
+    
         # Crear frame inferior para botones "Procesar" y "Cerrar"
         frame_botones = tk.Frame(ventana_facturero)
         frame_botones.pack(pady=10)
-
+    
         # Botón "Cerrar"
         def cerrar_ventana():
             global facturero_abierto
-
+    
             s = False
-            actualizar_cantidad_productos(self.productos_seleccionados, s, l=True, m= False)
-
+            actualizar_cantidad_productos(self.productos_seleccionados, s, l=True, m=False)
+    
             self.minimarket.mostrar_arbol_productos()
     
             self.productos_seleccionados.clear()
-
+    
             facturero_abierto = False
             ventana_facturero.destroy()
-
+    
         # Botón "Cerrar"
-        boton_cerrar = tk.Button(frame_botones, text="Cerrar", font=("Segoe UI", 13, "bold"), command=cerrar_ventana, relief="groove",fg="black", bg="#ef3232")
+        boton_cerrar = tk.Button(frame_botones, text="Cerrar", font=("Segoe UI", 13, "bold"), command=cerrar_ventana, relief="groove", fg="black", bg="#ef3232")
         boton_cerrar.pack(side="left", padx=20)
-
-
+    
         # Botón "Procesar"
-        boton_procesar = tk.Button(frame_botones, text="Procesar", font=("Segoe UI", 13, "bold"), command=procesar_productos,  relief="groove", fg="black", bg="#d7d7d7")
+        boton_procesar = tk.Button(frame_botones, text="Procesar", font=("Segoe UI", 13, "bold"), command=procesar_productos, relief="groove", fg="black", bg="#d7d7d7")
         boton_procesar.pack(side="right", padx=20)
-
+    
         # Vincular el evento de selección en el combobox
         nombre_producto_combobox.bind("<<ComboboxSelected>>", actualizar_datos_producto)
         # Vincular el evento de cierre de la ventana para restablecer facturero_abierto
         ventana_facturero.protocol("WM_DELETE_WINDOW", cerrar_ventana)
-
+    
         ventana_facturero.mainloop()
 
     # Lista para almacenar los productos seleccionados
@@ -1896,7 +1894,7 @@ class Administracion:
             global facturero_abierto
             s = False
             
-            añadir_a_registro(self.compras_seleccionadas, s)
+            anadir_a_registro(self.compras_seleccionadas, s)
             #limpia el arreglo
             self.compras_seleccionadas.clear()
 
