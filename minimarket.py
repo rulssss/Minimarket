@@ -272,7 +272,6 @@ class Datos:
         ventana.mainloop()
 
     def editar_producto(self):
-        
         def filtrar_productos():
             value = combobox_nombre.get().lower()
             if value == '':
@@ -326,51 +325,55 @@ class Datos:
 
         # Título central
         Label(frame, text="Editar Producto:", bg="white", font=("Segoe UI", 16, "bold")).grid(
-            row=0, column=0, columnspan=5, pady=(10, 30)
+            row=0, column=0, columnspan=7, pady=(10, 30)
         )
 
-
         # Etiquetas e Inputs
-        Label(frame, text="Nombre del producto", bg="white", font=("Segoe UI", 12)).grid(row=1, column=0, padx=10, pady=5)
+        Label(frame, text="ID del producto", bg="white", font=("Segoe UI", 12)).grid(row=1, column=0, padx=10, pady=5)
+        entry_id = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16), state='readonly')
+        entry_id.grid(row=2, column=0, padx=(30,10), pady=5)
+
+        Label(frame, text="Nombre del producto", bg="white", font=("Segoe UI", 12)).grid(row=1, column=1, padx=10, pady=5)
         combobox_nombre = ttk.Combobox(frame, font=("Segoe UI", 16), state="normal", height=5)
-        combobox_nombre.grid(row=2, column=0, padx=(30,10), pady=5)
+        combobox_nombre.grid(row=2, column=1, padx=10, pady=5)
+
+        Label(frame, text="Precio de Compra", bg="white", font=("Segoe UI", 12)).grid(row=1, column=2, padx=10, pady=5)
+        entry_precio_compra = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16))
+        entry_precio_compra.grid(row=2, column=2, padx=10, pady=5)
+
+        Label(frame, text="Precio de Venta", bg="white", font=("Segoe UI", 12)).grid(row=1, column=3, padx=10, pady=5)
+        entry_precio = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16))
+        entry_precio.grid(row=2, column=3, padx=10, pady=5)
+
+        Label(frame, text="Stock", bg="white", font=("Segoe UI", 12)).grid(row=1, column=4, padx=10, pady=5)
+        entry_cantidad = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16), state='readonly')
+        entry_cantidad.grid(row=2, column=4, padx=10, pady=5)
+
+        # Combobox para categorias
+        categorias_tuplas = traer_categorias()
+        categorias = [categoria[0] for categoria in categorias_tuplas]
+        Label(frame, text="Categoria", bg="white", font=("Segoe UI", 12)).grid(row=1, column=5, padx=10, pady=5)
+        combobox_busqueda1 = ttk.Combobox(frame, font=("Segoe UI", 16), state="readonly", height=5)
+        combobox_busqueda1['values'] = categorias
+        combobox_busqueda1.grid(row=2, column=5, padx=10, pady=5)
+        combobox_busqueda1.option_add('*TCombobox*Listbox.font', ('Segoe UI', 15))
+
+        # Combobox para proveedores
+        proveedores_tuplas = traer_proveedores()
+        proveedores = [proveedor[0] for proveedor in proveedores_tuplas]
+        Label(frame, text="Proveedores", bg="white", font=("Segoe UI", 12)).grid(row=1, column=6, padx=10, pady=5)
+        combobox_busqueda2 = ttk.Combobox(frame, font=("Segoe UI", 16), state="readonly", height=5)
+        combobox_busqueda2['values'] = proveedores
+        combobox_busqueda2.grid(row=2, column=6, padx=(10,30), pady=5)
+        combobox_busqueda2.option_add('*TCombobox*Listbox.font', ('Segoe UI', 15))
 
         productos = traer_todos_los_productos()  # Obtener los productos
-        producto_list = [producto[0] for producto in productos]  # Lista con los nombres de los productos
+        producto_list = [producto[1] for producto in productos]  # Lista con los nombres de los productos
         combobox_nombre['values'] = producto_list
         combobox_nombre.option_add('*TCombobox*Listbox.font', ('Segoe UI', 16))
 
         # Vincular la función de autocompletar al evento de escritura
         combobox_nombre.bind('<KeyRelease>', on_key_release)
-
-        # Campo de precio editable
-        Label(frame, text="Precio actual a editar", bg="white", font=("Segoe UI", 12)).grid(row=1, column=1, padx=10, pady=5)
-        entry_precio = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16))
-        entry_precio.grid(row=2, column=1, padx=10, pady=5)
-
-        # Campo de cantidad no editable
-        Label(frame, text="Stock", bg="white", font=("Segoe UI", 12)).grid(row=1, column=2, padx=10, pady=5)
-        entry_cantidad = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16), state='readonly')
-        entry_cantidad.grid(row=2, column=2, padx=10, pady=5)
-
-         # Combobox para categorias
-        categorias_tuplas = traer_categorias()
-        categorias = [categoria[0] for categoria in categorias_tuplas]
-        Label(frame, text="Categoria", bg="white", font=("Segoe UI", 12)).grid(row=1, column=3, padx=10, pady=5)
-        combobox_busqueda1 = ttk.Combobox(frame, font=("Segoe UI", 16), state="readonly", height=5)
-        combobox_busqueda1['values'] = categorias
-        combobox_busqueda1.grid(row=2, column=3, padx=10, pady=5)
-        combobox_busqueda1.option_add('*TCombobox*Listbox.font', ('Segoe UI', 15))
-
-         # Combobox para proveedores
-        proveedores_tuplas = traer_proveedores()
-        proveedores = [proveedor[0] for proveedor in proveedores_tuplas]
-        Label(frame, text="Proveedores", bg="white", font=("Segoe UI", 12)).grid(row=1, column=4, padx=10, pady=5)
-        combobox_busqueda2 = ttk.Combobox(frame, font=("Segoe UI", 16), state="readonly", height=5)
-        combobox_busqueda2['values'] = proveedores
-        combobox_busqueda2.grid(row=2, column=4, padx=10, pady=5)
-        combobox_busqueda2.option_add('*TCombobox*Listbox.font', ('Segoe UI', 15))
-        
 
         # Crear el Label de advertencia
         advertencia_label = tk.Label(confirm_window, text="", font=("Segoe UI", 12, "bold"), fg="red", bg="white")
@@ -383,39 +386,48 @@ class Datos:
         def cargar_datos_producto(event):
             producto_seleccionado = combobox_nombre.get()
             for producto in productos:
-                if producto[0] == producto_seleccionado:
+                if producto[1] == producto_seleccionado:  # Comparar con el nombre del producto
+                    entry_id.config(state='normal')
+                    entry_id.delete(0, tk.END)
+                    entry_id.insert(0, producto[0])  # ID del producto
+                    entry_id.config(state='readonly')
+
+                    entry_precio_compra.delete(0, tk.END)
+                    entry_precio_compra.insert(0, producto[2])  # Precio de compra
+
                     entry_precio.delete(0, tk.END)
-                    entry_precio.insert(0, producto[1])  # Precio actual
+                    entry_precio.insert(0, producto[3])  # Precio de venta
 
                     entry_cantidad.config(state='normal')
                     entry_cantidad.delete(0, tk.END)
-                    entry_cantidad.insert(0, producto[2])  # Cantidad
+                    entry_cantidad.insert(0, producto[4])  # Cantidad
                     entry_cantidad.config(state='readonly')
 
                     combobox_busqueda1.config(state='normal')
-                    combobox_busqueda1.delete(0, tk.END)
-                    combobox_busqueda1.insert(0, producto[3])  # Categoria
+                    combobox_busqueda1.set(producto[5])  # Categoria
                     combobox_busqueda1.config(state='readonly')
 
                     combobox_busqueda2.config(state='normal')
-                    combobox_busqueda2.delete(0, tk.END)
-                    combobox_busqueda2.insert(0, producto[4])  # Proveedor
+                    combobox_busqueda2.set(producto[6])  # Proveedor
                     combobox_busqueda2.config(state='readonly')
 
         combobox_nombre.bind("<<ComboboxSelected>>", cargar_datos_producto)
 
         def on_yes():
+            id_producto = entry_id.get()
             nombre_producto = combobox_nombre.get()
-            precio_producto = entry_precio.get()
+            precio_compra_producto = entry_precio_compra.get()
+            precio_venta_producto = entry_precio.get()
             categoria_producto = combobox_busqueda1.get()
             proveedor_producto = combobox_busqueda2.get()
 
             producto_seleccionado = combobox_nombre.get()
             for producto in productos:
-                if producto[0] == producto_seleccionado:
-                    precio_anterior = producto[1]
-                    categ_ant = producto[3]
-                    prov_ant = producto[4]
+                if producto[1] == producto_seleccionado:
+                    precio_anterior_compra = producto[2]
+                    precio_anterior_venta = producto[3]
+                    categ_ant = producto[5]
+                    prov_ant = producto[6]
 
             def es_numero_decimal(valor):
                 try:
@@ -424,11 +436,11 @@ class Datos:
                 except ValueError:
                     return False
 
-            if es_numero_decimal(precio_producto):
-                if (float(precio_anterior) == float(precio_producto)) and (categ_ant == categoria_producto) and (prov_ant == proveedor_producto):
+            if es_numero_decimal(precio_venta_producto):
+                if (float(precio_anterior_venta) == float(precio_venta_producto)) and (categ_ant == categoria_producto) and (prov_ant == proveedor_producto) and (float(precio_anterior_compra) == float(precio_compra_producto)):
                     advertencia_label.config(text="Actualice el producto por favor")
                 else:
-                    actualizar_producto(nombre_producto, precio_producto, categoria_producto, proveedor_producto)
+                    actualizar_producto(nombre_producto, precio_compra_producto, precio_venta_producto, categoria_producto, proveedor_producto)
                     on_no()
                 return
             else:
@@ -446,7 +458,7 @@ class Datos:
         btn_no.pack(side=tk.LEFT, padx=15)
 
         # Configurar peso de filas y columnas para centrar
-        for i in range(5):
+        for i in range(7):
             frame.grid_columnconfigure(i, weight=1)
         frame.grid_rowconfigure(0, weight=1)
 
