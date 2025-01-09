@@ -2258,7 +2258,7 @@ class Minimarket:
             if texto_busqueda == "":
                 productos_a_mostrar = all_data2  # Mostrar todos los productos si no se ha ingresado texto
             else:
-                productos_a_mostrar = [p for p in all_data2 if texto_busqueda in p[0].lower()]
+                productos_a_mostrar = [p for p in all_data2 if texto_busqueda in p[1].lower()]
             # Insertar los productos filtrados en la tabla
             if productos_a_mostrar:
                 # Aplicar estilo a las filas con el tag "rojo"
