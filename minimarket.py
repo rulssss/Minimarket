@@ -2242,7 +2242,7 @@ class Minimarket:
 
      
         mostrar_productos.entry_busqueda = ttk.Entry(self.frame_derecho, font=("Segoe UI", 14))
-        mostrar_productos.entry_busqueda.place(x=60, y=50)  # Ajustar la posición
+        mostrar_productos.entry_busqueda.place(x=10, y=50)  # Ajustar la posición
         mostrar_productos.entry_busqueda.bind("<KeyRelease>", actualizar_filtro)  # Detectar cada tecla que el usuario presiona
 
         
