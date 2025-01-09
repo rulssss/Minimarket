@@ -480,15 +480,17 @@ def actualizar_cantidad_productos(productos_modificado, s, l, m):
 
 
 
-def añadir_a_registro(productos_seleccionados, s):
+def anadir_a_registro(productos_seleccionados, s):
+    
     cursor = connection2.cursor()
     # Recorrer cada producto en productos_seleccionados
     for producto in productos_seleccionados:
         # Asignar las variables correspondientes
         nombre = producto[0]  # Nombre del producto
-        total_venta = float(producto[2]) * int(producto[1])   # Precio del producto
-        precio = float(producto[2]) # precio unitario
-        cantidad = producto[1]  # Cantidad del producto
+        precio_str = producto[1].replace('$', '')  # Eliminar el símbolo de pesos
+        precio = float(precio_str)  # Convertir a float
+        cantidad = int(producto[2])  # Cantidad del producto
+        total_venta = precio * cantidad  # Precio total de la venta
         fecha = datetime.now().strftime("%Y-%m-%d")
         hora_actual = datetime.now().strftime("%I:%M:%S %p")
         metodo_pago = producto[5]
