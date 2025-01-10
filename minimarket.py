@@ -1878,7 +1878,7 @@ class Administracion:
                         else:
                             hora = "Manana"
                         total = float(producto[3]) * int(cantidad_seleccionada)
-                        producto_modificado = (producto[1], f"{float(producto[3]):.2f}", cantidad_seleccionada, producto[5], producto[6], hora, f"Total: {total:.2f}")
+                        producto_modificado = (producto[1], f"{float(producto[3]):.2f}", cantidad_seleccionada, producto[5], producto[6], hora, f" Total: {total:.2f}")
                         
                         s = False
                         d = controlar_cantidades(producto_modificado, s) 
@@ -1955,7 +1955,7 @@ class Administracion:
     
         # Crear frame inferior para botones "Procesar" y "Cerrar"
         frame_botones = tk.Frame(ventana_compra)
-        frame_botones.pack(pady=10)
+        frame_botones.place(x=10, y=645)
     
         # Botón "Cerrar"
         def cerrar_ventana():
@@ -1976,8 +1976,8 @@ class Administracion:
     
     
         # Botón "Procesar"
-        boton_procesar = tk.Button(frame_botones, text="Procesar", font=("Segoe UI", 13, "bold"), command=procesar_productos,  relief="groove", fg="black", bg="#d7d7d7")
-        boton_procesar.pack(side="right", padx=20)
+        boton_procesar = tk.Button(frame_botones, text="Procesar", width=15, font=("Segoe UI", 13, "bold"), command=procesar_productos, relief="groove", fg="black", bg="#d7d7d7")
+        boton_procesar.pack(side="right", padx=(90,0))
     
         # Vincular el evento de selección en el combobox
         nombre_producto_combobox.bind("<<ComboboxSelected>>", actualizar_datos_producto)
