@@ -10,27 +10,6 @@ from datetime import datetime
 #################################################
 #################################################
 
-connection1 = psycopg2.connect(
-host="localhost",
-user="postgres",
-password="Mariano302",
-database="registro_usuarios",
-port="5432"
-)
-# autocommit
-connection1.autocommit = True
-
-#################################################
-#################################################
-#################################################
-#################################################
-
-
-#################################################
-#################################################
-#################################################
-#################################################
-
 connection2 = psycopg2.connect(
 host="localhost",
 user="postgres",
@@ -59,11 +38,11 @@ def registrar_usuario(username, password, account):
     else:
         account = False     #Aacomoda la variable account a un true o fals epara verificar que tipo de cuenta es
 
-    cursor= connection1.cursor()
+    cursor= connection2.cursor()
     query_data1 = f"INSERT INTO usuarios(nombre, admin) VALUES('{username}', {account})"
     cursor.execute(query_data1)
 
-    cursor= connection1.cursor()
+    cursor= connection2.cursor()
     query_data = f"SELECT id_usuario FROM usuarios WHERE nombre = '{username}'"
     cursor.execute(query_data)
     data_id = cursor.fetchall()
@@ -76,7 +55,7 @@ def registrar_usuario(username, password, account):
     cursor.close()
 
 def hay_admin():
-    cursor= connection1.cursor()
+    cursor= connection2.cursor()
     query_data = f"SELECT id_usuario FROM usuarios WHERE admin = True"
     cursor.execute(query_data)
     data = cursor.fetchall()
@@ -88,14 +67,14 @@ def hay_admin():
         return True
 
 def actualizar_contrasena(new_password, recover_id):
-    cursor= connection1.cursor()
+    cursor= connection2.cursor()
     query_data = f"UPDATE contrasenas SET contrasena = '{new_password}' WHERE id_usuario = {recover_id}"
     cursor.execute(query_data)
     cursor.close()
 
 
 def existencia_de_id(recover_id):
-    cursor= connection1.cursor()
+    cursor= connection2.cursor()
     # 
     query_data = f"SELECT id_usuario FROM usuarios WHERE id_usuario = '{recover_id}'"
     cursor.execute(query_data)
@@ -110,7 +89,7 @@ def existencia_de_id(recover_id):
     
 
 def existe_usuario(username):
-    cursor= connection1.cursor()
+    cursor= connection2.cursor()
     query_data = f"SELECT nombre FROM usuarios WHERE nombre = '{username}'"
     cursor.execute(query_data)
     data = cursor.fetchall()
@@ -123,7 +102,7 @@ def existe_usuario(username):
 
 
 def verificar_contrasenia(password, username, account):
-    cursor= connection1.cursor()
+    cursor= connection2.cursor()
     query_data2 = f"SELECT usuarios.id_usuario, contrasenas.contrasena, usuarios.admin FROM usuarios JOIN contrasenas ON usuarios.id_usuario = contrasenas.id_usuario WHERE usuarios.nombre = '{username}'"
     cursor.execute(query_data2)
     data = cursor.fetchall()
@@ -143,7 +122,7 @@ def verificar_contrasenia(password, username, account):
         return False
 
 def obtener_id_usuario(usuario):
-    cursor= connection1.cursor()
+    cursor= connection2.cursor()
     query_data2 = f"SELECT id_usuario FROM usuarios WHERE nombre = '{usuario}'"
     cursor.execute(query_data2)
     data = cursor.fetchall()
@@ -480,9 +459,13 @@ def actualizar_cantidad_productos(productos_modificado, s, l, m):
 
 
 
-def anadir_a_registro(productos_seleccionados, s):
+def anadir_a_registro(productos_seleccionados, s, usuario):
     
     cursor = connection2.cursor()
+    query_id_usuario = f"SELECT id_usuario FROM usuarios WHERE nombre = '{usuario}'"
+    cursor.execute(query_id_usuario)
+    data = cursor.fetchall()
+    id_usuario = data[0][0]
     # Recorrer cada producto en productos_seleccionados
     for producto in productos_seleccionados:
         # Asignar las variables correspondientes
@@ -498,7 +481,7 @@ def anadir_a_registro(productos_seleccionados, s):
         
         if s:
             # query para la tabla de la venta
-            query_add_datatoventas = f"INSERT INTO ventas(fecha, total, hora, metodo_pago) VALUES('{fecha}', {total_venta},'{hora_actual}', '{metodo_pago}')"
+            query_add_datatoventas = f"INSERT INTO ventas(fecha, total, hora, metodo_pago, id_usuario) VALUES('{fecha}', {total_venta},'{hora_actual}', '{metodo_pago}', {id_usuario})"
             cursor.execute(query_add_datatoventas)
 
             query_search_id= f"SELECT id_venta FROM ventas ORDER BY id_venta DESC LIMIT 1"
@@ -519,7 +502,7 @@ def anadir_a_registro(productos_seleccionados, s):
         else:
 
             # query para la tabla de compras
-            query_add_datatoventas = f"INSERT INTO compras(fecha, total, hora) VALUES('{fecha}', {total_venta}, '{hora_actual}')"
+            query_add_datatoventas = f"INSERT INTO compras(fecha, total, hora, id_usuario) VALUES('{fecha}', {total_venta}, '{hora_actual}', {id_usuario})"
             cursor.execute(query_add_datatoventas)
 
             query_search_id= f"SELECT id_compra FROM compras ORDER BY id_compra DESC LIMIT 1"
@@ -621,7 +604,17 @@ def traer_detalles(s, id):
 
 def mostrar_detalles(ventas_compras, tipo):
         detalles_texto = "\n".join([
-            f"Id detalle: {detalle[0]} | Id {'venta' if tipo else 'compra'}: {detalle[1]} | Producto: {detalle[2]} | Cantidad: {detalle[4]:.0f} | Precio Unitario: ${detalle[3]:.2f}"
+            f"Id detalle: {detalle[0]} | Id {'venta' if tipo else 'compra'}: {detalle[1]} | Producto: {detalle[2]} | Cantidad: {detalle[3]:.0f} | Precio Unitario: ${detalle[4]:.2f}"
             for detalle in ventas_compras
         ])
         return detalles_texto if detalles_texto else "No hay registros disponibles."
+
+
+def traer_usuario(id_usuario):
+    cursor= connection2.cursor()
+    query_data2 = f"SELECT nombre FROM usuarios WHERE id_usuario = {id_usuario}"
+    cursor.execute(query_data2)
+    data = cursor.fetchall()
+    cursor.close()
+
+    return data[0][0]

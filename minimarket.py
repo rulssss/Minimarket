@@ -1049,9 +1049,10 @@ class Datos:
     
 
 class BuscarDatos:
-    def __init__(self, master, minimarket):
+    def __init__(self, master, minimarket, username):
         self.master = master
         self.minimarket = minimarket
+        self.username = username
 
     def mostrar(self):
         for widget in self.master.winfo_children():
@@ -1238,14 +1239,18 @@ class BuscarDatos:
                 compras_filtradas = [compra for compra in all_data_compras if compra[1] == fecha_seleccionada_date]
 
                 total_contado['text'], total_mercado_pago['text'], total_cuenta_corriente['text'], total_compras['text'] = totales(ventas_filtradas, compras_filtradas, s=False)
-
-                ventas_texto = "\n".join([f"id_venta: {venta[0]} | Fecha: {venta[1]} | Total: {venta[2]} | Hora: {venta[3]} | Método de Pago: {venta[4]}" for venta in ventas_filtradas])
+                
+               
+                
+                vendedorocomprador = traer_usuario(ventas_filtradas[0][5])
+                
+                ventas_texto = "\n".join([f"id_venta: {venta[0]} | Fecha: {venta[1]} | Total: ${venta[2]} | Hora: {venta[3]} | Método de Pago: {venta[4]} | Vendedor: {vendedorocomprador}" for venta in ventas_filtradas])
                 text_ventas.config(state=tk.NORMAL)
                 text_ventas.delete(1.0, tk.END)
                 text_ventas.insert(tk.END, ventas_texto if ventas_texto else "No hay ventas para esta fecha.")
                 text_ventas.config(state=tk.DISABLED)
 
-                compras_texto = "\n".join([f"id_compra: {compra[0]} | Fecha: {compra[1]} | Total: {compra[2]} | Hora: {compra[3]}" for compra in compras_filtradas])
+                compras_texto = "\n".join([f"id_compra: {compra[0]} | Fecha: {compra[1]} | Total: ${compra[2]} | Hora: {compra[3]} | Comprador: {vendedorocomprador}" for compra in compras_filtradas])
                 text_compras.config(state=tk.NORMAL)
                 text_compras.delete(1.0, tk.END)
                 text_compras.insert(tk.END, compras_texto if compras_texto else "No hay compras para esta fecha.")
@@ -1408,9 +1413,11 @@ class BuscarDatos:
 
 
 class Administracion:
-    def __init__(self, master, minimarket):
+    def __init__(self, master, minimarket, usuario):
+        
         self.master = master
         self.minimarket = minimarket
+        self.usuario = usuario
 
     def mostrar(self):
         for widget in self.master.winfo_children():
@@ -1645,7 +1652,7 @@ class Administracion:
         def procesar_productos():
             global facturero_abierto
             s = True
-            anadir_a_registro(self.productos_seleccionados, s)
+            anadir_a_registro(self.productos_seleccionados, s, self.usuario)
             # actualizar_cantidad_productos(productos_seleccionados, s)
     
             # Limpia el arreglo
@@ -1935,7 +1942,7 @@ class Administracion:
             global facturero_abierto
             s = False
             
-            anadir_a_registro(self.compras_seleccionadas, s)
+            anadir_a_registro(self.compras_seleccionadas, s, self.usuario)
             #limpia el arreglo
             self.compras_seleccionadas.clear()
 
@@ -1993,6 +2000,8 @@ class Minimarket:
         self.master = master
         self.master.title("rls")
 
+        
+
         # Configurar la ventana para que tome el tamaño de la pantalla sin ser pantalla completa
         screen_width = self.master.winfo_screenwidth()
         screen_height = self.master.winfo_screenheight()
@@ -2033,8 +2042,8 @@ class Minimarket:
 
             # Crear instancias de las clases de contenido
             self.datos = Datos(self.contenido, self)
-            self.buscar_datos = BuscarDatos(self.contenido_bd, self)
-            self.administracion = Administracion(self.contenido_ad, self)
+            self.buscar_datos = BuscarDatos(self.contenido_bd, self, username)
+            self.administracion = Administracion(self.contenido_ad, self, username)
 
             # Vincular el cambio de pestaña a un evento
             self.notebook.bind("<<NotebookTabChanged>>", self.cambiar_pestana_administrador)
@@ -2055,8 +2064,8 @@ class Minimarket:
             self.contenido_ad = tk.Frame(self.tab_administracion, bg="white", bd=0, highlightthickness=0)
             self.contenido_ad.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-            self.buscar_datos = BuscarDatos(self.contenido_bd, self)
-            self.administracion = Administracion(self.contenido_ad, self)
+            self.buscar_datos = BuscarDatos(self.contenido_bd, self, username)
+            self.administracion = Administracion(self.contenido_ad, self, username)
 
             # Vincular el cambio de pestaña a un evento
             self.notebook.bind("<<NotebookTabChanged>>", self.cambiar_pestana_usuario)
