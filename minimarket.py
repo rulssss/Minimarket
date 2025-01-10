@@ -1452,7 +1452,6 @@ class Administracion:
         # Crear la ventana principal
         ventana_facturero = tk.Toplevel()
         ventana_facturero.title("Facturero")
-        ventana_facturero.transient(self.master)
         ventana_facturero.resizable(False, False)  # Evita que se redimensione
     
         # Centrar la ventana
@@ -1545,7 +1544,7 @@ class Administracion:
     
         # Crear etiqueta para mostrar el total de la compra
         total_label = tk.Label(ventana_facturero, text="Total: $0.00", font=("Segoe UI", 13, "bold"))
-        total_label.pack(side="right", padx=20, pady=10)
+        total_label.pack(side="right", padx=(0,20), pady=10)
     
         # Función para actualizar los datos del producto seleccionado
         def actualizar_datos_producto(event):
@@ -1668,7 +1667,8 @@ class Administracion:
     
         # Crear frame inferior para botones "Procesar" y "Cerrar"
         frame_botones = tk.Frame(ventana_facturero)
-        frame_botones.pack(pady=10)
+        frame_botones.place(x=10, y=645)
+
     
         # Botón "Cerrar"
         def cerrar_ventana():
@@ -1689,8 +1689,10 @@ class Administracion:
         boton_cerrar.pack(side="left", padx=20)
     
         # Botón "Procesar"
-        boton_procesar = tk.Button(frame_botones, text="Procesar", font=("Segoe UI", 13, "bold"), command=procesar_productos, relief="groove", fg="black", bg="#d7d7d7")
-        boton_procesar.pack(side="right", padx=20)
+        boton_procesar = tk.Button(frame_botones, text="Procesar", width=15, font=("Segoe UI", 13, "bold"), command=procesar_productos, relief="groove", fg="black", bg="#d7d7d7")
+        boton_procesar.pack(side="right", padx=(90,0))
+
+        
     
         # Vincular el evento de selección en el combobox
         nombre_producto_combobox.bind("<<ComboboxSelected>>", actualizar_datos_producto)
@@ -1723,6 +1725,7 @@ class Administracion:
         # Crear la ventana principal
         ventana_compra = tk.Toplevel()
         ventana_compra.title("Compras")
+        ventana_compra.resizable(False, False)  # Evita que se redimensione
     
         # Centrar la ventana
         ventana_compra_width = 600  # Ancho deseado
@@ -1874,8 +1877,8 @@ class Administracion:
                             hora = "Tarde"
                         else:
                             hora = "Manana"
-                       
-                        producto_modificado = (producto[1], f"{float(producto[3]):.2f}", cantidad_seleccionada, producto[5], producto[6], hora)
+                        total = float(producto[3]) * int(cantidad_seleccionada)
+                        producto_modificado = (producto[1], f"{float(producto[3]):.2f}", cantidad_seleccionada, producto[5], producto[6], hora, f"Total: {total:.2f}")
                         
                         s = False
                         d = controlar_cantidades(producto_modificado, s) 
@@ -1971,7 +1974,6 @@ class Administracion:
         boton_cerrar = tk.Button(frame_botones, text="Cerrar", font=("Segoe UI", 13, "bold"), command=cerrar_ventana, relief="groove", fg="black", bg="#ef3232")
         boton_cerrar.pack(side="left", padx=20)
     
-        
     
         # Botón "Procesar"
         boton_procesar = tk.Button(frame_botones, text="Procesar", font=("Segoe UI", 13, "bold"), command=procesar_productos,  relief="groove", fg="black", bg="#d7d7d7")
