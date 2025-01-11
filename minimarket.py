@@ -1240,17 +1240,14 @@ class BuscarDatos:
 
                 total_contado['text'], total_mercado_pago['text'], total_cuenta_corriente['text'], total_compras['text'] = totales(ventas_filtradas, compras_filtradas, s=False)
                 
-               
                 
-                vendedorocomprador = traer_usuario(ventas_filtradas[0][5])
-                
-                ventas_texto = "\n".join([f"id_venta: {venta[0]} | Fecha: {venta[1]} | Total: ${venta[2]} | Hora: {venta[3]} | Método de Pago: {venta[4]} | Vendedor: {vendedorocomprador}" for venta in ventas_filtradas])
+                ventas_texto = "\n".join([f"id_venta: {venta[0]} | Fecha: {venta[1]} | Total: ${venta[2]} | Hora: {venta[3]} | Método de Pago: {venta[4]} | Vendedor: {traer_usuario(ventas_filtradas)}" for venta in ventas_filtradas])
                 text_ventas.config(state=tk.NORMAL)
                 text_ventas.delete(1.0, tk.END)
                 text_ventas.insert(tk.END, ventas_texto if ventas_texto else "No hay ventas para esta fecha.")
                 text_ventas.config(state=tk.DISABLED)
 
-                compras_texto = "\n".join([f"id_compra: {compra[0]} | Fecha: {compra[1]} | Total: ${compra[2]} | Hora: {compra[3]} | Comprador: {vendedorocomprador}" for compra in compras_filtradas])
+                compras_texto = "\n".join([f"id_compra: {compra[0]} | Fecha: {compra[1]} | Total: ${compra[2]} | Hora: {compra[3]} | Comprador: {traer_usuario(ventas_filtradas)}" for compra in compras_filtradas])
                 text_compras.config(state=tk.NORMAL)
                 text_compras.delete(1.0, tk.END)
                 text_compras.insert(tk.END, compras_texto if compras_texto else "No hay compras para esta fecha.")
@@ -1267,12 +1264,14 @@ class BuscarDatos:
         ventana.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
         ventana.configure(bg="white")
         ventana.update_idletasks()
-        width = 600
-        height = 760
+        width = 700
+        height = 850
         x = (ventana.winfo_screenwidth() // 2) - (width // 2)
         y = (ventana.winfo_screenheight() // 2) - (height // 2)
         ventana.geometry(f"{width}x{height}+{x}+{y}")
         ventana.grab_set()
+        ventana.resizable(False, False)
+        
 
         ventana.grid_rowconfigure(0, weight=1)
         ventana.grid_columnconfigure(0, weight=1)
@@ -1382,15 +1381,16 @@ class BuscarDatos:
 
                 ventas_filtradas = [venta for venta in all_data_ventas if fecha_inicio <= venta[1] <= fecha_fin]
                 compras_filtradas = [compra for compra in all_data_compras if fecha_inicio <= compra[1] <= fecha_fin]
+                
 
                 total_ventas['text'], total_contado['text'], total_mercado_pago['text'], total_cuenta_corriente['text'], total_compras['text'] = totales(ventas_filtradas, compras_filtradas, s=True)
-                ventas_texto = "\n".join([f"id_venta: {venta[0]} | Fecha: {venta[1]} | Total: {venta[2]} | Hora: {venta[3]} | Metodo de pago: {venta[4]}" for venta in ventas_filtradas])
+                ventas_texto = "\n".join([f"id_venta: {venta[0]} | Fecha: {venta[1]} | Total: {venta[2]} | Hora: {venta[3]} | Metodo de pago: {venta[4]} | Vendedor: {traer_usuario(ventas_filtradas)}"  for venta in ventas_filtradas])
                 text_ventas.config(state=tk.NORMAL)
                 text_ventas.delete(1.0, tk.END)
                 text_ventas.insert(tk.END, ventas_texto if ventas_texto else "No hay ventas para este mes.")
                 text_ventas.config(state=tk.DISABLED)
 
-                compras_texto = "\n".join([f"id_compra: {compra[0]} | Fecha: {compra[1]} | Total: {compra[2]} | Hora: {compra[3]}" for compra in compras_filtradas])
+                compras_texto = "\n".join([f"id_compra: {compra[0]} | Fecha: {compra[1]} | Total: {compra[2]} | Hora: {compra[3]} | Comprador: {traer_usuario(ventas_filtradas)}" for compra in compras_filtradas])
 
                 text_compras.config(state=tk.NORMAL)
                 text_compras.delete(1.0, tk.END)

@@ -610,7 +610,8 @@ def mostrar_detalles(ventas_compras, tipo):
         return detalles_texto if detalles_texto else "No hay registros disponibles."
 
 
-def traer_usuario(id_usuario):
+def traer_usuario(ventas_filtradas):
+    id_usuario = ventas_filtradas[0][5]
     cursor= connection2.cursor()
     query_data2 = f"SELECT nombre FROM usuarios WHERE id_usuario = {id_usuario}"
     cursor.execute(query_data2)
