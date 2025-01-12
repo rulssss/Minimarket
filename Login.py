@@ -272,6 +272,9 @@ class Login:
                 account = False
             else:
                 account = True
+                
+            if existe_categoria():
+                crear_categuno()
             Minimarket(minimarket_root, username, account)
             minimarket_root.mainloop()
 

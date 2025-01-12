@@ -296,6 +296,25 @@ def cargar_categoria(nombre_categoria):
     except errors.UniqueViolation:
         return False
     
+def existe_categoria():
+    cursor= connection2.cursor()
+    query_data2 = f"SELECT nombre_descrip FROM categorias WHERE nombre_descrip = 'Sin categoria'"
+    cursor.execute(query_data2)
+    data = cursor.fetchall()
+    cursor.close()
+    print(data)
+    if data != []:
+        return False
+    else:
+        return True
+
+
+def crear_categuno():
+    cursor= connection2.cursor()
+    query_data2 = f"INSERT INTO categorias(id_categoria, nombre_descrip) VALUES(1, 'Sin categoria')"
+    cursor.execute(query_data2)
+    cursor.close()
+    
 def buscar_categoria(nombre_categ):
     cursor= connection2.cursor()
     query_data2 = f"SELECT EXISTS (SELECT 1 FROM categorias WHERE nombre_descrip = '{nombre_categ}') AS existe" # ve si existe y devuelve true o false, ver el fetchone
@@ -303,9 +322,24 @@ def buscar_categoria(nombre_categ):
     data = cursor.fetchone()[0]
 
     if data:
-        query_data3 = f"DELETE FROM categorias WHERE nombre_descrip = '{nombre_categ}'"
-        cursor.execute(query_data3)
-        cursor.close()
+        try:
+            query_data3 = f"DELETE FROM categorias WHERE nombre_descrip = '{nombre_categ}'"
+            cursor.execute(query_data3)
+            cursor.close()
+        except errors.ForeignKeyViolation:
+            query_data4 = f"SELECT nombre FROM productos WHERE id_categoria= {traer_id_categoria(nombre_categ)}"
+            cursor.execute(query_data4)
+            data = cursor.fetchall()
+        
+            for prod in data[0]:
+                query_data5 = f"UPDATE productos SET id_categoria = 1 WHERE nombre = '{prod}'"
+                cursor.execute(query_data5)
+
+            query_data3 = f"DELETE FROM categorias WHERE nombre_descrip = '{nombre_categ}'"
+            cursor.execute(query_data3)
+
+
+            cursor.close()
         return True
         
     else: 
@@ -332,7 +366,7 @@ def ventana_confirmacion():
     confirm_window.config(bg="white")  # Fondo blanco, típico de ventanas de Windows
     confirm_window.grab_set()  # Bloquear la ventana principal hasta que se cierre la ventana emergente
     confirm_window.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
-
+    confirm_window.resizable(False, False)  # Bloquear el cambio de tamaño de la ventana
     # Centrando la ventana
     screen_width = confirm_window.winfo_screenwidth()
     screen_height = confirm_window.winfo_screenheight()
@@ -343,7 +377,7 @@ def ventana_confirmacion():
     confirm_window.geometry(f"{window_width}x{window_height}+{position_x}+{position_y}")
 
     # Etiqueta con el mensaje
-    label = tk.Label(confirm_window, text="¡ATENCION!\n Esta a punto de borrar todos los datos.", font=("Segoe UI", 12), bg="white")
+    label = tk.Label(confirm_window, text="¡ATENCION!\n Esta a punto de borrar todos los datos\n incluyendo los datos del login.", font=("Segoe UI", 12), bg="white")
     label.pack(pady=(40, 0))  # Ajustar el espaciado para mayor separación
     
 
@@ -367,7 +401,9 @@ def ventana_confirmacion():
     btn_no = tk.Button(button_frame, text="Cancelar", command=on_no, width=12, relief="groove", bg="#ef3232", fg="black", font=("Segoe UI", 12,     "bold"))
     btn_no.pack(side=tk.LEFT, padx=15)
 
+    confirm_window.protocol("WM_DELETE_WINDOW", on_no)
     confirm_window.wait_window()
+    
 
     return resultado.get()
 
@@ -382,6 +418,16 @@ def clear_data():
 
         query_data3 = f"TRUNCATE proveedores CASCADE"
         cursor.execute(query_data3)
+
+        query_data4 = f"TRUNCATE contrasenas CASCADE"
+        cursor.execute(query_data4)
+
+        query_data5 = f"TRUNCATE usuarios CASCADE"
+        cursor.execute(query_data5)
+
+
+
+
         
             
     cursor.close()

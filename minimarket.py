@@ -1003,7 +1003,7 @@ class Datos:
         confirm_window.config(bg="white")
         confirm_window.resizable(False, False)  # Evitar que se redimensione
         confirm_window.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
-
+        confirm_window.resizable(False, False)  # Evitar que se redimensione
         confirm_window.grab_set()  # Hacer la ventana modal
 
         # Centrando la ventana
@@ -2095,7 +2095,6 @@ class Minimarket:
         if hasattr(self, 'frame_derecho'):
             self.frame_derecho.place(x=320, y=0, width=max(self.master.winfo_width() - 320, 480), height=max(self.master.winfo_height(), 600))
 
-    
 
     def mostrar_arbol_productos(self):
         # Limpiar el área derecha si ya hay contenido
@@ -2303,6 +2302,7 @@ class Minimarket:
         mostrar_productos.entry_busqueda = ttk.Entry(self.frame_derecho, font=("Segoe UI", 14))
         mostrar_productos.entry_busqueda.place(x=10, y=50)  # Ajustar la posición
         mostrar_productos.entry_busqueda.bind("<KeyRelease>", actualizar_filtro)  # Detectar cada tecla que el usuario presiona
+
 
         
         # Mostrar todos los productos inmediatamente cuando se abre el Entry    
