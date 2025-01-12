@@ -302,7 +302,7 @@ def existe_categoria():
     cursor.execute(query_data2)
     data = cursor.fetchall()
     cursor.close()
-    print(data)
+
     if data != []:
         return False
     else:
@@ -425,14 +425,11 @@ def clear_data():
         query_data5 = f"TRUNCATE usuarios CASCADE"
         cursor.execute(query_data5)
 
-
-
-
-        
+        messagebox.showinfo("Datos borrados", "Todos los datos han sido borrados.")
             
     cursor.close()
 
-    messagebox.showinfo("Datos borrados", "Todos los datos han sido borrados.")
+    
 
 
 def controlar_cantidades(producto_modificado, s):
