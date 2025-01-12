@@ -187,6 +187,9 @@ class Datos:
 
         # Vincular el evento de cierre de la ventana a la función on_no
         ventana.protocol("WM_DELETE_WINDOW", on_no)
+
+        # Vincular el evento de la tecla Enter al botón "Aceptar"
+        ventana.bind('<Return>', lambda event: on_yes())
         
     def borrar_producto(self):
         # Crear la ventana
@@ -267,6 +270,8 @@ class Datos:
         boton_cerrar.pack(pady=5)
 
         ventana.protocol("WM_DELETE_WINDOW", cerrar)
+        # Vincular el evento de la tecla Enter al botón "Aceptar"
+        ventana.bind('<Return>', lambda event: confirmar())
 
         # Iniciar el bucle principal de la ventana
         ventana.mainloop()
@@ -465,6 +470,13 @@ class Datos:
 
         # Vincular el evento de cierre de la ventana a la función on_no
         confirm_window.protocol("WM_DELETE_WINDOW", on_no)
+
+        # Vincular el evento de la tecla Enter al botón "Aceptar"
+        confirm_window.bind('<Return>', lambda event: on_yes())
+
+        # Vincular el evento de la tecla Enter al botón "Aceptar"
+        confirm_window.bind('<Return>', lambda event: on_yes())
+
         confirm_window.mainloop()
 
     def visualizar_productos(self):
@@ -579,6 +591,9 @@ class Datos:
         # Vincular el evento de cierre de la ventana a la función on_no
         ventana.protocol("WM_DELETE_WINDOW", on_no)
 
+        # Vincular el evento de la tecla Enter al botón "Aceptar"
+        ventana.bind('<Return>', lambda event: on_yes())
+
     def borrar_proveedor(self):
 
         # Crear la ventana
@@ -639,6 +654,7 @@ class Datos:
                 v = buscar_proveedor(nombre_prov) # creada, y sida true lo borra al instante, si hace falta en otra instancia crear otra funcion solo para borrar
                 if v:
                     messagebox.showinfo("Borrar Proveedor", "Proveedor borrado con éxito.")
+                    self.minimarket.mostrar_arbol_proveedores()
                     ventana.destroy()  # Cerrar la ventana
                 else:
                     messagebox.showinfo("Borrar Proveedor", "No se encontró el proveedor.")
@@ -658,6 +674,9 @@ class Datos:
         boton_cerrar.pack(pady=5)
 
         ventana.protocol("WM_DELETE_WINDOW", cerrar)
+
+        # Vincular el evento de la tecla Enter al botón de borrar
+        ventana.bind('<Return>', lambda event: confirmar())
 
         # Iniciar el bucle principal de la ventana
         ventana.mainloop()
@@ -789,6 +808,7 @@ class Datos:
                     advertencia_label.config(text="Actualice el producto por favor")
                 else:
                     actualizar_proveedor(nombre_proveedor, num_proveedor, mail_producto)
+                    self.minimarket.mostrar_arbol_proveedores()
                     on_no()
                 return
             else:
@@ -812,6 +832,10 @@ class Datos:
 
         # Vincular el evento de cierre de la ventana a la función on_no
         confirm_window.protocol("WM_DELETE_WINDOW", on_no)
+
+        # Vincular el evento de la tecla Enter al botón "Aceptar"
+        confirm_window.bind('<Return>', lambda event: on_yes())
+
         confirm_window.mainloop()
 
     def visualizar_proveedores(self):
@@ -906,6 +930,9 @@ class Datos:
         # Vincular el evento de cierre de la ventana a la función on_no
         ventana.protocol("WM_DELETE_WINDOW", on_no)
 
+        # Vincular el evento de la tecla Enter al botón "Aceptar"
+        ventana.bind('<Return>', lambda event: on_yes())
+
     def borrar_categoria(self):
         # Crear la ventana
         ventana = tk.Toplevel()
@@ -964,6 +991,7 @@ class Datos:
                 v = buscar_categoria(nombre_categ) # creada, y sida true lo borra al instante, si hace falta en otra instancia crear otra funcion solo para borrar
                 if v:
                     messagebox.showinfo("Borrar Categoria", "Catgoría borrada con éxito.")
+                    self.minimarket.mostrar_arbol_categorias()
                     ventana.destroy()  # Cerrar la ventana
                 else:
                     advertencia_label.config(text="No se encontro la categoría")
@@ -983,6 +1011,9 @@ class Datos:
         boton_cerrar.pack(pady=5)
 
         ventana.protocol("WM_DELETE_WINDOW", cerrar)
+
+        # Vincular el evento de la tecla Enter al botón de borrar
+        ventana.bind('<Return>', lambda event: confirmar())
 
         # Iniciar el bucle principal de la ventana
         ventana.mainloop()
@@ -1255,6 +1286,10 @@ class BuscarDatos:
 
         boton_aceptar = tk.Button(main_frame, text="Aceptar", command=aceptar, bg="lightgrey", font=("Segoe UI", 14, "bold"), cursor="hand2", fg="black", relief="groove")
         boton_aceptar.grid(row=3, column=0, pady=10, sticky='n')
+        
+        # Vincular el evento de la tecla Enter al botón "Aceptar"
+        ventana.bind('<Return>', lambda event: aceptar())
+
 
         ventana.mainloop()
     
@@ -1405,6 +1440,9 @@ class BuscarDatos:
 
         boton_cerrar = tk.Button(main_frame, text="Cerrar", command=cerrar, bg="lightgrey", font=("Segoe UI", 14, "bold"), cursor="hand2", fg="black", relief="groove", width=20)
         boton_cerrar.grid(row=4, column=0, pady=5, sticky='ew')
+
+        # Vincular el evento de la tecla Enter al botón "Aceptar"
+        ventana.bind('<Return>', lambda event: aceptar())
 
         ventana.mainloop()
         
@@ -1650,7 +1688,7 @@ class Administracion:
             total_label.config(text=f"Total: ${total:.2f}")
     
         def procesar_productos():
-            global facturero_abierto
+            
             s = True
             anadir_a_registro(self.productos_seleccionados, s, self.usuario)
             # actualizar_cantidad_productos(productos_seleccionados, s)
@@ -1660,9 +1698,36 @@ class Administracion:
     
             self.minimarket.mostrar_arbol_productos()  # Muestra todos los productos actualizados
     
-            facturero_abierto = False
+            # Limpiar el área de texto y el total
+            result_text.config(state="normal")
+            result_text.delete(1.0, tk.END)
+            result_text.config(state="disabled")
+            total_label.config(text="Total: $0.00")
+
+            # Limpiar los campos de entrada
+            producto_id.config(state="normal")
+            producto_id.delete(0, tk.END)
+            producto_id.config(state="readonly")
+
+            nombre_producto_combobox.set("")
+            precio_producto_venta.config(state="normal")
+            precio_producto_venta.delete(0, tk.END)
+            precio_producto_venta.config(state="readonly")
+
+            cantidad_producto.delete(0, tk.END)
+            cantidad_producto.insert(0, "")
+
+            categoria.config(state="normal")
+            categoria.delete(0, tk.END)
+            categoria.config(state="readonly")
+
+            proveedor_producto.config(state="normal")
+            proveedor_producto.delete(0, tk.END)
+            proveedor_producto.config(state="readonly")
+
+            nombre_metodos_combobox.set("")
+
     
-            ventana_facturero.destroy()
     
         # Crear botón "Borrar Último Agregado"
         boton_borrar = tk.Button(frame_superior, text="Borrar Último Agregado", font=("Segoe UI", 10, "bold"), relief="groove", bg="#ef3232", fg="black", command=borrar_ultimo_producto)
@@ -1705,6 +1770,7 @@ class Administracion:
         nombre_producto_combobox.bind("<<ComboboxSelected>>", actualizar_datos_producto)
         # Vincular el evento de cierre de la ventana para restablecer facturero_abierto
         ventana_facturero.protocol("WM_DELETE_WINDOW", cerrar_ventana)
+
     
         ventana_facturero.mainloop()
 
@@ -1939,7 +2005,6 @@ class Administracion:
             total_label.config(text=f"Total: ${total:.2f}")
     
         def procesar_productos():
-            global facturero_abierto
             s = False
             
             anadir_a_registro(self.compras_seleccionadas, s, self.usuario)
@@ -1948,7 +2013,34 @@ class Administracion:
 
             self.minimarket.mostrar_arbol_productos() #muestra todos los prod actualizados
 
-            cerrar_ventana()
+            # Limpiar el área de texto y el total
+            result_text.config(state="normal")
+            result_text.delete(1.0, tk.END)
+            result_text.config(state="disabled")
+            total_label.config(text="Total: $0.00")
+
+            # Limpiar los campos de entrada
+            producto_id.config(state="normal")
+            producto_id.delete(0, tk.END)
+            producto_id.config(state="readonly")
+
+            nombre_producto_combobox.set("")
+            precio_producto_venta.config(state="normal")
+            precio_producto_venta.delete(0, tk.END)
+            precio_producto_venta.config(state="readonly")
+
+            cantidad_producto.delete(0, tk.END)
+            cantidad_producto.insert(0, "")
+
+            categoria.config(state="normal")
+            categoria.delete(0, tk.END)
+            categoria.config(state="readonly")
+
+            proveedor_producto.config(state="normal")
+            proveedor_producto.delete(0, tk.END)
+            proveedor_producto.config(state="readonly")
+
+            nombre_metodos_combobox.set("")
         
         
     
