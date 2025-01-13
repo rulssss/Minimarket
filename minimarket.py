@@ -480,7 +480,7 @@ class Datos:
         confirm_window.mainloop()
 
     def visualizar_productos(self):
-       self.minimarket.mostrar_arbol_productos()
+       self.minimarket.mostrar_arbol_productos_cat_prov()
 
 
     def agregar_proveedor(self):
@@ -2399,6 +2399,184 @@ class Minimarket:
         
         # Mostrar todos los productos inmediatamente cuando se abre el Entry    
         mostrar_todos_los_productos()
+
+    
+    def mostrar_arbol_productos_cat_prov(self):
+        # Limpiar el área derecha si ya hay contenido
+        self.borrar_frame_derecho()
+
+        # Estilo personalizado para agrandar la fuente de la tabla y aumentar la altura de las filas
+        style = ttk.Style()
+        style.configure("Treeview.Heading", font=("Segoe UI", 16, "bold"))  # Agranda la fuente de los encabezados
+        style.configure("Treeview", font=("Segoe UI", 14), rowheight=30)   # Agranda la fuente de las filas y ajusta la altura
+        style.configure("Rojo.TLabel", foreground="red")
+
+        # Frame derecho para mostrar la tabla
+        self.frame_derecho = tk.Frame(self.master, padx=10, pady=10)
+        self.frame_derecho.place(x=320, y=0, width=max(self.master.winfo_width() - 320, 480), height=max(self.master.winfo_height(), 600))
+
+        # Título para la tabla
+        label_tabla = tk.Label(self.frame_derecho, text="Productos", font=("Segoe UI", 24, "bold"), fg="black", relief="flat")
+        label_tabla.pack(pady=20)
+
+        # Tabla (Treeview) para mostrar los productos
+        tree = ttk.Treeview(self.frame_derecho, columns=("ID", "nombre", "precio compra", "precio venta", "stock", "categoria", "proveedor"), show="headings", height=10)
+
+        # Definir las columnas con doble clic
+        columnas = ["ID", "nombre", "precio compra", "precio venta", "stock", "categoria", "proveedor"]
+        for col in columnas:
+            tree.heading(col, text=col.capitalize(), command=lambda c=col: contador_clic(c))
+            tree.column(col, width=100, anchor="center")
+
+        # Empaquetar la tabla
+        tree.pack(fill=tk.BOTH, expand=True)
+
+        # Inicializar un diccionario para contar los clics en cada columna
+        click_counter = {col: 0 for col in columnas}
+
+        # Función para contar clics y copiar la columna si hay dos clics consecutivos
+        def contador_clic(columna):
+            click_counter[columna] += 1
+            if click_counter[columna] == 2:
+                copiar_columna(columna)
+                click_counter[columna] = 0
+            else:
+                for col in click_counter:
+                    if col != columna:
+                        click_counter[col] = 0
+
+        # Función para copiar la columna seleccionada al portapapeles
+        def copiar_columna(columna):
+            valores_columna = [tree.item(item)['values'][tree["columns"].index(columna)] for item in tree.get_children()]
+            self.master.clipboard_clear()
+            self.master.clipboard_append("\n".join(map(str, valores_columna)))
+            self.master.update()
+            mostrar_mensaje_copiado()
+
+        # Variable para realizar seguimiento de los clics
+        global primer_click
+        primer_click = None
+
+        # Función para copiar una fila completa al portapapeles
+        def copiar_fila(event):
+            global primer_click
+            item = tree.identify_row(event.y)
+            if not item:
+                return
+            if primer_click == item:
+                valores_fila = tree.item(item)['values']
+                fila_copiada = "\t".join(map(str, valores_fila))
+                self.master.clipboard_clear()
+                self.master.clipboard_append(fila_copiada)
+                self.master.update()
+                mostrar_mensaje_copiado()
+                primer_click = None
+            else:
+                primer_click = item
+
+        # Función para mostrar el mensaje "Copiado al portapapeles"
+        def mostrar_mensaje_copiado():
+            mensaje = tk.Toplevel(self.master)
+            mensaje.title("Mensaje Copiado")
+            ventana_width = self.master.winfo_width()
+            ventana_height = self.master.winfo_height()
+            mensaje_width = 300
+            mensaje_height = 50
+            position_top = self.master.winfo_rooty() + (ventana_height // 2) - (mensaje_height // 2)
+            position_left = self.master.winfo_rootx() + (ventana_width // 2) - (mensaje_width // 2)
+            mensaje.geometry(f"{mensaje_width}x{mensaje_height}+{position_left}+{position_top}")
+            mensaje.overrideredirect(True)
+            mensaje.config(bg="black")
+            mensaje.attributes("-alpha", 0.7)
+            label = tk.Label(mensaje, text="Copiado al portapapeles", fg="white", font=("Arial", 16, "bold"), bg="black")
+            label.pack(expand=True)
+            mensaje.after(2000, mensaje.destroy)
+
+        # Asociar el evento de clic en la fila
+        tree.bind("<ButtonRelease-1>", copiar_fila)
+
+        def mostrar_productos():
+            return traer_todos_los_productos()
+
+        def actualizar_filtro(event=None):
+            all_data2 = traer_todos_los_productos()
+            texto_busqueda = mostrar_productos.entry_busqueda.get().lower()
+            seleccion = combobox_opcion.get()
+            nombre_seleccionado = combobox_nombre.get().lower()
+            for item in tree.get_children():
+                tree.delete(item)
+            if seleccion == "Categoria":
+                productos_a_mostrar = [p for p in all_data2 if texto_busqueda in p[1].lower() and p[5].lower() == nombre_seleccionado]
+            elif seleccion == "Proveedor":
+                productos_a_mostrar = [p for p in all_data2 if texto_busqueda in p[1].lower() and p[6].lower() == nombre_seleccionado]
+            else:
+                productos_a_mostrar = all_data2
+            tree.tag_configure("rojo", foreground="red", font=("Segoe UI", 14, "bold"))
+            for i in productos_a_mostrar:
+                tag = ("rojo",) if i[2] < 5 else ()
+                tree.insert("", "end", values=("", "", "", "", "", "", ""))
+                tree.insert("", "end", values=(i[0], i[1], f"${i[2]:.2f}", f"${i[3]:.2f}", i[4], i[5], i[6]), tags=tag)
+
+        def mostrar_todos_los_productos(s=mostrar_productos()):
+            for item in tree.get_children():
+                tree.delete(item)
+            tree.tag_configure("rojo", foreground="red", font=("Segoe UI", 14, "bold"))
+            for i in s:
+                tag = ("rojo",) if i[2] < 5 else ()
+                tree.insert("", "end", values=("", "", "", "", "", "", ""))
+                tree.insert("", "end", values=(i[0], i[1], f"${i[2]:.2f}", f"${i[3]:.2f}", i[4], i[5], i[6]), tags=tag)
+
+        mostrar_productos.entry_busqueda = ttk.Entry(self.frame_derecho, font=("Segoe UI", 14))
+        mostrar_productos.entry_busqueda.place(x=10, y=50)
+        mostrar_productos.entry_busqueda.bind("<KeyRelease>", actualizar_filtro)
+
+        # Combobox para categorías
+        tk.Label(self.frame_derecho, text="Seleccione cat o prov :", font=("Segoe UI", 12)).place(x=1190, y=10)
+        combobox_opcion = ttk.Combobox(self.frame_derecho, font=("Segoe UI", 12), state="readonly", height=5)
+        combobox_opcion['values'] = ["Categoria", "Proveedor"]
+        combobox_opcion.option_add('*TCombobox*Listbox.font', ('Segoe UI', 12))
+        combobox_opcion.place(x=1350, y=10, width=200)
+
+        # Combobox para proveedores
+        tk.Label(self.frame_derecho, text="Seleccione el nombre :", font=("Segoe UI", 12)).place(x=1188, y=40)
+        combobox_nombre = ttk.Combobox(self.frame_derecho, font=("Segoe UI", 12), state="readonly", height=5)
+        combobox_nombre.place(x=1350, y=40, width=200)
+
+        def actualizar_combobox(event):
+            seleccion = combobox_opcion.get()
+            combobox_nombre.set("")
+            if seleccion == "Categoria":
+                categorias = [categoria[0] for categoria in traer_categorias()]
+                combobox_nombre['values'] = categorias
+            elif seleccion == "Proveedor":
+                proveedores = [proveedor[0] for proveedor in traer_proveedores()]
+                combobox_nombre['values'] = proveedores
+
+        combobox_opcion.bind("<<ComboboxSelected>>", actualizar_combobox)
+
+        def actualizar_filtro_combobox(event=None):
+            all_data2 = traer_todos_los_productos()
+            seleccion = combobox_opcion.get()
+            nombre_seleccionado = combobox_nombre.get().lower()
+            for item in tree.get_children():
+                tree.delete(item)
+            if seleccion == "Categoria":
+                productos_a_mostrar = [p for p in all_data2 if p[5].lower() == nombre_seleccionado]
+            elif seleccion == "Proveedor":
+                productos_a_mostrar = [p for p in all_data2 if p[6].lower() == nombre_seleccionado]
+            else:
+                productos_a_mostrar = all_data2
+            tree.tag_configure("rojo", foreground="red", font=("Segoe UI", 14, "bold"))
+            for i in productos_a_mostrar:
+                tag = ("rojo",) if i[2] < 5 else ()
+                tree.insert("", "end", values=("", "", "", "", "", "", ""))
+                tree.insert("", "end", values=(i[0], i[1], f"${i[2]:.2f}", f"${i[3]:.2f}", i[4], i[5], i[6]), tags=tag)
+
+        combobox_nombre.bind("<<ComboboxSelected>>", actualizar_filtro_combobox)
+
+        # Mostrar todos los productos inmediatamente cuando se abre el Entry
+        mostrar_todos_los_productos()
+
         
 
     def borrar_frame_derecho(self):
