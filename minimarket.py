@@ -2531,16 +2531,16 @@ class Minimarket:
         mostrar_productos.entry_busqueda.bind("<KeyRelease>", actualizar_filtro)
 
         # Combobox para categorías
-        tk.Label(self.frame_derecho, text="Seleccione cat o prov :", font=("Segoe UI", 12)).place(x=1190, y=10)
+        tk.Label(self.frame_derecho, text="Seleccione cat o prov :", font=("Segoe UI", 12)).place(relx=0.78, rely=0.02, anchor="center")
         combobox_opcion = ttk.Combobox(self.frame_derecho, font=("Segoe UI", 12), state="readonly", height=5)
         combobox_opcion['values'] = ["Categoria", "Proveedor"]
         combobox_opcion.option_add('*TCombobox*Listbox.font', ('Segoe UI', 12))
-        combobox_opcion.place(x=1350, y=10, width=200)
+        combobox_opcion.place(relx=0.92, rely=0.02, anchor="center", width=200)
 
         # Combobox para proveedores
-        tk.Label(self.frame_derecho, text="Seleccione el nombre :", font=("Segoe UI", 12)).place(x=1188, y=40)
+        tk.Label(self.frame_derecho, text="Seleccione el nombre :", font=("Segoe UI", 12)).place(relx=0.78, rely=0.06, anchor="center")
         combobox_nombre = ttk.Combobox(self.frame_derecho, font=("Segoe UI", 12), state="readonly", height=5)
-        combobox_nombre.place(x=1350, y=40, width=200)
+        combobox_nombre.place(relx=0.92, rely=0.06, anchor="center", width=200)
 
         def actualizar_combobox(event):
             seleccion = combobox_opcion.get()
