@@ -5,6 +5,7 @@ from tkinter import Toplevel, Label, Entry, Button, Frame, font
 import re
 from datetime import datetime, date
 import calendar
+import keyboard
 
 
 ### TODA LA VENTANA DE EL MINIMARKET 
@@ -1772,6 +1773,46 @@ class Administracion:
         # Vincular el evento de cierre de la ventana para restablecer facturero_abierto
         ventana_facturero.protocol("WM_DELETE_WINDOW", cerrar_ventana)
 
+        barcode = ""
+        # Función para manejar la entrada del lector de código de barras
+        def on_key_press(event):
+            nonlocal barcode
+            if event.name == 'enter':
+                print(barcode)
+                producto = traer_producto(barcode)  # Llamar a la función traer_producto con el código de barras
+                if producto:
+                    producto_id.config(state="normal")
+                    producto_id.delete(0, tk.END)
+                    producto_id.insert(0, producto[0])
+                    producto_id.config(state="readonly")
+
+                    nombre_producto_combobox.set(producto[1])
+                    precio_producto_venta.config(state="normal")
+                    precio_producto_venta.delete(0, tk.END)
+                    precio_producto_venta.insert(0, producto[3])
+                    precio_producto_venta.config(state="readonly")
+
+                    cantidad_producto.delete(0, tk.END)
+                    cantidad_producto.insert(0, "1")
+
+                    categoria.config(state="normal")
+                    categoria.delete(0, tk.END)
+                    categoria.insert(0, producto[5])
+                    categoria.config(state="readonly")
+
+                    proveedor_producto.config(state="normal")
+                    proveedor_producto.delete(0, tk.END)
+                    proveedor_producto.insert(0, producto[6])
+                    proveedor_producto.config(state="readonly")
+
+                    nombre_metodos_combobox.set("Contado")
+                barcode = ""
+            else:
+                barcode += event.name
+
+        # Vincular la función de escaneo de código de barras
+        keyboard.on_press(on_key_press)
+
     
         ventana_facturero.mainloop()
 
@@ -2082,6 +2123,46 @@ class Administracion:
         # Vincular el evento de selección en el combobox
         nombre_producto_combobox.bind("<<ComboboxSelected>>", actualizar_datos_producto)
         ventana_compra.protocol("WM_DELETE_WINDOW", cerrar_ventana)
+
+        barcode = ""
+        # Función para manejar la entrada del lector de código de barras
+        def on_key_press(event):
+            nonlocal barcode
+            if event.name == 'enter':
+                print(barcode)
+                producto = traer_producto(barcode)  # Llamar a la función traer_producto con el código de barras
+                if producto:
+                    producto_id.config(state="normal")
+                    producto_id.delete(0, tk.END)
+                    producto_id.insert(0, producto[0])
+                    producto_id.config(state="readonly")
+
+                    nombre_producto_combobox.set(producto[1])
+                    precio_producto_compra.config(state="normal")
+                    precio_producto_compra.delete(0, tk.END)
+                    precio_producto_compra.insert(0, producto[2])
+                    precio_producto_compra.config(state="readonly")
+
+                    cantidad_producto.delete(0, tk.END)
+                    cantidad_producto.insert(0, "1")
+
+                    categoria.config(state="normal")
+                    categoria.delete(0, tk.END)
+                    categoria.insert(0, producto[5])
+                    categoria.config(state="readonly")
+
+                    proveedor_producto.config(state="normal")
+                    proveedor_producto.delete(0, tk.END)
+                    proveedor_producto.insert(0, producto[6])
+                    proveedor_producto.config(state="readonly")
+
+                    nombre_metodos_combobox.set("Contado")
+                barcode = ""
+            else:
+                barcode += event.name
+
+        # Vincular la función de escaneo de código de barras
+        keyboard.on_press(on_key_press)
     
         ventana_compra.mainloop()
 
