@@ -5,6 +5,7 @@ from tkinter import Toplevel, Label, Entry, Button, Frame, font
 import re
 from datetime import datetime, date
 import calendar
+import keyboard
 
 
 ### TODA LA VENTANA DE EL MINIMARKET 
@@ -1107,22 +1108,23 @@ class BuscarDatos:
         ventana.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
         ventana.configure(bg="white")
         ventana.update_idletasks()
-        width = 1000
-        height = 760
+        width = 1100
+        height = 1000
         x = (ventana.winfo_screenwidth() // 2) - (width // 2)
         y = (ventana.winfo_screenheight() // 2) - (height // 2)
         ventana.geometry(f"{width}x{height}+{x}+{y}")
         ventana.grab_set()
+        ventana.state('zoomed')
 
         main_frame = tk.Frame(ventana, bg="white")
         main_frame.grid(row=0, column=0, padx=20, pady=20, sticky='nsew')
 
         sub_frame2 = tk.Frame(ventana, bg="white")
-        sub_frame2.grid(row=0, column=1, padx=20, pady=20, sticky='nsew')
+        sub_frame2.grid(row=1, column=0, padx=20, pady=(20,0), sticky='nsew')
 
         ventana.grid_columnconfigure(0, weight=1)
-        ventana.grid_columnconfigure(1, weight=1)
         ventana.grid_rowconfigure(0, weight=1)
+        ventana.grid_rowconfigure(1, weight=1)
 
         label_fecha = tk.Label(main_frame, text="Seleccione una Fecha:", bg="white", font=("Segoe UI", 16))
         label_fecha.grid(row=0, column=0, pady=10, sticky='n')
@@ -1135,16 +1137,16 @@ class BuscarDatos:
         fecha_frame = tk.Frame(main_frame, bg="white")
         fecha_frame.grid(row=1, column=0, pady=5, sticky='n')
 
-        label2 = tk.Label(sub_frame2, text="Inserte el ID de venta o compra\n para ver su detalle", font=("Segoe UI", 16))
-        label2.grid(row=0, column=0, pady=10, sticky='n')
+        label2 = tk.Label(sub_frame2, text="Inserte el ID de venta o compra para ver su detalle :", font=("Segoe UI", 14))
+        label2.grid(row=1, column=0, pady=10, sticky='n', padx=(0, 350))
 
         tipo_var = tk.StringVar()
-        combobox_tipo = ttk.Combobox(sub_frame2, textvariable=tipo_var, values=["Venta", "Compra"], state="readonly", font=("Segoe UI", 16))
+        combobox_tipo = ttk.Combobox(sub_frame2, textvariable=tipo_var, values=["Venta", "Compra"], state="readonly", font=("Segoe UI", 14))
         combobox_tipo.set("Venta")
-        combobox_tipo.grid(row=1, column=0, pady=10, sticky='n')
+        combobox_tipo.grid(row=1, column=0, pady=(10,0), sticky='n', padx=(350, 0))
 
         id_var = tk.StringVar()
-        entry_id = tk.Entry(sub_frame2, textvariable=id_var, font=("Segoe UI", 16), bg="#e0e0e0", bd=3, relief="solid")
+        entry_id = tk.Entry(sub_frame2, textvariable=id_var, font=("Segoe UI", 14), bg="#e0e0e0", bd=3, relief="solid")
         entry_id.grid(row=2, column=0, pady=10, sticky='n')
 
         resultados_frame = tk.Frame(sub_frame2, bg="white")
@@ -1152,7 +1154,7 @@ class BuscarDatos:
         sub_frame2.grid_rowconfigure(3, weight=1)
         sub_frame2.grid_columnconfigure(0, weight=1)
 
-        text_resultado = tk.Text(resultados_frame, bg="white", font=("Segoe UI", 18), state=tk.DISABLED)
+        text_resultado = tk.Text(resultados_frame, height=10, bg="white", font=("Segoe UI", 18), state=tk.DISABLED)
         text_resultado.grid(row=0, column=0, sticky='nsew')
         resultados_frame.grid_rowconfigure(0, weight=1)
         resultados_frame.grid_columnconfigure(0, weight=1)
@@ -1190,17 +1192,17 @@ class BuscarDatos:
 
         fecha_frame.option_add('*TCombobox*Listbox.font', ('Segoe UI', 16))
         dias = list(range(1, 32))
-        combobox_dia = ttk.Combobox(fecha_frame, values=dias, state="readonly", font=("Segoe UI", 16))
+        combobox_dia = ttk.Combobox(fecha_frame, values=dias, state="readonly", font=("Segoe UI", 14))
         combobox_dia.set(dia_actual)
         combobox_dia.grid(row=0, column=0, padx=5, sticky="ew")
 
         meses = list(range(1, 13))
-        combobox_mes = ttk.Combobox(fecha_frame, values=meses, state="readonly", font=("Segoe UI", 16))
+        combobox_mes = ttk.Combobox(fecha_frame, values=meses, state="readonly", font=("Segoe UI", 14))
         combobox_mes.set(mes_actual)
         combobox_mes.grid(row=0, column=1, padx=5, sticky="ew")
 
         anios = list(range(2023, anio_actual + 1))
-        combobox_anio = ttk.Combobox(fecha_frame, values=anios, state="readonly", font=("Segoe UI", 16))
+        combobox_anio = ttk.Combobox(fecha_frame, values=anios, state="readonly", font=("Segoe UI", 14))
         combobox_anio.set(anio_actual)
         combobox_anio.grid(row=0, column=2, padx=5, sticky="ew")
 
@@ -1273,13 +1275,13 @@ class BuscarDatos:
                 total_contado['text'], total_mercado_pago['text'], total_cuenta_corriente['text'], total_compras['text'] = totales(ventas_filtradas, compras_filtradas, s=False)
                 
                 
-                ventas_texto = "\n".join([f"id_venta: {venta[0]} | Fecha: {venta[1]} | Total: ${venta[2]} | Hora: {venta[3]} | Método de Pago: {venta[4]} | Vendedor: {traer_usuario(ventas_filtradas)}" for venta in ventas_filtradas])
+                ventas_texto = "\n".join([f"id venta: {venta[0]} | Fecha: {venta[1]} | Total: ${venta[2]} | Hora: {venta[3]} | Método de Pago: {venta[4]} | Vendedor: {traer_usuario(ventas_filtradas)}" for venta in ventas_filtradas])
                 text_ventas.config(state=tk.NORMAL)
                 text_ventas.delete(1.0, tk.END)
                 text_ventas.insert(tk.END, ventas_texto if ventas_texto else "No hay ventas para esta fecha.")
                 text_ventas.config(state=tk.DISABLED)
 
-                compras_texto = "\n".join([f"id_compra: {compra[0]} | Fecha: {compra[1]} | Total: ${compra[2]} | Hora: {compra[3]} | Comprador: {traer_usuario(ventas_filtradas)}" for compra in compras_filtradas])
+                compras_texto = "\n".join([f"id compra: {compra[0]} | Fecha: {compra[1]} | Total: ${compra[2]} | Hora: {compra[3]} | Comprador: {traer_usuario(ventas_filtradas)}" for compra in compras_filtradas])
                 text_compras.config(state=tk.NORMAL)
                 text_compras.delete(1.0, tk.END)
                 text_compras.insert(tk.END, compras_texto if compras_texto else "No hay compras para esta fecha.")
@@ -1287,6 +1289,7 @@ class BuscarDatos:
 
         boton_aceptar = tk.Button(main_frame, text="Aceptar", command=aceptar, bg="lightgrey", font=("Segoe UI", 14, "bold"), cursor="hand2", fg="black", relief="groove")
         boton_aceptar.grid(row=3, column=0, pady=10, sticky='n')
+        
         
         # Vincular el evento de la tecla Enter al botón "Aceptar"
         ventana.bind('<Return>', lambda event: aceptar())
@@ -1772,6 +1775,47 @@ class Administracion:
         # Vincular el evento de cierre de la ventana para restablecer facturero_abierto
         ventana_facturero.protocol("WM_DELETE_WINDOW", cerrar_ventana)
 
+            # Variables para almacenar el código de barras
+        barcode = ""
+
+        # Función para manejar la entrada del lector de código de barras
+        def on_key_press(event):
+            nonlocal barcode
+            if event.name == 'enter':
+                print(barcode)
+                producto = traer_producto(barcode)  # Llamar a la función traer_producto con el código de barras
+                if producto:
+                    producto_id.config(state="normal")
+                    producto_id.delete(0, tk.END)
+                    producto_id.insert(0, producto[0])
+                    producto_id.config(state="readonly")
+
+                    nombre_producto_combobox.set(producto[1])
+                    precio_producto_venta.config(state="normal")
+                    precio_producto_venta.delete(0, tk.END)
+                    precio_producto_venta.insert(0, producto[3])
+                    precio_producto_venta.config(state="readonly")
+
+                    cantidad_producto.delete(0, tk.END)
+                    cantidad_producto.insert(0, "1")
+
+                    categoria.config(state="normal")
+                    categoria.delete(0, tk.END)
+                    categoria.insert(0, producto[5])
+                    categoria.config(state="readonly")
+
+                    proveedor_producto.config(state="normal")
+                    proveedor_producto.delete(0, tk.END)
+                    proveedor_producto.insert(0, producto[6])
+                    proveedor_producto.config(state="readonly")
+
+                    nombre_metodos_combobox.set("Contado")
+                barcode = ""
+            else:
+                barcode += event.name
+
+        # Vincular la función de escaneo de código de barras
+        keyboard.on_press(on_key_press)
     
         ventana_facturero.mainloop()
 
@@ -1857,9 +1901,9 @@ class Administracion:
         # Vincular el evento KeyRelease para que espere 1 segundo antes de filtrar
         nombre_producto_combobox.bind('<KeyRelease>', filtrar_productos_con_retraso)
     
-        tk.Label(frame_superior, text="Precio de compra:", font=("Segoe UI", 13)).grid(row=2, column=0, padx=5, pady=5, sticky="e")
-        precio_producto_compra = tk.Entry(frame_superior, state="readonly", font=("Segoe UI", 13))
-        precio_producto_compra.grid(row=2, column=1, padx=5, pady=5)
+        tk.Label(frame_superior, text="Precio de venta:", font=("Segoe UI", 13)).grid(row=2, column=0, padx=5, pady=5, sticky="e")
+        precio_producto_venta = tk.Entry(frame_superior, state="readonly", font=("Segoe UI", 13))
+        precio_producto_venta.grid(row=2, column=1, padx=5, pady=5)
     
         tk.Label(frame_superior, text="Cantidad:", font=("Segoe UI", 13)).grid(row=3, column=0, padx=5, pady=5, sticky="e")
         cantidad_producto = tk.Entry(frame_superior, font=("Segoe UI", 13))  # Estado normal para permitir edición
@@ -1907,10 +1951,10 @@ class Administracion:
                     producto_id.insert(0, producto[0])  # id producto
                     producto_id.config(state="readonly")
     
-                    precio_producto_compra.config(state="normal")
-                    precio_producto_compra.delete(0, tk.END)
-                    precio_producto_compra.insert(0, producto[2])  # Precio
-                    precio_producto_compra.config(state="readonly")
+                    precio_producto_venta.config(state="normal")
+                    precio_producto_venta.delete(0, tk.END)
+                    precio_producto_venta.insert(0, producto[3])  # Precio
+                    precio_producto_venta.config(state="readonly")
     
                     cantidad_producto.delete(0, tk.END)
                     cantidad_producto.insert(0, "1")  # Dejar cantidad editable con valor predeterminado 1
@@ -1952,7 +1996,7 @@ class Administracion:
                         else:
                             hora = "Manana"
                         total = float(producto[3]) * int(cantidad_seleccionada)
-                        producto_modificado = (producto[1], f"{float(producto[2]):.2f}", cantidad_seleccionada, producto[5], producto[6], hora, f" Total: {total:.2f}")
+                        producto_modificado = (producto[1], f"{float(producto[3]):.2f}", cantidad_seleccionada, producto[5], producto[6], hora, f" Total: {total:.2f}")
                         
                         s = False
                         d = controlar_cantidades(producto_modificado, s) 
@@ -2026,9 +2070,9 @@ class Administracion:
             producto_id.config(state="readonly")
 
             nombre_producto_combobox.set("")
-            precio_producto_compra.config(state="normal")
-            precio_producto_compra.delete(0, tk.END)
-            precio_producto_compra.config(state="readonly")
+            precio_producto_venta.config(state="normal")
+            precio_producto_venta.delete(0, tk.END)
+            precio_producto_venta.config(state="readonly")
 
             cantidad_producto.delete(0, tk.END)
             cantidad_producto.insert(0, "")
@@ -2082,6 +2126,47 @@ class Administracion:
         # Vincular el evento de selección en el combobox
         nombre_producto_combobox.bind("<<ComboboxSelected>>", actualizar_datos_producto)
         ventana_compra.protocol("WM_DELETE_WINDOW", cerrar_ventana)
+        
+
+        barcode = ""
+        # Función para manejar la entrada del lector de código de barras
+        def on_key_press(event):
+            nonlocal barcode
+            if event.name == 'enter':
+                print(barcode)
+                producto = traer_producto(barcode)  # Llamar a la función traer_producto con el código de barras
+                if producto:
+                    producto_id.config(state="normal")
+                    producto_id.delete(0, tk.END)
+                    producto_id.insert(0, producto[0])
+                    producto_id.config(state="readonly")
+
+                    nombre_producto_combobox.set(producto[1])
+                    precio_producto_venta.config(state="normal")
+                    precio_producto_venta.delete(0, tk.END)
+                    precio_producto_venta.insert(0, producto[3])
+                    precio_producto_venta.config(state="readonly")
+
+                    cantidad_producto.delete(0, tk.END)
+                    cantidad_producto.insert(0, "1")
+
+                    categoria.config(state="normal")
+                    categoria.delete(0, tk.END)
+                    categoria.insert(0, producto[5])
+                    categoria.config(state="readonly")
+
+                    proveedor_producto.config(state="normal")
+                    proveedor_producto.delete(0, tk.END)
+                    proveedor_producto.insert(0, producto[6])
+                    proveedor_producto.config(state="readonly")
+
+                    nombre_metodos_combobox.set("Contado")
+                barcode = ""
+            else:
+                barcode += event.name
+
+        # Vincular la función de escaneo de código de barras
+        keyboard.on_press(on_key_press)
     
         ventana_compra.mainloop()
 
