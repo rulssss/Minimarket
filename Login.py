@@ -28,6 +28,7 @@ class Login:
         position_top = int(screen_height / 2 - window_height / 2)
         position_right = int(screen_width / 2 - window_width / 2)
         self.master.geometry(f'{window_width}x{window_height}+{position_right}+{position_top}')
+        
 
     def create_register_window(self):
         for widget in self.master.winfo_children():
@@ -62,6 +63,7 @@ class Login:
             id_window.geometry("400x200")
             id_window.resizable(False, False)  # Deshabilitar redimensionamiento
             id_window.grab_set()  # Bloquear la ventana principal
+            
             # Centrar la ventana
             window_width = 400
             window_height = 200
@@ -118,6 +120,7 @@ class Login:
                 id_window.geometry("400x200")
                 id_window.resizable(False, False)  # Deshabilitar redimensionamiento
                 id_window.grab_set()  # Bloquear la ventana principal
+                
                 # Centrar la ventana
                 window_width = 400
                 window_height = 200

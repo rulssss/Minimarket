@@ -65,7 +65,7 @@ class Datos:
         ventana.geometry("1200x300")  # Ajusta el tamaño según necesites
         ventana.resizable(False, False)  # Evita que se redimensione
         ventana.configure(bg="white")
-        ventana.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
+       
 
         # Hacer la ventana modal
         ventana.grab_set()
@@ -198,7 +198,7 @@ class Datos:
         ventana.title("Borrar Producto")
         ventana.geometry("300x150")  # Tamaño de la ventana
         ventana.resizable(False, False)  # Evita que se redimensione
-        ventana.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
+        
 
         # Hacer la ventana modal
         ventana.grab_set()
@@ -302,7 +302,7 @@ class Datos:
         confirm_window.geometry("1200x300")  # Ajusta el tamaño según necesites
         confirm_window.resizable(False, False)  # Evita que se redimensione
         confirm_window.configure(bg="white")
-        confirm_window.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
+       
 
         # Inicializar filtro_timer
         global filtro_timer
@@ -535,7 +535,7 @@ class Datos:
         ventana.geometry("1200x300")  # Ajusta el tamaño según necesites
         ventana.resizable(False, False)  # Evita que se redimensione
         ventana.configure(bg="white")
-        ventana.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
+        
 
         # Hacer la ventana modal
         ventana.grab_set()
@@ -645,7 +645,7 @@ class Datos:
         ventana.title("Borrar Proveedor")
         ventana.geometry("300x150")  # Tamaño de la ventana
         ventana.resizable(False, False)  # Evita que se redimensione
-        ventana.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
+        
 
         # Hacer la ventana modal
         ventana.grab_set()
@@ -749,7 +749,7 @@ class Datos:
         confirm_window.geometry("1200x300")  # Ajusta el tamaño según necesites
         confirm_window.resizable(False, False)  # Evita que se redimensione
         confirm_window.configure(bg="white")
-        confirm_window.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
+        
 
         # Inicializar filtro_timer
         global filtro_timer
@@ -892,7 +892,7 @@ class Datos:
         ventana.geometry("1200x300")  # Ajusta el tamaño según necesites
         ventana.resizable(False, False)  # Evita que se redimensione
         ventana.configure(bg="white")
-        ventana.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
+       
 
         # Hacer la ventana modal
         ventana.grab_set()
@@ -983,7 +983,7 @@ class Datos:
         ventana.title("Borrar Categoría")
         ventana.geometry("300x150")  # Tamaño de la ventana
         ventana.resizable(False, False)  # Evita que se redimensione
-        ventana.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
+       
         
         
 
@@ -1077,7 +1077,7 @@ class Datos:
         confirm_window.geometry("400x250")  # Ajustar el tamaño
         confirm_window.config(bg="white")
         confirm_window.resizable(False, False)  # Evitar que se redimensione
-        confirm_window.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
+        
         confirm_window.resizable(False, False)  # Evitar que se redimensione
         confirm_window.grab_set()  # Hacer la ventana modal
 
@@ -1089,7 +1089,7 @@ class Datos:
         position_x = (screen_width // 2) - (window_width // 2)
         position_y = (screen_height // 2) - (window_height // 2)
         confirm_window.geometry(f"{window_width}x{window_height}+{position_x}+{position_y}")
-        confirm_window.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
+        
 
 
         # Crear etiquetas y casillas de verificación para seleccionar qué borrar
@@ -1147,7 +1147,7 @@ class BuscarDatos:
     def datos_por_dia(self):
         ventana = tk.Toplevel()
         ventana.title("Seleccionar Fecha")
-        ventana.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
+       
         ventana.configure(bg="white")
         ventana.update_idletasks()
         width = 1000
@@ -1340,7 +1340,7 @@ class BuscarDatos:
     def datos_por_mes(self):
         ventana = tk.Toplevel()
         ventana.title("Seleccionar Mes y Año")
-        ventana.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
+       
         ventana.configure(bg="white")
         ventana.update_idletasks()
         width = 700
@@ -1551,7 +1551,7 @@ class Administracion:
         x_coordinate = int((screen_width / 2) - (ventana_facturero_width / 2))
         y_coordinate = int((screen_height / 2) - (ventana_facturero_height / 2))
         ventana_facturero.geometry(f"{ventana_facturero_width}x{ventana_facturero_height}+{x_coordinate}+{y_coordinate}")
-        ventana_facturero.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
+    
     
         # Crear el frame superior
         frame_superior = tk.Frame(ventana_facturero, bd=2, relief="groove")
@@ -1892,7 +1892,7 @@ class Administracion:
         x_coordinate = int((screen_width / 2) - (ventana_compra_width / 2))
         y_coordinate = int((screen_height / 2) - (ventana_compra_height / 2))
         ventana_compra.geometry(f"{ventana_compra_width}x{ventana_compra_height}+{x_coordinate}+{y_coordinate}")
-        ventana_compra.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
+        
     
         # Crear el frame superior
         frame_superior = tk.Frame(ventana_compra, bd=2, relief="groove")
@@ -2225,7 +2225,7 @@ class Minimarket:
         self.master.update_idletasks()  # Asegura que la geometría se actualice
         self.master.state('zoomed')  # Maximiza la ventana
         self.master.minsize(800, 600)  # Tamaño mínimo de la ventana
-        self.master.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
+      
 
         # Mostrar ID del usuario de forma transparente y bienvenida
         self.mostrar_id_inicio(username)
@@ -3133,6 +3133,6 @@ class Minimarket:
 
 
 #Crear la ventana principal
-root = tk.Tk()
-app = Minimarket(root, "mariano", True)
-root.mainloop()
+#root = tk.Tk()
+#app = Minimarket(root, "mariano", True)
+#root.mainloop()

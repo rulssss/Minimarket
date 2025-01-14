@@ -365,7 +365,7 @@ def ventana_confirmacion():
     confirm_window.geometry("400x200")  # Ajustar el tamaño a uno más grande
     confirm_window.config(bg="white")  # Fondo blanco, típico de ventanas de Windows
     confirm_window.grab_set()  # Bloquear la ventana principal hasta que se cierre la ventana emergente
-    confirm_window.iconbitmap(r'C:\Users\mariano\Desktop\proyectos\projecto negocio general\icono\r.ico')
+    
     confirm_window.resizable(False, False)  # Bloquear el cambio de tamaño de la ventana
     # Centrando la ventana
     screen_width = confirm_window.winfo_screenwidth()
