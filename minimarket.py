@@ -399,6 +399,7 @@ class Datos:
                     entry_id.insert(0, producto[0])  # ID del producto
                     entry_id.config(state='readonly')
 
+
                     entry_precio_compra.delete(0, tk.END)
                     entry_precio_compra.insert(0, producto[2])  # Precio de compra
 
@@ -478,6 +479,47 @@ class Datos:
 
         # Vincular el evento de la tecla Enter al botón "Aceptar"
         confirm_window.bind('<Return>', lambda event: on_yes())
+
+        barcode = ""
+        # Función para manejar la entrada del lector de código de barras
+        def on_key_press(event):
+            nonlocal barcode
+            if event.name == 'enter':
+                
+                producto = traer_producto(barcode)  # Llamar a la función traer_producto con el código de barras
+                if producto:
+                    entry_id.config(state='normal')
+                    entry_id.delete(0, tk.END)
+                    entry_id.insert(0, producto[0])  # ID del producto
+                    entry_id.config(state='readonly')
+
+                    entry_precio_compra.delete(0, tk.END)
+                    entry_precio_compra.insert(0, producto[2])  # Precio de compra
+
+                    combobox_nombre.set(producto[1])  # Nombre del producto
+
+                    entry_precio.delete(0, tk.END)
+                    entry_precio.insert(0, producto[3])  # Precio de venta
+
+                    entry_cantidad.config(state='normal')
+                    entry_cantidad.delete(0, tk.END)
+                    entry_cantidad.insert(0, producto[4])  # Cantidad
+                    entry_cantidad.config(state='readonly')
+
+                    combobox_busqueda1.config(state='normal')
+                    combobox_busqueda1.set(producto[5])  # Categoria
+                    combobox_busqueda1.config(state='readonly')
+
+                    combobox_busqueda2.config(state='normal')
+                    combobox_busqueda2.set(producto[6])  # Proveedor
+                    combobox_busqueda2.config(state='readonly')
+
+                barcode = ""
+            else:
+                barcode += event.name
+
+        # Vincular la función de escaneo de código de barras
+        keyboard.on_press(on_key_press)
 
         confirm_window.mainloop()
 
