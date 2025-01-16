@@ -287,7 +287,7 @@ class Datos:
         ventana.protocol("WM_DELETE_WINDOW", cerrar)
         # Vincular el evento de la tecla Enter al botón "Aceptar"
         ventana.bind('<Return>', lambda event: confirmar())
-
+        
         # Iniciar el bucle principal de la ventana
         ventana.mainloop()
 
