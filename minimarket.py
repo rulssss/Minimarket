@@ -529,27 +529,27 @@ class Datos:
                     entry_precio_compra.config(state="normal")
                     entry_precio_compra.delete(0, tk.END)
                     entry_precio_compra.insert(0, producto[2])
-                    entry_precio_compra.config(state="readonly")
+                    
 
                     entry_precio.config(state="normal")
                     entry_precio.delete(0, tk.END)
                     entry_precio.insert(0, producto[3])
-                    entry_precio.config(state="readonly")
+                    
 
                     entry_cantidad.config(state="normal")
                     entry_cantidad.delete(0, tk.END)
                     entry_cantidad.insert(0, producto[4])
-                    entry_cantidad.config(state="readonly")
+                    
 
                     combobox_busqueda1.config(state="normal")
                     combobox_busqueda1.delete(0, tk.END)
                     combobox_busqueda1.insert(0, producto[5])
-                    combobox_busqueda1.config(state="readonly")
+                    
 
                     combobox_busqueda2.config(state="normal")
                     combobox_busqueda2.delete(0, tk.END)
                     combobox_busqueda2.insert(0, producto[6])
-                    combobox_busqueda2.config(state="readonly")
+                   
 
                     
                 barcode = ""
@@ -1189,7 +1189,7 @@ class BuscarDatos:
 
         # Botones "Datos por Día" y "Datos por Mes"
         botones = [
-            ("Datos por Día", self.datos_por_dia),
+            ("Arqueo", self.datos_por_dia),
             ("Datos por Mes", self.datos_por_mes)
         ]
 
@@ -1682,7 +1682,7 @@ class Administracion:
         x_coordinate = int((screen_width / 2) - (ventana_facturero_width / 2))
         y_coordinate = int((screen_height / 2) - (ventana_facturero_height / 2))
         ventana_facturero.geometry(f"{ventana_facturero_width}x{ventana_facturero_height}+{x_coordinate}+{y_coordinate}")
-    
+        ventana_facturero.focus_force()
         # Cargar la imagen del icono
         icon_path = resource_path("resources/r.ico")  # Ruta relativa a la imagen del icono
         ventana_facturero.iconbitmap(icon_path)
@@ -1703,6 +1703,7 @@ class Administracion:
         productos = traer_todos_los_productos()
         nombres_productos = [producto[1] for producto in productos]  # Extraer los nombres de los productos
         nombre_producto_combobox = ttk.Combobox(frame_superior, values=nombres_productos, font=("Segoe UI", 13), height=5)
+        nombre_producto_combobox.set("Seleccionar nombre")
         nombre_producto_combobox.grid(row=1, column=1, padx=5, pady=5)
     
         # Variable para manejar el retraso
@@ -1811,7 +1812,7 @@ class Administracion:
             cantidad_seleccionada = cantidad_producto.get()  # Obtener la cantidad modificada por el usuario
             metodo_pago_seleccionado = nombre_metodos_combobox.get()  # Obtener el método de pago elegido en el combobox
     
-            if nombre_seleccionado and metodo_pago_seleccionado and cantidad_seleccionada.isdigit():
+            if nombre_seleccionado:
                 for producto in productos:
                     if producto[1] == nombre_seleccionado:
                         total = float(producto[3]) * int(cantidad_seleccionada)
@@ -1942,7 +1943,8 @@ class Administracion:
         boton_procesar = tk.Button(frame_botones, text="Procesar", width=15, font=("Segoe UI", 13, "bold"), command=procesar_productos, relief="groove", fg="black", bg="#d7d7d7")
         boton_procesar.pack(side="right", padx=(90,0))
 
-        
+        # Vincular el evento de la tecla Enter al botón "Añadir"
+        ventana_facturero.bind('<Return>', lambda event: añadir_producto())
     
         # Vincular el evento de selección en el combobox
         nombre_producto_combobox.bind("<<ComboboxSelected>>", actualizar_datos_producto)
@@ -1973,6 +1975,7 @@ class Administracion:
                     producto_id.config(state="readonly")
 
                     nombre_producto_combobox.set(producto[1])
+
                     precio_producto_venta.config(state="normal")
                     precio_producto_venta.delete(0, tk.END)
                     precio_producto_venta.insert(0, producto[3])
@@ -1992,6 +1995,7 @@ class Administracion:
                     proveedor_producto.config(state="readonly")
 
                     nombre_metodos_combobox.set("Contado")
+
                 barcode = ""
             elif event.name.isdigit():
                 barcode += event.name
@@ -2037,7 +2041,7 @@ class Administracion:
         x_coordinate = int((screen_width / 2) - (ventana_compra_width / 2))
         y_coordinate = int((screen_height / 2) - (ventana_compra_height / 2))
         ventana_compra.geometry(f"{ventana_compra_width}x{ventana_compra_height}+{x_coordinate}+{y_coordinate}")
-        
+        ventana_compra.focus_force()
         # Cargar la imagen del icono
         icon_path = resource_path("resources/r.ico")  # Ruta relativa a la imagen del icono
         ventana_compra.iconbitmap(icon_path)
@@ -2309,10 +2313,14 @@ class Administracion:
         # Botón "Procesar"
         boton_procesar = tk.Button(frame_botones, text="Procesar", width=15, font=("Segoe UI", 13, "bold"), command=procesar_productos, relief="groove", fg="black", bg="#d7d7d7")
         boton_procesar.pack(side="right", padx=(90,0))
-    
+
+        # Vincular el evento de la tecla Enter al botón "Añadir"
+        ventana_compra.bind('<Return>', lambda event: añadir_producto())
+
         # Vincular el evento de selección en el combobox
         nombre_producto_combobox.bind("<<ComboboxSelected>>", actualizar_datos_producto)
         ventana_compra.protocol("WM_DELETE_WINDOW", cerrar_ventana)
+        
 
         # Inicializar el valor de barcode y el tiempo de la última tecla presionada
         barcode = ""

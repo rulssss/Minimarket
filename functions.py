@@ -680,7 +680,7 @@ def traer_producto(barcode):
     if data != []:
         return data[0]
     else: 
-        messagebox.showinfo("Error", "Producto no existente")
+        messagebox.showerror("Error", "Producto no existente")
         return 
 
 
