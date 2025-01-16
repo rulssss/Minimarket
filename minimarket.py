@@ -501,42 +501,59 @@ class Datos:
         # Vincular el evento de la tecla Enter al botón "Aceptar"
         confirm_window.bind('<Return>', lambda event: on_yes())
 
+         # Inicializar el valor de barcode y el tiempo de la última tecla presionada
         barcode = ""
+        last_time = time.time()
+
         # Función para manejar la entrada del lector de código de barras
         def on_key_press(event):
-            nonlocal barcode
+            nonlocal barcode, last_time
+            current_time = time.time()
+
+            # Si el tiempo entre teclas es mayor a 0.1 segundos, reiniciar el barcode
+            if current_time - last_time > 0.1:
+                barcode = ""
+
+            last_time = current_time
+
             if event.name == 'enter':
-                
                 producto = traer_producto(barcode)  # Llamar a la función traer_producto con el código de barras
                 if producto:
-                    entry_id.config(state='normal')
+                    entry_id.config(state="normal")
                     entry_id.delete(0, tk.END)
-                    entry_id.insert(0, producto[0])  # ID del producto
-                    entry_id.config(state='readonly')
+                    entry_id.insert(0, producto[0])
+                    entry_id.config(state="readonly")
 
+                    combobox_nombre.set(producto[1])
+
+                    entry_precio_compra.config(state="normal")
                     entry_precio_compra.delete(0, tk.END)
-                    entry_precio_compra.insert(0, producto[2])  # Precio de compra
+                    entry_precio_compra.insert(0, producto[2])
+                    entry_precio_compra.config(state="readonly")
 
-                    combobox_nombre.set(producto[1])  # Nombre del producto
-
+                    entry_precio.config(state="normal")
                     entry_precio.delete(0, tk.END)
-                    entry_precio.insert(0, producto[3])  # Precio de venta
+                    entry_precio.insert(0, producto[3])
+                    entry_precio.config(state="readonly")
 
-                    entry_cantidad.config(state='normal')
+                    entry_cantidad.config(state="normal")
                     entry_cantidad.delete(0, tk.END)
-                    entry_cantidad.insert(0, producto[4])  # Cantidad
-                    entry_cantidad.config(state='readonly')
+                    entry_cantidad.insert(0, producto[4])
+                    entry_cantidad.config(state="readonly")
 
-                    combobox_busqueda1.config(state='normal')
-                    combobox_busqueda1.set(producto[5])  # Categoria
-                    combobox_busqueda1.config(state='readonly')
+                    combobox_busqueda1.config(state="normal")
+                    combobox_busqueda1.delete(0, tk.END)
+                    combobox_busqueda1.insert(0, producto[5])
+                    combobox_busqueda1.config(state="readonly")
 
-                    combobox_busqueda2.config(state='normal')
-                    combobox_busqueda2.set(producto[6])  # Proveedor
-                    combobox_busqueda2.config(state='readonly')
+                    combobox_busqueda2.config(state="normal")
+                    combobox_busqueda2.delete(0, tk.END)
+                    combobox_busqueda2.insert(0, producto[6])
+                    combobox_busqueda2.config(state="readonly")
 
+                    
                 barcode = ""
-            else:
+            elif event.name.isdigit():
                 barcode += event.name
 
         # Vincular la función de escaneo de código de barras
