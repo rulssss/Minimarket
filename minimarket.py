@@ -3310,6 +3310,6 @@ class Minimarket:
 
 
 #Crear la ventana principal
-root = tk.Tk()
-app = Minimarket(root, "mariano", True)
-root.mainloop()
+#root = tk.Tk()
+#app = Minimarket(root, "mariano", True)
+#root.mainloop()
