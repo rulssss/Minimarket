@@ -23,7 +23,8 @@ class Datos:
             widget.destroy()
 
         # Etiqueta inicial
-        tk.Label(self.master, text="Contenido de Datos", bg="white", font=("Segoe UI", 10, "bold")).pack(pady=10)
+        etiqueta = tk.Label(self.master, text="Contenido de Datos", bg="white", font=("Segoe UI", 10, "bold"))
+        etiqueta.grid(row=0, column=0, pady=10, sticky="ew")
 
         # Crear botones
         botones = [
@@ -38,25 +39,30 @@ class Datos:
             ("Agregar Categoría", self.agregar_categoria),
             ("Borrar Categoría", self.borrar_categoria),
             ("Visualizar Categorías", self.visualizar_categorias),
-            
         ]
 
-        c = 0
-        for texto, comando in botones:
-            c += 1  
-    
-            tk.Button(self.master,text=texto,command=comando,height=1,  width=20,  bg="#e0e0e0",  fg="black", font=("Segoe UI", 12, "bold"),  activebackground="#c0c0c0",  activeforeground="white", relief="groove",  bd=2  ).pack(pady=9)
-            if c == 4:
-                c = 0
+        # Configurar el peso de las filas y columnas para que sean responsivas
+        self.master.grid_columnconfigure(0, weight=1)
+        for i in range(len(botones) + 3):  # +3 para incluir la etiqueta y el botón "Borrar Datos"
+            self.master.grid_rowconfigure(i, weight=1)
 
-                # Agregar una línea sutil estilo "hr"
-                tk.Frame(self.master, bg="gray", height=2, width=300).pack(pady=10, fill="x") 
-       
+        row = 1
+        for i, (texto, comando) in enumerate(botones):
+            boton = tk.Button(self.master, text=texto, command=comando, height=1, width=20, bg="#e0e0e0", fg="black", font=("Segoe UI", 12, "bold"), activebackground="#c0c0c0", activeforeground="white", relief="groove", bd=2)
+            boton.grid(row=row, column=0, pady=0, padx=10, sticky="n")
+            row += 1
+
+            # Agregar una línea sutil estilo "hr" después de cada 4 botones
+            if (i + 1) % 4 == 0:
+                separator = tk.Frame(self.master, bg="gray", height=2)
+                separator.grid(row=row, column=0, pady=0, sticky="ew")
+                row += 1
+
         # Botón "Borrar Datos" en la parte inferior
-        boton_borrar_datos = tk.Button(self.master, text="Borrar Datos", height=1, command=self.borrar_datos,  bg="red", fg="white", width=15, font=("Segoe UI", 12, "bold"), bd=2)
-        boton_borrar_datos.pack(pady=30)
+        boton_borrar_datos = tk.Button(self.master, text="Borrar Datos", height=1, width=20, command=self.borrar_datos, bg="red", fg="white", font=("Segoe UI", 12, "bold"), bd=2)
+        boton_borrar_datos.grid(row=row, column=0, pady=30, sticky="n")
 
-    # Métodos de ejemplo para los botones
+
 
 
     def agregar_producto(self):
@@ -1344,7 +1350,7 @@ class BuscarDatos:
             # Centrar la ventana en la pantalla
             ventana.update_idletasks()
             width = 1000
-            height = 400
+            height = 350
             x = (ventana.winfo_screenwidth() // 2) - (width // 2)
             y = (ventana.winfo_screenheight() // 2) - (height // 2)
             ventana.geometry(f"{width}x{height}+{x}+{y}")
@@ -1415,7 +1421,7 @@ class BuscarDatos:
 
             boton_cerrar = tk.Button(main_frame, text="Cerrar", command=cerrar, bg="#ef3232", font=("Segoe UI", 12, "bold"), cursor="hand2", fg="black", relief="groove", width=10)
             boton_cerrar.grid(row=4, column=1, pady=10)
-
+            
             # Configurar el protocolo para manejar el cierre de la ventana hija
             ventana.protocol("WM_DELETE_WINDOW", cerrar)
 
