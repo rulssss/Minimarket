@@ -1030,6 +1030,7 @@ class Datos:
         ventana.title("Borrar Categoría")
         ventana.geometry("300x150")  # Tamaño de la ventana
         ventana.resizable(False, False)  # Evita que se redimensione
+        ventana.grab_set()
        
         # Cargar la imagen del icono
         icon_path = resource_path("resources/r.ico")  # Ruta relativa a la imagen del icono
