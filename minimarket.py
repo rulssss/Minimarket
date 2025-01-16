@@ -7,6 +7,8 @@ from datetime import datetime, date
 import calendar
 import keyboard
 from PIL import Image, ImageTk
+import string
+import time
 
 
 ### TODA LA VENTANA DE EL MINIMARKET 
@@ -458,17 +460,21 @@ class Datos:
                     return True
                 except ValueError:
                     return False
+            if nombre_producto:
 
-            if es_numero_decimal(precio_venta_producto):
-                if (float(precio_anterior_venta) == float(precio_venta_producto)) and (categ_ant == categoria_producto) and (prov_ant == proveedor_producto) and (float(precio_anterior_compra) == float(precio_compra_producto)):
-                    advertencia_label.config(text="Actualice el producto por favor")
+                if es_numero_decimal(precio_venta_producto):
+                    if (float(precio_anterior_venta) == float(precio_venta_producto)) and (categ_ant == categoria_producto) and (prov_ant == proveedor_producto) and (float(precio_anterior_compra) == float(precio_compra_producto)):
+                        advertencia_label.config(text="Actualice el producto por favor")
+                    else:
+                        actualizar_producto(nombre_producto, precio_compra_producto, precio_venta_producto, categoria_producto, proveedor_producto)
+                        self.minimarket.mostrar_arbol_productos()  # mostrar productos actualizados
+                        on_no()
+                    return
                 else:
-                    actualizar_producto(nombre_producto, precio_compra_producto, precio_venta_producto, categoria_producto, proveedor_producto)
-                    self.minimarket.mostrar_arbol_productos()  # mostrar productos actualizados
-                    on_no()
-                return
+                    advertencia_label.config(text="Solo acepta números y decimales")
+                    return
             else:
-                advertencia_label.config(text="Seleccione un producto")
+                advertencia_label.config(text="No acepta vacios")
                 return
 
         def on_no():
@@ -1925,12 +1931,22 @@ class Administracion:
         # Vincular el evento de cierre de la ventana para restablecer facturero_abierto
         ventana_facturero.protocol("WM_DELETE_WINDOW", cerrar_ventana)
 
+        # Inicializar el valor de barcode y el tiempo de la última tecla presionada
         barcode = ""
+        last_time = time.time()
+
         # Función para manejar la entrada del lector de código de barras
         def on_key_press(event):
-            nonlocal barcode
+            nonlocal barcode, last_time
+            current_time = time.time()
+
+            # Si el tiempo entre teclas es mayor a 0.1 segundos, reiniciar el barcode
+            if current_time - last_time > 0.1:
+                barcode = ""
+
+            last_time = current_time
+
             if event.name == 'enter':
-                
                 producto = traer_producto(barcode)  # Llamar a la función traer_producto con el código de barras
                 if producto:
                     producto_id.config(state="normal")
@@ -1959,13 +1975,14 @@ class Administracion:
 
                     nombre_metodos_combobox.set("Contado")
                 barcode = ""
-            else:
+            elif event.name.isdigit():
                 barcode += event.name
+                
+
+        # Vincular la función de escaneo de código de barrasd
 
         # Vincular la función de escaneo de código de barras
         keyboard.on_press(on_key_press)
-
-    
         ventana_facturero.mainloop()
 
     # Lista para almacenar los productos seleccionados
@@ -2279,12 +2296,22 @@ class Administracion:
         nombre_producto_combobox.bind("<<ComboboxSelected>>", actualizar_datos_producto)
         ventana_compra.protocol("WM_DELETE_WINDOW", cerrar_ventana)
 
+        # Inicializar el valor de barcode y el tiempo de la última tecla presionada
         barcode = ""
+        last_time = time.time()
+
         # Función para manejar la entrada del lector de código de barras
         def on_key_press(event):
-            nonlocal barcode
+            nonlocal barcode, last_time
+            current_time = time.time()
+
+            # Si el tiempo entre teclas es mayor a 0.1 segundos, reiniciar el barcode
+            if current_time - last_time > 0.1:
+                barcode = ""
+
+            last_time = current_time
+
             if event.name == 'enter':
-                print(barcode)
                 producto = traer_producto(barcode)  # Llamar a la función traer_producto con el código de barras
                 if producto:
                     producto_id.config(state="normal")
@@ -2313,7 +2340,7 @@ class Administracion:
 
                     nombre_metodos_combobox.set("Contado")
                 barcode = ""
-            else:
+            elif event.name.isdigit():
                 barcode += event.name
 
         # Vincular la función de escaneo de código de barras
