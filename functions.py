@@ -672,16 +672,18 @@ def traer_usuario(ventas_filtradas):
 def traer_producto(barcode):
     cursor= connection2.cursor()
     #query_data2 = f"SELECT id_producto, nombre, precio_de_compra, precio_de_venta, stock, id_categoria, id_proveedor FROM productos WHERE id_producto = {barcode}"
-    
-    query_data2 = f"SELECT p.id_producto, p.nombre, p.precio_de_compra, p.precio_de_venta, p.stock, c.nombre_descrip, pr.nombre_proveedor FROM productos p JOIN categorias c ON p.id_categoria = c.id_categoria JOIN proveedores pr ON p.id_proveedor = pr.id_proveedor WHERE p.id_producto = {barcode}"
-    cursor.execute(query_data2)
-    data = cursor.fetchall()
-    cursor.close()
-    if data != []:
-        return data[0]
-    else: 
-        messagebox.showerror("Error", "Producto no existente")
-        return 
+    if barcode != "":
+        query_data2 = f"SELECT p.id_producto, p.nombre, p.precio_de_compra, p.precio_de_venta, p.stock, c.nombre_descrip, pr.nombre_proveedor FROM productos p JOIN categorias c ON p.id_categoria = c.id_categoria JOIN proveedores pr ON p.id_proveedor = pr.id_proveedor WHERE p.id_producto = {barcode}"
+        cursor.execute(query_data2)
+        data = cursor.fetchall()
+        cursor.close()
+        if data != []:
+            return data[0]
+        else: 
+            messagebox.showerror("Error", "Producto no existente")
+            return 
+    else:
+        pass
 
 
 def resource_path(relative_path):

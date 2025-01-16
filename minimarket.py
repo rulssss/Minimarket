@@ -1463,6 +1463,9 @@ class BuscarDatos:
         # Vincular el evento de la tecla Enter al botón "Aceptar"
         ventana.bind('<Return>', lambda event: aceptar())
 
+        # Vincular el evento de cierre de la ventana a la función cerrar
+        ventana.protocol("WM_DELETE_WINDOW", cerrar)
+
         ventana.mainloop()
     
     def datos_por_mes(self):
@@ -1740,7 +1743,7 @@ class Administracion:
         tk.Label(frame_superior, text="Cantidad:", font=("Segoe UI", 13)).grid(row=3, column=0, padx=5, pady=5, sticky="e")
         cantidad_producto = tk.Entry(frame_superior, font=("Segoe UI", 13))  # Estado normal para permitir edición
         cantidad_producto.grid(row=3, column=1, padx=5, pady=5)
-        cantidad_producto.insert(0, "")  # Valor predeterminado de ""
+        cantidad_producto.insert(0, "0")  # Valor predeterminado de ""
     
         tk.Label(frame_superior, text="Categoría:", font=("Segoe UI", 13)).grid(row=4, column=0, padx=5, pady=5, sticky="e")
         categoria = tk.Entry(frame_superior, state="readonly", font=("Segoe UI", 13))
@@ -1812,7 +1815,7 @@ class Administracion:
             cantidad_seleccionada = cantidad_producto.get()  # Obtener la cantidad modificada por el usuario
             metodo_pago_seleccionado = nombre_metodos_combobox.get()  # Obtener el método de pago elegido en el combobox
     
-            if nombre_seleccionado:
+            if nombre_seleccionado and cantidad_seleccionada.isdigit():
                 for producto in productos:
                     if producto[1] == nombre_seleccionado:
                         total = float(producto[3]) * int(cantidad_seleccionada)
@@ -1888,13 +1891,13 @@ class Administracion:
             producto_id.delete(0, tk.END)
             producto_id.config(state="readonly")
 
-            nombre_producto_combobox.set("")
+            nombre_producto_combobox.set("Seleccionar nombre")
             precio_producto_venta.config(state="normal")
             precio_producto_venta.delete(0, tk.END)
             precio_producto_venta.config(state="readonly")
 
             cantidad_producto.delete(0, tk.END)
-            cantidad_producto.insert(0, "")
+            cantidad_producto.insert(0, "0")
 
             categoria.config(state="normal")
             categoria.delete(0, tk.END)
@@ -2064,6 +2067,7 @@ class Administracion:
         nombres_productos = [producto[1] for producto in productos]  # Extraer los nombres de los productos
         nombre_producto_combobox = ttk.Combobox(frame_superior, values=nombres_productos, font=("Segoe UI", 13), height=5)
         nombre_producto_combobox.option_add('*TCombobox*Listbox.font', ('Segoe UI', 16))
+        nombre_producto_combobox.set("Seleccionar nombre")
         nombre_producto_combobox.grid(row=1, column=1, padx=5, pady=5)
     
         # Variable para manejar el retraso
@@ -2099,7 +2103,7 @@ class Administracion:
         tk.Label(frame_superior, text="Cantidad:", font=("Segoe UI", 13)).grid(row=3, column=0, padx=5, pady=5, sticky="e")
         cantidad_producto = tk.Entry(frame_superior, font=("Segoe UI", 13))  # Estado normal para permitir edición
         cantidad_producto.grid(row=3, column=1, padx=5, pady=5)
-        cantidad_producto.insert(0, "")  # Valor predeterminado de ""
+        cantidad_producto.insert(0, "0")  # Valor predeterminado de ""
     
         tk.Label(frame_superior, text="Categoría:", font=("Segoe UI", 13)).grid(row=4, column=0, padx=5, pady=5, sticky="e")
         categoria = tk.Entry(frame_superior, state="readonly", font=("Segoe UI", 13))
@@ -2212,7 +2216,9 @@ class Administracion:
                             actualizar_total()
 
                             break
-                            
+            
+           else:
+            messagebox.showerror("Error", "Por favor, complete todos los campos correctamente")               
                         
                         
         # Función para borrar el último producto añadido
@@ -2260,13 +2266,13 @@ class Administracion:
             producto_id.delete(0, tk.END)
             producto_id.config(state="readonly")
 
-            nombre_producto_combobox.set("")
+            nombre_producto_combobox.set("Seleccionar nombre")
             precio_producto_compra.config(state="normal")
             precio_producto_compra.delete(0, tk.END)
             precio_producto_compra.config(state="readonly")
 
             cantidad_producto.delete(0, tk.END)
-            cantidad_producto.insert(0, "")
+            cantidad_producto.insert(0, "0")
 
             categoria.config(state="normal")
             categoria.delete(0, tk.END)
@@ -2368,6 +2374,8 @@ class Administracion:
                 barcode = ""
             elif event.name.isdigit():
                 barcode += event.name
+
+            
 
         # Vincular la función de escaneo de código de barras
         keyboard.on_press(on_key_press)
