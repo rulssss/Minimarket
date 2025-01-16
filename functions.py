@@ -3,7 +3,8 @@ from psycopg2 import errors
 from tkinter import messagebox
 import tkinter as tk
 from datetime import datetime
-
+import os
+import sys
 
 #################################################
 #################################################
@@ -367,6 +368,10 @@ def ventana_confirmacion():
     confirm_window.grab_set()  # Bloquear la ventana principal hasta que se cierre la ventana emergente
     
     confirm_window.resizable(False, False)  # Bloquear el cambio de tamaño de la ventana
+
+    # Cargar la imagen del icono
+    icon_path = resource_path("resources/r.ico")  # Ruta relativa a la imagen del icono
+    confirm_window.iconbitmap(icon_path)
     # Centrando la ventana
     screen_width = confirm_window.winfo_screenwidth()
     screen_height = confirm_window.winfo_screenheight()
@@ -672,3 +677,14 @@ def traer_producto(barcode):
     data = cursor.fetchall()
     cursor.close()
     return data[0]
+
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)

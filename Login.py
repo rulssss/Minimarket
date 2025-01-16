@@ -28,7 +28,9 @@ class Login:
         position_top = int(screen_height / 2 - window_height / 2)
         position_right = int(screen_width / 2 - window_width / 2)
         self.master.geometry(f'{window_width}x{window_height}+{position_right}+{position_top}')
-        
+        # Cargar la imagen del icono
+        icon_path = resource_path("resources/r.ico")  # Ruta relativa a la imagen del icono
+        self.master.iconbitmap(icon_path)
 
     def create_register_window(self):
         for widget in self.master.winfo_children():

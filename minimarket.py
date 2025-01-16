@@ -6,6 +6,7 @@ import re
 from datetime import datetime, date
 import calendar
 import keyboard
+from PIL import Image, ImageTk
 
 
 ### TODA LA VENTANA DE EL MINIMARKET 
@@ -66,7 +67,9 @@ class Datos:
         ventana.resizable(False, False)  # Evita que se redimensione
         ventana.configure(bg="white")
        
-
+        # Cargar la imagen del icono
+        icon_path = resource_path("resources/r.ico")  # Ruta relativa a la imagen del icono
+        ventana.iconbitmap(icon_path)
         # Hacer la ventana modal
         ventana.grab_set()
 
@@ -198,7 +201,9 @@ class Datos:
         ventana.title("Borrar Producto")
         ventana.geometry("300x150")  # Tamaño de la ventana
         ventana.resizable(False, False)  # Evita que se redimensione
-        
+        # Cargar la imagen del icono
+        icon_path = resource_path("resources/r.ico")  # Ruta relativa a la imagen del icono
+        ventana.iconbitmap(icon_path)
 
         # Hacer la ventana modal
         ventana.grab_set()
@@ -302,6 +307,10 @@ class Datos:
         confirm_window.geometry("1200x300")  # Ajusta el tamaño según necesites
         confirm_window.resizable(False, False)  # Evita que se redimensione
         confirm_window.configure(bg="white")
+
+        # Cargar la imagen del icono
+        icon_path = resource_path("resources/r.ico")  # Ruta relativa a la imagen del icono
+        confirm_window.iconbitmap(icon_path)
        
 
         # Inicializar filtro_timer
@@ -319,7 +328,7 @@ class Datos:
         if screen_width < 1100:
             ancho_ventana = 1000
         else:
-            ancho_ventana = 1100
+            ancho_ventana = 1200
 
         alto_ventana = 320
         x = (confirm_window.winfo_screenwidth() // 2) - (ancho_ventana // 2)
@@ -535,7 +544,9 @@ class Datos:
         ventana.geometry("1200x300")  # Ajusta el tamaño según necesites
         ventana.resizable(False, False)  # Evita que se redimensione
         ventana.configure(bg="white")
-        
+        # Cargar la imagen del icono
+        icon_path = resource_path("resources/r.ico")  # Ruta relativa a la imagen del icono
+        ventana.iconbitmap(icon_path)
 
         # Hacer la ventana modal
         ventana.grab_set()
@@ -646,7 +657,9 @@ class Datos:
         ventana.geometry("300x150")  # Tamaño de la ventana
         ventana.resizable(False, False)  # Evita que se redimensione
         
-
+        # Cargar la imagen del icono
+        icon_path = resource_path("resources/r.ico")  # Ruta relativa a la imagen del icono
+        ventana.iconbitmap(icon_path)
         # Hacer la ventana modal
         ventana.grab_set()
 
@@ -749,7 +762,9 @@ class Datos:
         confirm_window.geometry("1200x300")  # Ajusta el tamaño según necesites
         confirm_window.resizable(False, False)  # Evita que se redimensione
         confirm_window.configure(bg="white")
-        
+        # Cargar la imagen del icono
+        icon_path = resource_path("resources/r.ico")  # Ruta relativa a la imagen del icono
+        confirm_window.iconbitmap(icon_path)
 
         # Inicializar filtro_timer
         global filtro_timer
@@ -893,6 +908,9 @@ class Datos:
         ventana.resizable(False, False)  # Evita que se redimensione
         ventana.configure(bg="white")
        
+        # Cargar la imagen del icono
+        icon_path = resource_path("resources/r.ico")  # Ruta relativa a la imagen del icono
+        ventana.iconbitmap(icon_path)
 
         # Hacer la ventana modal
         ventana.grab_set()
@@ -984,7 +1002,9 @@ class Datos:
         ventana.geometry("300x150")  # Tamaño de la ventana
         ventana.resizable(False, False)  # Evita que se redimensione
        
-        
+        # Cargar la imagen del icono
+        icon_path = resource_path("resources/r.ico")  # Ruta relativa a la imagen del icono
+        ventana.iconbitmap(icon_path)
         
 
         # Configurar el color de fondo de la ventana a blanco
@@ -1090,7 +1110,9 @@ class Datos:
         position_y = (screen_height // 2) - (window_height // 2)
         confirm_window.geometry(f"{window_width}x{window_height}+{position_x}+{position_y}")
         
-
+        # Cargar la imagen del icono
+        icon_path = resource_path("resources/r.ico")  # Ruta relativa a la imagen del icono
+        confirm_window.iconbitmap(icon_path)
 
         # Crear etiquetas y casillas de verificación para seleccionar qué borrar
         label = tk.Label(confirm_window, text="¿Desea borrar todos los datos?", font=("Segoe UI", 14), bg="white")
@@ -1144,27 +1166,38 @@ class BuscarDatos:
         for texto, comando in botones:
             tk.Button(self.master,text=texto,command=comando,height=1,  width=20,  bg="#e0e0e0",  fg="black", font=("Segoe UI", 12, "bold"),  activebackground="#c0c0c0",  activeforeground="white", relief="groove",  bd=2  ).pack(pady=9)
 
+
+    global datos_dia_abierto
+    datos_dia_abierto = False
+
     def datos_por_dia(self):
+
+
+        global datos_dia_abierto
+
+        if datos_dia_abierto:
+            return
+        
+        datos_dia_abierto = True
+
         ventana = tk.Toplevel()
         ventana.title("Seleccionar Fecha")
-       
         ventana.configure(bg="white")
         ventana.update_idletasks()
         width = 1000
-        height = 760
+        height = 800
         x = (ventana.winfo_screenwidth() // 2) - (width // 2)
         y = (ventana.winfo_screenheight() // 2) - (height // 2)
         ventana.geometry(f"{width}x{height}+{x}+{y}")
-        ventana.grab_set()
+       
+        # Cargar la imagen del icono
+        icon_path = resource_path("resources/r.ico")  # Ruta relativa a la imagen del icono
+        ventana.iconbitmap(icon_path)
 
         main_frame = tk.Frame(ventana, bg="white")
         main_frame.grid(row=0, column=0, padx=20, pady=20, sticky='nsew')
 
-        sub_frame2 = tk.Frame(ventana, bg="white")
-        sub_frame2.grid(row=0, column=1, padx=20, pady=20, sticky='nsew')
-
         ventana.grid_columnconfigure(0, weight=1)
-        ventana.grid_columnconfigure(1, weight=1)
         ventana.grid_rowconfigure(0, weight=1)
 
         label_fecha = tk.Label(main_frame, text="Seleccione una Fecha:", bg="white", font=("Segoe UI", 16))
@@ -1177,59 +1210,6 @@ class BuscarDatos:
 
         fecha_frame = tk.Frame(main_frame, bg="white")
         fecha_frame.grid(row=1, column=0, pady=5, sticky='n')
-
-        label2 = tk.Label(sub_frame2, text="Inserte el ID de venta o compra\n para ver su detalle", font=("Segoe UI", 16))
-        label2.grid(row=0, column=0, pady=10, sticky='n')
-
-        tipo_var = tk.StringVar()
-        combobox_tipo = ttk.Combobox(sub_frame2, textvariable=tipo_var, values=["Venta", "Compra"], state="readonly", font=("Segoe UI", 16))
-        combobox_tipo.set("Venta")
-        combobox_tipo.grid(row=1, column=0, pady=10, sticky='n')
-
-        id_var = tk.StringVar()
-        entry_id = tk.Entry(sub_frame2, textvariable=id_var, font=("Segoe UI", 16), bg="#e0e0e0", bd=3, relief="solid")
-        entry_id.grid(row=2, column=0, pady=10, sticky='n')
-
-        resultados_frame = tk.Frame(sub_frame2, bg="white")
-        resultados_frame.grid(row=3, column=0, pady=20, sticky='nsew')
-        sub_frame2.grid_rowconfigure(3, weight=1)
-        sub_frame2.grid_columnconfigure(0, weight=1)
-
-        text_resultado = tk.Text(resultados_frame, bg="white", font=("Segoe UI", 18), state=tk.DISABLED)
-        text_resultado.grid(row=0, column=0, sticky='nsew')
-        resultados_frame.grid_rowconfigure(0, weight=1)
-        resultados_frame.grid_columnconfigure(0, weight=1)
-
-        scrollbar_resultado = tk.Scrollbar(resultados_frame, command=text_resultado.yview)
-        scrollbar_resultado.grid(row=0, column=1, sticky='ns')
-        text_resultado.config(yscrollcommand=scrollbar_resultado.set)
-
-        def buscar_detalle():
-            id_seleccionado = entry_id.get().strip()
-            if id_seleccionado.isdigit():
-                s = True if combobox_tipo.get() == "Venta" else False
-                detalles = traer_detalles(s=s, id=int(id_seleccionado))
-                detalles_texto = mostrar_detalles(detalles, s)
-                text_resultado.config(state=tk.NORMAL)
-                text_resultado.delete(1.0, tk.END)
-                text_resultado.insert(tk.END, detalles_texto)
-                text_resultado.config(state=tk.DISABLED)
-            else:
-                text_resultado.config(state=tk.NORMAL)
-                text_resultado.delete(1.0, tk.END)
-                text_resultado.insert(tk.END, "Por favor, ingrese un ID numérico válido.")
-                text_resultado.config(state=tk.DISABLED)
-
-        def cerrar():
-            global datos_dia_abierto
-            datos_dia_abierto = False
-            ventana.destroy()
-
-        boton_buscar = tk.Button(sub_frame2, text="Buscar", command=buscar_detalle, bg="lightgrey", font=("Segoe UI", 14, "bold"), cursor="hand2", fg="black", relief="groove")
-        boton_buscar.grid(row=4, column=0, pady=10, sticky='n')
-
-        boton_cerrar = tk.Button(sub_frame2, text="Cerrar", command=cerrar, bg="#ef3232", font=("Segoe UI", 14, "bold"), cursor="hand2", fg="black", relief="groove")
-        boton_cerrar.grid(row=5, column=0, pady=(110, 10), sticky='n')
 
         fecha_frame.option_add('*TCombobox*Listbox.font', ('Segoe UI', 16))
         dias = list(range(1, 32))
@@ -1274,7 +1254,7 @@ class BuscarDatos:
         scrollbar_ventas = tk.Scrollbar(ventas_frame)
         scrollbar_ventas.pack(side=tk.RIGHT, fill=tk.Y)
 
-        text_ventas = tk.Text(ventas_frame, bg="white", font=("Segoe UI", 16), height=6, yscrollcommand=scrollbar_ventas.set)
+        text_ventas = tk.Text(ventas_frame, bg="white", font=("Segoe UI", 16), height=7, yscrollcommand=scrollbar_ventas.set)
         text_ventas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         text_ventas.config(state=tk.DISABLED)
 
@@ -1290,7 +1270,7 @@ class BuscarDatos:
         scrollbar_compras = tk.Scrollbar(compras_frame)
         scrollbar_compras.pack(side=tk.RIGHT, fill=tk.Y)
 
-        text_compras = tk.Text(compras_frame, bg="white", font=("Segoe UI", 18), height=6, yscrollcommand=scrollbar_compras.set)
+        text_compras = tk.Text(compras_frame, bg="white", font=("Segoe UI", 18), height=7, yscrollcommand=scrollbar_compras.set)
         text_compras.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         text_compras.config(state=tk.DISABLED)
 
@@ -1314,8 +1294,8 @@ class BuscarDatos:
                 compras_filtradas = [compra for compra in all_data_compras if compra[1] == fecha_seleccionada_date]
 
                 total_contado['text'], total_mercado_pago['text'], total_cuenta_corriente['text'], total_compras['text'] = totales(ventas_filtradas, compras_filtradas, s=False)
-                
-                
+
+
                 ventas_texto = "\n".join([f"id_venta: {venta[0]} | Fecha: {venta[1]} | Total: ${venta[2]} | Hora: {venta[3]} | Método de Pago: {venta[4]} | Vendedor: {traer_usuario(ventas_filtradas)}" for venta in ventas_filtradas])
                 text_ventas.config(state=tk.NORMAL)
                 text_ventas.delete(1.0, tk.END)
@@ -1328,12 +1308,130 @@ class BuscarDatos:
                 text_compras.insert(tk.END, compras_texto if compras_texto else "No hay compras para esta fecha.")
                 text_compras.config(state=tk.DISABLED)
 
+        def cerrar():
+            global datos_dia_abierto
+            datos_dia_abierto = False
+            ventana.destroy()
+
+        global datos_id_abierto
+        datos_id_abierto = False
+
+        def mostrar_detalles(ventas_compras, tipo):
+            detalles_texto = "\n".join([
+                f"id_detalle: {detalle[0]} | id_{'venta' if tipo else 'compra'}: {detalle[1]} | id_producto: {detalle[2]} | Cantidad: {detalle[4]:.0f} | Precio Unitario: ${detalle[3]:.2f}"
+                for detalle in ventas_compras
+            ])
+            return detalles_texto if detalles_texto else "No hay registros disponibles."
+
+        def ver_detalle():
+            global datos_id_abierto
+
+            if datos_id_abierto:
+                return
+
+            datos_id_abierto = True
+
+            # Crear la ventana hija con Toplevel
+            ventana = tk.Toplevel()
+            ventana.title("ID detalle")
+            ventana.iconbitmap(resource_path("resources/r.ico"))
+            ventana.configure(bg="white")
+            ventana.geometry("1000x700")  # Establecer la altura fija de 700px
+
+            # Deshabilitar la opción de redimensionar la ventana
+            ventana.resizable(False, False)
+
+            # Centrar la ventana en la pantalla
+            ventana.update_idletasks()
+            width = 1000
+            height = 400
+            x = (ventana.winfo_screenwidth() // 2) - (width // 2)
+            y = (ventana.winfo_screenheight() // 2) - (height // 2)
+            ventana.geometry(f"{width}x{height}+{x}+{y}")
+
+            # Crear contenido de la ventana
+            main_frame = tk.Frame(ventana, bg="white")
+            main_frame.grid(row=0, column=0, padx=20, pady=20, sticky='nsew')
+
+            ventana.grid_rowconfigure(0, weight=1)
+            ventana.grid_columnconfigure(0, weight=1)
+
+            label_titulo = tk.Label(main_frame, text="Inserte el ID de venta o compra para ver su detalle", bg="white", font=("Segoe UI", 16))
+            label_titulo.grid(row=0, column=0, columnspan=2, pady=10, sticky='n')
+
+            # ComboBox para seleccionar entre "Venta" y "Compra"
+            tipo_var = tk.StringVar()
+            combobox_tipo = ttk.Combobox(main_frame, textvariable=tipo_var, values=["Venta", "Compra"], state="readonly", font=("Segoe UI", 16), width=30)
+            combobox_tipo.set("Venta")
+            combobox_tipo.grid(row=1, column=0, columnspan=2, pady=10)
+
+            # Entry para ingresar el ID de venta o compra
+            id_var = tk.StringVar()
+            entry_id = tk.Entry(main_frame, textvariable=id_var, font=("Segoe UI", 16), width=30, bg="#e0e0e0")
+            entry_id.grid(row=2, column=0, columnspan=2, pady=10)
+
+            resultados_frame = tk.Frame(main_frame, bg="white")
+            resultados_frame.grid(row=3, column=0, columnspan=2, pady=20, sticky='nsew')
+            main_frame.grid_rowconfigure(3, weight=1)
+            main_frame.grid_columnconfigure(0, weight=1)
+
+            text_resultado = tk.Text(resultados_frame, bg="white", font=("Segoe UI", 17), state=tk.DISABLED)
+            text_resultado.pack(fill=tk.BOTH, expand=True)
+
+            scrollbar_resultado = tk.Scrollbar(resultados_frame, command=text_resultado.yview)
+            scrollbar_resultado.pack(side=tk.RIGHT, fill=tk.Y)
+            text_resultado.config(yscrollcommand=scrollbar_resultado.set)
+
+            # Función para buscar detalles
+            def buscar_detalle():
+                id_seleccionado = entry_id.get().strip()  # Obtener directamente el valor del Entry
+
+                if id_seleccionado.isdigit():
+                    s = True if combobox_tipo.get() == "Venta" else False
+                    detalles = traer_detalles(s=s, id=int(id_seleccionado))
+
+                    detalles_texto = mostrar_detalles(detalles, s)
+
+                    # Mostrar los detalles en el Text widget
+                    text_resultado.config(state=tk.NORMAL)
+                    text_resultado.delete(1.0, tk.END)
+                    text_resultado.insert(tk.END, detalles_texto)
+                    text_resultado.config(state=tk.DISABLED)
+                else:
+                    # Mostrar mensaje de error si el ID no es un número válido
+                    text_resultado.config(state=tk.NORMAL)
+                    text_resultado.delete(1.0, tk.END)
+                    text_resultado.insert(tk.END, "Por favor, ingrese un ID numérico válido.")
+                    text_resultado.config(state=tk.DISABLED)
+
+            # Función para cerrar la ventana hija
+            def cerrar():
+                global datos_id_abierto
+                datos_id_abierto = False
+                ventana.destroy()
+
+            boton_buscar = tk.Button(main_frame, text="Buscar", command=buscar_detalle, bg="lightgrey", font=("Segoe UI", 12, "bold"), cursor="hand2", fg="black", relief="groove", width=10)
+            boton_buscar.grid(row=4, column=0, pady=10)
+
+            boton_cerrar = tk.Button(main_frame, text="Cerrar", command=cerrar, bg="#ef3232", font=("Segoe UI", 12, "bold"), cursor="hand2", fg="black", relief="groove", width=10)
+            boton_cerrar.grid(row=4, column=1, pady=10)
+
+            # Configurar el protocolo para manejar el cierre de la ventana hija
+            ventana.protocol("WM_DELETE_WINDOW", cerrar)
+
+            ventana.mainloop()
+
         boton_aceptar = tk.Button(main_frame, text="Aceptar", command=aceptar, bg="lightgrey", font=("Segoe UI", 14, "bold"), cursor="hand2", fg="black", relief="groove")
         boton_aceptar.grid(row=3, column=0, pady=10, sticky='n')
-        
+
+        boton_aceptar = tk.Button(main_frame, text="Ver detalle de venta", command=ver_detalle, bg="lightgrey", font=("Segoe UI", 14, "bold"), cursor="hand2", fg="black", relief="groove")
+        boton_aceptar.grid(row=4, column=0, pady=10, sticky='n')
+
+        boton_cerrar = tk.Button(main_frame, text="Cerrar", command=cerrar, bg="#ef3232", font=("Segoe UI", 14, "bold"), cursor="hand2", fg="black", relief="groove")
+        boton_cerrar.grid(row=5, column=0, pady=(70, 10), sticky='n')
+
         # Vincular el evento de la tecla Enter al botón "Aceptar"
         ventana.bind('<Return>', lambda event: aceptar())
-
 
         ventana.mainloop()
     
@@ -1350,6 +1448,9 @@ class BuscarDatos:
         ventana.geometry(f"{width}x{height}+{x}+{y}")
         ventana.grab_set()
         ventana.resizable(False, False)
+        # Cargar la imagen del icono
+        icon_path = resource_path("resources/r.ico")  # Ruta relativa a la imagen del icono
+        ventana.iconbitmap(icon_path)
         
 
         ventana.grid_rowconfigure(0, weight=1)
@@ -1552,7 +1653,10 @@ class Administracion:
         y_coordinate = int((screen_height / 2) - (ventana_facturero_height / 2))
         ventana_facturero.geometry(f"{ventana_facturero_width}x{ventana_facturero_height}+{x_coordinate}+{y_coordinate}")
     
-    
+        # Cargar la imagen del icono
+        icon_path = resource_path("resources/r.ico")  # Ruta relativa a la imagen del icono
+        ventana_facturero.iconbitmap(icon_path)
+
         # Crear el frame superior
         frame_superior = tk.Frame(ventana_facturero, bd=2, relief="groove")
         frame_superior.pack(side="top", fill="x", padx=10, pady=10)
@@ -1820,7 +1924,7 @@ class Administracion:
         def on_key_press(event):
             nonlocal barcode
             if event.name == 'enter':
-                print(barcode)
+                
                 producto = traer_producto(barcode)  # Llamar a la función traer_producto con el código de barras
                 if producto:
                     producto_id.config(state="normal")
@@ -1893,6 +1997,9 @@ class Administracion:
         y_coordinate = int((screen_height / 2) - (ventana_compra_height / 2))
         ventana_compra.geometry(f"{ventana_compra_width}x{ventana_compra_height}+{x_coordinate}+{y_coordinate}")
         
+        # Cargar la imagen del icono
+        icon_path = resource_path("resources/r.ico")  # Ruta relativa a la imagen del icono
+        ventana_compra.iconbitmap(icon_path)
     
         # Crear el frame superior
         frame_superior = tk.Frame(ventana_compra, bd=2, relief="groove")
@@ -2225,7 +2332,10 @@ class Minimarket:
         self.master.update_idletasks()  # Asegura que la geometría se actualice
         self.master.state('zoomed')  # Maximiza la ventana
         self.master.minsize(800, 600)  # Tamaño mínimo de la ventana
-      
+
+        # Cargar la imagen del icono
+        icon_path = resource_path("resources/r.ico")  # Ruta relativa a la imagen del icono
+        self.master.iconbitmap(icon_path)
 
         # Mostrar ID del usuario de forma transparente y bienvenida
         self.mostrar_id_inicio(username)
@@ -3133,6 +3243,6 @@ class Minimarket:
 
 
 #Crear la ventana principal
-#root = tk.Tk()
-#app = Minimarket(root, "mariano", True)
-#root.mainloop()
+root = tk.Tk()
+app = Minimarket(root, "mariano", True)
+root.mainloop()
