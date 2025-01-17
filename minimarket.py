@@ -1397,7 +1397,7 @@ class BuscarDatos:
 
             # Entry para ingresar el ID de venta o compra
             id_var = tk.StringVar()
-            entry_id = tk.Entry(main_frame, textvariable=id_var, font=("Segoe UI", 16), width=30, bg="#e0e0e0")
+            entry_id = tk.Entry(main_frame, textvariable=id_var, font=("Segoe UI", 16), width=10, bg="#e0e0e0")
             entry_id.grid(row=2, column=0, columnspan=2, pady=10)
 
             resultados_frame = tk.Frame(main_frame, bg="white")
@@ -1441,7 +1441,7 @@ class BuscarDatos:
                 ventana.destroy()
 
             boton_buscar = tk.Button(main_frame, text="Buscar", command=buscar_detalle, bg="lightgrey", font=("Segoe UI", 12, "bold"), cursor="hand2", fg="black", relief="groove", width=10)
-            boton_buscar.grid(row=4, column=0, pady=10)
+            boton_buscar.grid(row=4, column=0, pady=10, padx=(115,0))
 
             boton_cerrar = tk.Button(main_frame, text="Cerrar", command=cerrar, bg="#ef3232", font=("Segoe UI", 12, "bold"), cursor="hand2", fg="black", relief="groove", width=10)
             boton_cerrar.grid(row=4, column=1, pady=10)
