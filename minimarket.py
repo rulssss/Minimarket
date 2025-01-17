@@ -57,7 +57,7 @@ class Datos:
             # Agregar una línea sutil estilo "hr" después de cada 4 botones
             if (i + 1) % 4 == 0:
                 separator = tk.Frame(self.master, bg="gray", height=2)
-                separator.grid(row=row, column=0, pady=0, sticky="ew")
+                separator.grid(row=row, column=0, pady=(0, 20), sticky="ew")
                 row += 1
 
         # Botón "Borrar Datos" en la parte inferior
@@ -2832,16 +2832,16 @@ class Minimarket:
         mostrar_productos.entry_busqueda.bind("<KeyRelease>", actualizar_filtro)
 
         # Combobox para categorías
-        tk.Label(self.frame_derecho, text="Seleccione cat o prov :", font=("Segoe UI", 12)).place(relx=0.78, rely=0.02, anchor="center")
+        tk.Label(self.frame_derecho, text="Seleccione cat o prov :", font=("Segoe UI", 12)).place(relx=0.72, rely=0.01)
         combobox_opcion = ttk.Combobox(self.frame_derecho, font=("Segoe UI", 12), state="readonly", height=5)
         combobox_opcion['values'] = ["Categoria", "Proveedor"]
         combobox_opcion.option_add('*TCombobox*Listbox.font', ('Segoe UI', 12))
-        combobox_opcion.place(relx=0.92, rely=0.02, anchor="center", width=200)
+        combobox_opcion.place(relx=0.83, rely=0.01, width=200)
 
         # Combobox para proveedores
-        tk.Label(self.frame_derecho, text="Seleccione el nombre :", font=("Segoe UI", 12)).place(relx=0.78, rely=0.06, anchor="center")
+        tk.Label(self.frame_derecho, text="Seleccione el nombre :", font=("Segoe UI", 12)).place(relx=0.72, rely=0.05)
         combobox_nombre = ttk.Combobox(self.frame_derecho, font=("Segoe UI", 12), state="readonly", height=5)
-        combobox_nombre.place(relx=0.92, rely=0.06, anchor="center", width=200)
+        combobox_nombre.place(relx=0.83, rely=0.05, width=200)
 
         def actualizar_combobox(event):
             seleccion = combobox_opcion.get()
@@ -3310,6 +3310,6 @@ class Minimarket:
 
 
 #Crear la ventana principal
-#root = tk.Tk()
-#app = Minimarket(root, "mariano", True)
-#root.mainloop()
+root = tk.Tk()
+app = Minimarket(root, "mariano", True)
+root.mainloop()
