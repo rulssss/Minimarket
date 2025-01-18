@@ -165,12 +165,12 @@ class Datos:
             if not bool(re.match("^[A-Za-z0-9 ]*$", nombre_producto)):
                 advertencia_label.config(text="No acepta ',.-/()'")
                 return
-            if not bool(re.match("^[0-9.]*$", precio_compra_producto and precio_venta_producto)):
+            if not bool(re.match("^[0-9.]*$", precio_compra_producto and precio_venta_producto and cantidad_producto)):
                 advertencia_label.config(text="Solo acepta números y decimales")
                 return
             
-            if not bool(re.match("^[0-9]*$", cantidad_producto and id_producto)):
-                advertencia_label.config(text="Solo acepta números")
+            if not bool(re.match("^[0-9]*$", id_producto)):
+                advertencia_label.config(text="Solo acepta números enteros")
                 return
             
             
@@ -370,7 +370,7 @@ class Datos:
         entry_precio.grid(row=2, column=3, padx=10, pady=5)
 
         Label(frame, text="Stock", bg="white", font=("Segoe UI", 12)).grid(row=1, column=4, padx=10, pady=5)
-        entry_cantidad = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16), state='readonly')
+        entry_cantidad = Entry(frame, width=20, bg="#e0e0e0", relief="groove", font=("Segoe UI", 16))
         entry_cantidad.grid(row=2, column=4, padx=10, pady=5)
 
         # Combobox para categorias
@@ -426,7 +426,7 @@ class Datos:
                     entry_cantidad.config(state='normal')
                     entry_cantidad.delete(0, tk.END)
                     entry_cantidad.insert(0, producto[4])  # Cantidad
-                    entry_cantidad.config(state='readonly')
+                    
 
                     combobox_busqueda1.config(state='normal')
                     combobox_busqueda1.set(producto[5])  # Categoria
@@ -443,6 +443,7 @@ class Datos:
             nombre_producto = combobox_nombre.get()
             precio_compra_producto = entry_precio_compra.get()
             precio_venta_producto = entry_precio.get()
+            cantidad = entry_cantidad.get()
             categoria_producto = combobox_busqueda1.get()
             proveedor_producto = combobox_busqueda2.get()
 
@@ -451,6 +452,7 @@ class Datos:
                 if producto[1] == producto_seleccionado:
                     precio_anterior_compra = producto[2]
                     precio_anterior_venta = producto[3]
+                    cantidad_ant = producto[4]
                     categ_ant = producto[5]
                     prov_ant = producto[6]
 
@@ -460,14 +462,15 @@ class Datos:
                     return True
                 except ValueError:
                     return False
+                
             if nombre_producto:
 
-                if es_numero_decimal(precio_venta_producto):
-                    if (float(precio_anterior_venta) == float(precio_venta_producto)) and (categ_ant == categoria_producto) and (prov_ant == proveedor_producto) and (float(precio_anterior_compra) == float(precio_compra_producto)):
+                if es_numero_decimal(precio_venta_producto and precio_compra_producto):
+                    if (float(precio_anterior_venta) == float(precio_venta_producto)) and (categ_ant == categoria_producto) and (prov_ant == proveedor_producto) and (float(precio_anterior_compra) == float(precio_compra_producto) and (cantidad == cantidad_ant)):
                         advertencia_label.config(text="Actualice el producto por favor")
                     else:
-                        actualizar_producto(nombre_producto, precio_compra_producto, precio_venta_producto, categoria_producto, proveedor_producto)
-                        self.minimarket.mostrar_arbol_productos()  # mostrar productos actualizados
+                        actualizar_producto(nombre_producto, precio_compra_producto, precio_venta_producto, cantidad, categoria_producto, proveedor_producto)
+                        self.minimarket.mostrar_arbol_productos_cat_prov()  # mostrar productos actualizados
                         on_no()
                     return
                 else:
@@ -2668,7 +2671,7 @@ class Minimarket:
                 tree.tag_configure("rojo", foreground="red", font=("Segoe UI", 14, "bold"))
                 for i in productos_a_mostrar:
                     # Determina el color según el valor de i[2]
-                    tag = ("rojo",) if i[2] < 5 else ()
+                    tag = ("rojo",) if i[4] < 5 else ()
                     # Insertar una fila vacía para crear espacio
                     tree.insert("", "end", values=("", "", "", "", "", "", ""))
                     tree.insert("", "end", values=(i[0], i[1], f"${i[2]:.2f}", f"${i[3]:.2f}", i[4], i[5], i[6]), tags=tag)
@@ -2686,7 +2689,7 @@ class Minimarket:
                 tree.insert("", "end", values=("", "", "", "", "", "", ""))
                 # Verificar si el valor en la posición 2 es menor a -5
                 # Determina el color según el valor de i[2]
-                tag = ("rojo",) if i[2] < 5 else ()
+                tag = ("rojo",) if i[4] < 5 else ()
                 # Insertar el producto con el tag "rojo"
                 tree.insert("", "end", values=(f"{i[0]}", i[1], f"${i[2]:.2f}", f"${i[3]:.2f}", i[4], i[5], i[6]), tags=tag)
             
@@ -2813,8 +2816,9 @@ class Minimarket:
             else:
                 productos_a_mostrar = all_data2
             tree.tag_configure("rojo", foreground="red", font=("Segoe UI", 14, "bold"))
+            
             for i in productos_a_mostrar:
-                tag = ("rojo",) if i[2] < 5 else ()
+                tag = ("rojo",) if i[4] < 5 else ()
                 tree.insert("", "end", values=("", "", "", "", "", "", ""))
                 tree.insert("", "end", values=(i[0], i[1], f"${i[2]:.2f}", f"${i[3]:.2f}", i[4], i[5], i[6]), tags=tag)
 
@@ -2823,7 +2827,7 @@ class Minimarket:
                 tree.delete(item)
             tree.tag_configure("rojo", foreground="red", font=("Segoe UI", 14, "bold"))
             for i in s:
-                tag = ("rojo",) if i[2] < 5 else ()
+                tag = ("rojo",) if i[4] < 5 else ()
                 tree.insert("", "end", values=("", "", "", "", "", "", ""))
                 tree.insert("", "end", values=(i[0], i[1], f"${i[2]:.2f}", f"${i[3]:.2f}", i[4], i[5], i[6]), tags=tag)
 

@@ -29,7 +29,7 @@ connection2.autocommit = True
 
 
 #####################################
-# FUNCIONES PARA CONNECTION1 LOGIN db
+# FUNCIONES PARA CONNECTION2 LOGIN db
 #####################################
 
 def registrar_usuario(username, password, account):
@@ -222,7 +222,7 @@ def traer_todos_los_productos():
 
 
 
-def actualizar_producto(nombre_prdoucto, precio_compra_producto, precio_venta_producto, categoria_producto, proveedor_producto):
+def actualizar_producto(nombre_prdoucto, precio_compra_producto, precio_venta_producto, cantidad, categoria_producto, proveedor_producto):
     
     cursor= connection2.cursor()
     query_search = f"SELECT id_categoria FROM categorias WHERE nombre_descrip = '{categoria_producto}'"
@@ -233,7 +233,7 @@ def actualizar_producto(nombre_prdoucto, precio_compra_producto, precio_venta_pr
     cursor.execute(query_search2)
     prov = cursor.fetchall()[0][0]
 
-    query_data2 = f"UPDATE productos SET precio_de_compra = {precio_compra_producto}, precio_de_venta = {precio_venta_producto}, id_categoria = {categ}, id_proveedor = {prov}  WHERE nombre = '{nombre_prdoucto}'"
+    query_data2 = f"UPDATE productos SET precio_de_compra = {precio_compra_producto}, precio_de_venta = {precio_venta_producto}, id_categoria = {categ}, id_proveedor = {prov}, stock = {cantidad}  WHERE nombre = '{nombre_prdoucto}'"
     cursor.execute(query_data2)
     cursor.close()
     
