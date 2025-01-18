@@ -179,7 +179,7 @@ class Datos:
                 return
 
             cargar_producto_actualizacion(id_producto, nombre_producto, precio_compra_producto, precio_venta_producto, cantidad_producto, categoria_producto, proveedor_producto)
-            self.minimarket.mostrar_arbol_productos()  # mostrar productos actualizados
+            self.minimarket.mostrar_arbol_productos_cat_prov()  # mostrar productos actualizados
             on_no()
 
         def on_no():
@@ -265,7 +265,7 @@ class Datos:
                 if v:
                     
                     messagebox.showinfo("Borrar Producto", "Producto borrado con éxito.")
-                    self.minimarket.mostrar_arbol_productos()
+                    self.minimarket.mostrar_arbol_productos_cat_prov()
                     ventana.destroy()  # Cerrar la ventana
                 else:
                     messagebox.showinfo("Borrar Producto", "No se encontró el producto.")
@@ -1663,19 +1663,14 @@ class Administracion:
     # Lista para almacenar los productos seleccionados
     productos_seleccionados = []
 
-    global facturero_abierto
-    facturero_abierto = False
 
     # Métodos de ejemplo para los botones
     def facturero(self):
-        global facturero_abierto
+        
     
         self.minimarket.mostrar_arbol_productos()
     
-        if facturero_abierto:
-            return
         
-        facturero_abierto = True
     
         # Crear la ventana principal
         ventana_facturero = tk.Toplevel()
@@ -1694,6 +1689,8 @@ class Administracion:
         # Cargar la imagen del icono
         icon_path = resource_path("resources/r.ico")  # Ruta relativa a la imagen del icono
         ventana_facturero.iconbitmap(icon_path)
+
+        ventana_facturero.attributes('-topmost', True)
 
         # Crear el frame superior
         frame_superior = tk.Frame(ventana_facturero, bd=2, relief="groove")
@@ -1931,7 +1928,7 @@ class Administracion:
     
         # Botón "Cerrar"
         def cerrar_ventana():
-            global facturero_abierto
+            
     
             s = False
             actualizar_cantidad_productos(self.productos_seleccionados, s, l=True, m=False)
@@ -1940,7 +1937,7 @@ class Administracion:
     
             self.productos_seleccionados.clear()
     
-            facturero_abierto = False
+            
             ventana_facturero.destroy()
     
         # Botón "Cerrar"
@@ -2017,8 +2014,6 @@ class Administracion:
 
     # Lista para almacenar los productos seleccionados
     compras_seleccionadas = []
-    global compra_abierto
-    compra_abierto = False
 
     def compras(self):
 
@@ -2028,12 +2023,6 @@ class Administracion:
         self.minimarket.mostrar_arbol_productos()
             
     
-        # Evitar que se abra más de una vez
-        if compra_abierto:
-            return  # No hacer nada si la ventana ya está abierta
-        
-        # Cambiar el estado a abierto
-        compra_abierto = True
     
     
         # Crear la ventana principal
@@ -2053,6 +2042,8 @@ class Administracion:
         # Cargar la imagen del icono
         icon_path = resource_path("resources/r.ico")  # Ruta relativa a la imagen del icono
         ventana_compra.iconbitmap(icon_path)
+
+        ventana_compra.attributes('-topmost', True)
     
         # Crear el frame superior
         frame_superior = tk.Frame(ventana_compra, bd=2, relief="groove")
@@ -2310,9 +2301,7 @@ class Administracion:
             actualizar_cantidad_productos(self.compras_seleccionadas, s, l=True, m= True)
             self.minimarket.mostrar_arbol_productos() 
 
-            global compra_abierto
-            self.compras_seleccionadas.clear()
-            compra_abierto = False  # Cambiar el estado a cerrado
+            self.compras_seleccionadas.clear()            
             
             ventana_compra.destroy()
     
