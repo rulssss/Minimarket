@@ -464,9 +464,11 @@ class Datos:
                     return False
                 
             if nombre_producto:
-
-                if es_numero_decimal(precio_venta_producto and precio_compra_producto):
-                    if (float(precio_anterior_venta) == float(precio_venta_producto)) and (categ_ant == categoria_producto) and (prov_ant == proveedor_producto) and (float(precio_anterior_compra) == float(precio_compra_producto) and (cantidad == cantidad_ant)):
+               
+                if es_numero_decimal(precio_venta_producto) and es_numero_decimal(precio_compra_producto) and es_numero_decimal(cantidad):
+                    print(cantidad)
+                    print(cantidad_ant)
+                    if (float(precio_anterior_venta) == float(precio_venta_producto)) and (categ_ant == categoria_producto) and (prov_ant == proveedor_producto) and (float(precio_anterior_compra) == float(precio_compra_producto) and (float(cantidad) == float(cantidad_ant))):
                         advertencia_label.config(text="Actualice el producto por favor")
                     else:
                         actualizar_producto(nombre_producto, precio_compra_producto, precio_venta_producto, cantidad, categoria_producto, proveedor_producto)
