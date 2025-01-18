@@ -650,13 +650,6 @@ def traer_detalles(s, id):
     return data
 
 
-def mostrar_detalles(ventas_compras, tipo):
-        detalles_texto = "\n".join([
-            f"Id detalle: {detalle[0]} | Id {'venta' if tipo else 'compra'}: {detalle[1]} | Producto: {detalle[2]} | Cantidad: {detalle[3]:.0f} | Precio Unitario: ${detalle[4]:.2f}"
-            for detalle in ventas_compras
-        ])
-        return detalles_texto if detalles_texto else "No hay registros disponibles."
-
 
 def traer_usuario(ventas_filtradas):
     id_usuario = ventas_filtradas[0][5]

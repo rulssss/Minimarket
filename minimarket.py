@@ -1353,7 +1353,7 @@ class BuscarDatos:
 
         def mostrar_detalles(ventas_compras, tipo):
             detalles_texto = "\n".join([
-                f"id_detalle: {detalle[0]} | id_{'venta' if tipo else 'compra'}: {detalle[1]} | id_producto: {detalle[2]} | Cantidad: {detalle[4]:.0f} | Precio Unitario: ${detalle[3]:.2f}"
+                f"id_detalle: {detalle[0]} | id_{'venta' if tipo else 'compra'}: {detalle[1]} | id_producto: {detalle[2]} | Cantidad: {detalle[3]:.1f} | Precio Unitario: ${detalle[4]:.2f}"
                 for detalle in ventas_compras
             ])
             return detalles_texto if detalles_texto else "No hay registros disponibles."
@@ -1424,8 +1424,9 @@ class BuscarDatos:
                 if id_seleccionado.isdigit():
                     s = True if combobox_tipo.get() == "Venta" else False
                     detalles = traer_detalles(s=s, id=int(id_seleccionado))
-
+                    
                     detalles_texto = mostrar_detalles(detalles, s)
+                    
 
                     # Mostrar los detalles en el Text widget
                     text_resultado.config(state=tk.NORMAL)
@@ -1453,6 +1454,9 @@ class BuscarDatos:
             
             # Configurar el protocolo para manejar el cierre de la ventana hija
             ventana.protocol("WM_DELETE_WINDOW", cerrar)
+            
+            # Vincular el evento de la tecla Enter al botón "Buscar"
+            ventana.bind('<Return>', lambda event: buscar_detalle())
 
             ventana.mainloop()
 
@@ -3305,6 +3309,6 @@ class Minimarket:
 
 
 #Crear la ventana principal
-root = tk.Tk()
-app = Minimarket(root, "mariano", True)
-root.mainloop()
+#root = tk.Tk()
+#app = Minimarket(root, "mariano", True)
+#root.mainloop()
