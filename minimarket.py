@@ -1700,10 +1700,42 @@ class Administracion:
         frame_superior = tk.Frame(ventana_facturero, bd=2, relief="groove")
         frame_superior.pack(side="top", fill="x", padx=10, pady=10)
 
+        ids = traer_todos_los_productos()
+        producto_ids = [producto_id[0] for producto_id in ids]
         # Crear campos de entrada solo para mostrar los datos (readonly)
         tk.Label(frame_superior, text="ID:", font=("Segoe UI", 13)).grid(row=0, column=0, padx=5, pady=5, sticky="e")
-        producto_id = tk.Entry(frame_superior, state="readonly", font=("Segoe UI", 13))
+        producto_id = ttk.Combobox(frame_superior, values=producto_ids, font=("Segoe UI", 13), height=5)
+        producto_id.set("0000000000")
         producto_id.grid(row=0, column=1, padx=5, pady=5)
+        producto_id.selection_range(0, tk.END)
+
+        # Función para filtrar productos con retraso
+        def filtrar_productos_ids_con_retraso(event):
+            nonlocal filtro_id
+            if filtro_id:
+                ventana_facturero.after_cancel(filtro_id)  # Cancelar el filtro anterior si existe
+
+            filtro_id = ventana_facturero.after(1000, lambda: filtrar_productos_ids(event))  # Esperar 1 segundo antes de filtrar
+
+        # Función para filtrar productos y permitir escritura continua
+        def filtrar_productos_ids(event):
+            entrada = producto_id.get()  # Captura el texto ingresado
+            try:
+                entrada_int = int(entrada)  # Convertir la entrada a entero
+                filtrados = [prod_id for prod_id in producto_ids if str(entrada_int) in str(prod_id)]  # Filtrar productos
+            except ValueError:
+                filtrados = []  # Si la entrada no es un número válido, no filtrar nada
+
+            producto_id['values'] = filtrados  # Actualizar las opciones del combobox
+
+            # Resaltar el texto en el combobox
+            producto_id.selection_range(0, 'end')
+
+            if filtrados:
+                producto_id.event_generate('<Down>')  # Mostrar opciones filtradas
+
+        # Vincular el evento KeyRelease para que espere 1 segundo antes de filtrar
+        producto_id.bind('<KeyRelease>', filtrar_productos_ids_con_retraso)
     
         # Crear combobox para el nombre del producto
         tk.Label(frame_superior, text="Nombre del producto:", font=("Segoe UI", 13)).grid(row=1, column=0, padx=5, pady=5, sticky="e")
@@ -1749,7 +1781,7 @@ class Administracion:
         tk.Label(frame_superior, text="Cantidad:", font=("Segoe UI", 13)).grid(row=3, column=0, padx=5, pady=5, sticky="e")
         cantidad_producto = tk.Entry(frame_superior, font=("Segoe UI", 13))  # Estado normal para permitir edición
         cantidad_producto.grid(row=3, column=1, padx=5, pady=5)
-        cantidad_producto.insert(0, "0")  # Valor predeterminado de ""
+        cantidad_producto.insert(0, "0")  # Valor predeterminado de "0"
     
         tk.Label(frame_superior, text="Categoría:", font=("Segoe UI", 13)).grid(row=4, column=0, padx=5, pady=5, sticky="e")
         categoria = tk.Entry(frame_superior, state="readonly", font=("Segoe UI", 13))
@@ -1783,15 +1815,17 @@ class Administracion:
         def actualizar_datos_producto(event):
             # Obtener el nombre seleccionado del combobox
             nombre_seleccionado = nombre_producto_combobox.get()
-    
+            id_seleccionado = producto_id.get()
             # Buscar los datos del producto seleccionado
             for producto in productos:
-                if producto[1] == nombre_seleccionado:
+                if producto[1] == nombre_seleccionado or str(producto[0]) == id_seleccionado:
                     # Actualizar los campos con los datos del producto seleccionado
                     producto_id.config(state="normal")
                     producto_id.delete(0, tk.END)
-                    producto_id.insert(0, producto[0])  # Precio
-                    producto_id.config(state="readonly")
+                    producto_id.insert(0, producto[0])  # ID
+                    producto_id.selection_range(0, tk.END)
+
+                    nombre_producto_combobox.set(producto[1])  # Nombre
     
                     precio_producto_venta.config(state="normal")
                     precio_producto_venta.delete(0, tk.END)
@@ -1895,7 +1929,9 @@ class Administracion:
             # Limpiar los campos de entrada
             producto_id.config(state="normal")
             producto_id.delete(0, tk.END)
-            producto_id.config(state="readonly")
+            producto_id.set("0000000000")
+            producto_id.selection_range(0, tk.END)
+            
 
             nombre_producto_combobox.set("Seleccionar nombre")
             precio_producto_venta.config(state="normal")
@@ -1954,9 +1990,12 @@ class Administracion:
 
         # Vincular el evento de la tecla Enter al botón "Añadir"
         ventana_facturero.bind('<Return>', lambda event: añadir_producto())
-    
+
+         # Vincular el evento de selección en el combobox
+        producto_id.bind("<<ComboboxSelected>>", actualizar_datos_producto)
         # Vincular el evento de selección en el combobox
         nombre_producto_combobox.bind("<<ComboboxSelected>>", actualizar_datos_producto)
+        
         # Vincular el evento de cierre de la ventana para restablecer facturero_abierto
         ventana_facturero.protocol("WM_DELETE_WINDOW", cerrar_ventana)
 
@@ -1981,7 +2020,7 @@ class Administracion:
                     producto_id.config(state="normal")
                     producto_id.delete(0, tk.END)
                     producto_id.insert(0, producto[0])
-                    producto_id.config(state="readonly")
+                    producto_id.selection_range(0, tk.END)
 
                     nombre_producto_combobox.set(producto[1])
 
@@ -2053,10 +2092,41 @@ class Administracion:
         frame_superior = tk.Frame(ventana_compra, bd=2, relief="groove")
         frame_superior.pack(side="top", fill="x", padx=10, pady=10)
         
-          # Crear campos de entrada solo para mostrar los datos (readonly)
+        ids = traer_todos_los_productos()
+        producto_ids = [producto_id[0] for producto_id in ids]
+        # Crear campos de entrada solo para mostrar los datos (readonly)
         tk.Label(frame_superior, text="ID:", font=("Segoe UI", 13)).grid(row=0, column=0, padx=5, pady=5, sticky="e")
-        producto_id = tk.Entry(frame_superior, state="readonly", font=("Segoe UI", 13))
+        producto_id = ttk.Combobox(frame_superior, values=producto_ids, font=("Segoe UI", 13), height=5)
+        producto_id.set("0000000000")
         producto_id.grid(row=0, column=1, padx=5, pady=5)
+
+        # Función para filtrar productos con retraso
+        def filtrar_productos_ids_con_retraso(event):
+            nonlocal filtro_id
+            if filtro_id:
+                ventana_compra.after_cancel(filtro_id)  # Cancelar el filtro anterior si existe
+
+            filtro_id = ventana_compra.after(1000, lambda: filtrar_productos_ids(event))  # Esperar 1 segundo antes de filtrar
+
+        # Función para filtrar productos y permitir escritura continua
+        def filtrar_productos_ids(event):
+            entrada = producto_id.get()  # Captura el texto ingresado
+            try:
+                entrada_int = int(entrada)  # Convertir la entrada a entero
+                filtrados = [prod_id for prod_id in producto_ids if str(entrada_int) in str(prod_id)]  # Filtrar productos
+            except ValueError:
+                filtrados = []  # Si la entrada no es un número válido, no filtrar nada
+
+            producto_id['values'] = filtrados  # Actualizar las opciones del combobox
+
+            # Resaltar el texto en el combobox
+            producto_id.selection_range(0, 'end')
+
+            if filtrados:
+                producto_id.event_generate('<Down>')  # Mostrar opciones filtradas
+
+        # Vincular el evento KeyRelease para que espere 1 segundo antes de filtrar
+        producto_id.bind('<KeyRelease>', filtrar_productos_ids_con_retraso)
 
         # Crear combobox para el nombre del producto
         tk.Label(frame_superior, text="Nombre del producto:", font=("Segoe UI", 13)).grid(row=1, column=0, padx=5, pady=5, sticky="e")
@@ -2137,14 +2207,17 @@ class Administracion:
         def actualizar_datos_producto(event):
             # Obtener el nombre seleccionado del combobox
             nombre_seleccionado = nombre_producto_combobox.get()
+            id_seleccionado = producto_id.get()
             # Buscar los datos del producto seleccionado
             for producto in productos:
-                if producto[1] == nombre_seleccionado:
+                if producto[1] == nombre_seleccionado or str(producto[0]) == id_seleccionado:
                     # Actualizar los campos con los datos del producto seleccionado
                     producto_id.config(state="normal")
                     producto_id.delete(0, tk.END)
                     producto_id.insert(0, producto[0])  # id producto
-                    producto_id.config(state="readonly")
+                    
+
+                    nombre_producto_combobox.set(producto[1])  # Nombre
     
                     precio_producto_compra.config(state="normal")
                     precio_producto_compra.delete(0, tk.END)
@@ -2264,7 +2337,8 @@ class Administracion:
             # Limpiar los campos de entrada
             producto_id.config(state="normal")
             producto_id.delete(0, tk.END)
-            producto_id.config(state="readonly")
+            producto_id.set("0000000000")
+            
 
             nombre_producto_combobox.set("Seleccionar nombre")
             precio_producto_compra.config(state="normal")
@@ -2318,9 +2392,12 @@ class Administracion:
         boton_procesar = tk.Button(frame_botones, text="Procesar", width=15, font=("Segoe UI", 13, "bold"), command=procesar_productos, relief="groove", fg="black", bg="#d7d7d7")
         boton_procesar.pack(side="right", padx=(90,0))
 
+
         # Vincular el evento de la tecla Enter al botón "Añadir"
         ventana_compra.bind('<Return>', lambda event: añadir_producto())
-
+        
+        # Vincular el evento de selección en el combobox
+        producto_id.bind("<<ComboboxSelected>>", actualizar_datos_producto)
         # Vincular el evento de selección en el combobox
         nombre_producto_combobox.bind("<<ComboboxSelected>>", actualizar_datos_producto)
         ventana_compra.protocol("WM_DELETE_WINDOW", cerrar_ventana)
@@ -2347,7 +2424,8 @@ class Administracion:
                     producto_id.config(state="normal")
                     producto_id.delete(0, tk.END)
                     producto_id.insert(0, producto[0])
-                    producto_id.config(state="readonly")
+                    producto_id.set("0000000000")
+                    
 
                     nombre_producto_combobox.set(producto[1])
                     precio_producto_compra.config(state="normal")
