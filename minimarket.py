@@ -1855,10 +1855,10 @@ class Administracion:
             cantidad_seleccionada = cantidad_producto.get()  # Obtener la cantidad modificada por el usuario
             metodo_pago_seleccionado = nombre_metodos_combobox.get()  # Obtener el método de pago elegido en el combobox
     
-            if nombre_seleccionado and cantidad_seleccionada.isdigit():
+            if nombre_seleccionado and cantidad_seleccionada:
                 for producto in productos:
                     if producto[1] == nombre_seleccionado:
-                        total = float(producto[3]) * int(cantidad_seleccionada)
+                        total = float(producto[3]) * float(cantidad_seleccionada)
                         producto_modificado = (producto[1], f"{float(producto[3]):.2f}", cantidad_seleccionada, producto[5], producto[6], metodo_pago_seleccionado, f"Total: {total:.2f}")
     
                         # Comprobar si la cantidad es accesible, y en caso de error informar que no se puede realizar esa venta
@@ -2244,7 +2244,7 @@ class Administracion:
         
            nombre_seleccionado = nombre_producto_combobox.get()
            cantidad_seleccionada = cantidad_producto.get()  # Obtener la cantidad modificada por el usuario
-           if nombre_seleccionado and cantidad_seleccionada.isdigit():
+           if nombre_seleccionado and cantidad_seleccionada:
                for producto in productos:
                    if producto[1] == nombre_seleccionado:
                         
@@ -2263,7 +2263,7 @@ class Administracion:
                             hora = "Tarde"
                         else:
                             hora = "Manana"
-                        total = float(producto[3]) * int(cantidad_seleccionada)
+                        total = float(producto[3]) * float(cantidad_seleccionada)
                         producto_modificado = (producto[1], f"{float(producto[2]):.2f}", cantidad_seleccionada, producto[5], producto[6], hora, f" Total: {total:.2f}")
                         
                         s = False

@@ -443,7 +443,8 @@ def clear_data():
 def controlar_cantidades(producto_modificado, s):
     
     nombre = producto_modificado[0]
-    cantidad = int(producto_modificado[2])
+    cantidad = float(producto_modificado[2])
+    
 
     cursor = connection2.cursor()
     query_update_data = f"SELECT stock FROM productos WHERE nombre='{nombre}'"
@@ -451,7 +452,7 @@ def controlar_cantidades(producto_modificado, s):
     data = cursor.fetchall()
     cursor.close()
       
-    op = data[0][0] - cantidad
+    op = float(data[0][0]) - float(cantidad)
     
     if s:
         
@@ -494,7 +495,7 @@ def actualizar_cantidad_productos(productos_modificado, s, l, m):
        
         nombre = productos_modificado[0][0] # nombre
         
-        cantidad = int(productos_modificado[0][2])  # Cantidad del producto
+        cantidad = float(productos_modificado[0][2])  # Cantidad del producto
 
 
         if s:
@@ -523,7 +524,7 @@ def anadir_a_registro(productos_seleccionados, s, usuario):
         nombre = producto[0]  # Nombre del producto
         precio_str = producto[1].replace('$', '')  # Eliminar el símbolo de pesos
         precio = float(precio_str)  # Convertir a float
-        cantidad = int(producto[2])  # Cantidad del producto
+        cantidad = float(producto[2])  # Cantidad del producto
         total_venta = precio * cantidad  # Precio total de la venta
         fecha = datetime.now().strftime("%Y-%m-%d")
         hora_actual = datetime.now().strftime("%I:%M:%S %p")
