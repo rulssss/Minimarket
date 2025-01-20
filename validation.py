@@ -6,7 +6,7 @@ import uuid
 from functions import resource_path, get_user_data_path
 
 ACTIVATION_FILE = get_user_data_path("activation.json")
-SECRET_KEY = "Jklmnopqrs-777-HJKLSDO@@/jp-ssd5564"  # Reemplaza esto con una clave secreta segura
+SECRET_KEY = "Y2h3bG9uZ2VyU2VjcmV0S2V5Q2hhbmdlVGhpcyE="  # Reemplaza esto con una clave secreta segura
 
 def load_activation_data():
     if os.path.exists(ACTIVATION_FILE):
