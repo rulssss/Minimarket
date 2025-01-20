@@ -694,3 +694,9 @@ def resource_path(relative_path):
 
     return os.path.join(base_path, relative_path)
 
+
+def get_user_data_path(filename):
+    """ Get path to the user's data directory """
+    user_data_dir = os.path.join(os.getenv('APPDATA'), 'MyApp')
+    os.makedirs(user_data_dir, exist_ok=True)
+    return os.path.join(user_data_dir, filename)

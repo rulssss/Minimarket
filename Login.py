@@ -20,7 +20,7 @@ class Login:
         # Centrar la ventana
         self.center_window()
 
-         # Cargar o inicializar la configuración
+        # Cargar o inicializar la configuración
         config = load_activation_data()
         if 'start_date' not in config or 'business_id' not in config:
             config['start_date'] = datetime.now().strftime("%Y-%m-%d")

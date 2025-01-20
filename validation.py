@@ -3,9 +3,9 @@ import json
 import hashlib
 from datetime import datetime, timedelta
 import uuid
-from functions import resource_path
+from functions import resource_path, get_user_data_path
 
-ACTIVATION_FILE = "activation.json"
+ACTIVATION_FILE = get_user_data_path("activation.json")
 SECRET_KEY = "Jklmnopqrs-777-HJKLSDO@@/jp-ssd5564"  # Reemplaza esto con una clave secreta segura
 
 def load_activation_data():
@@ -31,6 +31,8 @@ def check_activation():
         activation_date = datetime.strptime(data["activation_date"], "%Y-%m-%d")
         validation_code = data["validation_code"]
         if datetime.now() > activation_date + timedelta(days=30):
+            return False, validation_code
+        if not data.get("validated", False):
             return False, validation_code
         return True, None
     else:
