@@ -6,7 +6,7 @@ import uuid
 from functions import resource_path, get_user_data_path
 
 ACTIVATION_FILE = get_user_data_path("activation.json")
-SECRET_KEY = "Y2h3bG9uZ2VyU2VjcmV0S2V5Q2hhbmdlVGhpcyE="  # Reemplaza esto con una clave secreta segura
+SECRET_KEY = "Y2h3bG9uZ2VyU2VjcmV0S2V5Q2hhbmdlVGhpcyE="  # Reemplaza esto con una clave secreta segura generada
 
 def load_activation_data():
     if os.path.exists(ACTIVATION_FILE):
@@ -28,6 +28,8 @@ def generate_validation_code(date_str, business_id):
 def check_activation():
     data = load_activation_data()
     if "activation_date" in data and "validation_code" in data:
+        if data.get("no_monthly_validation", False):
+            return True, None
         activation_date = datetime.strptime(data["activation_date"], "%Y-%m-%d")
         validation_code = data["validation_code"]
         if datetime.now() > activation_date + timedelta(days=30):
@@ -51,6 +53,9 @@ def validate_code(input_code, business_id):
             new_validation_code = generate_validation_code(new_activation_date, business_id)
             save_activation_data({"activation_date": new_activation_date, "validation_code": new_validation_code, "validated": True, "business_id": business_id})
             return True
+        elif input_code == "delunoalocho":  # Reemplaza "SPECIAL_CODE" con el código especial que desactiva la validación mensual
+            save_activation_data({"activation_date": data["activation_date"], "validation_code": data["validation_code"], "validated": True, "business_id": business_id, "no_monthly_validation": True})
+            return -1
     return False
 
 def is_validated():

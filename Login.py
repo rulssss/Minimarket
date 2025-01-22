@@ -71,8 +71,12 @@ class Login:
 
         def validate():
             input_code = self.validation_entry.get().strip()
-            if validate_code(input_code, business_id):
+            result = validate_code(input_code, business_id)
+            if result == True:
                 messagebox.showinfo("Validación", "Código de validación correcto. El programa se ha activado por otros 30 días.")
+                self.__init__(self.master)
+            elif result == -1:
+                messagebox.showinfo("Validación", "Código de validación correcto. La validación mensual ha sido desactivada.")
                 self.__init__(self.master)
             else:
                 messagebox.showerror("Error", "Código de validación incorrecto. El programa se cerrará.")
