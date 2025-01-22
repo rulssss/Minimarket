@@ -2136,7 +2136,8 @@ class Administracion:
         producto_id = ttk.Combobox(frame_superior, values=producto_ids, font=("Segoe UI", 13), height=5)
         producto_id.set("0000000000")
         producto_id.grid(row=0, column=1, padx=5, pady=5)
-
+        producto_id.selection_range(0, tk.END)
+        
         # Función para filtrar productos con retraso
         def filtrar_productos_ids_con_retraso(event):
             nonlocal filtro_id
@@ -3459,6 +3460,6 @@ class Minimarket:
 
 
 #Crear la ventana principal
-root = tk.Tk()
-app = Minimarket(root, "mariano", True)
-root.mainloop()
+#root = tk.Tk()
+#app = Minimarket(root, "mariano", True)
+#root.mainloop()
