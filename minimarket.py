@@ -102,7 +102,7 @@ class Datos:
 
         # Título central
         Label(frame, text="Ingrese los datos del producto:", bg="white", font=("Segoe UI", 16, "bold")).grid(
-            row=0, column=0, columnspan=6, pady=(10, 30)
+            row=0, column=0, columnspan=6, pady=(10, 30), padx=(190,0)
         )
 
         # Etiquetas e Inputs
@@ -241,7 +241,7 @@ class Datos:
         ventana.geometry(f"{window_width}x{window_height}+{x_cordinate}+{y_cordinate}")
 
         # Label para el nombre del producto
-        label_nombre = tk.Label(ventana, text="Nombre del Producto:", bg="white", font=("Segoe UI", 16))
+        label_nombre = tk.Label(ventana, text="Nombre del Producto:", bg="white", font=("Segoe UI", 16, "bold"))
         label_nombre.pack(pady=10)
 
         # Entry para el nombre del producto con fondo #d7d7d7
@@ -722,7 +722,7 @@ class Datos:
         ventana.geometry(f"{window_width}x{window_height}+{x_cordinate}+{y_cordinate}")
 
         # Label para el nombre del producto
-        label_nombre = tk.Label(ventana, text="Nombre del Proveedor:", bg="white", font=("Segoe UI", 16))
+        label_nombre = tk.Label(ventana, text="Nombre del Proveedor:", bg="white", font=("Segoe UI", 16, "bold"))
         label_nombre.pack(pady=10)
 
         # Entry para el nombre del prodveedor con fondo #d7d7d7
@@ -1067,7 +1067,7 @@ class Datos:
         ventana.geometry(f"{window_width}x{window_height}+{x_cordinate}+{y_cordinate}")
 
         # Label para el nombre del producto
-        label_nombre = tk.Label(ventana, text="Nombre de la categoría:", bg="white", font=("Segoe UI", 16))
+        label_nombre = tk.Label(ventana, text="Nombre de la categoría:", bg="white", font=("Segoe UI", 16, "bold"))
         label_nombre.pack(pady=10)
 
         # Entry para el nombre del prodveedor con fondo #d7d7d7
@@ -1689,7 +1689,7 @@ class Administracion:
         x_coordinate = int((screen_width / 2) - (ventana_facturero_width / 2))
         y_coordinate = int((screen_height / 2) - (ventana_facturero_height / 2))
         ventana_facturero.geometry(f"{ventana_facturero_width}x{ventana_facturero_height}+{x_coordinate}+{y_coordinate}")
-        ventana_facturero.focus_force()
+        ventana_facturero.focus()
         # Cargar la imagen del icono
         icon_path = resource_path("resources/r.ico")  # Ruta relativa a la imagen del icono
         ventana_facturero.iconbitmap(icon_path)
@@ -1715,7 +1715,7 @@ class Administracion:
             if filtro_id:
                 ventana_facturero.after_cancel(filtro_id)  # Cancelar el filtro anterior si existe
 
-            filtro_id = ventana_facturero.after(1000, lambda: filtrar_productos_ids(event))  # Esperar 1 segundo antes de filtrar
+            filtro_id = ventana_facturero.after(2000, lambda: filtrar_productos_ids(event))  # Esperar 1 segundo antes de filtrar
 
         # Función para filtrar productos y permitir escritura continua
         def filtrar_productos_ids(event):
@@ -1723,6 +1723,7 @@ class Administracion:
             try:
                 entrada_int = int(entrada)  # Convertir la entrada a entero
                 filtrados = [prod_id for prod_id in producto_ids if str(entrada_int) in str(prod_id)]  # Filtrar productos
+
             except ValueError:
                 filtrados = []  # Si la entrada no es un número válido, no filtrar nada
 
@@ -1756,7 +1757,7 @@ class Administracion:
             if filtro_id:
                 ventana_facturero.after_cancel(filtro_id)  # Cancelar el filtro anterior si existe
     
-            filtro_id = ventana_facturero.after(1000, lambda: filtrar_productos(event))  # Esperar 1 segundo antes de filtrar
+            filtro_id = ventana_facturero.after(2000, lambda: filtrar_productos(event))  # Esperar 1 segundo antes de filtrar
     
         # Función para filtrar productos y permitir escritura continua
         def filtrar_productos(event):
@@ -1846,7 +1847,8 @@ class Administracion:
                     proveedor_producto.config(state="readonly")
 
                     nombre_metodos_combobox.set("Contado")
-    
+
+                    cantidad_producto.focus_set()
                     break
                 
         # Función para añadir el producto seleccionado al arreglo y mostrarlo en el área de texto
@@ -1876,6 +1878,34 @@ class Administracion:
                             result_text.insert(tk.END, f"{producto_modificado}\n")  # Mostrar producto en el Text
                             result_text.config(state="disabled")  # Bloquear nuevamente para no permitir ediciones
                             result_text.see(tk.END)  # Desplazarse al final automáticamente
+
+                            # Limpiar los campos de entrada
+                            producto_id.config(state="normal")
+                            producto_id.delete(0, tk.END)   
+                            producto_id.set("")
+                            producto_id.selection_range(0, tk.END)
+
+
+                            nombre_producto_combobox.set("Seleccionar nombre")
+                            precio_producto_venta.config(state="normal")
+                            precio_producto_venta.delete(0, tk.END)
+                            precio_producto_venta.config(state="readonly")
+
+                            cantidad_producto.delete(0, tk.END)
+                            cantidad_producto.insert(0, "0")
+
+                            categoria.config(state="normal")
+                            categoria.delete(0, tk.END)
+                            categoria.config(state="readonly")
+
+                            proveedor_producto.config(state="normal")
+                            proveedor_producto.delete(0, tk.END)
+                            proveedor_producto.config(state="readonly")
+
+                            nombre_metodos_combobox.set("")
+
+                            # Colocar el cursor en el campo de ID del producto
+                            producto_id.focus_set()
     
                             # Actualizar el total de la compra
                             actualizar_total()
@@ -1929,7 +1959,7 @@ class Administracion:
             # Limpiar los campos de entrada
             producto_id.config(state="normal")
             producto_id.delete(0, tk.END)
-            producto_id.set("0000000000")
+            producto_id.set("")
             producto_id.selection_range(0, tk.END)
             
 
@@ -1950,6 +1980,9 @@ class Administracion:
             proveedor_producto.config(state="readonly")
 
             nombre_metodos_combobox.set("")
+
+            # Colocar el cursor en el campo de ID del producto
+            producto_id.focus_set()
 
     
     
@@ -2044,11 +2077,15 @@ class Administracion:
 
                     nombre_metodos_combobox.set("Contado")
 
+                    cantidad_producto.focus_set()
+
                 barcode = ""
             elif event.name.isdigit():
                 barcode += event.name
                 
 
+        # Colocar el cursor en el campo de ID del producto
+        producto_id.focus_set()
         # Vincular la función de escaneo de código de barrasd
 
         # Vincular la función de escaneo de código de barras
@@ -2238,6 +2275,10 @@ class Administracion:
                     proveedor_producto.config(state="readonly")
 
                     nombre_metodos_combobox.set("Contado")
+
+                    cantidad_producto.focus_set()
+
+                    break
                 
         # Función para añadir el producto seleccionado al arreglo y mostrarlo en el área de texto
         def añadir_producto():
@@ -2285,10 +2326,36 @@ class Administracion:
                             result_text.config(state="disabled")  # Bloquear nuevamente para no permitir ediciones
                             result_text.see(tk.END)  # Desplazarse al final automáticamente
 
+                            # Limpiar los campos de entrada
+                            producto_id.config(state="normal")
+                            producto_id.delete(0, tk.END)
+                            producto_id.set("")
+            
+
+                            nombre_producto_combobox.set("Seleccionar nombre")
+                            precio_producto_compra.config(state="normal")
+                            precio_producto_compra.delete(0, tk.END)
+                            precio_producto_compra.config(state="readonly")
+
+                            cantidad_producto.delete(0, tk.END)
+                            cantidad_producto.insert(0, "0")
+
+                            categoria.config(state="normal")
+                            categoria.delete(0, tk.END)
+                            categoria.config(state="readonly")
+
+                            proveedor_producto.config(state="normal")
+                            proveedor_producto.delete(0, tk.END)
+                            proveedor_producto.config(state="readonly")
+
+                            nombre_metodos_combobox.set("")
+
+                            producto_id.focus_set()
+
                             # Actualizar el total de la compra
                             actualizar_total()
 
-                            break
+                            
             
            else:
             messagebox.showerror("Error", "Por favor, complete todos los campos correctamente")               
@@ -2358,6 +2425,7 @@ class Administracion:
 
             nombre_metodos_combobox.set("")
         
+            producto_id.focus_set()
         
     
          # Crear botón "Borrar Último Agregado"
@@ -2447,11 +2515,15 @@ class Administracion:
                     proveedor_producto.config(state="readonly")
 
                     nombre_metodos_combobox.set("Contado")
+
+                    cantidad_producto.focus_set()
+                    
                 barcode = ""
             elif event.name.isdigit():
                 barcode += event.name
 
-            
+        # Colocar el cursor en el campo de ID del producto
+        producto_id.focus_set()
 
         # Vincular la función de escaneo de código de barras
         keyboard.on_press(on_key_press)
@@ -3387,6 +3459,6 @@ class Minimarket:
 
 
 #Crear la ventana principal
-#root = tk.Tk()
-#app = Minimarket(root, "mariano", True)
-#root.mainloop()
+root = tk.Tk()
+app = Minimarket(root, "mariano", True)
+root.mainloop()
