@@ -19,3 +19,8 @@
 
 
 -- > Para el tipo de usuario "administrador" se van a ver las 3 ventanas y para el tipo de usuario "usuario" solo se vera Buscar datos y Administracion. 
+
+
+# Base de datos
+
+-- > Debera ser pedida.
