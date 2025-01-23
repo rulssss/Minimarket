@@ -23,4 +23,4 @@
 
 # Base de datos
 
--- > Debera ser pedida.
+-- > donde se almacena los usuarios, contrasenias, productos, proveedores, categorias, ventas, compras, detalle de venta, detalle de compra.

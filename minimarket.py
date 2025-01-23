@@ -1716,12 +1716,14 @@ class Administracion:
         producto_id.grid(row=0, column=1, padx=5, pady=5)
         producto_id.selection_range(0, tk.END)
 
+        filtro_id = None
+
         # Función para filtrar productos con retraso
         def filtrar_productos_ids_con_retraso(event):
             nonlocal filtro_id
             if filtro_id:
                 ventana_facturero.after_cancel(filtro_id)  # Cancelar el filtro anterior si existe
-
+            
             filtro_id = ventana_facturero.after(1000, lambda: filtrar_productos_ids(event))  # Esperar 1 segundo antes de filtrar
 
         # Función para filtrar productos y permitir escritura continua
@@ -1738,6 +1740,7 @@ class Administracion:
 
             # Resaltar el texto en el combobox
             producto_id.selection_range(0, 'end')
+            
 
             if filtrados:
                 producto_id.event_generate('<Down>')  # Mostrar opciones filtradas
@@ -1777,6 +1780,8 @@ class Administracion:
     
             if filtrados:
                 nombre_producto_combobox.event_generate('<Down>')  # Mostrar opciones filtradas
+
+            
     
         # Vincular el evento KeyRelease para que espere 1 segundo antes de filtrar
         nombre_producto_combobox.bind('<KeyRelease>', filtrar_productos_con_retraso)
