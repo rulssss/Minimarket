@@ -2122,7 +2122,7 @@ class Administracion:
     
         # Centrar la ventana
         ventana_compra_width = 600  # Ancho deseado
-        ventana_compra_height = 700  # Alto deseado
+        ventana_compra_height = 760  # Alto deseado
         screen_width = ventana_compra.winfo_screenwidth()
         screen_height = ventana_compra.winfo_screenheight()
         x_coordinate = int((screen_width / 2) - (ventana_compra_width / 2))
@@ -2138,6 +2138,10 @@ class Administracion:
         # Crear el frame superior
         frame_superior = tk.Frame(ventana_compra, bd=2, relief="groove")
         frame_superior.pack(side="top", fill="x", padx=10, pady=10)
+
+        # Crear el Label de advertencia
+        advertencia_label = tk.Label(frame_superior, text="\n", font=("Segoe UI", 12, "bold"), fg="red")
+        advertencia_label.grid(row=7, column=0, columnspan=3, pady=5, sticky="ew")
         
         ids = traer_todos_los_productos()
         producto_ids = [producto_id[0] for producto_id in ids]
@@ -2295,7 +2299,7 @@ class Administracion:
         
            nombre_seleccionado = nombre_producto_combobox.get()
            cantidad_seleccionada = cantidad_producto.get()  # Obtener la cantidad modificada por el usuario
-           if nombre_seleccionado and cantidad_seleccionada:
+           if nombre_seleccionado and cantidad_seleccionada.isdecimal():
                for producto in productos:
                    if producto[1] == nombre_seleccionado:
                         
@@ -2318,7 +2322,7 @@ class Administracion:
                         producto_modificado = (producto[1], f"{float(producto[2]):.2f}", cantidad_seleccionada, producto[5], producto[6], hora, f" Total: {total:.2f}")
                         
                         s = False
-                        d = controlar_cantidades(producto_modificado, s) 
+                        d = controlar_cantidades(producto_modificado, s, advertencia_label) 
                         
                         if d:
                             tk.messagebox.showerror("Añadir Producto", "Asegurese de que haya una cantidad razonable.")
@@ -2360,6 +2364,9 @@ class Administracion:
 
                             nombre_metodos_combobox.set("")
 
+                            # Ocultar el Label de advertencia después de 3 segundos
+                            advertencia_label.after(3000, lambda: advertencia_label.config(text="\n"))
+
                             producto_id.focus_set()
 
                             # Actualizar el total de la compra
@@ -2368,7 +2375,7 @@ class Administracion:
                             
             
            else:
-            messagebox.showerror("Error", "Por favor, complete todos los campos correctamente")               
+            advertencia_label.config(text="Por favor, complete \ntodos los campos correctamente")             
                         
                         
         # Función para borrar el último producto añadido
@@ -2440,15 +2447,15 @@ class Administracion:
     
          # Crear botón "Borrar Último Agregado"
         boton_borrar = tk.Button(frame_superior, text="Borrar Último Agregado", font=("Segoe UI", 10, "bold"), relief="groove", bg="#ef3232", fg="black", command=borrar_ultimo_producto)
-        boton_borrar.grid(row=7, column=0, padx=5, pady=5, sticky="w")  # Posicionar a la izquierda
+        boton_borrar.grid(row=8, column=0, padx=5, pady=5, sticky="w")  # Posicionar a la izquierda
     
         # Crear botón "Añadir"
         boton_añadir = tk.Button(frame_superior, text="Añadir", font=("Segoe UI", 13, "bold"), command=añadir_producto, relief="groove", fg="black", bg="#d7d7d7")
-        boton_añadir.grid(row=7, column=1, padx=5, pady=5)
+        boton_añadir.grid(row=8, column=1, padx=5, pady=5)
     
         # Crear frame inferior para botones "Procesar" y "Cerrar"
         frame_botones = tk.Frame(ventana_compra)
-        frame_botones.place(x=10, y=645)
+        frame_botones.place(x=10, y=708)
     
         # Botón "Cerrar"
         def cerrar_ventana():
