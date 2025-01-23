@@ -15,7 +15,7 @@
 
 2) -- > Ventana Busar Datos, en esta ventana encontraremos los resumenes tanto del día como de el mes, va a poder ver ventas, compras y detalles de cada una de ellas.
 
-3) -- > Ventana Administracion la cual vamos a poder facturar y hacer compras para nuestro negocio, la cual en tiempo real se va a actualizar y ver los productos por detras de el facturero o compra(lugar donde se registran las ventas y compras).
+3) -- > Ventana Administracion la cual vamos a poder facturar y hacer compras para nuestro negocio, en la cual en tiempo real se va a actualizar y ver los productos por detras de el facturero o compra(lugar donde se registran las ventas y compras).
 
 
 -- > Para el tipo de usuario "administrador" se van a ver las 3 ventanas y para el tipo de usuario "usuario" solo se vera Buscar datos y Administracion. 

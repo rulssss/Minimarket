@@ -1765,7 +1765,7 @@ class Administracion:
                 ventana_facturero.after_cancel(filtro_id)  # Cancelar el filtro anterior si existe
     
             filtro_id = ventana_facturero.after(1000, lambda: filtrar_productos(event))  # Esperar 1 segundo antes de filtrar
-    
+            
         # Función para filtrar productos y permitir escritura continua
         def filtrar_productos(event):
             entrada = nombre_producto_combobox.get().lower()  # Captura el texto ingresado
