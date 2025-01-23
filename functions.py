@@ -440,7 +440,7 @@ def clear_data():
     
 
 
-def controlar_cantidades(producto_modificado, s):
+def controlar_cantidades(producto_modificado, s, advertencia_label):
     
     nombre = producto_modificado[0]
     cantidad = float(producto_modificado[2])
@@ -460,7 +460,7 @@ def controlar_cantidades(producto_modificado, s):
             d = True
         else:
             d = False
-            messagebox.showinfo("Error", f"Cantidad de el producto insuficiente.\nCantidad restante: {data[0][0]}")
+            advertencia_label.config(text=f"Cantidad de el producto insuficiente.\nCantidad restante: {data[0][0]}")
             
     else:
         d = False

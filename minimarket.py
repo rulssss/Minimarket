@@ -1682,29 +1682,37 @@ class Administracion:
     
         # Centrar la ventana
         ventana_facturero_width = 600  # Ancho deseado
-        ventana_facturero_height = 700  # Alto deseado
+        ventana_facturero_height = 760  # Alto deseado
         screen_width = ventana_facturero.winfo_screenwidth()
         screen_height = ventana_facturero.winfo_screenheight()
         x_coordinate = int((screen_width / 2) - (ventana_facturero_width / 2))
         y_coordinate = int((screen_height / 2) - (ventana_facturero_height / 2))
         ventana_facturero.geometry(f"{ventana_facturero_width}x{ventana_facturero_height}+{x_coordinate}+{y_coordinate}")
-        ventana_facturero.focus()
+        ventana_facturero.transient(self.master)
+        ventana_facturero.grab_set()  # Asegura que todos los eventos se dirijan a esta ventana hasta que se cierre
+        
         # Cargar la imagen del icono
         icon_path = resource_path("resources/r.ico")  # Ruta relativa a la imagen del icono
         ventana_facturero.iconbitmap(icon_path)
 
         ventana_facturero.attributes('-topmost', True)
 
+
+
         # Crear el frame superior
         frame_superior = tk.Frame(ventana_facturero, bd=2, relief="groove")
         frame_superior.pack(side="top", fill="x", padx=10, pady=10)
+
+
+        # Crear el Label de advertencia
+        advertencia_label = tk.Label(frame_superior, text="\n", font=("Segoe UI", 12, "bold"), fg="red")
+        advertencia_label.grid(row=7, column=0, columnspan=3, pady=5, sticky="ew")
 
         ids = traer_todos_los_productos()
         producto_ids = [producto_id[0] for producto_id in ids]
         # Crear campos de entrada solo para mostrar los datos (readonly)
         tk.Label(frame_superior, text="ID:", font=("Segoe UI", 13)).grid(row=0, column=0, padx=5, pady=5, sticky="e")
         producto_id = ttk.Combobox(frame_superior, values=producto_ids, font=("Segoe UI", 13), height=5)
-        producto_id.set("0000000000")
         producto_id.grid(row=0, column=1, padx=5, pady=5)
         producto_id.selection_range(0, tk.END)
 
@@ -1856,7 +1864,7 @@ class Administracion:
             cantidad_seleccionada = cantidad_producto.get()  # Obtener la cantidad modificada por el usuario
             metodo_pago_seleccionado = nombre_metodos_combobox.get()  # Obtener el método de pago elegido en el combobox
     
-            if nombre_seleccionado and cantidad_seleccionada:
+            if nombre_seleccionado and cantidad_seleccionada.isdecimal():
                 for producto in productos:
                     if producto[1] == nombre_seleccionado:
                         total = float(producto[3]) * float(cantidad_seleccionada)
@@ -1864,7 +1872,7 @@ class Administracion:
     
                         # Comprobar si la cantidad es accesible, y en caso de error informar que no se puede realizar esa venta
                         s = True
-                        d = controlar_cantidades(producto_modificado, s)
+                        d = controlar_cantidades(producto_modificado, s, advertencia_label)
                         if d:
                             self.productos_seleccionados.append(producto_modificado)
     
@@ -1905,13 +1913,16 @@ class Administracion:
 
                             # Colocar el cursor en el campo de ID del producto
                             producto_id.focus_set()
-    
+
+                            # Ocultar el Label de advertencia después de 3 segundos
+                            advertencia_label.after(3000, lambda: advertencia_label.config(text="\n"))
+                            
                             # Actualizar el total de la compra
                             actualizar_total()
     
                             break
             else:
-                messagebox.showerror("Error", "Por favor, complete todos los campos correctamente")
+                advertencia_label.config(text="Por favor, complete \ntodos los campos correctamente")
     
         # Función para borrar el último producto añadido
         def borrar_ultimo_producto():
@@ -1987,15 +1998,15 @@ class Administracion:
     
         # Crear botón "Borrar Último Agregado"
         boton_borrar = tk.Button(frame_superior, text="Borrar Último Agregado", font=("Segoe UI", 10, "bold"), relief="groove", bg="#ef3232", fg="black", command=borrar_ultimo_producto)
-        boton_borrar.grid(row=7, column=0, padx=5, pady=5, sticky="w")  # Posicionar a la izquierda
+        boton_borrar.grid(row=8, column=0, padx=(15,5), pady=5, sticky="w")  # Posicionar a la izquierda
     
         # Crear botón "Añadir"
         boton_añadir = tk.Button(frame_superior, text="Añadir", font=("Segoe UI", 13, "bold"), command=añadir_producto, relief="groove", fg="black", bg="#d7d7d7")
-        boton_añadir.grid(row=7, column=1, padx=5, pady=5)
+        boton_añadir.grid(row=8, column=1, padx=5, pady=5)
     
         # Crear frame inferior para botones "Procesar" y "Cerrar"
         frame_botones = tk.Frame(ventana_facturero)
-        frame_botones.place(x=10, y=645)
+        frame_botones.place(x=10, y=708)
 
     
         # Botón "Cerrar"
@@ -2133,7 +2144,6 @@ class Administracion:
         # Crear campos de entrada solo para mostrar los datos (readonly)
         tk.Label(frame_superior, text="ID:", font=("Segoe UI", 13)).grid(row=0, column=0, padx=5, pady=5, sticky="e")
         producto_id = ttk.Combobox(frame_superior, values=producto_ids, font=("Segoe UI", 13), height=5)
-        producto_id.set("0000000000")
         producto_id.grid(row=0, column=1, padx=5, pady=5)
         producto_id.selection_range(0, tk.END)
         
@@ -3459,6 +3469,6 @@ class Minimarket:
 
 
 #Crear la ventana principal
-#root = tk.Tk()
-#app = Minimarket(root, "mariano", True)
-#root.mainloop()
+root = tk.Tk()
+app = Minimarket(root, "mariano", True)
+root.mainloop()
