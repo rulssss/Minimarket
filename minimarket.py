@@ -466,8 +466,7 @@ class Datos:
             if nombre_producto:
                
                 if es_numero_decimal(precio_venta_producto) and es_numero_decimal(precio_compra_producto) and es_numero_decimal(cantidad):
-                    print(cantidad)
-                    print(cantidad_ant)
+                    
                     if (float(precio_anterior_venta) == float(precio_venta_producto)) and (categ_ant == categoria_producto) and (prov_ant == proveedor_producto) and (float(precio_anterior_compra) == float(precio_compra_producto) and (float(cantidad) == float(cantidad_ant))):
                         advertencia_label.config(text="Actualice el producto por favor")
                     else:
