@@ -200,6 +200,9 @@ class Datos:
         # Vincular el evento de cierre de la ventana a la función on_no
         ventana.protocol("WM_DELETE_WINDOW", on_no)
 
+        # Colocar el cursor en el campo de ID del producto
+        input_id.focus_set()
+
         # Vincular el evento de la tecla Enter al botón "Aceptar"
         ventana.bind('<Return>', lambda event: on_yes())
         
