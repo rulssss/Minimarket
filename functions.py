@@ -385,7 +385,7 @@ def ventana_confirmacion():
     confirm_window.geometry(f"{window_width}x{window_height}+{position_x}+{position_y}")
 
     # Etiqueta con el mensaje
-    label = tk.Label(confirm_window, text="¡ATENCION!\n Esta a punto de borrar todos los datos\n incluyendo los datos del login.", font=("Segoe UI", 12), bg="white")
+    label = tk.Label(confirm_window, text="¡ATENCION!\n Esta a punto de borrar todos los datos\n marcados.", font=("Segoe UI", 12), bg="white")
     label.pack(pady=(40, 0))  # Ajustar el espaciado para mayor separación
     
 
@@ -415,23 +415,40 @@ def ventana_confirmacion():
 
     return resultado.get()
 
-def clear_data():
+def clear_data(borrar_categorias, borrar_ventas_compras, borrar_proveedores):
     
     v = ventana_confirmacion()
     cursor = connection2.cursor()
     if v:
         
-        query_data2 = f"TRUNCATE categorias CASCADE"
-        cursor.execute(query_data2)
 
-        query_data3 = f"TRUNCATE proveedores CASCADE"
-        cursor.execute(query_data3)
+        if borrar_categorias:
+            try:
+                query_update_data = "DELETE FROM categorias WHERE id_categoria != 1"
+                cursor.execute(query_update_data)
+            except psycopg2.errors.ForeignKeyViolation:
+                # Actualizar todos los productos a "sin categoría"
+                query_update_products = "UPDATE productos SET id_categoria = 1 WHERE id_categoria != 1"
+                cursor.execute(query_update_products)
+                # Intentar nuevamente el DELETE
+                cursor.execute(query_update_data)
+            
 
-        query_data4 = f"TRUNCATE contrasenas CASCADE"
-        cursor.execute(query_data4)
+        if borrar_ventas_compras:
+            # Lógica para borrar ventas, compras y sus detalles
+            query_update_data5 = f"DELETE FROM ventas"
+            cursor.execute(query_update_data5)
+            query_update_data2 = f"DELETE FROM detalle_ventas"
+            cursor.execute(query_update_data2)
+            query_update_data6 = f"DELETE FROM compras"
+            cursor.execute(query_update_data6)
+            query_update_data4 = f"DELETE FROM detalle_compras"
+            cursor.execute(query_update_data4)
 
-        query_data5 = f"TRUNCATE usuarios CASCADE"
-        cursor.execute(query_data5)
+        if borrar_proveedores:
+            # Lógica para borrar proveedores y sus productos
+            query_update_data3 = f"DELETE FROM proveedores CASCADE"
+            cursor.execute(query_update_data3)
 
         messagebox.showinfo("Datos borrados", "Todos los datos han sido borrados.")
             

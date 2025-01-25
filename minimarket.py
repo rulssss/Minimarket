@@ -724,7 +724,10 @@ class Datos:
         ventana.geometry(f"{window_width}x{window_height}+{x_cordinate}+{y_cordinate}")
 
         # Label para el nombre del producto
-        label_nombre = tk.Label(ventana, text="Nombre del Proveedor:", bg="white", font=("Segoe UI", 16, "bold"))
+        label_nombre = tk.Label(ventana, text="Nombre del Proveedor:", bg="white", font=("Segoe UI", 12, "bold"))
+        label_nombre.pack(pady=10)
+        # Label para el nombre del producto
+        label_nombre = tk.Label(ventana, text="Recuerde que los proveedores estan ligados al producto,\n es decir, si borra un proveedor los prod. relacionados también ", bg="white", font=("Segoe UI", 12))
         label_nombre.pack(pady=10)
 
         # Entry para el nombre del prodveedor con fondo #d7d7d7
@@ -756,7 +759,7 @@ class Datos:
                 advertencia_label.config(text="Solo admite letras y números.")
 
         # Botón de borrar
-        boton_confirmar = tk.Button(ventana, text="Borrar", command=confirmar, bg="#ef3232", relief="groove", font=("Segoe UI", 16, "bold"), fg="black", width=12)
+        boton_confirmar = tk.Button(ventana, text="Borrar", command=confirmar, bg="#ef3232", relief="groove", font=("Segoe UI", 13, "bold"), fg="black", width=12)
         boton_confirmar.pack(pady=10)
 
         def cerrar():
@@ -1125,16 +1128,11 @@ class Datos:
 
 
     def borrar_datos(self):
-        
-
-
         # Crear una nueva ventana para la selección
         confirm_window = tk.Toplevel()
         confirm_window.title("Borrar Datos")
         confirm_window.geometry("400x250")  # Ajustar el tamaño
         confirm_window.config(bg="white")
-        confirm_window.resizable(False, False)  # Evitar que se redimensione
-        
         confirm_window.resizable(False, False)  # Evitar que se redimensione
         confirm_window.grab_set()  # Hacer la ventana modal
 
@@ -1142,24 +1140,38 @@ class Datos:
         screen_width = confirm_window.winfo_screenwidth()
         screen_height = confirm_window.winfo_screenheight()
         window_width = 400
-        window_height = 150
+        window_height = 250
         position_x = (screen_width // 2) - (window_width // 2)
         position_y = (screen_height // 2) - (window_height // 2)
         confirm_window.geometry(f"{window_width}x{window_height}+{position_x}+{position_y}")
-        
+
         # Cargar la imagen del icono
         icon_path = resource_path("resources/r.ico")  # Ruta relativa a la imagen del icono
         confirm_window.iconbitmap(icon_path)
 
         # Crear etiquetas y casillas de verificación para seleccionar qué borrar
-        label = tk.Label(confirm_window, text="¿Desea borrar todos los datos?", font=("Segoe UI", 14), bg="white")
+        label = tk.Label(confirm_window, text="¿Qué datos desea borrar?", font=("Segoe UI", 14), bg="white")
         label.pack(pady=10)
 
+        # Variables para las casillas de verificación
+        var_categorias = tk.BooleanVar()
+        var_ventas_compras = tk.BooleanVar()
+        var_proveedores = tk.BooleanVar()
+
+        # Crear casillas de verificaciónvar_proveedores
+        chk_proveedores = tk.Checkbutton(confirm_window, text="Proveedores (ligado a sus productos)", variable=var_proveedores, font=("Segoe UI", 12), bg="white")
+        chk_proveedores.pack(anchor="w", padx=20)
+
+        chk_ventas_compras = tk.Checkbutton(confirm_window, text="Ventas, compras y sus detalles", variable=var_ventas_compras, font=("Segoe UI", 12), bg="white")
+        chk_ventas_compras.pack(anchor="w", padx=20)
+        
+        chk_categorias = tk.Checkbutton(confirm_window, text="Categorias(al borrar queda 'sin categoria')", variable=var_categorias, font=("Segoe UI", 12), bg="white")
+        chk_categorias.pack(anchor="w", padx=20)
 
         # Función para manejar el botón "Aceptar"
         def on_accept():
             # Pasar las selecciones como parámetros a la función clear_data
-            clear_data()
+            clear_data(var_categorias.get(), var_ventas_compras.get(), var_proveedores.get())
             confirm_window.destroy()
 
         # Función para manejar el botón "Cancelar"
@@ -1171,12 +1183,11 @@ class Datos:
         button_frame.pack(pady=20)
 
         # Botones
-        btn_yes = tk.Button(button_frame, text="Aceptar", command=on_accept, width=12, relief="groove", bg="#d7d7d7", fg="black", font=("Segoe UI", 12,    "bold"))
+        btn_yes = tk.Button(button_frame, text="Aceptar", command=on_accept, width=12, relief="groove", bg="#d7d7d7", fg="black", font=("Segoe UI", 12, "bold"))
         btn_yes.pack(side=tk.LEFT, padx=15)
 
-        btn_no = tk.Button(button_frame, text="Cancelar", command=on_cancel, width=12, relief="groove", bg="#ef3232", fg="black", font=("Segoe UI", 12,     "bold"))
+        btn_no = tk.Button(button_frame, text="Cancelar", command=on_cancel, width=12, relief="groove", bg="#ef3232", fg="black", font=("Segoe UI", 12, "bold"))
         btn_no.pack(side=tk.LEFT, padx=15)
-
 
         confirm_window.mainloop()
 
