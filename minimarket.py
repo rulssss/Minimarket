@@ -2984,7 +2984,8 @@ class Minimarket:
             elif seleccion == "Proveedor":
                 productos_a_mostrar = [p for p in all_data2 if texto_busqueda in p[1].lower() and p[6].lower() == nombre_seleccionado]
             else:
-                productos_a_mostrar = all_data2
+                productos_a_mostrar = [p for p in all_data2 if texto_busqueda in p[1].lower()]
+
             tree.tag_configure("rojo", foreground="red", font=("Segoe UI", 14, "bold"))
             
             for i in productos_a_mostrar:
@@ -3026,7 +3027,7 @@ class Minimarket:
             elif seleccion == "Proveedor":
                 proveedores = [proveedor[0] for proveedor in traer_proveedores()]
                 combobox_nombre['values'] = proveedores
-
+            
         combobox_opcion.bind("<<ComboboxSelected>>", actualizar_combobox)
 
         def actualizar_filtro_combobox(event=None):
@@ -3041,6 +3042,7 @@ class Minimarket:
                 productos_a_mostrar = [p for p in all_data2 if p[6].lower() == nombre_seleccionado]
             else:
                 productos_a_mostrar = all_data2
+
             tree.tag_configure("rojo", foreground="red", font=("Segoe UI", 14, "bold"))
             for i in productos_a_mostrar:
                 tag = ("rojo",) if i[2] < 5 else ()
@@ -3484,6 +3486,6 @@ class Minimarket:
 
 
 #Crear la ventana principal
-root = tk.Tk()
-app = Minimarket(root, "mariano", True)
-root.mainloop()
+#root = tk.Tk()
+#app = Minimarket(root, "mariano", True)
+#root.mainloop()
