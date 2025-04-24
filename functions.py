@@ -5,6 +5,9 @@ import tkinter as tk
 from datetime import datetime
 import os
 import sys
+import json
+import hashlib
+import uuid
 
 #################################################
 #################################################
@@ -678,6 +681,8 @@ def traer_producto(barcode):
     else:
         pass
 
+
+######## funciones para la verificacion del codigfo de activacion#############
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """

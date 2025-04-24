@@ -2,6 +2,11 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from functions import *
 from minimarket import * 
+from functions import *
+from minimarket import *
+from validation import check_activation, validate_code
+import uuid
+from validation import * 
 ## VENTANA DE LOGINS 
 
 
@@ -15,7 +20,18 @@ class Login:
         # Centrar la ventana
         self.center_window()
 
-        if hay_admin():
+         # Cargar o inicializar la configuración
+        config = load_activation_data()
+        if 'start_date' not in config or 'business_id' not in config:
+            config['start_date'] = datetime.now().strftime("%Y-%m-%d")
+            config['business_id'] = generate_business_id()  # Generar un business_id más corto
+            save_activation_data(config)
+
+        # Verificar la activación
+        activated, validation_code = check_activation()
+        if not activated:
+            self.request_validation_code(validation_code)
+        elif hay_admin():
             self.open_login_window()
         else:
             self.create_register_window()
@@ -31,6 +47,41 @@ class Login:
         # Cargar la imagen del icono
         icon_path = resource_path("resources/r.ico")  # Ruta relativa a la imagen del icono
         self.master.iconbitmap(icon_path)
+
+    def request_validation_code(self, validation_code):
+        for widget in self.master.winfo_children():
+            widget.destroy()
+
+        config = load_activation_data()
+        start_date, business_id = config.get('start_date', 'Fecha no disponible'), config.get('business_id', 'ID no disponible')
+        
+        tk.Label(self.master, text=f"ID del negocio: {business_id}", font=("Segoe UI", 12)).pack(pady=10)
+        tk.Label(self.master, text=f"Fecha de inicio del negocio: {start_date}", font=("Segoe UI", 12)).pack(pady=10)
+        tk.Label(self.master, text="Ingrese el código de validación", font=("Segoe UI", 14)).pack(pady=20)
+        
+        self.validation_entry = tk.Entry(self.master, font=("Segoe UI", 12))
+        self.validation_entry.pack(pady=10)
+
+        def copy_business_id():
+            self.master.clipboard_clear()
+            self.master.clipboard_append(business_id)
+            messagebox.showinfo("Copiado", "ID del negocio copiado al portapapeles")
+
+        tk.Button(self.master, text="Copiar ID del negocio", command=copy_business_id, font=("Segoe UI", 12)).pack(pady=10)
+
+        def validate():
+            input_code = self.validation_entry.get().strip()
+            if validate_code(input_code, business_id):
+                messagebox.showinfo("Validación", "Código de validación correcto. El programa se ha activado por otros 30 días.")
+                self.__init__(self.master)
+            else:
+                messagebox.showerror("Error", "Código de validación incorrecto. El programa se cerrará.")
+                self.master.destroy()
+
+        tk.Button(self.master, text="Validar", command=validate, font=("Segoe UI", 12)).pack(pady=10)
+        self.master.bind("<Return>", lambda event: validate())
+
+    
 
     def create_register_window(self):
         for widget in self.master.winfo_children():
