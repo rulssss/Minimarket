@@ -28,6 +28,7 @@ class DatosTab:
         #agregar productos
         self.ventana_agregar_productos()
 
+
         #borrar productos
         self.ventana_borrar_productos()
 
@@ -82,15 +83,21 @@ class DatosTab:
             return
 
         if r == 0:
+            self._datos_cargados = {"categorias": False, "proveedores": False, "productos": False}
+
+            def check_all_loaded():
+                if all(self._datos_cargados.values()):
+                    if callback:
+                        callback()
            
             # Obtener todas las categorías y asignarlas a la variable global 'categorias'
             self.categorias_thread = CategoriasThread()
             def on_categorias_obtenidas(cats):
                 global categorias
                 categorias = cats
+                self._datos_cargados["categorias"] = True
+                check_all_loaded()
                 print(f"Categorías obtenidas: {categorias}")  # Para verificar que las categorías se actualizan correctamente
-                if callback:
-                    callback()
             self.categorias_thread.categorias_obtenidas.connect(on_categorias_obtenidas)
             self.start_thread(self.categorias_thread)
         
@@ -99,9 +106,9 @@ class DatosTab:
             def on_proveedores_obtenidos(provs):
                 global proveedores
                 proveedores = provs
+                self._datos_cargados["proveedores"] = True
+                check_all_loaded()
                 print(f"Proveedores obtenidos: {proveedores}")  # Para verificar que los proveedores se actualizan correctamente
-                if callback:
-                    callback()
             self.proveedores_thread.proveedores_obtenidos.connect(on_proveedores_obtenidos)
             self.start_thread(self.proveedores_thread)
         
@@ -110,11 +117,13 @@ class DatosTab:
             def on_productos_obtenidos(productos_obtenidos):
                 global productos
                 productos = productos_obtenidos
+                self._datos_cargados["productos"] = True
+                check_all_loaded()
                 print(f"Productos obtenidos: {productos}")  # Para verificar que los productos se actualizan correctamente
-                if callback:
-                    callback()
             self.productos_thread.resultado.connect(on_productos_obtenidos)
             self.start_thread(self.productos_thread)
+
+            
         else:
             if r == 1:
                 # Obtener todas las categorías y asignarlas a la variable global 'categorias'
