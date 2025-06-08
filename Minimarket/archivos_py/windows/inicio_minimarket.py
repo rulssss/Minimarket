@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QMainWindow, QPushButton, QLineEdit, QComboBox, QTableWidget, QLabel, QDoubleSpinBox, QTableWidgetItem, QApplication
 from PySide6.QtCore import QTimer, Qt
-from PySide6.QtGui import QIcon, QFont
+from PySide6.QtGui import QIcon, QFont, QIntValidator
 from archivos_py.ui.minimarket import Ui_MainWindow
 from archivos_py.threads.db_thread_minimarket import *
 from time import sleep
@@ -15,6 +15,7 @@ productos_por_id_cache = None
 class DatosTab:
     def __init__(self, ui):
         self.ui = ui
+        self.button19_connected = False
 
         global usuario_activo
 
@@ -182,13 +183,12 @@ class DatosTab:
 
         button19 = self.ui.frame_5.findChild(QPushButton, "pushButton_19")
         if button19:
-            try:
-                button19.clicked.disconnect()
-            except TypeError:
-                pass
-            button19.setStyleSheet("background-color: rgb(168, 225, 255)")
-            button19.clicked.connect(self.validate_and_process_inputs)
-            button19.setShortcut(Qt.Key_Return)
+            if not self.button19_connected:
+                button19.setStyleSheet("background-color: rgb(168, 225, 255)")
+                button19.clicked.connect(self.validate_and_process_inputs)
+                button19.setShortcut(Qt.Key_Return)
+                self.button19_connected = True
+           
             
         button20 = self.ui.frame_5.findChild(QPushButton, "pushButton_20")
         if button20:            
@@ -474,7 +474,17 @@ class DatosTab:
             QTimer.singleShot(6000, lambda: label_72.setStyleSheet("color: transparent"))
 
         #se actualizan otras aprtes del programa
-        self.populate_table_with_products()
+        # Limpiar solo el cache de productos antes de actualizar
+        global productos_cache, productos_por_id_cache
+        productos_cache = None
+        productos_por_id_cache = None
+
+        # Actualizar productos y refrescar la tabla y combobox cuando termine
+        self.actualizar_variables_globales_de_uso(3, lambda: (
+            self.populate_table_with_products(),
+            self.populate_combobox_with_ids(self.ui.frame_7.findChild(QComboBox, "comboBox_3"))
+        ))
+
         combobox_id = self.ui.frame_7.findChild(QComboBox, "comboBox_3")
         if combobox_id:
             self.populate_combobox_with_ids(combobox_id)
@@ -500,8 +510,12 @@ class DatosTab:
             combobox_id.setEditable(True)
             combobox_id.setInsertPolicy(QComboBox.NoInsert)
             combobox_id.setCompleter(None)
+            # Solo permitir números
+            combobox_id.setValidator(QIntValidator())
+            # Filtrar IDs mientras se escribe
             combobox_id.lineEdit().textEdited.connect(lambda text: self.filter_combobox_ids(combobox_id, text))
-            combobox_id.currentIndexChanged.connect(self.load_product_data)
+            # Ejecutar load_product_data cada vez que cambia el texto del QLineEdit
+            combobox_id.lineEdit().textChanged.connect(lambda _: self.load_product_data())
             self.populate_combobox_with_ids(combobox_id)
             combobox_id.setFocus()
             combobox_id.lineEdit().selectAll()
@@ -620,25 +634,45 @@ class DatosTab:
 
     
     def load_product_data(self):
-        global producto_selecc
+        global productos, productos_cache, producto_selecc
         combobox_id = self.ui.frame_7.findChild(QComboBox, "comboBox_3")
         if combobox_id:
             selected_id = combobox_id.currentText()
             if selected_id and selected_id.isdigit():
-                self.traer_producto_thread = TraerProductoPorIdThread(selected_id)
-                self.traer_producto_thread.resultado.connect(lambda producto: self._on_producto_por_id_obtenido(producto, selected_id, combobox_id))
-                self.start_thread(self.traer_producto_thread)
+                # Si el cache está vacío, actualizalo primero
+                if productos_cache is None:
+                    self.actualizar_variables_globales_de_uso(3, lambda: self.load_product_data())
+                    return
+                # Si el cache está actualizado, buscá el producto en la lista
+                producto = next((p for p in productos if str(p[0]) == selected_id), None)
+                self._on_producto_por_id_obtenido(producto, selected_id, combobox_id)
+            else:
+                # Limpiar todos los campos si el producto no existe
+                self.ui.frame_7.findChild(QLineEdit, "lineEdit_9").clear()
+                self.ui.frame_7.findChild(QLineEdit, "lineEdit_10").clear()
+                self.ui.frame_7.findChild(QLineEdit, "lineEdit_11").clear()
+                self.ui.frame_7.findChild(QLineEdit, "lineEdit_12").clear()
+                self.ui.frame_7.findChild(QLineEdit, "lineEdit_13").clear()
+                combobox_categorias = self.ui.frame_7.findChild(QComboBox, "comboBox_4")
+                if combobox_categorias:
+                    combobox_categorias.setCurrentIndex(-1)
+                combobox_proveedores = self.ui.frame_7.findChild(QComboBox, "comboBox_7")
+                if combobox_proveedores:
+                    combobox_proveedores.setCurrentIndex(-1)
 
 
     def _on_producto_por_id_obtenido(self, producto, selected_id, combobox_id):
         global producto_selecc
         producto_selecc = producto
         if producto and selected_id == str(producto[0]):
+            
             self.ui.frame_7.findChild(QLineEdit, "lineEdit_9").setText(producto[1])
             self.ui.frame_7.findChild(QLineEdit, "lineEdit_10").setText(str(producto[2]))
             self.ui.frame_7.findChild(QLineEdit, "lineEdit_11").setText(str(producto[3]))
             self.ui.frame_7.findChild(QLineEdit, "lineEdit_12").setText(str(producto[4]))
             self.ui.frame_7.findChild(QLineEdit, "lineEdit_13").setText(str(producto[5]))
+
+            # Actualizar los combobox de categoría y proveedor
             combobox_categorias = self.ui.frame_7.findChild(QComboBox, "comboBox_4")
             if combobox_categorias:
                 self.populate_combobox_with_categorias(combobox_categorias)
@@ -650,6 +684,19 @@ class DatosTab:
             combobox_id.setFocus()
             combobox_id.lineEdit().selectAll()
         else:
+            # Limpiar todos los campos si el producto no existe
+            self.ui.frame_7.findChild(QLineEdit, "lineEdit_9").clear()
+            self.ui.frame_7.findChild(QLineEdit, "lineEdit_10").clear()
+            self.ui.frame_7.findChild(QLineEdit, "lineEdit_11").clear()
+            self.ui.frame_7.findChild(QLineEdit, "lineEdit_12").clear()
+            self.ui.frame_7.findChild(QLineEdit, "lineEdit_13").clear()
+            combobox_categorias = self.ui.frame_7.findChild(QComboBox, "comboBox_4")
+            if combobox_categorias:
+                combobox_categorias.setCurrentIndex(-1)
+            combobox_proveedores = self.ui.frame_7.findChild(QComboBox, "comboBox_7")
+            if combobox_proveedores:
+                combobox_proveedores.setCurrentIndex(-1)
+
             label_73 = self.ui.frame_7.findChild(QLabel, "label_73")
             label_74 = self.ui.frame_7.findChild(QLabel, "label_74")
             if label_73 and label_74:
@@ -664,6 +711,7 @@ class DatosTab:
         self.load_product_data()
 
     def edit_product(self, id, nombre_prod, precio_compra, precio_venta, stock, stock_ideal, categoria, proveedor):
+        
         self.actualizar_thread = ActualizarProductoThread(
             id, nombre_prod, precio_compra, precio_venta, stock, stock_ideal, categoria, proveedor
         )
@@ -680,13 +728,23 @@ class DatosTab:
             label_74.setStyleSheet("color: green; font-weight: bold")
             QTimer.singleShot(6000, lambda: label_73.setStyleSheet("color: transparent"))
             QTimer.singleShot(6000, lambda: label_74.setStyleSheet("color: transparent"))
-            self.populate_table_with_products()
+
+        # Limpiar el cache de productos antes de actualizar
+        global productos_cache, productos_por_id_cache
+        productos_cache = None
+        productos_por_id_cache = None
+
+        # Actualizar productos y refrescar la tabla y combobox cuando termine
+        self.actualizar_variables_globales_de_uso(3, lambda: (
+            self.populate_table_with_products(),
+            self.populate_combobox_with_ids(self.ui.frame_7.findChild(QComboBox, "comboBox_3")),
+            self.load_product_data()
+        ))
 
         combobox_id = self.ui.frame_7.findChild(QComboBox, "comboBox_3")
         if combobox_id:
             combobox_id.setFocus()
             combobox_id.lineEdit().selectAll()
-        self.load_product_data()
 
 
     def verifica_datos_iguales(self, producto):
@@ -727,6 +785,14 @@ class DatosTab:
                     QTimer.singleShot(6000, lambda: label_74.setStyleSheet("color: transparent"))
             
             else:
+                label_73 = self.ui.frame_7.findChild(QLabel, "label_73")
+                label_74 = self.ui.frame_7.findChild(QLabel, "label_74")
+        
+                if label_73 and label_74:
+                    label_73.setText("Actualizando")
+                    label_74.setText("producto...")
+                    label_73.setStyleSheet("color: green; font-weight: bold")
+                    label_74.setStyleSheet("color: green; font-weight: bold")
                 # Usar hilo para cargar movimiento editado
                 self.movimiento_editado_thread = MovimientoProductoEditadoThread(producto[0], usuario_activo)
                 self.movimiento_editado_thread.movimiento_editado.connect(lambda: self.edit_product(
@@ -742,12 +808,25 @@ class DatosTab:
                 self.movimiento_editado_thread.start()
     
         else:
+            # Limpiar todos los campos si el producto no existe
+            self.ui.frame_7.findChild(QLineEdit, "lineEdit_9").clear()
+            self.ui.frame_7.findChild(QLineEdit, "lineEdit_10").clear()
+            self.ui.frame_7.findChild(QLineEdit, "lineEdit_11").clear()
+            self.ui.frame_7.findChild(QLineEdit, "lineEdit_12").clear()
+            self.ui.frame_7.findChild(QLineEdit, "lineEdit_13").clear()
+            combobox_categorias = self.ui.frame_7.findChild(QComboBox, "comboBox_4")
+            if combobox_categorias:
+                combobox_categorias.setCurrentIndex(-1)
+            combobox_proveedores = self.ui.frame_7.findChild(QComboBox, "comboBox_7")
+            if combobox_proveedores:
+                combobox_proveedores.setCurrentIndex(-1)
+    
             label_73 = self.ui.frame_7.findChild(QLabel, "label_73")
             label_74 = self.ui.frame_7.findChild(QLabel, "label_74")
             if label_73 and label_74:
                 label_73.setText("Seleccione o escriba")
                 label_73.setStyleSheet("color: red; font-weight: bold")
-                label_74.setText("un ID valido")
+                label_74.setText("un ID válido")
                 label_74.setStyleSheet("color: red; font-weight: bold")
                 QTimer.singleShot(6000, lambda: label_73.setStyleSheet("color: transparent"))
                 QTimer.singleShot(6000, lambda: label_74.setStyleSheet("color: transparent"))
