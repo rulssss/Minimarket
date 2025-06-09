@@ -670,17 +670,17 @@ class DatosTab:
         self.aumentar_thread.start()
 
     def load_product_data(self):
-        global productos, productos_cache, producto_selecc
+        global productos, productos_cache, productos_por_id_cache, producto_selecc
         combobox_id = self.ui.frame_7.findChild(QComboBox, "comboBox_3")
         if combobox_id:
             selected_id = combobox_id.currentText()
             if selected_id and selected_id.isdigit():
                 # Si el cache está vacío, actualizalo primero
-                if productos_cache is None:
+                if productos_cache is None or productos_por_id_cache is None:
                     self.actualizar_variables_globales_de_uso(3, lambda: self.load_product_data())
                     return
-                # Si el cache está actualizado, buscá el producto en la lista
-                producto = next((p for p in productos if str(p[0]) == selected_id), None)
+                # Buscar el producto usando el diccionario (más rápido)
+                producto = productos_por_id_cache.get(selected_id)
                 self._on_producto_por_id_obtenido(producto, selected_id, combobox_id)
             else:
                 # Limpiar todos los campos si el producto no existe
