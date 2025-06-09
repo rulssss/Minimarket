@@ -41,7 +41,7 @@ class DatosTab:
 
     def start_thread(self, thread):
         self.threads.append(thread)
-        thread.finished.connect(lambda: self.threads.remove(thread))
+        thread.finished.connect(lambda: self.threads.remove(thread) if thread in self.threads else None)
         thread.start()
 
     # funciones para corroborar si es decimal o entero
@@ -318,8 +318,7 @@ class DatosTab:
                 label_71.setText("los campos correctamente")
                 label_70.setStyleSheet("color: red; font-weight: bold")
                 label_71.setStyleSheet("color: red; font-weight: bold")
-                QTimer.singleShot(6000, lambda: label_70.setStyleSheet("color: transparent"))
-                QTimer.singleShot(6000, lambda: label_71.setStyleSheet("color: transparent"))
+            
 
             # Focus en el campo incorrecto
             if not self.is_digit(input_id_value):
@@ -403,7 +402,7 @@ class DatosTab:
 
     #funcion para borrar
     def delete_product(self):
-        global usuario_activo
+        global usuario_activo, productos_cache
         label_72 = self.ui.frame_6.findChild(QLabel, "label_72")
 
         input_nombre_o_id = self.ui.frame_6.findChild(QLineEdit, "lineEdit_2")
@@ -419,18 +418,29 @@ class DatosTab:
         self._borrar_nombre = None
         self._borrar_valor = input_nombre_o_id_value
 
-        # Lanzar ambos hilos para obtener id y nombre
+        # Buscar en cache
         if input_nombre_o_id_value.isdigit():
-            self._borrar_id = int(input_nombre_o_id_value)
-            self.traer_nombre_thread = TraerNomProductoThread(self._borrar_id)
-            self.traer_nombre_thread.resultado.connect(self._on_nombre_obtenido)
-            self.start_thread(self.traer_nombre_thread)
+            # Buscar por ID
+            producto = next((p for p in productos_cache if str(p[0]) == input_nombre_o_id_value), None)
+            if producto:
+                self._borrar_id = int(input_nombre_o_id_value)
+                self._borrar_nombre = producto[1]
+                self._on_nombre_obtenido(self._borrar_nombre)
+            else:
+                if label_72:
+                    label_72.setText("Producto no encontrado")
+                    label_72.setStyleSheet("color: red; font-weight: bold")
         else:
-            # nombre ya lo tenemos
-            self._borrar_nombre = input_nombre_o_id_value
-            self.traer_id_thread = TraerIdProductoThread(input_nombre_o_id_value)
-            self.traer_id_thread.resultado.connect(self._on_id_obtenido_nombre_ya_disponible)
-            self.start_thread(self.traer_id_thread)
+            # Buscar por nombre
+            producto = next((p for p in productos_cache if p[1].lower() == input_nombre_o_id_value.lower()), None)
+            if producto:
+                self._borrar_id = producto[0]
+                self._borrar_nombre = producto[1]
+                self._on_nombre_obtenido(self._borrar_nombre)
+            else:
+                if label_72:
+                    label_72.setText("Producto no encontrado")
+                    label_72.setStyleSheet("color: red; font-weight: bold")
         
             
 
@@ -494,9 +504,10 @@ class DatosTab:
         input_nombre = self.ui.frame_6.findChild(QLineEdit, "lineEdit_2")
         if input_nombre:
             input_nombre.clear()
+            input_nombre.setFocus()
 
 #################
-#################
+#################                
 
     #EDITAR PRODUCTOS
 
@@ -532,6 +543,7 @@ class DatosTab:
 
         boton_editar = self.ui.frame_7.findChild(QPushButton, "pushButton_23")
         if boton_editar:
+                boton_editar.setEnabled(True)
                 boton_editar.setStyleSheet("background-color: rgb(255, 202, 96)")
                 boton_editar.setShortcut(Qt.Key_Return)
                 boton_editar.clicked.connect(lambda: self.verifica_datos_iguales(producto_selecc if producto_selecc is not None else None))
@@ -569,6 +581,7 @@ class DatosTab:
 
         pushbutton_49 = self.ui.frame_55.findChild(QPushButton, "pushButton_49")
         if pushbutton_49:
+            pushbutton_49.setEnabled(True)
             pushbutton_49.clicked.connect(self.update_product_prices)
 
 
@@ -578,7 +591,7 @@ class DatosTab:
         doublespinbox_value = doublespinbox.value()
 
         if doublespinbox_2:
-            doublespinbox_2.setValue(doublespinbox_value / 2)
+            doublespinbox_2.setValue(doublespinbox_value)
 
     def update_combobox_20(self):
         combobox_19 = self.ui.frame_55.findChild(QComboBox, "comboBox_19")
@@ -602,6 +615,15 @@ class DatosTab:
     def update_product_prices(self):
         global usuario_activo
 
+        pushbutton_49 = self.ui.frame_55.findChild(QPushButton, "pushButton_49")
+        if pushbutton_49:
+            pushbutton_49.setEnabled(False)
+
+        boton_editar = self.ui.frame_7.findChild(QPushButton, "pushButton_23")
+        if boton_editar:
+            boton_editar.setEnabled(False)
+            
+
         doublespinbox = self.ui.frame_55.findChild(QDoubleSpinBox, "doubleSpinBox")
         doublespinbox_2 = self.ui.frame_55.findChild(QDoubleSpinBox, "doubleSpinBox_2")
         combobox_19 = self.ui.frame_55.findChild(QComboBox, "comboBox_19")
@@ -620,19 +642,33 @@ class DatosTab:
             s = False
 
         def on_aumento_finalizado():
+            pushbutton_49 = self.ui.frame_55.findChild(QPushButton, "pushButton_49")
+            boton_editar = self.ui.frame_7.findChild(QPushButton, "pushButton_23")
+            
+
             if doublespinbox_value != 0.00 or doublespinbox_2_value != 0.00:
+                global productos_cache
+                # Limpiar solo el cache de productos antes de actualizar
+                productos_cache = None
+                # Actualizar productos y refrescar la tabla y combobox cuando termine
+                self.actualizar_variables_globales_de_uso(3, lambda: (
+                    self.populate_table_with_products(),
+                ))
+                
                 self.movimiento_thread = MovimientoAumentoPreciosThread(combobox_20_value, usuario_activo, s)
-                self.movimiento_thread.finished.connect(lambda: (self.clear_doublespinbox_values(), self.load_product_data()))
-                self.movimiento_thread.start()
+                self.movimiento_thread.finished.connect(lambda: (self.clear_doublespinbox_values(), self.load_product_data(), pushbutton_49.setEnabled(True), boton_editar.setEnabled(True)))
+                self.start_thread(self.movimiento_thread)
+
             else:
-                self.clear_doublespinbox_values()
-                self.load_product_data()
+                if pushbutton_49:
+                    pushbutton_49.setEnabled(True)
+                if boton_editar:
+                    boton_editar.setEnabled(True)
+                
 
         self.aumentar_thread.finished.connect(on_aumento_finalizado)
         self.aumentar_thread.start()
 
-
-    
     def load_product_data(self):
         global productos, productos_cache, producto_selecc
         combobox_id = self.ui.frame_7.findChild(QComboBox, "comboBox_3")
@@ -718,6 +754,10 @@ class DatosTab:
         self.actualizar_thread.finished.connect(self.on_producto_actualizado)
         self.start_thread(self.actualizar_thread)
 
+        # Usar hilo para cargar movimiento editado
+        self.movimiento_editado_thread = MovimientoProductoEditadoThread(id, usuario_activo)
+        self.movimiento_editado_thread.start()
+
     def on_producto_actualizado(self):
         label_73 = self.ui.frame_7.findChild(QLabel, "label_73")
         label_74 = self.ui.frame_7.findChild(QLabel, "label_74")
@@ -728,6 +768,7 @@ class DatosTab:
             label_74.setStyleSheet("color: green; font-weight: bold")
             QTimer.singleShot(6000, lambda: label_73.setStyleSheet("color: transparent"))
             QTimer.singleShot(6000, lambda: label_74.setStyleSheet("color: transparent"))
+            
 
         # Limpiar el cache de productos antes de actualizar
         global productos_cache, productos_por_id_cache
@@ -745,6 +786,12 @@ class DatosTab:
         if combobox_id:
             combobox_id.setFocus()
             combobox_id.lineEdit().selectAll()
+
+        boton_editar = self.ui.frame_7.findChild(QPushButton, "pushButton_23")
+        if boton_editar:
+            boton_editar.setEnabled(True)
+
+     
 
 
     def verifica_datos_iguales(self, producto):
@@ -766,8 +813,7 @@ class DatosTab:
                     label_73.setStyleSheet("color: red; font-weight: bold")
                     label_74.setText("los campos")
                     label_74.setStyleSheet("color: red; font-weight: bold")
-                    QTimer.singleShot(6000, lambda: label_73.setStyleSheet("color: transparent"))
-                    QTimer.singleShot(6000, lambda: label_74.setStyleSheet("color: transparent"))
+                    
 
             elif not (self.is_decimal(self.ui.frame_7.findChild(QLineEdit, "lineEdit_10").text()) and
                 self.is_decimal(self.ui.frame_7.findChild(QLineEdit, "lineEdit_11").text()) and
@@ -777,25 +823,27 @@ class DatosTab:
                 label_74 = self.ui.frame_7.findChild(QLabel, "label_74")
                 
                 if label_73 and label_74:
-                    label_73.setText("Por favor, ingrese valores")
+                    label_73.setText("Por favor, ingrese")
                     label_73.setStyleSheet("color: red; font-weight: bold")
-                    label_74.setText("decimales válidos")
+                    label_74.setText("valores válidos")
                     label_74.setStyleSheet("color: red; font-weight: bold")
-                    QTimer.singleShot(6000, lambda: label_73.setStyleSheet("color: transparent"))
-                    QTimer.singleShot(6000, lambda: label_74.setStyleSheet("color: transparent"))
+                   
             
             else:
                 label_73 = self.ui.frame_7.findChild(QLabel, "label_73")
                 label_74 = self.ui.frame_7.findChild(QLabel, "label_74")
-        
+
+                boton_editar = self.ui.frame_7.findChild(QPushButton, "pushButton_23")
+                if boton_editar:
+                    boton_editar.setEnabled(False)
+                    
                 if label_73 and label_74:
                     label_73.setText("Actualizando")
                     label_74.setText("producto...")
                     label_73.setStyleSheet("color: green; font-weight: bold")
                     label_74.setStyleSheet("color: green; font-weight: bold")
-                # Usar hilo para cargar movimiento editado
-                self.movimiento_editado_thread = MovimientoProductoEditadoThread(producto[0], usuario_activo)
-                self.movimiento_editado_thread.movimiento_editado.connect(lambda: self.edit_product(
+                
+                self.edit_product(
                     producto_selecc[0],
                     self.ui.frame_7.findChild(QLineEdit, "lineEdit_9").text().strip(),
                     self.ui.frame_7.findChild(QLineEdit, "lineEdit_10").text().strip(),
@@ -804,8 +852,7 @@ class DatosTab:
                     self.ui.frame_7.findChild(QLineEdit, "lineEdit_13").text().strip(),
                     self.ui.frame_7.findChild(QComboBox, "comboBox_4").currentText(),
                     self.ui.frame_7.findChild(QComboBox, "comboBox_7").currentText()
-                ))
-                self.movimiento_editado_thread.start()
+                )
     
         else:
             # Limpiar todos los campos si el producto no existe
