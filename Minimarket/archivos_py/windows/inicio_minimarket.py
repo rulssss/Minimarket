@@ -442,6 +442,7 @@ class DatosTab:
                 label_72.setStyleSheet("color: red; font-weight: bold")
             if button21:
                 button21.setEnabled(True)
+            input_nombre_o_id.setFocus()
             return
 
         self._borrar_id = None
@@ -462,6 +463,7 @@ class DatosTab:
                 if label_72:
                     label_72.setText("Producto no encontrado")
                     label_72.setStyleSheet("color: red; font-weight: bold")
+                input_nombre_o_id.setFocus()
         else:
             # Buscar por nombre
             producto = productos_por_nombre_cache.get(input_nombre_o_id_value.lower()) if productos_por_nombre_cache else None
@@ -475,6 +477,7 @@ class DatosTab:
                 if label_72:
                     label_72.setText("Producto no encontrado")
                     label_72.setStyleSheet("color: red; font-weight: bold")
+                input_nombre_o_id.setFocus()
         
             
 
