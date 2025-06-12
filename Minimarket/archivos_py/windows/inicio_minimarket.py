@@ -440,6 +440,8 @@ class DatosTab:
             if label_72:
                 label_72.setText("Complete el campo")
                 label_72.setStyleSheet("color: red; font-weight: bold")
+            if button21:
+                button21.setEnabled(True)
             return
 
         self._borrar_id = None
