@@ -21,7 +21,7 @@ categorias_por_nombre_cache = None
 # -----------------------------------------------------
 
 
-#$$$$ SEGUIR CON VISUALIZACION DE PRODUCTOS  PARA OPTIMIZACION
+#$$$$ SEGUIR CON EDITAR PROVEEDORES BORRAR Y VISUALIZAR---
 
 class DatosTab:
     def __init__(self, ui):
@@ -1259,6 +1259,12 @@ class DatosTab:
                 return
             else:
                 if lineEdit_14_value and lineEdit_15_value.isdigit():
+                    label_75 = self.ui.frame_10.findChild(QLabel, "label_76")
+                    label_75.setText("Cargando")
+                    label_75.setStyleSheet("color: green; font-weight: bold")
+                    label_76 = self.ui.frame_10.findChild(QLabel, "label_75")
+                    label_76.setText("proveedor...")
+                    label_76.setStyleSheet("color: green; font-weight: bold")
                     self.proveedor_thread = ProveedorThread(lineEdit_14_value, lineEdit_15_value, lineEdit_17_value)
                     self.proveedor_thread.proveedor_cargado.connect(lambda exito: self.on_proveedor_cargado(exito, lineEdit_14_value))
                     self.proveedor_thread.start()
@@ -1270,8 +1276,6 @@ class DatosTab:
                         label_76 = self.ui.frame_10.findChild(QLabel, "label_75")
                         label_76.setText("los campos correctamente")
                         label_76.setStyleSheet("color: red; font-weight: bold")
-                        QTimer.singleShot(6000, lambda: label_75.setStyleSheet("color: transparent"))
-                        QTimer.singleShot(6000, lambda: label_76.setStyleSheet("color: transparent"))
 
                     if not lineEdit_14_value:
                         lineEdit_14.setFocus()
@@ -1284,8 +1288,9 @@ class DatosTab:
         if exito:
             self.movimiento_proveedor_thread = MovimientoProveedorThread(nombre_proveedor, usuario_activo)
             self.movimiento_proveedor_thread.start()
-            
+            #limpia inputs
             self.clear_inputs_agregar_proveedores()
+
             label_76 = self.ui.frame_10.findChild(QLabel, "label_76")
             label_75 = self.ui.frame_10.findChild(QLabel, "label_75")
             if label_76 and label_75:
@@ -1295,12 +1300,13 @@ class DatosTab:
                 label_75.setText("con éxito")
                 label_75.setStyleSheet("color: green; font-weight: bold")
                 QTimer.singleShot(6000, lambda: label_75.setStyleSheet("color: transparent"))
+
             # actualiza proveedores
             global proveedores_cache, proveedores_por_nombre_cache, proveedores_por_telefono_cache
             proveedores_cache = None
             proveedores_por_nombre_cache = None
             proveedores_por_telefono_cache = None
-            self.actualizar_variables_globales_de_uso(5, lambda: (
+            self.actualizar_variables_globales_de_uso(2, lambda: (
                 self.populate_combobox_with_proveedores(self.ui.frame_7.findChild(QComboBox, "comboBox_7")),
                 self.populate_table_with_proveedores(),
                 self.proveedores()

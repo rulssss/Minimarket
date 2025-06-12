@@ -28,7 +28,7 @@ def crear_categuno():
 def traer_proveedores():
     conn = get_connection()
     cursor= conn.cursor()
-    query_data2 = f"SELECT nombre_proveedor FROM proveedores ORDER BY id_proveedor"
+    query_data2 = f"SELECT nombre_proveedor, telefono FROM proveedores ORDER BY id_proveedor"
     cursor.execute(query_data2)
     data = cursor.fetchall()
     cursor.close()
