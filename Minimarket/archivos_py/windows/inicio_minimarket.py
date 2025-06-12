@@ -98,7 +98,6 @@ class DatosTab:
             return
         if r == 3 and productos_cache is not None:
             productos = productos_cache
-            productos_por_id = {str(p[0]): p for p in productos_cache}
             if callback:
                 callback()
             return
@@ -114,10 +113,12 @@ class DatosTab:
             # Obtener todas las categorías y asignarlas a la variable global 'categorias'
             self.categorias_thread = CategoriasThread()
             def on_categorias_obtenidas(cats):
-                global categorias
+                global categorias, categorias_por_nombre_cache
                 categorias = cats
+                categorias_por_nombre_cache = {c[0].strip().lower(): c for c in categorias}
                 self._datos_cargados["categorias"] = True
                 check_all_loaded()
+                
                 print(f"Categorías obtenidas: {categorias}")  # Para verificar que las categorías se actualizan correctamente
             self.categorias_thread.categorias_obtenidas.connect(on_categorias_obtenidas)
             self.start_thread(self.categorias_thread)
@@ -125,8 +126,10 @@ class DatosTab:
             # Obtener todos los proveedores y asignarlos a la variable global 'proveedores'
             self.proveedores_thread = ProveedoresThread()
             def on_proveedores_obtenidos(provs):
-                global proveedores
+                global proveedores, proveedores_por_nombre_cache, proveedores_por_telefono_cache
                 proveedores = provs
+                proveedores_por_nombre_cache = {p[0].strip().lower(): p for p in proveedores}
+                proveedores_por_telefono_cache = {str(p[1]).strip(): p for p in proveedores}
                 self._datos_cargados["proveedores"] = True
                 check_all_loaded()
                 print(f"Proveedores obtenidos: {proveedores}")  # Para verificar que los proveedores se actualizan correctamente
@@ -136,8 +139,10 @@ class DatosTab:
             # Obtener todos los productos y asignarlos a la variable global 'productos'
             self.productos_thread = TraerTodosLosProductosThread()
             def on_productos_obtenidos(productos_obtenidos):
-                global productos
+                global productos, productos_por_id_cache, productos_por_nombre_cache
                 productos = productos_obtenidos
+                productos_por_id_cache = {str(p[0]): p for p in productos}
+                productos_por_nombre_cache = {p[1].strip().lower(): p for p in productos}
                 self._datos_cargados["productos"] = True
                 check_all_loaded()
                 print(f"Productos obtenidos: {productos}")  # Para verificar que los productos se actualizan correctamente
@@ -189,11 +194,16 @@ class DatosTab:
                 self.start_thread(self.productos_thread)
 
     def limpiar_cache():
-        global categorias_cache, proveedores_cache, productos_cache, productos_por_id_cache
+        global categorias_cache, proveedores_cache, productos_cache, productos_por_id_cache, productos_por_nombre_cache, proveedores_por_nombre_cache, proveedores_por_telefono_cache, categorias_por_nombre_cache
         categorias_cache = None
         proveedores_cache = None
         productos_cache = None
         productos_por_id_cache = None
+        productos_por_nombre_cache = None
+        proveedores_por_nombre_cache = None
+        proveedores_por_telefono_cache = None
+        categorias_por_nombre_cache = None
+
         
         
 #################
@@ -1221,54 +1231,53 @@ class DatosTab:
             lineEdit_17.clear()
             lineEdit_14.setFocus()
 
-
     def validate_and_process_inputs_proveedores(self):
-        global usuario_activo, proveedores_cache, proveedores
+        global usuario_activo, proveedores_por_nombre_cache, proveedores_por_telefono_cache
 
-        lineEdit_14 = self.ui.frame_10.findChild(QLineEdit, "lineEdit_14")
-        lineEdit_15 = self.ui.frame_10.findChild(QLineEdit, "lineEdit_15")
-        lineEdit_17 = self.ui.frame_10.findChild(QLineEdit, "lineEdit_17")
+        lineEdit_14 = self.ui.frame_10.findChild(QLineEdit, "lineEdit_14")  # Nombre
+        lineEdit_15 = self.ui.frame_10.findChild(QLineEdit, "lineEdit_15")  # Teléfono
+        lineEdit_17 = self.ui.frame_10.findChild(QLineEdit, "lineEdit_17")  # Dirección
 
         if lineEdit_14 and lineEdit_15 and lineEdit_17:
             lineEdit_14_value = lineEdit_14.text().strip()
             lineEdit_15_value = lineEdit_15.text().strip()
             lineEdit_17_value = lineEdit_17.text().strip()
 
-            # Verificar si el proveedor ya existe por nombre (case-insensitive)
-            proveedores_lista = proveedores_cache if proveedores_cache is not None else proveedores
-            existe = any(p[0].strip().lower() == lineEdit_14_value.lower() for p in proveedores_lista)
+            # Verificar si el proveedor ya existe por nombre o teléfono usando diccionarios
+            existe_nombre = proveedores_por_nombre_cache and lineEdit_14_value.lower() in proveedores_por_nombre_cache
+            existe_telefono = proveedores_por_telefono_cache and lineEdit_15_value in proveedores_por_telefono_cache
 
-            if existe:
+            if existe_nombre or existe_telefono:
                 label_75 = self.ui.frame_10.findChild(QLabel, "label_76")
                 if label_75:
-                    label_75.setText("Está intentando cargar")
+                    label_75.setText("Está intentando cargar un")
                     label_75.setStyleSheet("color: red; font-weight: bold")
                     label_76 = self.ui.frame_10.findChild(QLabel, "label_75")
-                    label_76.setText("un proveedor existente")
+                    label_76.setText("proveedor o número existente")
                     label_76.setStyleSheet("color: red; font-weight: bold")
-                    QTimer.singleShot(6000, lambda: label_75.setStyleSheet("color: transparent"))
-                    QTimer.singleShot(6000, lambda: label_76.setStyleSheet("color: transparent"))
+                    
                 return
-
-            if lineEdit_14_value and lineEdit_15_value.isdigit():
-                self.proveedor_thread = ProveedorThread(lineEdit_14_value, lineEdit_15_value, lineEdit_17_value)
-                self.proveedor_thread.proveedor_cargado.connect(lambda exito: self.on_proveedor_cargado(exito, lineEdit_14_value))
-                self.proveedor_thread.start()
             else:
-                label_75 = self.ui.frame_10.findChild(QLabel, "label_76")
-                if label_75:
-                    label_75.setText("Por favor, complete todos")
-                    label_75.setStyleSheet("color: red; font-weight: bold")
-                    label_76 = self.ui.frame_10.findChild(QLabel, "label_75")
-                    label_76.setText("los campos correctamente")
-                    label_76.setStyleSheet("color: red; font-weight: bold")
-                    QTimer.singleShot(6000, lambda: label_75.setStyleSheet("color: transparent"))
-                    QTimer.singleShot(6000, lambda: label_76.setStyleSheet("color: transparent"))
+                if lineEdit_14_value and lineEdit_15_value.isdigit():
+                    self.proveedor_thread = ProveedorThread(lineEdit_14_value, lineEdit_15_value, lineEdit_17_value)
+                    self.proveedor_thread.proveedor_cargado.connect(lambda exito: self.on_proveedor_cargado(exito, lineEdit_14_value))
+                    self.proveedor_thread.start()
+                else:
+                    label_75 = self.ui.frame_10.findChild(QLabel, "label_76")
+                    if label_75:
+                        label_75.setText("Por favor, complete todos")
+                        label_75.setStyleSheet("color: red; font-weight: bold")
+                        label_76 = self.ui.frame_10.findChild(QLabel, "label_75")
+                        label_76.setText("los campos correctamente")
+                        label_76.setStyleSheet("color: red; font-weight: bold")
+                        QTimer.singleShot(6000, lambda: label_75.setStyleSheet("color: transparent"))
+                        QTimer.singleShot(6000, lambda: label_76.setStyleSheet("color: transparent"))
 
-                if not lineEdit_14_value:
-                    lineEdit_14.setFocus()
-                elif not lineEdit_15_value.isdigit():
-                    lineEdit_15.setFocus()
+                    if not lineEdit_14_value:
+                        lineEdit_14.setFocus()
+                    elif not lineEdit_15_value.isdigit():
+                        lineEdit_15.setFocus()
+    
 
     def on_proveedor_cargado(self, exito, nombre_proveedor):
         global usuario_activo
@@ -1287,12 +1296,16 @@ class DatosTab:
                 label_75.setStyleSheet("color: green; font-weight: bold")
                 QTimer.singleShot(6000, lambda: label_75.setStyleSheet("color: transparent"))
             # actualiza proveedores
-            combobox_proveedores = self.ui.frame_7.findChild(QComboBox, "comboBox_7")
-            if combobox_proveedores:
-                self.populate_combobox_with_proveedores(combobox_proveedores)
-            self.populate_combobox_proveedores()
-            self.populate_table_with_proveedores()
-            self.proveedores()
+            global proveedores_cache, proveedores_por_nombre_cache, proveedores_por_telefono_cache
+            proveedores_cache = None
+            proveedores_por_nombre_cache = None
+            proveedores_por_telefono_cache = None
+            self.actualizar_variables_globales_de_uso(5, lambda: (
+                self.populate_combobox_with_proveedores(self.ui.frame_7.findChild(QComboBox, "comboBox_7")),
+                self.populate_table_with_proveedores(),
+                self.proveedores()
+            ))
+            
             
         else:
             print("se genero un error de tipeo al cargar el proveedor")

@@ -261,6 +261,7 @@ def cargar_proveedor(nombre_producto, num_telefono, mail):
         cursor.close()
         conn.close()
         return True
+    
     except TypeError:
         cursor.close()
         conn.close()
