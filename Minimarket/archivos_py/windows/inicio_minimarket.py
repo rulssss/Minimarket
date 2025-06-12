@@ -275,8 +275,8 @@ class DatosTab:
             input_proveedor.setCurrentIndex(0)
 
     def validate_and_process_inputs(self):  
-        global usuario_activo
-
+        global usuario_activo, productos_cache
+    
         # lineEditS
         input_id = self.ui.frame_5.findChild(QLineEdit, "lineEdit_7")
         input_nombre = self.ui.frame_5.findChild(QLineEdit, "lineEdit_6")
@@ -286,7 +286,7 @@ class DatosTab:
         input_stock_ideal = self.ui.frame_5.findChild(QLineEdit, "lineEdit_8")
         input_categoria = self.ui.frame_5.findChild(QComboBox, "comboBox_5")
         input_proveedor = self.ui.frame_5.findChild(QComboBox, "comboBox_6")
-
+    
         input_id_value = input_id.text().strip() if input_id else ""
         input_nombre_value = input_nombre.text().strip() if input_nombre else ""
         input_precio_compra_value = input_precio_compra.text().strip() if input_precio_compra else ""
@@ -295,19 +295,31 @@ class DatosTab:
         input_stock_ideal_value = input_stock_ideal.text().strip() if input_stock_ideal else ""
         input_categoria_value = input_categoria.currentText() if input_categoria else ""
         input_proveedor_value = input_proveedor.currentText() if input_proveedor else ""
-
+    
+        # Verificar si el ID o el nombre ya existen en el cache
+        productos_lista = productos_cache if productos_cache is not None else []
+        existe_id = any(str(p[0]) == input_id_value for p in productos_lista)
+        existe_nombre = any(p[1].strip().lower() == input_nombre_value.lower() for p in productos_lista)
+    
+        label_70 = self.ui.frame_5.findChild(QLabel, "label_70")
+        label_71 = self.ui.frame_5.findChild(QLabel, "label_71")
+    
+        if existe_id or existe_nombre:
+            if label_70 and label_71:
+                label_70.setText("Está intentando cargar")
+                label_71.setText("un producto existente")
+                label_70.setStyleSheet("color: red; font-weight: bold")
+                label_71.setStyleSheet("color: red; font-weight: bold")
+            return
+    
         if self.is_digit(input_id_value) and input_nombre_value and self.is_decimal(input_precio_compra_value) and self.is_decimal(input_precio_venta_value) and self.is_decimal(input_stock_value) and self.is_decimal(input_stock_ideal_value):
-           
-            label_70 = self.ui.frame_5.findChild(QLabel, "label_70")
-            label_71 = self.ui.frame_5.findChild(QLabel, "label_71")
             if label_70 and label_71:
                 label_70.setText("Agregando")
                 label_71.setText("producto...")
                 label_70.setStyleSheet("color: green; font-weight: bold")
                 label_71.setStyleSheet("color: green; font-weight: bold")
-               
-
-             # Lanzar el thread para agregar producto
+    
+            # Lanzar el thread para agregar producto
             self.agregar_thread = AgregarProductoThread(
                 input_id_value, input_nombre_value, input_precio_compra_value, input_precio_venta_value,
                 input_stock_value, input_stock_ideal_value, input_categoria_value, input_proveedor_value
@@ -316,19 +328,13 @@ class DatosTab:
                 lambda exito: self.on_producto_agregado(exito, input_id_value, usuario_activo, input_id)
             )
             self.start_thread(self.agregar_thread)
-            
-
-            
         else:
-            label_70 = self.ui.frame_5.findChild(QLabel, "label_70")
-            label_71 = self.ui.frame_5.findChild(QLabel, "label_71")
             if label_70 and label_71:
                 label_70.setText("Por favor, complete todos")
                 label_71.setText("los campos correctamente")
                 label_70.setStyleSheet("color: red; font-weight: bold")
                 label_71.setStyleSheet("color: red; font-weight: bold")
-            
-
+    
             # Focus en el campo incorrecto
             if not self.is_digit(input_id_value):
                 if input_id:
@@ -1269,16 +1275,7 @@ class DatosTab:
             self.proveedores()
             
         else:
-            self.clear_inputs_agregar_proveedores()
-            label_75 = self.ui.frame_10.findChild(QLabel, "label_76")
-            if label_75:
-                label_75.setText("Está intentando cargar")
-                label_75.setStyleSheet("color: red; font-weight: bold")
-                label_76 = self.ui.frame_10.findChild(QLabel, "label_75")
-                label_76.setText("un proveedor existente")
-                label_76.setStyleSheet("color: red; font-weight: bold")
-                QTimer.singleShot(6000, lambda: label_75.setStyleSheet("color: transparent"))
-                QTimer.singleShot(6000, lambda: label_76.setStyleSheet("color: transparent"))
+            print("algo fallo en la carga del proveedor")
 
 
 ################

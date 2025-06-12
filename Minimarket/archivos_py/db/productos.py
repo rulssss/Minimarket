@@ -61,7 +61,7 @@ def cargar_producto(id_producto, nombre_producto, precio_compra_producto, precio
         cursor.close()
         conn.close()
         return True
-    except errors.UniqueViolation:
+    except TypeError:
         cursor.close()
         conn.close()
         return False
@@ -251,15 +251,20 @@ def actualizar_producto(id, nombre_prdoucto, precio_compra_producto, precio_vent
 
 
 def cargar_proveedor(nombre_producto, num_telefono, mail):
-    conn = get_connection()
-    cursor= conn.cursor()
-    query_data2 = f"INSERT INTO proveedores(nombre_proveedor, telefono, mail) VALUES('{nombre_producto}', {num_telefono}, '{mail}')"
+    try: 
+        conn = get_connection()
+        cursor= conn.cursor()
+        query_data2 = f"INSERT INTO proveedores(nombre_proveedor, telefono, mail) VALUES('{nombre_producto}', {num_telefono}, '{mail}')"
 
-    cursor.execute(query_data2)
-    conn.commit()
-    cursor.close()
-    conn.close()
-    return True
+        cursor.execute(query_data2)
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return True
+    except TypeError:
+        cursor.close()
+        conn.close()
+        return False
 
 
 # MOVIMIENTOS:
