@@ -180,3 +180,26 @@ class TraerTodosLosProductosThread(QThread):
         self.resultado.emit(productos)
 
 
+# agregar proveedor
+
+
+class ProveedorThread(QThread):
+    proveedor_cargado = Signal(bool)
+    def __init__(self, nombre, telefono, direccion):
+        super().__init__()
+        self.nombre = nombre
+        self.telefono = telefono
+        self.direccion = direccion
+    def run(self):
+        exito = cargar_proveedor(self.nombre, self.telefono, self.direccion)
+        self.proveedor_cargado.emit(exito)
+
+class MovimientoProveedorThread(QThread):
+    movimiento_cargado = Signal()
+    def __init__(self, nombre, usuario_activo):
+        super().__init__()
+        self.nombre = nombre
+        self.usuario_activo = usuario_activo
+    def run(self):
+        cargar_movimiento_agregar_proveedor(self.nombre, self.usuario_activo)
+        self.movimiento_cargado.emit()

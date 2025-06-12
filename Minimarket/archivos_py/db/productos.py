@@ -250,6 +250,17 @@ def actualizar_producto(id, nombre_prdoucto, precio_compra_producto, precio_vent
     conn.close()
 
 
+def cargar_proveedor(nombre_producto, num_telefono, mail):
+    conn = get_connection()
+    cursor= conn.cursor()
+    query_data2 = f"INSERT INTO proveedores(nombre_proveedor, telefono, mail) VALUES('{nombre_producto}', {num_telefono}, '{mail}')"
+
+    cursor.execute(query_data2)
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return True
+
 
 # MOVIMIENTOS:
 
@@ -319,3 +330,18 @@ def traer_todos_los_productos():
     cursor.close()
     conn.close()
     return data
+
+def cargar_movimiento_agregar_proveedor(nombre_proveedor, usuario_activo):
+        
+    id_usuario = traer_id_usuario(usuario_activo)
+    fecha_hora = datetime.now().astimezone().isoformat()
+    id_proveedor = traer_id_proveedor(nombre_proveedor)
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"INSERT INTO movimientos (id_usuario, fecha_hora, tipo_accion, entidad_afectada, id_entidad, descripcion) VALUES ({id_usuario}, '{fecha_hora}', 'Agregar', 'Proveedores', {id_proveedor}, 'Proveedor agregado: {nombre_proveedor}')"
+    cursor.execute(query)
+    conn.commit()
+    cursor.close()
+    conn.close()
+
