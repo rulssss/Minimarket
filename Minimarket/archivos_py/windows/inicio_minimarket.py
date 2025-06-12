@@ -9,7 +9,15 @@ from time import sleep
 categorias_cache = None
 proveedores_cache = None
 productos_cache = None
+
+
 productos_por_id_cache = None
+productos_por_nombre_cache = None
+proveedores_por_nombre_cache = None
+proveedores_por_telefono_cache = None
+categorias_por_nombre_cache = None
+
+
 # -----------------------------------------------------
 
 
@@ -70,9 +78,12 @@ class DatosTab:
             
             
     def actualizar_variables_globales_de_uso(self, r, callback=None):
-        global categorias , proveedores, productos, productos_por_id
+        global categorias , proveedores, productos
      
-        global categorias_cache, proveedores_cache, productos_cache, productos_por_id_cache
+        global categorias_cache, proveedores_cache, productos_cache
+        global productos_por_id_cache, productos_por_nombre_cache
+        global proveedores_por_nombre_cache, proveedores_por_telefono_cache
+        global categorias_por_nombre_cache
 
             # Si ya hay cache, úsalo y llama al callback
         if r == 1 and categorias_cache is not None:
@@ -139,9 +150,10 @@ class DatosTab:
                 # Obtener todas las categorías y asignarlas a la variable global 'categorias'
                 self.categorias_thread = CategoriasThread()
                 def on_categorias_obtenidas(cats):
-                    global categorias, categorias_cache
+                    global categorias, categorias_cache, categorias_por_nombre_cache
                     categorias = cats
                     categorias_cache = cats
+                    categorias_por_nombre_cache = {c[0].strip().lower(): c for c in categorias}
                     print(f"Categorías obtenidas: {categorias}")  # Para verificar que las categorías se actualizan correctamente
                     if callback:
                         callback()
@@ -151,9 +163,11 @@ class DatosTab:
                 # Obtener todos los proveedores y asignarlos a la variable global 'proveedores'
                 self.proveedores_thread = ProveedoresThread()
                 def on_proveedores_obtenidos(provs):
-                    global proveedores, proveedores_cache
+                    global proveedores, proveedores_cache, proveedores_por_nombre_cache, proveedores_por_telefono_cache
                     proveedores = provs
                     proveedores_cache = provs
+                    proveedores_por_nombre_cache = {p[0].strip().lower(): p for p in proveedores}
+                    proveedores_por_telefono_cache = {str(p[1]).strip(): p for p in proveedores}
                     print(f"Proveedores obtenidos: {proveedores}")  # Para verificar que los proveedores se actualizan correctamente
                     if callback:
                         callback()
@@ -163,10 +177,11 @@ class DatosTab:
                 # Obtener todos los productos y asignarlos a la variable global 'productos'
                 self.productos_thread = TraerTodosLosProductosThread()
                 def on_productos_obtenidos(productos_obtenidos):
-                    global productos, productos_cache, productos_por_id_cache
+                    global productos, productos_cache, productos_por_id_cache, productos_por_nombre_cache
                     productos = productos_obtenidos
                     productos_cache = productos_obtenidos
                     productos_por_id_cache = {str(p[0]): p for p in productos}
+                    productos_por_nombre_cache = {p[1].strip().lower(): p for p in productos}
                     print(f"Productos obtenidos: {productos}")  # Para verificar que los productos se actualizan correctamente
                     if callback:
                         callback()
@@ -276,7 +291,7 @@ class DatosTab:
 
     def validate_and_process_inputs(self):  
         global usuario_activo, productos_cache
-    
+
         # lineEditS
         input_id = self.ui.frame_5.findChild(QLineEdit, "lineEdit_7")
         input_nombre = self.ui.frame_5.findChild(QLineEdit, "lineEdit_6")
@@ -286,7 +301,7 @@ class DatosTab:
         input_stock_ideal = self.ui.frame_5.findChild(QLineEdit, "lineEdit_8")
         input_categoria = self.ui.frame_5.findChild(QComboBox, "comboBox_5")
         input_proveedor = self.ui.frame_5.findChild(QComboBox, "comboBox_6")
-    
+
         input_id_value = input_id.text().strip() if input_id else ""
         input_nombre_value = input_nombre.text().strip() if input_nombre else ""
         input_precio_compra_value = input_precio_compra.text().strip() if input_precio_compra else ""
@@ -295,15 +310,15 @@ class DatosTab:
         input_stock_ideal_value = input_stock_ideal.text().strip() if input_stock_ideal else ""
         input_categoria_value = input_categoria.currentText() if input_categoria else ""
         input_proveedor_value = input_proveedor.currentText() if input_proveedor else ""
-    
+
         # Verificar si el ID o el nombre ya existen en el cache
-        productos_lista = productos_cache if productos_cache is not None else []
-        existe_id = any(str(p[0]) == input_id_value for p in productos_lista)
-        existe_nombre = any(p[1].strip().lower() == input_nombre_value.lower() for p in productos_lista)
-    
+        # Usar diccionarios para verificar existencia
+        existe_id = productos_por_id_cache and input_id_value in productos_por_id_cache
+        existe_nombre = productos_por_nombre_cache and input_nombre_value.lower() in productos_por_nombre_cache
+
         label_70 = self.ui.frame_5.findChild(QLabel, "label_70")
         label_71 = self.ui.frame_5.findChild(QLabel, "label_71")
-    
+
         if existe_id or existe_nombre:
             if label_70 and label_71:
                 label_70.setText("Está intentando cargar")
@@ -311,14 +326,14 @@ class DatosTab:
                 label_70.setStyleSheet("color: red; font-weight: bold")
                 label_71.setStyleSheet("color: red; font-weight: bold")
             return
-    
+
         if self.is_digit(input_id_value) and input_nombre_value and self.is_decimal(input_precio_compra_value) and self.is_decimal(input_precio_venta_value) and self.is_decimal(input_stock_value) and self.is_decimal(input_stock_ideal_value):
             if label_70 and label_71:
                 label_70.setText("Agregando")
                 label_71.setText("producto...")
                 label_70.setStyleSheet("color: green; font-weight: bold")
                 label_71.setStyleSheet("color: green; font-weight: bold")
-    
+
             # Lanzar el thread para agregar producto
             self.agregar_thread = AgregarProductoThread(
                 input_id_value, input_nombre_value, input_precio_compra_value, input_precio_venta_value,
@@ -334,7 +349,7 @@ class DatosTab:
                 label_71.setText("los campos correctamente")
                 label_70.setStyleSheet("color: red; font-weight: bold")
                 label_71.setStyleSheet("color: red; font-weight: bold")
-    
+
             # Focus en el campo incorrecto
             if not self.is_digit(input_id_value):
                 if input_id:
@@ -387,12 +402,7 @@ class DatosTab:
             if input_id:
                 input_id.setFocus()
         else:
-            self.clear_inputs_agregar_productos()
-            if label_70 and label_71:
-                label_70.setText("Está intentando cargar")
-                label_71.setText("un producto existente")
-                label_70.setStyleSheet("color: red; font-weight: bold")
-                label_71.setStyleSheet("color: red; font-weight: bold")
+            print("se genero un error de tipeo al cargar el producto")
 
 #################
 #################
@@ -1275,7 +1285,7 @@ class DatosTab:
             self.proveedores()
             
         else:
-            print("algo fallo en la carga del proveedor")
+            print("se genero un error de tipeo al cargar el proveedor")
 
 
 ################
