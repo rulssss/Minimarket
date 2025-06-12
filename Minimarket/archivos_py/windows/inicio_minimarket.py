@@ -427,11 +427,14 @@ class DatosTab:
 
     #funcion para borrar
     def delete_product(self):
-        global usuario_activo, productos_cache
+        global usuario_activo, productos_por_id_cache, productos_por_nombre_cache
         label_72 = self.ui.frame_6.findChild(QLabel, "label_72")
 
+        button21 = self.ui.frame_6.findChild(QPushButton, "pushButton_21")
+        if button21:
+            button21.setEnabled(False)
+            
         input_nombre_o_id = self.ui.frame_6.findChild(QLineEdit, "lineEdit_2")
-
         input_nombre_o_id_value = input_nombre_o_id.text().strip()
         if not input_nombre_o_id_value:
             if label_72:
@@ -443,26 +446,30 @@ class DatosTab:
         self._borrar_nombre = None
         self._borrar_valor = input_nombre_o_id_value
 
-        # Buscar en cache
+        # Buscar en cache usando diccionarios
         if input_nombre_o_id_value.isdigit():
             # Buscar por ID
-            producto = next((p for p in productos_cache if str(p[0]) == input_nombre_o_id_value), None)
+            producto = productos_por_id_cache.get(input_nombre_o_id_value) if productos_por_id_cache else None
             if producto:
                 self._borrar_id = int(input_nombre_o_id_value)
                 self._borrar_nombre = producto[1]
                 self._on_nombre_obtenido(self._borrar_nombre)
             else:
+                if button21:
+                    button21.setEnabled(True)
                 if label_72:
                     label_72.setText("Producto no encontrado")
                     label_72.setStyleSheet("color: red; font-weight: bold")
         else:
             # Buscar por nombre
-            producto = next((p for p in productos_cache if p[1].lower() == input_nombre_o_id_value.lower()), None)
+            producto = productos_por_nombre_cache.get(input_nombre_o_id_value.lower()) if productos_por_nombre_cache else None
             if producto:
                 self._borrar_id = producto[0]
                 self._borrar_nombre = producto[1]
                 self._on_nombre_obtenido(self._borrar_nombre)
             else:
+                if button21:
+                    button21.setEnabled(True)
                 if label_72:
                     label_72.setText("Producto no encontrado")
                     label_72.setStyleSheet("color: red; font-weight: bold")
@@ -487,18 +494,13 @@ class DatosTab:
         self.start_thread(self.borrar_thread)
 
     def _on_borrado_result(self, exito):
-        label_72 = self.ui.frame_6.findChild(QLabel, "label_72")
         if exito:
             # Lanzar hilo de movimiento
             self.movimiento_thread = MovimientoProductoBorrarThread(self._borrar_id, self._borrar_nombre, usuario_activo)
             self.movimiento_thread.movimiento_borrado.connect(self.on_producto_borrado)
             self.start_thread(self.movimiento_thread)
         else:
-            self.clear_inputs_borrar_productos()
-            if label_72:
-                label_72.setText("Producto no encontrado")
-                label_72.setStyleSheet("color: red; font-weight: bold")
-            QTimer.singleShot(6000, lambda: label_72.setStyleSheet("color: transparent"))
+            print("algo ocurrio que no se pudo borrar el producto")
             
     def on_producto_borrado(self):
         label_72 = self.ui.frame_6.findChild(QLabel, "label_72")
@@ -507,6 +509,9 @@ class DatosTab:
             label_72.setText("Producto borrado con éxito")
             label_72.setStyleSheet("color: green; font-weight: bold")
             QTimer.singleShot(6000, lambda: label_72.setStyleSheet("color: transparent"))
+        button21 = self.ui.frame_6.findChild(QPushButton, "pushButton_21")
+        if button21:
+            button21.setEnabled(True)   
 
         #se actualizan otras aprtes del programa
         # Limpiar solo el cache de productos antes de actualizar
