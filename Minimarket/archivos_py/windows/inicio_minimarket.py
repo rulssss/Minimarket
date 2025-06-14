@@ -60,6 +60,8 @@ class DatosTab:
 
         # editar proveedores
 
+
+
     def start_thread(self, thread):
         self.threads.append(thread)
         thread.finished.connect(lambda: self.threads.remove(thread) if thread in self.threads else None)
@@ -1350,12 +1352,13 @@ class DatosTab:
         input_nombre = self.ui.frame_12.findChild(QLineEdit, "lineEdit_20")
         input_nombre_value = input_nombre.text().strip() if input_nombre else ""
 
+        label_77 = self.ui.frame_12.findChild(QLabel, "label_77")
+        lineEdit_20 = self.ui.frame_12.findChild(QLineEdit, "lineEdit_20")
+
         # Caso especial: Proveedor1
-        if input_nombre_value.lower() == "Proveedor1":
-            lineEdit_20 = self.ui.frame_12.findChild(QLineEdit, "lineEdit_20")
+        if input_nombre_value == "Proveedor1":
             if lineEdit_20:
                 lineEdit_20.clear()
-            label_77 = self.ui.frame_12.findChild(QLabel, "label_77")
             if label_77:
                 label_77.setText("No se puede borrar el Proveedor1")
                 label_77.setStyleSheet("color: red; font-weight: bold")
@@ -1368,6 +1371,12 @@ class DatosTab:
         existe_en_cache = proveedores_por_nombre_cache and input_nombre_value.lower() in proveedores_por_nombre_cache
 
         if existe_en_cache:
+
+            if label_77:
+                label_77.setText("Borrando Proveedor...")
+                label_77.setStyleSheet("color: green; font-weight: bold")
+                
+
             # Buscar en la base (puede tener lógica extra)
             self.buscar_prov_thread = BuscarProveedorThread(input_nombre_value)
             def on_busqueda_finalizada(bandera):
@@ -1405,7 +1414,7 @@ class DatosTab:
                     self.traer_id_thread.resultado.connect(on_id_obtenido)
                     self.traer_id_thread.start()
                 else:
-                    print("algo salio mal al buscar el proveedor")
+                    print("No se encontró el proveedor en la base de datos")
                         
                 if input_nombre:
                     input_nombre.setFocus()

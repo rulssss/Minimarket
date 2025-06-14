@@ -285,11 +285,7 @@ def buscar_proveedor(nombre_prov):
         cursor.close()
         conn.close()
         return True
-    else:
-        cursor.close()
-        conn.close()
-        return False
-
+    return False
 
 # MOVIMIENTOS:
 
