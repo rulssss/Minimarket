@@ -1424,7 +1424,7 @@ class DatosTab:
 
                     if button_34:
                         button_34.setEnabled(True)
-                        
+
                 else:
                     print("No se encontró el proveedor en la base de datos")
                         
@@ -1433,6 +1433,8 @@ class DatosTab:
             self.buscar_prov_thread.resultado.connect(on_busqueda_finalizada)
             self.buscar_prov_thread.start()
         else:
+            if button_34:
+                button_34.setEnabled(True)
             # No existe en cache
             lineEdit_20 = self.ui.frame_12.findChild(QLineEdit, "lineEdit_20")
             if lineEdit_20:
