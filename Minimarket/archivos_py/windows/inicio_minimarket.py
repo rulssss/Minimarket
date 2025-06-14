@@ -1348,6 +1348,10 @@ class DatosTab:
     def delete_proveedor(self):
         global usuario_activo, proveedores_por_nombre_cache
 
+        button_34 = self.ui.frame_12.findChild(QPushButton, "pushButton_34")
+        if button_34:
+            button_34.setEnabled(False)
+
         input_nombre = self.ui.frame_12.findChild(QLineEdit, "lineEdit_20")
         input_nombre_value = input_nombre.text().strip() if input_nombre else ""
 
@@ -1364,6 +1368,9 @@ class DatosTab:
                 
             if input_nombre:
                 input_nombre.setFocus()
+
+            if button_34:
+                button_34.setEnabled(True)
             return
 
         # Verificar en cache si existe el proveedor
@@ -1379,6 +1386,8 @@ class DatosTab:
             # Buscar en la base (puede tener lógica extra)
             self.buscar_prov_thread = BuscarProveedorThread(input_nombre_value)
             def on_busqueda_finalizada(bandera):
+                button_34 = self.ui.frame_12.findChild(QPushButton, "pushButton_34")
+
                 if bandera:
                     # Traer ID en hilo
                     self.traer_id_thread = TraerIdProveedorThread(input_nombre_value)
@@ -1412,6 +1421,10 @@ class DatosTab:
                         
                     self.traer_id_thread.resultado.connect(on_id_obtenido)
                     self.traer_id_thread.start()
+
+                    if button_34:
+                        button_34.setEnabled(True)
+                        
                 else:
                     print("No se encontró el proveedor en la base de datos")
                         
