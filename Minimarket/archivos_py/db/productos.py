@@ -78,15 +78,22 @@ def traer_id_categoria(categoria_producto):
     return data[0][0]
 
 def traer_id_proveedor(proveedor_producto):
-    conn = get_connection()
-    cursor= conn.cursor()
-    query_data2 = f"SELECT id_proveedor FROM proveedores WHERE nombre_proveedor = '{proveedor_producto}'"
-    cursor.execute(query_data2)
-    data = cursor.fetchall()
-    cursor.close()
-    conn.close()
+    try:
 
-    return data[0][0]
+        conn = get_connection()
+        cursor= conn.cursor()
+        query_data2 = f"SELECT id_proveedor FROM proveedores WHERE nombre_proveedor = '{proveedor_producto}'"
+        cursor.execute(query_data2)
+        data = cursor.fetchall()
+        cursor.close()
+        conn.close()
+
+        return data[0][0]
+    
+    except IndexError:
+        cursor.close()
+        conn.close()
+        return None
 
 def traer_id_usuario(usuario):
 
@@ -266,6 +273,22 @@ def cargar_proveedor(nombre_producto, num_telefono, mail):
         cursor.close()
         conn.close()
         return False
+    
+def buscar_proveedor(nombre_prov):
+    conn = get_connection()
+    if nombre_prov != "Proveedor1":
+        cursor= conn.cursor()
+    
+        query_data3 = f"DELETE FROM proveedores WHERE nombre_proveedor = '{nombre_prov}'"
+        cursor.execute(query_data3)
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return True
+    else:
+        cursor.close()
+        conn.close()
+        return False
 
 
 # MOVIMIENTOS:
@@ -351,3 +374,16 @@ def cargar_movimiento_agregar_proveedor(nombre_proveedor, usuario_activo):
     cursor.close()
     conn.close()
 
+
+def cargar_movimiento_proveedor_borrado(nombre_proveedor, id_proveedor, usuario_activo):
+            
+    id_usuario = traer_id_usuario(usuario_activo)
+    fecha_hora = datetime.now().astimezone().isoformat()
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"INSERT INTO movimientos (id_usuario, fecha_hora, tipo_accion, entidad_afectada, id_entidad, descripcion) VALUES ({id_usuario}, '{fecha_hora}', 'Borrar', 'Proveedores', {id_proveedor}, 'Proveedor borrado: {nombre_proveedor}')"
+    cursor.execute(query)
+    conn.commit()
+    conn.close()
+    cursor.close()

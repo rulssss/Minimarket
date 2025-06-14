@@ -203,3 +203,36 @@ class MovimientoProveedorThread(QThread):
     def run(self):
         cargar_movimiento_agregar_proveedor(self.nombre, self.usuario_activo)
         self.movimiento_cargado.emit()
+
+
+ # borrar proveedor
+
+# Hilo para buscar proveedor en la base
+class BuscarProveedorThread(QThread):
+    resultado = Signal(bool)
+    def __init__(self, nombre):
+        super().__init__()
+        self.nombre = nombre
+    def run(self):
+        bandera = buscar_proveedor(self.nombre)
+        self.resultado.emit(bandera)
+
+# Hilo para traer el ID del proveedor
+class TraerIdProveedorThread(QThread):
+    resultado = Signal(int)
+    def __init__(self, nombre):
+        super().__init__()
+        self.nombre = nombre
+    def run(self):
+        id_prov = traer_id_proveedor(self.nombre)
+        self.resultado.emit(id_prov)
+
+# Hilo para cargar movimiento de proveedor borrado
+class MovimientoProveedorBorradoThread(QThread):
+    def __init__(self, nombre, id_proveedor, usuario_activo):
+        super().__init__()
+        self.nombre = nombre
+        self.id_proveedor = id_proveedor
+        self.usuario_activo = usuario_activo
+    def run(self):
+        cargar_movimiento_proveedor_borrado(self.nombre, self.id_proveedor, self.usuario_activo)

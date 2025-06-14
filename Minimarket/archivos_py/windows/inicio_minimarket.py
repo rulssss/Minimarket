@@ -21,7 +21,6 @@ categorias_por_nombre_cache = None
 # -----------------------------------------------------
 
 
-#$$$$ SEGUIR CON EDITAR PROVEEDORES BORRAR Y VISUALIZAR---
 
 class DatosTab:
     def __init__(self, ui):
@@ -55,6 +54,11 @@ class DatosTab:
         # agregar proveedores
 
         self.agregar_proveedor()
+
+        # borrar proveedores
+        self.borrar_proveedor()
+
+        # editar proveedores
 
     def start_thread(self, thread):
         self.threads.append(thread)
@@ -1319,6 +1323,111 @@ class DatosTab:
 
 ################
 ################
+
+    #Borrar proveedor
+
+    def borrar_proveedor(self):
+
+        button_34 = self.ui.frame_12.findChild(QPushButton, "pushButton_34")
+        if button_34:
+            button_34.setStyleSheet("background-color: red; padding: 5px;")
+            button_34.clicked.connect(self.delete_proveedor)
+
+
+        label_77 = self.ui.frame_12.findChild(QLabel, "label_77")
+        if label_77:
+            label_77.setStyleSheet("color: transparent")
+
+        label_82 = self.ui.frame_42.findChild(QLabel, "label_82")
+        if label_82:
+            label_82.setStyleSheet("font-size: 16pt;")
+            label_82.setText("¡Advertencia!\nSi borra un proveedor, los productos asociados a él se borrarán también")
+            label_82.setAlignment(Qt.AlignCenter)
+
+    def delete_proveedor(self):
+        global usuario_activo, proveedores_por_nombre_cache
+
+        input_nombre = self.ui.frame_12.findChild(QLineEdit, "lineEdit_20")
+        input_nombre_value = input_nombre.text().strip() if input_nombre else ""
+
+        # Caso especial: Proveedor1
+        if input_nombre_value.lower() == "Proveedor1":
+            lineEdit_20 = self.ui.frame_12.findChild(QLineEdit, "lineEdit_20")
+            if lineEdit_20:
+                lineEdit_20.clear()
+            label_77 = self.ui.frame_12.findChild(QLabel, "label_77")
+            if label_77:
+                label_77.setText("No se puede borrar el Proveedor1")
+                label_77.setStyleSheet("color: red; font-weight: bold")
+                
+            if input_nombre:
+                input_nombre.setFocus()
+            return
+
+        # Verificar en cache si existe el proveedor
+        existe_en_cache = proveedores_por_nombre_cache and input_nombre_value.lower() in proveedores_por_nombre_cache
+
+        if existe_en_cache:
+            # Buscar en la base (puede tener lógica extra)
+            self.buscar_prov_thread = BuscarProveedorThread(input_nombre_value)
+            def on_busqueda_finalizada(bandera):
+                if bandera:
+                    # Traer ID en hilo
+                    self.traer_id_thread = TraerIdProveedorThread(input_nombre_value)
+                    def on_id_obtenido(id_proveedor):
+                        # Cargar movimiento en hilo
+                        self.movimiento_borrado_thread = MovimientoProveedorBorradoThread(input_nombre_value, id_proveedor, usuario_activo)
+                        self.movimiento_borrado_thread.start()
+
+                        # Limpiar input y mostrar mensaje
+                        lineEdit_20 = self.ui.frame_12.findChild(QLineEdit, "lineEdit_20")
+                        if lineEdit_20:
+                            lineEdit_20.clear()
+                        label_77 = self.ui.frame_12.findChild(QLabel, "label_77")
+                        if label_77:
+                            label_77.setText("Proveedor borrado con éxito")
+                            label_77.setStyleSheet("color: green; font-weight: bold")
+                            QTimer.singleShot(6000, lambda: label_77.setStyleSheet("color: transparent"))
+
+                        # actualizar cache, tablas y comboboxes
+                        global proveedores_cache, proveedores_por_nombre_cache, proveedores_por_telefono_cache
+                        proveedores_cache = None
+                        proveedores_por_nombre_cache = None
+                        proveedores_por_telefono_cache = None
+
+                        self.actualizar_variables_globales_de_uso(2, lambda: (
+                            self.populate_combobox_with_proveedores(self.ui.frame_7.findChild(QComboBox, "comboBox_7")),
+                            self.populate_table_with_proveedores(),
+                            self.populate_combobox_proveedores(),
+                            self.proveedores()
+                        ))
+                        
+                    self.traer_id_thread.resultado.connect(on_id_obtenido)
+                    self.traer_id_thread.start()
+                else:
+                    print("algo salio mal al buscar el proveedor")
+                        
+                if input_nombre:
+                    input_nombre.setFocus()
+            self.buscar_prov_thread.resultado.connect(on_busqueda_finalizada)
+            self.buscar_prov_thread.start()
+        else:
+            # No existe en cache
+            lineEdit_20 = self.ui.frame_12.findChild(QLineEdit, "lineEdit_20")
+            if lineEdit_20:
+                lineEdit_20.clear()
+            label_77 = self.ui.frame_12.findChild(QLabel, "label_77")
+            if label_77:
+                label_77.setText("Proveedor no encontrado")
+                label_77.setStyleSheet("color: red; font-weight: bold")
+                
+            if input_nombre:
+                input_nombre.setFocus()
+
+################
+################
+
+
 
 
 
