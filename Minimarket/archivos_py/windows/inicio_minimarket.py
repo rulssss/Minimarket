@@ -1372,10 +1372,24 @@ class DatosTab:
             if button_34:
                 button_34.setEnabled(True)
             return
+        
+        if input_nombre_value == "":
+            if lineEdit_20:
+                lineEdit_20.clear()
+            if label_77:
+                label_77.setText("Por favor, complete el campo")
+                label_77.setStyleSheet("color: red; font-weight: bold")
+                
+            if input_nombre:
+                input_nombre.setFocus()
+
+            if button_34:
+                button_34.setEnabled(True)
+            return
 
         # Verificar en cache si existe el proveedor
         existe_en_cache = proveedores_por_nombre_cache and input_nombre_value.lower() in proveedores_por_nombre_cache
-
+        
         if existe_en_cache:
 
             if label_77:
