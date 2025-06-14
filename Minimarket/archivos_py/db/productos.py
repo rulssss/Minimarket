@@ -25,17 +25,7 @@ def crear_categuno():
     conn.commit()
     conn.close()
 
-def traer_proveedores():
-    conn = get_connection()
-    cursor= conn.cursor()
-    query_data2 = f"SELECT nombre_proveedor, telefono FROM proveedores ORDER BY id_proveedor"
-    cursor.execute(query_data2)
-    data = cursor.fetchall()
-    cursor.close()
-    conn.close()
     
-
-    return data
 
 def crear_provuno():
     conn = get_connection()
@@ -287,6 +277,30 @@ def buscar_proveedor(nombre_prov):
         return True
     return False
 
+def actualizar_proveedor(nombre_proveedor, num_proveedor, mail_producto):
+    conn = get_connection()
+    cursor= conn.cursor()
+    query_data2 = f"UPDATE proveedores SET telefono = {num_proveedor}, mail = '{mail_producto}' WHERE nombre_proveedor = '{nombre_proveedor}'"
+    cursor.execute(query_data2)
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return True
+
+
+
+# distinto de traeer proveedores ya que la enterior solo extrae sus nombres
+def traer_proveedor():
+    conn = get_connection()
+    cursor= conn.cursor()
+    query_data2 = f"SELECT nombre_proveedor, telefono, mail FROM proveedores"
+    cursor.execute(query_data2)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return data
+
+
 # MOVIMIENTOS:
 
 def cargar_movimiento_producto_agregado(input_id_value, usuario):
@@ -379,6 +393,20 @@ def cargar_movimiento_proveedor_borrado(nombre_proveedor, id_proveedor, usuario_
     conn = get_connection()
     cursor = conn.cursor()
     query = f"INSERT INTO movimientos (id_usuario, fecha_hora, tipo_accion, entidad_afectada, id_entidad, descripcion) VALUES ({id_usuario}, '{fecha_hora}', 'Borrar', 'Proveedores', {id_proveedor}, 'Proveedor borrado: {nombre_proveedor}')"
+    cursor.execute(query)
+    conn.commit()
+    conn.close()
+    cursor.close()
+
+def cargar_movimiento_proveedor_editado(nombre_proveedor, usuario_activo):
+            
+    id_usuario = traer_id_usuario(usuario_activo)
+    id_proveedor = traer_id_proveedor(nombre_proveedor)
+    fecha_hora = datetime.now().astimezone().isoformat()
+    
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"INSERT INTO movimientos (id_usuario, fecha_hora, tipo_accion, entidad_afectada, id_entidad, descripcion) VALUES ({id_usuario}, '{fecha_hora}', 'Editar', 'Proveedores', {id_proveedor}, 'Proveedor editado: {nombre_proveedor}')"
     cursor.execute(query)
     conn.commit()
     conn.close()

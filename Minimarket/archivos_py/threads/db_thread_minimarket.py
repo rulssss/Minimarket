@@ -20,10 +20,10 @@ class ProveedoresThread(QThread):
     proveedores_obtenidos = Signal(list)
 
     def run(self):
-        proveedores = traer_proveedores()
+        proveedores = traer_proveedor()
         if not proveedores:
             crear_provuno()
-            proveedores = traer_proveedores()
+            proveedores = traer_proveedor()
         self.proveedores_obtenidos.emit(proveedores)
 
 
@@ -236,3 +236,25 @@ class MovimientoProveedorBorradoThread(QThread):
         self.usuario_activo = usuario_activo
     def run(self):
         cargar_movimiento_proveedor_borrado(self.nombre, self.id_proveedor, self.usuario_activo)
+
+# actualizar proveedor
+
+class ActualizarProveedorThread(QThread):
+    resultado = Signal(bool)
+    def __init__(self, nombre, telefono, direccion):
+        super().__init__()
+        self.nombre = nombre
+        self.telefono = telefono
+        self.direccion = direccion
+    def run(self):
+        exito = actualizar_proveedor(self.nombre, self.telefono, self.direccion)
+        self.resultado.emit(exito)
+
+class MovimientoProveedorEditadoThread(QThread):
+    def __init__(self, nombre, usuario_activo):
+        super().__init__()
+        self.nombre = nombre
+        self.usuario_activo = usuario_activo
+    def run(self):
+        cargar_movimiento_proveedor_editado(self.nombre, self.usuario_activo)
+
