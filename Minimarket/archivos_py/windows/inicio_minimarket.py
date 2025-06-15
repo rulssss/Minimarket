@@ -1276,6 +1276,13 @@ class DatosTab:
         lineEdit_15 = self.ui.frame_10.findChild(QLineEdit, "lineEdit_15")  # Teléfono
         lineEdit_17 = self.ui.frame_10.findChild(QLineEdit, "lineEdit_17")  # Dirección
 
+        button_26 = self.ui.frame_10.findChild(QPushButton, "pushButton_26")
+        button_25 = self.ui.frame_10.findChild(QPushButton, "pushButton_25")
+        if button_26:
+            button_26.setEnabled(False)
+        if button_25:
+            button_25.setEnabled(False)
+
         if lineEdit_14 and lineEdit_15 and lineEdit_17:
             lineEdit_14_value = lineEdit_14.text().strip()
             lineEdit_15_value = lineEdit_15.text().strip()
@@ -1287,6 +1294,11 @@ class DatosTab:
 
             if existe_nombre or existe_telefono:
                 label_75 = self.ui.frame_10.findChild(QLabel, "label_76")
+                if button_25:
+                    button_25.setEnabled(True)
+                if button_26:
+                    button_26.setEnabled(True)
+
                 if label_75:
                     label_75.setText("Está intentando cargar un")
                     label_75.setStyleSheet("color: red; font-weight: bold")
@@ -1307,6 +1319,11 @@ class DatosTab:
                     self.proveedor_thread.proveedor_cargado.connect(lambda exito: self.on_proveedor_cargado(exito, lineEdit_14_value))
                     self.proveedor_thread.start()
                 else:
+                    if button_25:
+                        button_25.setEnabled(True)
+                    if button_26:
+                        button_26.setEnabled(True)
+
                     label_75 = self.ui.frame_10.findChild(QLabel, "label_76")
                     if label_75:
                         label_75.setText("Por favor, complete todos")
@@ -1328,6 +1345,13 @@ class DatosTab:
             self.movimiento_proveedor_thread.start()
             #limpia inputs
             self.clear_inputs_agregar_proveedores()
+
+            button_26 = self.ui.frame_10.findChild(QPushButton, "pushButton_26")
+            button_25 = self.ui.frame_10.findChild(QPushButton, "pushButton_25")
+            if button_26:
+                button_26.setEnabled(True)
+            if button_25:
+                button_25.setEnabled(True)
 
             label_76 = self.ui.frame_10.findChild(QLabel, "label_76")
             label_75 = self.ui.frame_10.findChild(QLabel, "label_75")
@@ -1540,6 +1564,9 @@ class DatosTab:
         button_37 = self.ui.frame_13.findChild(QPushButton, "pushButton_37")
         if button_37:
             button_37.setEnabled(False)
+        button_38 = self.ui.frame_13.findChild(QPushButton, "pushButton_38")
+        if button_38:
+            button_38.setEnabled(False)
 
         combobox_nombre = self.ui.frame_13.findChild(QComboBox, "comboBox_11")
         lineEdit_28 = self.ui.frame_13.findChild(QLineEdit, "lineEdit_28")
@@ -1563,6 +1590,8 @@ class DatosTab:
                 def on_actualizado(exito):
                     label_78 = self.ui.frame_13.findChild(QLabel, "label_78")
                     label_79 = self.ui.frame_13.findChild(QLabel, "label_79")
+                    button_38 = self.ui.frame_13.findChild(QPushButton, "pushButton_38")
+                    button_37 = self.ui.frame_13.findChild(QPushButton, "pushButton_37")
 
                     if exito:
                         self.movimiento_editado_thread = MovimientoProveedorEditadoThread(comboBox_value, usuario_activo)
@@ -1594,6 +1623,8 @@ class DatosTab:
 
                         if button_37:
                             button_37.setEnabled(True)
+                        if button_38:
+                            button_38.setEnabled(True)
                         
                     else:
                         print("se genero un error al actualizar el proveedor")
@@ -1601,8 +1632,11 @@ class DatosTab:
                 self.actualizar_prov_thread.resultado.connect(on_actualizado)
                 self.actualizar_prov_thread.start()
             else:
+
                 if button_37:
                     button_37.setEnabled(True)
+                if button_38:
+                    button_38.setEnabled(True)
 
                 if label_78 and label_79:
                     label_78.setText("Por favor, edite")
@@ -1612,6 +1646,8 @@ class DatosTab:
         else:
             if button_37:
                 button_37.setEnabled(True)
+            if button_38:
+                button_38.setEnabled(True)
 
             if label_78 and label_79:
                 label_78.setText("Por favor, complete todos")
