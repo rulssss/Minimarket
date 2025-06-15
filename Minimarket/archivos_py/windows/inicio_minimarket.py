@@ -20,7 +20,7 @@ categorias_por_nombre_cache = None
 
 # -----------------------------------------------------
 
-
+#$ SETEAR BOTONES DE CANCELAR QUE NO SE USEN MIENTRA SE PROCESA, Y SEGUIR CON VISUALIZACION DE PROVEEDORES
 class DatosTab:
     def __init__(self, ui):
         self.ui = ui
@@ -306,6 +306,13 @@ class DatosTab:
 
     def validate_and_process_inputs(self):  
         global usuario_activo, productos_cache
+        button19 = self.ui.frame_5.findChild(QPushButton, "pushButton_19")
+        button20 = self.ui.frame_5.findChild(QPushButton, "pushButton_20")
+
+        if button19:
+            button19.setEnabled(False)
+        if button20:
+            button20.setEnabled(False)
 
         # lineEditS
         input_id = self.ui.frame_5.findChild(QLineEdit, "lineEdit_7")
@@ -335,6 +342,11 @@ class DatosTab:
         label_71 = self.ui.frame_5.findChild(QLabel, "label_71")
 
         if existe_id or existe_nombre:
+            if button19:
+                button19.setEnabled(True)
+            if button20:
+                button20.setEnabled(True)
+
             if label_70 and label_71:
                 label_70.setText("Está intentando cargar")
                 label_71.setText("un producto existente")
@@ -359,6 +371,11 @@ class DatosTab:
             )
             self.start_thread(self.agregar_thread)
         else:
+            if button19:
+                button19.setEnabled(True)
+            if button20:
+                button20.setEnabled(True)
+            
             if label_70 and label_71:
                 label_70.setText("Por favor, complete todos")
                 label_71.setText("los campos correctamente")
@@ -390,8 +407,15 @@ class DatosTab:
     def on_producto_agregado(self, exito, input_id_value, usuario_activo, input_id):
         label_70 = self.ui.frame_5.findChild(QLabel, "label_70")
         label_71 = self.ui.frame_5.findChild(QLabel, "label_71")
-        
+        button19 = self.ui.frame_5.findChild(QPushButton, "pushButton_19")
+        button20 = self.ui.frame_5.findChild(QPushButton, "pushButton_20")
+
         if exito:
+            if button19:
+                button19.setEnabled(True)
+            if button20:
+                button20.setEnabled(True)
+
             self.clear_inputs_agregar_productos()
             if label_70 and label_71:
                 label_70.setText("Producto cargado")
@@ -886,6 +910,10 @@ class DatosTab:
                 boton_editar = self.ui.frame_7.findChild(QPushButton, "pushButton_23")
                 if boton_editar:
                     boton_editar.setEnabled(False)
+                boton_cancelar = self.ui.frame_7.findChild(QPushButton, "pushButton_24")
+                if boton_cancelar:
+                    boton_cancelar.setEnabled(False)
+                
                     
                 if label_73 and label_74:
                     label_73.setText("Actualizando")
@@ -905,6 +933,12 @@ class DatosTab:
                 )
     
         else:
+            boton_editar = self.ui.frame_7.findChild(QPushButton, "pushButton_23")
+            if boton_editar:
+                boton_editar.setEnabled(True)
+            boton_cancelar = self.ui.frame_7.findChild(QPushButton, "pushButton_24")
+            if boton_cancelar:
+                boton_cancelar.setEnabled(True)
             # Limpiar todos los campos si el producto no existe
             self.ui.frame_7.findChild(QLineEdit, "lineEdit_9").clear()
             self.ui.frame_7.findChild(QLineEdit, "lineEdit_10").clear()
@@ -925,8 +959,7 @@ class DatosTab:
                 label_73.setStyleSheet("color: red; font-weight: bold")
                 label_74.setText("un ID válido")
                 label_74.setStyleSheet("color: red; font-weight: bold")
-                QTimer.singleShot(6000, lambda: label_73.setStyleSheet("color: transparent"))
-                QTimer.singleShot(6000, lambda: label_74.setStyleSheet("color: transparent"))
+                
 
     
     # funciones para actualizado de la seccion de agregar, borrar, visualizar y editar productos
