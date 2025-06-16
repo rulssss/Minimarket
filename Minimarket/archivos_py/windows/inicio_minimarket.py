@@ -445,7 +445,7 @@ class DatosTab:
             if combobox_id:
                 self.populate_combobox_with_ids(combobox_id)
             if input_id:
-                QTimer.singleShot(3, input_id.setFocus)
+                input_id.setFocus()
         else:
             print("se genero un error de tipeo al cargar el producto")
 
@@ -870,6 +870,10 @@ class DatosTab:
         boton_editar = self.ui.frame_7.findChild(QPushButton, "pushButton_23")
         if boton_editar:
             boton_editar.setEnabled(True)
+
+        boton_cancelar = self.ui.frame_7.findChild(QPushButton, "pushButton_24")
+        if boton_cancelar:
+            boton_cancelar.setEnabled(True)
 
      
 
