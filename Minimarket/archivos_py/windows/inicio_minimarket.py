@@ -20,7 +20,7 @@ categorias_por_nombre_cache = None
 
 # -----------------------------------------------------
 
-#$ SETEAR BOTONES DE CANCELAR QUE NO SE USEN MIENTRA SE PROCESA, Y SEGUIR CON VISUALIZACION DE PROVEEDORES
+#$  SEGUIR CON VISUALIZACION DE PROVEEDORES
 class DatosTab:
     def __init__(self, ui):
         self.ui = ui
@@ -45,7 +45,7 @@ class DatosTab:
         # editar productos
         self.edit_product_by_id()
 
-        # VISUALIZAR DATOS
+        # visualizar productos
         self.visualizar_datos()
 
         #-----------------------
@@ -59,6 +59,12 @@ class DatosTab:
 
         # editar proveedores
         self.editar_proveedor()
+
+        # visualizar proveedores
+        self.visualizar_proveedores()
+
+        #-----------------------
+        
 
 
     def start_thread(self, thread):
@@ -439,7 +445,7 @@ class DatosTab:
             if combobox_id:
                 self.populate_combobox_with_ids(combobox_id)
             if input_id:
-                input_id.setFocus()
+                QTimer.singleShot(3, input_id.setFocus)
         else:
             print("se genero un error de tipeo al cargar el producto")
 
@@ -1716,6 +1722,108 @@ class DatosTab:
         if proveedores_cache:
             for proveedor in proveedores_cache:
                 combobox.addItem(proveedor[0])
+
+
+################
+################
+
+    # visualizar proveedores
+
+    def visualizar_proveedores(self):
+
+        
+        self.populate_table_with_proveedores()
+
+        # Conectar el QLineEdit para filtrar productos
+        line_edit = self.ui.frame_18.findChild(QLineEdit, "lineEdit_27")
+        if line_edit:
+            line_edit.textChanged.connect(self.filter_proveedores)
+
+    def populate_table_with_proveedores(self):
+        global proveedores
+        table_widget = self.ui.frame_tabla_productos_2.findChild(QTableWidget, "tableWidget_2")
+        if table_widget:
+            table_widget.setRowCount(len(proveedores))
+            table_widget.setColumnCount(3)
+            table_widget.setHorizontalHeaderLabels(["Nombre", "Teléfono", "Email"])
+            header = table_widget.horizontalHeader()
+            header.setFont(QFont("Segoe UI", 16, QFont.Bold))
+            for row, proveedor in enumerate(proveedores):
+                for col, value in enumerate(proveedor[:3]):  # Solo nombre, teléfono, email
+                    item = QTableWidgetItem(str(value))
+                    item.setFont(QFont("Segoe UI", 12))
+                    item.setTextAlignment(Qt.AlignCenter)
+                    table_widget.setItem(row, col, item)
+
+    def filter_proveedores(self):
+        global proveedores
+        line_edit = self.ui.frame_16.findChild(QLineEdit, "lineEdit_27")
+        table_widget = self.ui.frame_tabla_productos_2.findChild(QTableWidget, "tableWidget_2")
+
+        if line_edit and table_widget:
+            filter_text = line_edit.text().lower()
+
+            filtered_proveedores = []
+            for proveedor in proveedores:
+                if filter_text in proveedor[0].lower() or filter_text in str(proveedor[1]).lower():
+                    filtered_proveedores.append(proveedor)
+
+            # Si no se encuentran proveedores, mostrar un mensaje en la tabla
+            if len(filtered_proveedores) == 0:
+                table_widget.setRowCount(1)
+                table_widget.setColumnCount(1)
+                table_widget.setHorizontalHeaderLabels(["Mensaje"])
+                item = QTableWidgetItem("No se encontraron proveedores")
+                item.setFont(QFont("Segoe ui", 12))
+                item.setTextAlignment(Qt.AlignCenter)
+                table_widget.setItem(0, 0, item)
+            else:
+                # Si hay proveedores, llenar la tabla con los datos filtrados
+                table_widget.setRowCount(len(filtered_proveedores))
+                table_widget.setColumnCount(3)  # Solo nombre, teléfono, email
+                table_widget.setHorizontalHeaderLabels(["Nombre", "Teléfono", "Email"])
+                for row, proveedor in enumerate(filtered_proveedores):
+                    for col, value in enumerate(proveedor[:3]):
+                        item = QTableWidgetItem(str(value))
+                        item.setFont(QFont("Segoe ui", 12))
+                        item.setTextAlignment(Qt.AlignCenter)
+                        table_widget.setItem(row, col, item)
+    
+    
+    # Función para copiar una fila al portapapeles
+    def copy_row_to_clipboard_proveedores(self, row_index):
+        table_widget = self.ui.frame_tabla_productos_2.findChild(QTableWidget, "tableWidget_2")
+        if table_widget:
+            row_data = []
+            for col in range(table_widget.columnCount()):
+                item = table_widget.item(row_index, col)
+                if item:
+                    row_data.append(item.text())
+            clipboard = QApplication.clipboard()
+            clipboard.setText("\t".join(row_data))
+            self.show_copied_message("Fila copiada al portapapeles")
+
+    def copy_entire_table_to_clipboard_proveedores(self):
+        table_widget = self.ui.frame_tabla_productos_2.findChild(QTableWidget, "tableWidget_2")
+        if not table_widget:
+            return
+        row_count = table_widget.rowCount()
+        col_count = table_widget.columnCount()
+        # Copiar encabezados
+        headers = [table_widget.horizontalHeaderItem(col).text() for col in range(col_count)]
+        data = ['\t'.join(headers)]
+        # Copiar filas
+        for row in range(row_count):
+            row_data = []
+            for col in range(col_count):
+                item = table_widget.item(row, col)
+                row_data.append(item.text() if item else "")
+            data.append('\t'.join(row_data))
+        # Copiar al portapapeles
+        clipboard = QApplication.clipboard()
+        clipboard.setText('\n'.join(data))
+        self.show_copied_message("Tabla copiada al portapapeles")
+
 
 
 ################
