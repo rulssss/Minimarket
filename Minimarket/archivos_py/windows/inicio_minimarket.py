@@ -1439,7 +1439,7 @@ class DatosTab:
         # Caso especial: Proveedor1
         if input_nombre_value == "Proveedor1":
             if lineEdit_20:
-                lineEdit_20.clear()
+                lineEdit_20.selectAll()
             if label_77:
                 label_77.setText("No se puede borrar el Proveedor1")
                 label_77.setStyleSheet("color: red; font-weight: bold")
@@ -1453,7 +1453,7 @@ class DatosTab:
         
         if input_nombre_value == "":
             if lineEdit_20:
-                lineEdit_20.clear()
+                lineEdit_20.selectAll()
             if label_77:
                 label_77.setText("Por favor, complete el campo")
                 label_77.setStyleSheet("color: red; font-weight: bold")
@@ -1530,7 +1530,7 @@ class DatosTab:
             # No existe en cache
             lineEdit_20 = self.ui.frame_12.findChild(QLineEdit, "lineEdit_20")
             if lineEdit_20:
-                lineEdit_20.clear()
+                lineEdit_20.selectAll()
             label_77 = self.ui.frame_12.findChild(QLabel, "label_77")
             if label_77:
                 label_77.setText("Proveedor no encontrado")
