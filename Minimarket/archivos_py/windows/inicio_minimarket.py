@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QMainWindow, QPushButton, QLineEdit, QComboBox, QTableWidget, QLabel, QDoubleSpinBox, QTableWidgetItem, QApplication
+from PySide6.QtWidgets import QMainWindow, QPushButton, QLineEdit, QComboBox, QTableWidget, QLabel, QDoubleSpinBox, QTableWidgetItem, QApplication, QAbstractButton
 from PySide6.QtCore import QTimer, Qt
 from PySide6.QtGui import QIcon, QFont, QIntValidator
 from archivos_py.ui.minimarket import Ui_MainWindow
@@ -47,6 +47,16 @@ class DatosTab:
 
         # visualizar productos
         self.visualizar_datos()
+        
+        # Conectar eventos de doble clic para copiar al portapapeles
+        table_widget = self.ui.frame_tabla_productos.findChild(QTableWidget, "tableWidget")
+        if table_widget:
+            corner_button = table_widget.findChild(QAbstractButton)
+
+            corner_button.clicked.connect(self.copy_entire_table_to_clipboard)
+            table_widget.horizontalHeader().sectionDoubleClicked.connect(self.copy_column_to_clipboard)
+            table_widget.verticalHeader().sectionDoubleClicked.connect(self.copy_row_to_clipboard)
+            table_widget.setEditTriggers(QTableWidget.NoEditTriggers)
 
         #-----------------------
 
@@ -62,6 +72,16 @@ class DatosTab:
 
         # visualizar proveedores
         self.visualizar_proveedores()
+
+        # Conectar eventos de doble clic
+        table_widget2 = self.ui.frame_tabla_productos_2.findChild(QTableWidget, "tableWidget_2")
+        if table_widget2:
+            corner_button2 = table_widget2.findChild(QAbstractButton)
+
+            corner_button2.clicked.connect(self.copy_entire_table_to_clipboard_proveedores)
+            table_widget2.horizontalHeader().sectionDoubleClicked.connect(self.copy_column_to_clipboard_proveedores)
+            table_widget2.verticalHeader().sectionDoubleClicked.connect(self.copy_row_to_clipboard_proveedores)
+            table_widget2.setEditTriggers(QTableWidget.NoEditTriggers)
 
         #-----------------------
         
@@ -1831,6 +1851,12 @@ class DatosTab:
         clipboard.setText('\n'.join(data))
         self.show_copied_message("Tabla copiada al portapapeles")
 
+
+
+################
+################
+
+    # agregar categoria
 
 
 ################
