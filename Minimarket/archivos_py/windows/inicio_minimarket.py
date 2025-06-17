@@ -448,7 +448,18 @@ class DatosTab:
                 input_id.setFocus()
                 QTimer.singleShot(2000, lambda: input_id.setFocus())
         else:
-            print("se genero un error de tipeo al cargar el producto")
+
+            self.clear_inputs_agregar_productos()
+            
+            label_70.setText("Esta intentando cargar")
+            label_71.setText("un producto existente")
+            label_70.setStyleSheet("color: green; font-weight: bold")
+            label_71.setStyleSheet("color: green; font-weight: bold")
+
+            if button19:
+                button19.setEnabled(True)
+            if button20:
+                button20.setEnabled(True)
 
 #################
 #################

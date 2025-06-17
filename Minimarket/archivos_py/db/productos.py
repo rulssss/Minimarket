@@ -51,7 +51,7 @@ def cargar_producto(id_producto, nombre_producto, precio_compra_producto, precio
         cursor.close()
         conn.close()
         return True
-    except TypeError:
+    except errors.UniqueViolation:
         cursor.close()
         conn.close()
         return False
