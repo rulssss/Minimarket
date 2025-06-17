@@ -450,7 +450,7 @@ class DatosTab:
         else:
 
             self.clear_inputs_agregar_productos()
-            
+
             label_70.setText("Esta intentando cargar")
             label_71.setText("un producto existente")
             label_70.setStyleSheet("color: green; font-weight: bold")
@@ -571,6 +571,11 @@ class DatosTab:
             label_72.setText("Producto borrado con éxito")
             label_72.setStyleSheet("color: green; font-weight: bold")
             QTimer.singleShot(6000, lambda: label_72.setStyleSheet("color: transparent"))
+
+        input_nombre_o_id = self.ui.frame_6.findChild(QLineEdit, "lineEdit_2")
+        if input_nombre_o_id:
+            QTimer.singleShot(2000, lambda: input_nombre_o_id.setFocus())
+
         button21 = self.ui.frame_6.findChild(QPushButton, "pushButton_21")
         if button21:
             button21.setEnabled(True)   
