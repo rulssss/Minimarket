@@ -1478,7 +1478,6 @@ class DatosTab:
             # Buscar en la base (puede tener lógica extra)
             self.buscar_prov_thread = BuscarProveedorThread(input_nombre_value)
             def on_busqueda_finalizada(bandera):
-                button_34 = self.ui.frame_12.findChild(QPushButton, "pushButton_34")
 
                 if bandera:
                     # Traer ID en hilo
@@ -1487,16 +1486,6 @@ class DatosTab:
                         # Cargar movimiento en hilo
                         self.movimiento_borrado_thread = MovimientoProveedorBorradoThread(input_nombre_value, id_proveedor, usuario_activo)
                         self.movimiento_borrado_thread.start()
-
-                        # Limpiar input y mostrar mensaje
-                        lineEdit_20 = self.ui.frame_12.findChild(QLineEdit, "lineEdit_20")
-                        if lineEdit_20:
-                            lineEdit_20.clear()
-                        label_77 = self.ui.frame_12.findChild(QLabel, "label_77")
-                        if label_77:
-                            label_77.setText("Proveedor borrado con éxito")
-                            label_77.setStyleSheet("color: green; font-weight: bold")
-                            QTimer.singleShot(6000, lambda: label_77.setStyleSheet("color: transparent"))
 
                         # actualizar cache, tablas y comboboxes
                         global proveedores_cache, proveedores_por_nombre_cache, proveedores_por_telefono_cache
@@ -1510,12 +1499,23 @@ class DatosTab:
                             self.populate_combobox_proveedores(),
                             self.proveedores()
                         ))
+
+                         # Limpiar input y mostrar mensaje
+                        lineEdit_20 = self.ui.frame_12.findChild(QLineEdit, "lineEdit_20")
+                        if lineEdit_20:
+                            lineEdit_20.clear()
+                        label_77 = self.ui.frame_12.findChild(QLabel, "label_77")
+                        if label_77:
+                            label_77.setText("Proveedor borrado con éxito")
+                            label_77.setStyleSheet("color: green; font-weight: bold")
+                            QTimer.singleShot(6000, lambda: label_77.setStyleSheet("color: transparent"))
                         
+                        button_34 = self.ui.frame_12.findChild(QPushButton, "pushButton_34")
+                        if button_34:
+                            button_34.setEnabled(True)
                     self.traer_id_thread.resultado.connect(on_id_obtenido)
                     self.traer_id_thread.start()
 
-                    if button_34:
-                        button_34.setEnabled(True)
 
                 else:
                     print("No se encontró el proveedor en la base de datos")
