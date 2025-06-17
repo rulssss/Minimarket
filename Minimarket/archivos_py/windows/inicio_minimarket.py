@@ -628,16 +628,6 @@ class DatosTab:
             combobox_id.setFocus()
             combobox_id.lineEdit().selectAll()
 
-        #combobox_categorias = self.ui.frame_7.findChild(QComboBox, "comboBox_4")
-        #if combobox_categorias:
-        #    self.populate_combobox_with_categorias(combobox_categorias)
-        #    
-#
-        #combobox_proveedores = self.ui.frame_7.findChild(QComboBox, "comboBox_7")
-        #if combobox_proveedores:
-        #    self.populate_combobox_with_proveedores(combobox_proveedores)
-           
-
         boton_editar = self.ui.frame_7.findChild(QPushButton, "pushButton_23")
         if boton_editar:
                 boton_editar.setEnabled(True)
@@ -719,6 +709,9 @@ class DatosTab:
         boton_editar = self.ui.frame_7.findChild(QPushButton, "pushButton_23")
         if boton_editar:
             boton_editar.setEnabled(False)
+        boton_cancelar = self.ui.frame_7.findChild(QPushButton, "pushButton_24")
+        if boton_cancelar:
+            boton_cancelar.setEnabled(False)
             
 
         doublespinbox = self.ui.frame_55.findChild(QDoubleSpinBox, "doubleSpinBox")
@@ -741,7 +734,7 @@ class DatosTab:
         def on_aumento_finalizado():
             pushbutton_49 = self.ui.frame_55.findChild(QPushButton, "pushButton_49")
             boton_editar = self.ui.frame_7.findChild(QPushButton, "pushButton_23")
-            
+            boton_cancelar = self.ui.frame_7.findChild(QPushButton, "pushButton_24")
 
             if doublespinbox_value != 0.00 or doublespinbox_2_value != 0.00:
                 global productos_cache
@@ -753,7 +746,7 @@ class DatosTab:
                 ))
                 
                 self.movimiento_thread = MovimientoAumentoPreciosThread(combobox_20_value, usuario_activo, s)
-                self.movimiento_thread.finished.connect(lambda: (self.clear_doublespinbox_values(), self.load_product_data(), pushbutton_49.setEnabled(True), boton_editar.setEnabled(True)))
+                self.movimiento_thread.finished.connect(lambda: (self.clear_doublespinbox_values(), self.load_product_data(), pushbutton_49.setEnabled(True), boton_editar.setEnabled(True), boton_cancelar.setEnabled(True)))
                 self.start_thread(self.movimiento_thread)
 
             else:
@@ -761,6 +754,8 @@ class DatosTab:
                     pushbutton_49.setEnabled(True)
                 if boton_editar:
                     boton_editar.setEnabled(True)
+                if boton_cancelar:
+                    boton_cancelar.setEnabled(True)
                 
 
         self.aumentar_thread.finished.connect(on_aumento_finalizado)
@@ -814,6 +809,7 @@ class DatosTab:
             if combobox_proveedores:
                 self.populate_combobox_with_proveedores(combobox_proveedores)
                 combobox_proveedores.setCurrentText(producto[7])
+
             combobox_id.setFocus()
             combobox_id.lineEdit().selectAll()
         else:
@@ -892,6 +888,10 @@ class DatosTab:
         if boton_cancelar:
             boton_cancelar.setEnabled(True)
 
+        pushbutton_49 = self.ui.frame_55.findChild(QPushButton, "pushButton_49")
+        if pushbutton_49:
+            pushbutton_49.setEnabled(True)
+
      
 
 
@@ -940,6 +940,10 @@ class DatosTab:
                 boton_cancelar = self.ui.frame_7.findChild(QPushButton, "pushButton_24")
                 if boton_cancelar:
                     boton_cancelar.setEnabled(False)
+
+                pushbutton_49 = self.ui.frame_55.findChild(QPushButton, "pushButton_49")
+                if pushbutton_49:
+                    pushbutton_49.setEnabled(False)
                 
                     
                 if label_73 and label_74:
@@ -1022,27 +1026,15 @@ class DatosTab:
         for categoria in categorias:
             combobox.addItem(categoria[0])
         
-
-    def filter_combobox_proveedores(self, combobox, text):
-        global proveedores  # proveedores = [[nombre, telefono, mail], ...]
-        nombres_proveedores = [proveedor[0] for proveedor in proveedores if text.lower() in proveedor[0].lower()]
-        combobox.clear()
-        for item in nombres_proveedores:
-            combobox.addItem(item)
-        combobox.setCurrentText(text)
         
-
     def populate_combobox_with_proveedores(self, combobox):
-        combobox.clear()
         global proveedores
-        
-        if proveedores:
-            for proveedor in proveedores:
-                combobox.addItem(proveedor[0])
-        else:
-            print("No hay proveedores disponibles para mostrar en el combobox.")
+        combobox.clear()
+        for proveedor in proveedores:
+            combobox.addItem(proveedor[0])
 
-#$ QUE PASA Q NO SE CARGAN LOS PROVEEDORES
+
+
 ################
 ################
 
@@ -1737,14 +1729,6 @@ class DatosTab:
                         label_78.setStyleSheet("color: red; font-weight: bold")
                         label_79.setText("un proveedor válido")
                         label_79.setStyleSheet("color: red; font-weight: bold")
-
-
-    def populate_combobox_with_proveedores(self, combobox):
-        global proveedores_cache
-        combobox.clear()
-        if proveedores_cache:
-            for proveedor in proveedores_cache:
-                combobox.addItem(proveedor[0])
 
 
 ################

@@ -235,7 +235,6 @@ def traer_datosproducto_por_id(barcode):
     
 def actualizar_producto(id, nombre_prdoucto, precio_compra_producto, precio_venta_producto, stock, stock_ideal, categoria_producto, proveedor_producto):
     
-    
     categoria_producto = traer_id_categoria(categoria_producto)
     proveedor_producto = traer_id_proveedor(proveedor_producto)
     conn = get_connection()
@@ -245,6 +244,7 @@ def actualizar_producto(id, nombre_prdoucto, precio_compra_producto, precio_vent
     conn.commit()
     cursor.close()
     conn.close()
+    
 
 
 def cargar_proveedor(nombre_producto, num_telefono, mail):
