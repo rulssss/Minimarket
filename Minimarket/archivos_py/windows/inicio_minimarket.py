@@ -446,6 +446,7 @@ class DatosTab:
                 self.populate_combobox_with_ids(combobox_id)
             if input_id:
                 input_id.setFocus()
+                QTimer.singleShot(2000, lambda: input_id.setFocus())
         else:
             print("se genero un error de tipeo al cargar el producto")
 
@@ -611,14 +612,14 @@ class DatosTab:
             combobox_id.setFocus()
             combobox_id.lineEdit().selectAll()
 
-        combobox_categorias = self.ui.frame_7.findChild(QComboBox, "comboBox_4")
-        if combobox_categorias:
-            self.populate_combobox_with_categorias(combobox_categorias)
-            
-
-        combobox_proveedores = self.ui.frame_7.findChild(QComboBox, "comboBox_7")
-        if combobox_proveedores:
-            self.populate_combobox_with_proveedores(combobox_proveedores)
+        #combobox_categorias = self.ui.frame_7.findChild(QComboBox, "comboBox_4")
+        #if combobox_categorias:
+        #    self.populate_combobox_with_categorias(combobox_categorias)
+        #    
+#
+        #combobox_proveedores = self.ui.frame_7.findChild(QComboBox, "comboBox_7")
+        #if combobox_proveedores:
+        #    self.populate_combobox_with_proveedores(combobox_proveedores)
            
 
         boton_editar = self.ui.frame_7.findChild(QPushButton, "pushButton_23")
@@ -1019,11 +1020,13 @@ class DatosTab:
         combobox.clear()
         global proveedores
         
-        for proveedor in proveedores:
-            combobox.addItem(proveedor[0])
-       
+        if proveedores:
+            for proveedor in proveedores:
+                combobox.addItem(proveedor[0])
+        else:
+            print("No hay proveedores disponibles para mostrar en el combobox.")
 
-
+#$ QUE PASA Q NO SE CARGAN LOS PROVEEDORES
 ################
 ################
 
