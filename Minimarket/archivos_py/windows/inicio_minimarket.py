@@ -1961,7 +1961,6 @@ class MainWindow(QMainWindow):
             self.connect_button("pushButton", stacked_widget, 0, lambda: self.focus_visualziar_prod())
             
 
-        self.connect_button("pushButton_5", stacked_widget, 9, lambda: self.focus_visualizar_prov())
         self.connect_button("pushButton_4", stacked_widget, 3, lambda: self.focus_borrar_prod())
         self.connect_button("pushButton_2", stacked_widget, 4, lambda: self.focus_editar_prod())
 
@@ -1969,6 +1968,8 @@ class MainWindow(QMainWindow):
         button5 = self.findChild(QPushButton, "pushButton_5")
         if button5:
             button5.setStyleSheet("background-color: rgb(226, 245, 255)")
+            button5.clicked.connect(self.change_table_headers_color_visualizar_proveedores)
+            self.connect_button("pushButton_5", stacked_widget, 9, lambda: self.focus_visualizar_prov())
 
         # Agregar productos
         self.connect_button("pushButton_3", stacked_widget, 5, lambda: self.focus_agregar_prod())
