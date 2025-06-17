@@ -1816,6 +1816,18 @@ class DatosTab:
                         item.setTextAlignment(Qt.AlignCenter)
                         table_widget.setItem(row, col, item)
     
+    # Función para copiar una columna al portapapeles
+    def copy_column_to_clipboard_proveedores(self, column_index):
+        table_widget = self.ui.frame_tabla_productos_2.findChild(QTableWidget, "tableWidget_2")
+        if table_widget:
+            column_data = []
+            for row in range(table_widget.rowCount()):
+                item = table_widget.item(row, column_index)
+                if item:
+                    column_data.append(item.text())
+            clipboard = QApplication.clipboard()
+            clipboard.setText("\n".join(column_data))
+            self.show_copied_message("Columna copiada al portapapeles")
     
     # Función para copiar una fila al portapapeles
     def copy_row_to_clipboard_proveedores(self, row_index):
