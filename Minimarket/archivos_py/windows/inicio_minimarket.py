@@ -90,6 +90,9 @@ class DatosTab:
 
         # borrar categorias
         self.borrar_categoria()
+
+        # visualizar categorias
+        self.visualizar_categorias()
         
 
 
@@ -2093,10 +2096,6 @@ class DatosTab:
                 label_81.setStyleSheet("color: red; font-weight: bold")
                 
 
-
-    def populate_table_with_categorias(self):
-        pass
-
 ################
 ################
 
@@ -2107,7 +2106,110 @@ class DatosTab:
 ################
 
     # visualizar categorias
+    def visualizar_categorias(self):
+        self.populate_table_with_categorias()
 
+        # Conectar el QLineEdit para filtrar productos
+        line_edit = self.ui.frame_26.findChild(QLineEdit, "lineEdit_19")
+        if line_edit:
+            line_edit.textChanged.connect(self.filter_categorias)
+
+    def populate_table_with_categorias(self):
+        global categorias
+        table_widget = self.ui.frame_tabla_productos_3.findChild(QTableWidget, "tableWidget_3")
+        if table_widget:
+            table_widget.setRowCount(len(categorias))
+            table_widget.setColumnCount(2)
+            table_widget.setHorizontalHeaderLabels(["ID", "Nombre"])
+            header = table_widget.horizontalHeader()
+            header.setFont(QFont("Segoe UI", 16, QFont.Bold))
+            for row, categoria in enumerate(categorias):
+                for col, value in enumerate(categoria):
+                    item = QTableWidgetItem(str(value))
+                    item.setFont(QFont("Segoe ui", 12))
+                    item.setTextAlignment(Qt.AlignCenter)
+                    table_widget.setItem(row, col, item)
+
+    def filter_categorias(self):
+        global categorias
+        line_edit = self.ui.frame_26.findChild(QLineEdit, "lineEdit_19")
+        table_widget = self.ui.frame_tabla_productos_3.findChild(QTableWidget, "tableWidget_3")
+
+        if line_edit and table_widget:
+            filter_text = line_edit.text().lower()
+
+            filtered_categorias = []
+            for categoria in categorias:
+                if filter_text in categoria[1].lower() or filter_text in str(categoria[0]).lower():
+                    filtered_categorias.append(categoria)
+
+            # Si no se encuentran categorías, mostrar un mensaje en la tabla
+            if len(filtered_categorias) == 0:
+                table_widget.setRowCount(1)
+                table_widget.setColumnCount(1)
+                table_widget.setHorizontalHeaderLabels(["Mensaje"])
+                item = QTableWidgetItem("No se encontraron categorías")
+                item.setFont(QFont("Segoe ui", 12))
+                item.setTextAlignment(Qt.AlignCenter)
+                table_widget.setItem(0, 0, item)
+            else:
+                # Si hay categorías, llenar la tabla con los datos filtrados
+                table_widget.setRowCount(len(filtered_categorias))
+                table_widget.setColumnCount(2)  # Solo ID y Nombre
+                table_widget.setHorizontalHeaderLabels(["ID", "Nombre"])
+                for row, categoria in enumerate(filtered_categorias):
+                    for col, value in enumerate(categoria[:2]):
+                        item = QTableWidgetItem(str(value))
+                        item.setFont(QFont("Segoe ui", 12))
+                        item.setTextAlignment(Qt.AlignCenter)
+                        table_widget.setItem(row, col, item)
+
+    # Función para copiar una columna al portapapeles
+    def copy_column_to_clipboard_categorias(self, column_index):
+        table_widget = self.ui.frame_tabla_productos_3.findChild(QTableWidget, "tableWidget_3")
+        if table_widget:
+            column_data = []
+            for row in range(table_widget.rowCount()):
+                item = table_widget.item(row, column_index)
+                if item:
+                    column_data.append(item.text())
+            clipboard = QApplication.clipboard()
+            clipboard.setText("\n".join(column_data))
+            self.show_copied_message("Columna copiada al portapapeles")
+
+    # Función para copiar una fila al portapapeles
+    def copy_row_to_clipboard_categorias(self, row_index):
+        table_widget = self.ui.frame_tabla_productos_3.findChild(QTableWidget, "tableWidget_3")
+        if table_widget:
+            row_data = []
+            for col in range(table_widget.columnCount()):
+                item = table_widget.item(row_index, col)
+                if item:
+                    row_data.append(item.text())
+            clipboard = QApplication.clipboard()
+            clipboard.setText("\t".join(row_data))
+            self.show_copied_message("Fila copiada al portapapeles")
+
+    def copy_entire_table_to_clipboard_categorias(self):
+        table_widget = self.ui.frame_tabla_productos_3.findChild(QTableWidget, "tableWidget_3")
+        if not table_widget:
+            return
+        row_count = table_widget.rowCount()
+        col_count = table_widget.columnCount()
+        # Copiar encabezados
+        headers = [table_widget.horizontalHeaderItem(col).text() for col in range(col_count)]
+        data = ['\t'.join(headers)]
+        # Copiar filas
+        for row in range(row_count):
+            row_data = []
+            for col in range(col_count):
+                item = table_widget.item(row, col)
+                row_data.append(item.text() if item else "")
+            data.append('\t'.join(row_data))
+        # Copiar al portapapeles
+        clipboard = QApplication.clipboard()
+        clipboard.setText('\n'.join(data))
+        self.show_copied_message("Tabla copiada al portapapeles")
 
 
 
