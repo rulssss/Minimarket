@@ -7,7 +7,7 @@ from datetime import datetime
 def traer_categorias():
     conn = get_connection()
     cursor= conn.cursor()
-    query_data2 = f"SELECT nombre_descrip FROM categorias ORDER BY id_categoria"
+    query_data2 = f"SELECT id_categoria, nombre_descrip FROM categorias ORDER BY id_categoria"
     cursor.execute(query_data2)
     data = cursor.fetchall()
     conn.commit() 
@@ -300,6 +300,58 @@ def traer_proveedor():
     conn.close()
     return data
 
+def cargar_categoria(nombre_categoria):
+    conn = get_connection()
+    cursor= conn.cursor()
+    query_data2 = f"INSERT INTO categorias(nombre_descrip) VALUES('{nombre_categoria}')"
+
+    try:
+        cursor.execute(query_data2)
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return True
+    except errors.UniqueViolation:
+        return False
+    
+
+def buscar_categoria(nombre_cat):
+    conn = get_connection()
+    cursor= conn.cursor()
+    query_data2 = f"SELECT EXISTS (SELECT 1 FROM categorias WHERE nombre_descrip = '{nombre_cat}') AS existe" # ve si existe y devuelve true o false, ver el fetchone
+    cursor.execute(query_data2)
+    data = cursor.fetchone()[0]
+    
+    
+    if data:
+        try:
+            
+            query_update_data= f"DELETE FROM categorias WHERE nombre_descrip = '{nombre_cat}'"
+            cursor.execute(query_update_data)
+            cursor.close()
+            conn.commit()
+            conn.close()
+            return True
+        
+        except errors.ForeignKeyViolation:
+            
+            # Actualizar todos los productos a "sin categoría"
+            query_update_products = f"UPDATE productos SET id_categoria = 1 WHERE id_categoria = {traer_id_categoria(nombre_cat)}"
+            cursor.execute(query_update_products)
+            # Intentar nuevamente el DELETE
+            query_update_data2= f"DELETE FROM categorias WHERE nombre_descrip = '{nombre_cat}'"
+            cursor.execute(query_update_data2)
+            cursor.close()
+            conn.commit()
+            conn.close()
+            return True
+        
+    else: 
+        cursor.close()
+        return False
+    
+
+    
 
 # MOVIMIENTOS:
 
@@ -407,6 +459,34 @@ def cargar_movimiento_proveedor_editado(nombre_proveedor, usuario_activo):
     conn = get_connection()
     cursor = conn.cursor()
     query = f"INSERT INTO movimientos (id_usuario, fecha_hora, tipo_accion, entidad_afectada, id_entidad, descripcion) VALUES ({id_usuario}, '{fecha_hora}', 'Editar', 'Proveedores', {id_proveedor}, 'Proveedor editado: {nombre_proveedor}')"
+    cursor.execute(query)
+    conn.commit()
+    conn.close()
+    cursor.close()
+
+
+def cargar_movimiento_agregar_categoria(lineEdit_16_value, usuario_activo):
+            
+    id_usuario = traer_id_usuario(usuario_activo)
+    fecha_hora = datetime.now().astimezone().isoformat()
+    id_categoria = traer_id_categoria(lineEdit_16_value)
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"INSERT INTO movimientos (id_usuario, fecha_hora, tipo_accion, entidad_afectada, id_entidad, descripcion) VALUES ({id_usuario}, '{fecha_hora}', 'Agregar', 'Categorias', {id_categoria}, 'Categoria agregada: {lineEdit_16_value}')"
+    cursor.execute(query)
+    conn.commit()
+    conn.close()
+    cursor.close()
+
+def cargar_movimiento_categoria_borrada(lineEdit_21_value, id_categoria, usuario_activo):
+                
+    id_usuario = traer_id_usuario(usuario_activo)
+    fecha_hora = datetime.now().astimezone().isoformat()
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"INSERT INTO movimientos (id_usuario, fecha_hora, tipo_accion, entidad_afectada, id_entidad, descripcion) VALUES ({id_usuario}, '{fecha_hora}', 'Borrar', 'Categorias', {id_categoria}, 'Categoria borrada: {lineEdit_21_value}')"
     cursor.execute(query)
     conn.commit()
     conn.close()

@@ -3,6 +3,7 @@ from archivos_py.db.productos import *
 
 
 
+
 #Agregar productos:
 
 class CategoriasThread(QThread):
@@ -258,3 +259,40 @@ class MovimientoProveedorEditadoThread(QThread):
     def run(self):
         cargar_movimiento_proveedor_editado(self.nombre, self.usuario_activo)
 
+# agregar categoria
+
+class CargarCategoriaThread(QThread):
+    resultado = Signal(bool)
+    def __init__(self, nombre_categoria):
+        super().__init__()
+        self.nombre_categoria = nombre_categoria
+    def run(self):
+        exito = cargar_categoria(self.nombre_categoria)
+        self.resultado.emit(exito)
+
+class MovimientoAgregarCategoriaThread(QThread):
+    def __init__(self, nombre_categoria, usuario_activo):
+        super().__init__()
+        self.nombre_categoria = nombre_categoria
+        self.usuario_activo = usuario_activo
+    def run(self):
+        cargar_movimiento_agregar_categoria(self.nombre_categoria, self.usuario_activo)
+
+# borrar categoria
+class BuscarCategoriaThread(QThread):
+    resultado = Signal(bool)
+    def __init__(self, nombre_categoria):
+        super().__init__()
+        self.nombre_categoria = nombre_categoria
+    def run(self):
+        existe = buscar_categoria(self.nombre_categoria)
+        self.resultado.emit(existe)
+
+class MovimientoCategoriaBorradaThread(QThread):
+    def __init__(self, nombre_categoria, id_categoria, usuario_activo):
+        super().__init__()
+        self.nombre_categoria = nombre_categoria
+        self.id_categoria = id_categoria
+        self.usuario_activo = usuario_activo
+    def run(self):
+        cargar_movimiento_categoria_borrada(self.nombre_categoria, self.id_categoria, self.usuario_activo)

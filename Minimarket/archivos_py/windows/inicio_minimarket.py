@@ -84,6 +84,12 @@ class DatosTab:
             table_widget2.setEditTriggers(QTableWidget.NoEditTriggers)
 
         #-----------------------
+
+        # agregar categorias
+        self.agregar_categoria()
+
+        # borrar categorias
+        self.borrar_categoria()
         
 
 
@@ -146,7 +152,7 @@ class DatosTab:
             def on_categorias_obtenidas(cats):
                 global categorias, categorias_por_nombre_cache
                 categorias = cats
-                categorias_por_nombre_cache = {c[0].strip().lower(): c for c in categorias}
+                categorias_por_nombre_cache = {c[1].strip().lower(): c for c in categorias}
                 self._datos_cargados["categorias"] = True
                 check_all_loaded()
                 
@@ -189,7 +195,7 @@ class DatosTab:
                     global categorias, categorias_cache, categorias_por_nombre_cache
                     categorias = cats
                     categorias_cache = cats
-                    categorias_por_nombre_cache = {c[0].strip().lower(): c for c in categorias}
+                    categorias_por_nombre_cache = {c[1].strip().lower(): c for c in categorias}
                     print(f"Categorías obtenidas: {categorias}")  # Para verificar que las categorías se actualizan correctamente
                     if callback:
                         callback()
@@ -241,7 +247,7 @@ class DatosTab:
 #################
 
 
-    #AGREGAR PRODUCTOS
+    # AGREGAR PRODUCTOS
 
     def ventana_agregar_productos(self):
         #BOTONES de la ventana agregar productos
@@ -284,7 +290,7 @@ class DatosTab:
         global categorias
         
         for i in categorias:
-            input_categoria.addItem(f"{i[0]}")
+            input_categoria.addItem(f"{i[1]}")
 
     #actualiza los proveedores del combobox de la ventana agregar productos
     def proveedores(self):
@@ -1034,7 +1040,7 @@ class DatosTab:
     
     def filter_combobox_categorias(self, combobox, text):
         global categorias
-        nombres_categorias = [categoria[0] for categoria in categorias if self.texto.lower() in categoria[0].lower()]
+        nombres_categorias = [categoria[1] for categoria in categorias if self.texto.lower() in categoria[0].lower()]
         combobox.clear()
         for item in nombres_categorias:
             combobox.addItem(item)
@@ -1044,7 +1050,7 @@ class DatosTab:
         combobox.clear()
         global categorias
         for categoria in categorias:
-            combobox.addItem(categoria[0])
+            combobox.addItem(categoria[1])
         
         
     def populate_combobox_with_proveedores(self, combobox):
@@ -1117,7 +1123,7 @@ class DatosTab:
             combobox.clear()
             combobox.addItem("")
             for categoria in categorias:
-                combobox.addItem(categoria[0])
+                combobox.addItem(categoria[1])
 
     def populate_table_with_products(self):
         table_widget = self.ui.frame_tabla_productos.findChild(QTableWidget, "tableWidget")
@@ -1870,12 +1876,246 @@ class DatosTab:
 
     # agregar categoria
 
+    def agregar_categoria(self):
+        push_button_27 = self.ui.frame_17.findChild(QPushButton, "pushButton_27")
+        if push_button_27:
+            push_button_27.setStyleSheet("background-color: rgb(168, 225, 255)")
+            push_button_27.setShortcut(Qt.Key_Return)
+            push_button_27.clicked.connect(self.validate_and_process_inputs_categorias)
+
+        push_button_28 = self.ui.frame_17.findChild(QPushButton, "pushButton_28")
+        if push_button_28:
+            push_button_28.clicked.connect(self.clear_inputs_agregar_categorias)
+
+        #labels 
+        label_80 = self.ui.frame_17.findChild(QLabel, "label_80")
+        if label_80:
+            label_80.setStyleSheet("color: transparent")
+
+    def validate_and_process_inputs_categorias(self):
+        global usuario_activo
+
+        lineEdit_16 = self.ui.frame_17.findChild(QLineEdit, "lineEdit_16")
+        if lineEdit_16:
+            lineEdit_16_value = lineEdit_16.text().strip()
+        else:
+            lineEdit_16_value = ""
+
+        label_80 = self.ui.frame_17.findChild(QLabel, "label_80")
+
+        if lineEdit_16_value:
+
+            push_button_27 = self.ui.frame_17.findChild(QPushButton, "pushButton_27")
+            push_button_28 = self.ui.frame_17.findChild(QPushButton, "pushButton_28")
+            if push_button_27:
+                push_button_27.setEnabled(False)
+
+            if push_button_28:
+                push_button_28.setEnabled(False)
+
+            if label_80:
+                label_80.setText("Cargando categoría...")
+                label_80.setStyleSheet("color: green; font-weight: bold")
+
+            self.cargar_categoria_thread = CargarCategoriaThread(lineEdit_16_value)
+            def on_categoria_cargada(exito):
+                if exito:
+                    self.clear_inputs_agregar_categorias()
+                    if label_80:
+                        label_80.setText("Categoría cargada con exito")
+                        label_80.setStyleSheet("color: green; font-weight: bold")
+                        QTimer.singleShot(6000, lambda: label_80.setStyleSheet("color: transparent"))
+
+                    # Hilo para cargar movimiento
+                    self.movimiento_categoria_thread = MovimientoAgregarCategoriaThread(lineEdit_16_value, usuario_activo)
+                    self.movimiento_categoria_thread.start()
+
+                    combobox_categorias = self.ui.frame_7.findChild(QComboBox, "comboBox_4")
+                    if combobox_categorias:
+                        self.populate_combobox_with_categorias(combobox_categorias)
+                    self.populate_combobox_categorias()
+                    self.populate_table_with_categorias()
+                    self.categorias()
+
+                    push_button_27 = self.ui.frame_17.findChild(QPushButton, "pushButton_27")
+                    push_button_28 = self.ui.frame_17.findChild(QPushButton, "pushButton_28")
+                    if push_button_27:
+                        push_button_27.setEnabled(True)
+
+                    if push_button_28:
+                        push_button_28.setEnabled(True)
+                else:
+                    push_button_27 = self.ui.frame_17.findChild(QPushButton, "pushButton_27")
+                    push_button_28 = self.ui.frame_17.findChild(QPushButton, "pushButton_28")
+
+                    if label_80:
+                        label_80.setText("Esta intentando cargar una categoría existente")
+                        label_80.setStyleSheet("color: red; font-weight: bold")
+                    if push_button_27:
+                        push_button_27.setEnabled(True)
+                    if push_button_28:
+                        push_button_28.setEnabled(True)
+
+                    lineEdit_16 = self.ui.frame_17.findChild(QLineEdit, "lineEdit_16")
+                    if lineEdit_16:
+                        lineEdit_16.selectAll()
+                        lineEdit_16.setFocus()
+                        
+            self.cargar_categoria_thread.resultado.connect(on_categoria_cargada)
+            self.cargar_categoria_thread.start()
+        else:
+            if label_80:
+                label_80.setText("Por favor, complete el campo")
+                label_80.setStyleSheet("color: red; font-weight: bold")
+                
+            if lineEdit_16:
+                lineEdit_16.setFocus()
+
+
+    def clear_inputs_agregar_categorias(self):
+        lineEdit_16 = self.ui.frame_17.findChild(QLineEdit, "lineEdit_16")
+        if lineEdit_16:
+            lineEdit_16.clear()
+            lineEdit_16.selectAll()
+
+
+################
+################
+
+    # borrar categoria
+
+    def borrar_categoria(self):
+        lineEdit_21 = self.ui.frame_20.findChild(QLineEdit, "lineEdit_21")
+        if lineEdit_21:
+            lineEdit_21.setFocus()
+
+        push_button_36 = self.ui.frame_20.findChild(QPushButton, "pushButton_36")
+        if push_button_36:
+            push_button_36.setStyleSheet("background-color: red; padding: 5px;")
+            push_button_36.clicked.connect(self.delete_categoria)
+
+        label_81 = self.ui.frame_20.findChild(QLabel, "label_81")
+        if label_81:
+            label_81.setStyleSheet("color: transparent")
+
+    def delete_categoria(self):
+        global usuario_activo, categorias_por_nombre_cache
+    
+        lineEdit_21 = self.ui.frame_20.findChild(QLineEdit, "lineEdit_21")
+        if lineEdit_21:
+            lineEdit_21_value = lineEdit_21.text().strip()
+        else:
+            lineEdit_21_value = ""
+
+        if lineEdit_21_value == "":
+            if lineEdit_21:
+                lineEdit_21.selectAll()
+            label_81 = self.ui.frame_20.findChild(QLabel, "label_81")
+            if label_81:
+                label_81.setText("Por favor, complete el campo")
+                label_81.setStyleSheet("color: red; font-weight: bold")
+            return
+    
+        # Verificar existencia en el cache
+        existe_categoria = categorias_por_nombre_cache and lineEdit_21_value.lower() in categorias_por_nombre_cache
+        if existe_categoria:
+            id_categoria = categorias_por_nombre_cache[lineEdit_21_value.lower()][0]
+        else:
+            id_categoria = None
+    
+        label_81 = self.ui.frame_20.findChild(QLabel, "label_81")
+    
+        if lineEdit_21_value != "Sin categoría":
+            if id_categoria is None:
+                if label_81:
+                    label_81.setText("Categoría no encontrada")
+                    label_81.setStyleSheet("color: red; font-weight: bold")
+                if lineEdit_21:
+                    lineEdit_21.selectAll()
+                    lineEdit_21.setFocus()
+
+                return
+            
+            
+            push_button_36 = self.ui.frame_20.findChild(QPushButton, "pushButton_36")
+            if push_button_36:
+                push_button_36.setEnabled(False)
+            
+            if label_81:
+                label_81.setText("Borrando categoría...")
+                label_81.setStyleSheet("color: green; font-weight: bold")
+
+            # Buscar la categoría en un hilo
+            self.buscar_categoria_thread = BuscarCategoriaThread(lineEdit_21_value)
+            def on_busqueda_finalizada(existe):
+                if existe:
+                    # Cargar movimiento en hilo
+                    self.movimiento_categoria_thread = MovimientoCategoriaBorradaThread(lineEdit_21_value, id_categoria, usuario_activo)
+                    self.movimiento_categoria_thread.start()
+    
+                    lineEdit_21.clear()
+                    if label_81:
+                        label_81.setText("Categoría borrada con éxito")
+                        label_81.setStyleSheet("color: green; font-weight: bold")
+                        QTimer.singleShot(6000, lambda: label_81.setStyleSheet("color: transparent"))
+
+                    # Limpiar cache de categorías
+                    global categorias_cache, categorias_por_nombre_cache, categorias_por_id_cache
+                    categorias_cache = None
+                    categorias_por_nombre_cache = None
+                    categorias_por_id_cache = None
+                    # Actualizar cache, tablas y comboboxes
+                    self.actualizar_variables_globales_de_uso(1, lambda: (
+                        self.populate_combobox_with_categorias(self.ui.frame_7.findChild(QComboBox, "comboBox_4")),
+                        self.populate_table_with_categorias(),
+                        self.populate_combobox_categorias(),
+                        self.categorias()
+                    ))
+                    push_button_36 = self.ui.frame_20.findChild(QPushButton, "pushButton_36")
+                    if push_button_36:
+                        push_button_36.setEnabled(True)
+
+                else: 
+                    print("No se encontró la categoría en la base de datos")
+
+            self.buscar_categoria_thread.resultado.connect(on_busqueda_finalizada)
+            self.buscar_categoria_thread.start()
+
+            lineEdit_21 = self.ui.frame_20.findChild(QLineEdit, "lineEdit_21")
+            if lineEdit_21:
+                lineEdit_21.clear()
+                lineEdit_21.setFocus()
+                QTimer.singleShot(2000, lambda: lineEdit_21.setFocus())
+        else:
+            lineEdit_21.clear()
+            if label_81:
+                label_81.setText("No se puede borrar la categoría 'Sin categoría'")
+                label_81.setStyleSheet("color: red; font-weight: bold")
+                
+
+
+    def populate_table_with_categorias(self):
+        pass
+
+################
+################
+
+    # editar categoria
+
+
+################
+################
+
+    # visualizar categorias
+
+
+
 
 ################
 ################
 
 
-
+#$ SEGUIR CON CATEGORIAS
 
 
 class BuscarDatosTab:
