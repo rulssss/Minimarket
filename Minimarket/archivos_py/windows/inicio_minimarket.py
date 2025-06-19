@@ -20,7 +20,7 @@ categorias_por_nombre_cache = None
 
 # -----------------------------------------------------
 
-#$  SEGUIR CON VISUALIZACION DE PROVEEDORES
+# #$ AGREGAR COLOR A VISUALIZACION DE CATEGORIAS Y SEGUIR
 class DatosTab:
     def __init__(self, ui):
         self.ui = ui
@@ -93,6 +93,7 @@ class DatosTab:
 
         # visualizar categorias
         self.visualizar_categorias()
+
         
 
 
@@ -2327,6 +2328,7 @@ class MainWindow(QMainWindow):
         button11 = self.findChild(QPushButton, "pushButton_11")
         if button11:
             button11.setStyleSheet("background-color: rgb(226, 245, 255)")
+            button11.clicked.connect(self.change_table_headers_color_visualizar_categorias)
             self.connect_button("pushButton_11", stacked_widget, 11,  lambda: self.focus_visualizar_categorias())
 
         # Botón borrar datos
