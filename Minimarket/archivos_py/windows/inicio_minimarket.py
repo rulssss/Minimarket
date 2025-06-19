@@ -2657,9 +2657,9 @@ class DatosTab:
             value_line_edit_25 = line_edit_25.text().strip()  # contraseña
             value_combobox_15 = combobox_15.currentText()
             value_combobox_15 = True if value_combobox_15 == "Administrador" else False
-
-            # Comparar admin y contraseña
-            if usuario_selecc[0][2] == value_combobox_15 and str(usuario_selecc[0][3]) == str(value_line_edit_25) and str(usuario_selecc[0][4]).strip() == line_edit_22.text().strip():
+            
+            # Comparar admin y contraseña Y email
+            if usuario_selecc[0][3] == value_combobox_15 and str(usuario_selecc[0][4]) == str(value_line_edit_25) and str(usuario_selecc[0][2]).strip() == line_edit_22.text().strip():
                 label_93.setText("Porfavor, edite")
                 label_98.setText("los campos")
                 label_98.setStyleSheet("color: red; font-weight: bold")
@@ -2681,22 +2681,26 @@ class DatosTab:
         combobox_16 = self.ui.frame_45.findChild(QComboBox, "comboBox_16")
         value_combobox_16 = combobox_16.currentText().strip()
 
-        # Verificar si el mail ya existe en otro usuario
-        mail_ya_existe = False
-        for u in usuarios:
-            if str(u[2]).strip().lower() == value_line_edit_25.lower() and u[0] != usuario_selecc[0][0]:
-                mail_ya_existe = True
-                break
-
-        if mail_ya_existe:
-            QTimer.singleShot(0, lambda: QTimer().stop())
-            label_93.setText("El email")
-            label_98.setText("ya existe")
+        # Validar que la contraseña tenga al menos 8 caracteres
+        if len(value_line_edit_25) < 8:
+            label_93.setText("La contraseña debe tener")
+            label_98.setText("al menos 8 caracteres")
             label_98.setStyleSheet("color: red; font-weight: bold")
             label_93.setStyleSheet("color: red; font-weight: bold")
-            self.load_user_data()  # Recargar datos del usuario seleccionado
+            line_edit_25.setFocus()
+            line_edit_25.selectAll()
             return
-        
+
+        # Validar si el email ya existe en otro usuario (excepto el usuario actual)
+        if any(u[2].strip().lower() == value_line_edit_22.lower() and u[0] != usuario_selecc[0][0] for u in usuarios):
+            label_93.setText("El email ya está en uso")
+            label_98.setText("por otro usuario")
+            label_98.setStyleSheet("color: red; font-weight: bold")
+            label_93.setStyleSheet("color: red; font-weight: bold")
+            line_edit_22.setFocus()
+            line_edit_22.selectAll()
+            return
+
         if label_93 and label_98:
             label_93.setText("Actualizando")
             label_98.setText("usuario...")
