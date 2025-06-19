@@ -296,3 +296,82 @@ class MovimientoCategoriaBorradaThread(QThread):
         self.usuario_activo = usuario_activo
     def run(self):
         cargar_movimiento_categoria_borrada(self.nombre_categoria, self.id_categoria, self.usuario_activo)
+
+
+# borrar datos
+
+class CargarMovimientosThread(QThread):
+    def __init__(self, usuario_activo):
+        super().__init__()
+        self.usuario_activo = usuario_activo
+    def run(self):
+        cargar_movimientos_datos_borrados(self.usuario_activo)
+
+class ClearDataThread(QThread):
+    finished = Signal()
+    def __init__(self, borrar_categorias, borrar_ventas_compras, borrar_proveedores, borrar_usuarios, borrar_movimientos):
+        super().__init__()
+        self.borrar_categorias = borrar_categorias
+        self.borrar_ventas_compras = borrar_ventas_compras
+        self.borrar_proveedores = borrar_proveedores
+        self.borrar_usuarios = borrar_usuarios
+        self.borrar_movimientos = borrar_movimientos
+    def run(self):
+        clear_data(self.borrar_categorias, self.borrar_ventas_compras, self.borrar_proveedores, self.borrar_usuarios, self.borrar_movimientos)
+        self.finished.emit()
+
+
+# administrar usuarios
+
+class AgregarRegistroUsuarioThread(QThread):
+    resultado = Signal(bool)
+    def __init__(self, rol, usuario, password, email):
+        super().__init__()
+        self.rol = rol
+        self.usuario = usuario
+        self.password = password
+        self.email = email
+    def run(self):
+        exito = agregar_a_registro_usuario(self.rol, self.usuario, self.password, self.email)
+        self.resultado.emit(exito)
+
+class CargarMovimientoAgregarUsuarioThread(QThread):
+    def __init__(self, usuario, usuario_activo):
+        super().__init__()
+        self.usuario = usuario
+        self.usuario_activo = usuario_activo
+    def run(self):
+        cargar_movimiento_agregar_usuario(self.usuario, self.usuario_activo)
+
+class TraerTodosLosUsuariosThread(QThread):
+    resultado = Signal(list)
+    def __init__(self):
+        super().__init__()
+    def run(self):
+        usuarios_obtenidos = traer_todos_los_usuarios()  # Debe ser tu función que retorna la lista de usuarios
+        self.resultado.emit(usuarios_obtenidos)
+
+
+# editar usuario
+
+class ActualizarUsuarioThread(QThread):
+    resultado = Signal(bool)
+    def __init__(self, id_usuario, rol, mail, password):
+        super().__init__()
+        self.id_usuario = id_usuario
+        self.rol = rol
+        self.mail = mail
+        self.password = password
+    def run(self):
+        s = actualizar_usuario(self.id_usuario, self.rol, self.mail, self.password)
+        self.resultado.emit(s)
+
+class CargarMovimientoEditarUsuarioThread(QThread):
+    def __init__(self, id_usuario, nombre_usuario, usuario_activo):
+        super().__init__()
+        self.id_usuario = id_usuario
+        self.nombre_usuario = nombre_usuario
+        self.usuario_activo = usuario_activo
+    def run(self):
+        cargar_movimiento_editar_usuario(self.id_usuario, self.nombre_usuario, self.usuario_activo)
+

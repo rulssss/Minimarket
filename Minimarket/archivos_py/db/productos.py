@@ -349,9 +349,150 @@ def buscar_categoria(nombre_cat):
     else: 
         cursor.close()
         return False
-    
 
+
+def clear_data(borrar_categorias, borrar_ventas_compras, borrar_proveedores, borrar_usuarios, borrar_movimientos):
     
+    v = True #ventana_confirmacion()
+    conn = get_connection()
+    cursor = conn.cursor()
+    if v:
+        
+
+        if borrar_categorias:
+            try:
+                query_update_data = "DELETE FROM categorias WHERE id_categoria != 1"
+                cursor.execute(query_update_data)
+                
+            except errors.ForeignKeyViolation:
+                # Actualizar todos los productos a "sin categoría"
+                query_update_products = "UPDATE productos SET id_categoria = 1 WHERE id_categoria != 1"
+                cursor.execute(query_update_products)
+                # Intentar nuevamente el DELETE
+                query_update_data2 = "DELETE FROM categorias WHERE id_categoria != 1"
+                cursor.execute(query_update_data2)      
+
+        if borrar_ventas_compras:
+            # Lógica para borrar ventas, compras y sus detalles
+            query_update_data5 = f"DELETE FROM ventas"
+            cursor.execute(query_update_data5)
+            query_update_data2 = f"DELETE FROM detalle_ventas"
+            cursor.execute(query_update_data2)
+            query_update_data6 = f"DELETE FROM compras"
+            cursor.execute(query_update_data6)
+            query_update_data4 = f"DELETE FROM detalle_compras"
+            cursor.execute(query_update_data4)
+
+        if borrar_proveedores:
+
+            # Lógica para borrar proveedores y sus productos
+            query_update_data3 = f"DELETE FROM proveedores CASCADE"
+            cursor.execute(query_update_data3)
+
+        if borrar_usuarios:
+            # Lógica para borrar usuarios y sus contraseñas
+            query_update_data3 = f"DELETE FROM contrasenas"
+            cursor.execute(query_update_data3)
+            query_update_data3 = f"DELETE FROM usuarios"
+            cursor.execute(query_update_data3)
+
+            query_update_data4 = "DELETE FROM metodos_pago CASCADE"
+            cursor.execute(query_update_data4)
+
+        if borrar_movimientos:
+            query_delete_movimientos = "DELETE FROM movimientos"
+            cursor.execute(query_delete_movimientos)
+        
+    
+    conn.commit()        
+    cursor.close()
+    conn.close()
+
+
+def traer_todos_los_usuarios():
+    conn = get_connection()
+    cursor = conn.cursor()
+    query_data = f"SELECT usuarios.id_usuario, usuarios.nombre, usuarios.mail, usuarios.admin, contrasenas.contrasena FROM usuarios JOIN contrasenas ON usuarios.id_usuario = contrasenas.id_usuario"
+    cursor.execute(query_data)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    if data != []:
+        return data
+    else: 
+        return False
+
+
+def agregar_a_registro_usuario(tipo_usuario, nombre, contrasenia, mail):
+    if tipo_usuario == "Administrador":
+        tipo_usuario = True
+    else:
+        tipo_usuario = False     #Aacomoda la variable account a un true o false para verificar que tipo de cuenta es
+    
+    
+    try:
+        # Conexión a la base de datos
+        conn = get_connection()
+        cursor = conn.cursor()
+        query_data1 = f"INSERT INTO usuarios(nombre, admin, mail) VALUES('{nombre}', {tipo_usuario}, '{mail}')"
+        cursor.execute(query_data1)
+
+        cursor = conn.cursor()
+        query_data = f"SELECT id_usuario FROM usuarios WHERE nombre = '{nombre}'"
+        cursor.execute(query_data)
+        data_id = cursor.fetchall()
+
+
+        query_data2 = f"INSERT INTO contrasenas(id_usuario, contrasena) VALUES({data_id[0][0]}, '{contrasenia}')"
+        cursor.execute(query_data2)
+        cursor.close()
+        conn.commit()
+        conn.close()
+        return True # devuelve true si se registro correctamente
+    
+    except errors.UniqueViolation:
+        cursor.close()
+        conn.close()
+        return False
+    
+def cargar_movimiento_agregar_usuario(nombre_usuario, usuario_activo):
+                
+    id_usuario = traer_id_usuario(usuario_activo)
+    fecha_hora = datetime.now().astimezone().isoformat()
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"INSERT INTO movimientos (id_usuario, fecha_hora, tipo_accion, entidad_afectada, id_entidad, descripcion) VALUES ({id_usuario}, '{fecha_hora}', 'Agregar', 'Usuarios', {id_usuario}, 'Usuario agregado: {nombre_usuario}')"
+    cursor.execute(query)
+    conn.commit()
+    conn.close()
+    cursor.close()
+
+
+def actualizar_usuario(id, tipo_usuario, contrasenia, mail):
+
+    if tipo_usuario == "Administrador":
+        tipo_usuario = True
+    else:
+        tipo_usuario = False     #Aacomoda la variable account a un true o false para verificar que tipo de cuenta es
+    try:
+        conn = get_connection()
+        cursor= conn.cursor()
+        query_data = f"UPDATE usuarios SET admin = {tipo_usuario}, mail = '{mail}' WHERE id_usuario = {id}"
+        cursor.execute(query_data)
+
+        query_data2 = f"UPDATE contrasenas SET contrasena = '{contrasenia}' WHERE id_usuario = {id}"
+        cursor.execute(query_data2)
+        cursor.close()
+        conn.commit()
+        conn.close()
+        return True # devuelve true si se registro correctamente
+    except errors.UniqueViolation:
+        cursor.close()
+        return False
+
+
 
 # MOVIMIENTOS:
 
@@ -491,3 +632,31 @@ def cargar_movimiento_categoria_borrada(lineEdit_21_value, id_categoria, usuario
     conn.commit()
     conn.close()
     cursor.close()
+
+def cargar_movimientos_datos_borrados(usuario_activo):
+        
+    id_usuario = traer_id_usuario(usuario_activo)
+    fecha_hora = datetime.now().astimezone().isoformat()
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"INSERT INTO movimientos (id_usuario, fecha_hora, tipo_accion, entidad_afectada, id_entidad, descripcion) VALUES ({id_usuario}, '{fecha_hora}', 'Borrar', 'Datos', NULL, 'Datos borrados')"
+    cursor.execute(query)
+    conn.commit()
+    conn.close()
+    cursor.close()  
+
+
+def cargar_movimiento_editar_usuario(id_usuario, nombre_usuario,usuario_activo):
+                    
+    id_usuario_activo = traer_id_usuario(usuario_activo)
+    fecha_hora = datetime.now().astimezone().isoformat()
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"INSERT INTO movimientos (id_usuario, fecha_hora, tipo_accion, entidad_afectada, id_entidad, descripcion) VALUES ({id_usuario_activo}, '{fecha_hora}', 'Editar', 'Usuarios', {id_usuario}, 'Usuario editado: {nombre_usuario}')"
+    cursor.execute(query)
+    conn.commit()
+    conn.close()
+    cursor.close()
+

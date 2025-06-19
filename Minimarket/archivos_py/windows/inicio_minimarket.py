@@ -1,14 +1,16 @@
-from PySide6.QtWidgets import QMainWindow, QPushButton, QLineEdit, QComboBox, QTableWidget, QLabel, QDoubleSpinBox, QTableWidgetItem, QApplication, QAbstractButton
+from PySide6.QtWidgets import QMainWindow, QPushButton, QLineEdit, QComboBox, QTableWidget, QLabel, QDoubleSpinBox, QTableWidgetItem, QApplication, QAbstractButton, QMessageBox, QCheckBox
 from PySide6.QtCore import QTimer, Qt
 from PySide6.QtGui import QIcon, QFont, QIntValidator
 from archivos_py.ui.minimarket import Ui_MainWindow
 from archivos_py.threads.db_thread_minimarket import *
+import sys
 
 
 # ------------ VARIABLES DE CACHE GLOBALES ------------
 categorias_cache = None
 proveedores_cache = None
 productos_cache = None
+usuarios_cache = None
 
 
 productos_por_id_cache = None
@@ -16,11 +18,13 @@ productos_por_nombre_cache = None
 proveedores_por_nombre_cache = None
 proveedores_por_telefono_cache = None
 categorias_por_nombre_cache = None
+usuarios_por_nombre_cache = None
 
 
+#$ SEGUIR CON BORRAR USIARIO 
 # -----------------------------------------------------
 
-# #$ AGREGAR COLOR A VISUALIZACION DE CATEGORIAS Y SEGUIR
+# 
 class DatosTab:
     def __init__(self, ui):
         self.ui = ui
@@ -94,6 +98,38 @@ class DatosTab:
         # visualizar categorias
         self.visualizar_categorias()
 
+        # Conectar eventos de doble clic
+        table_widget3 = self.ui.frame_tabla_productos_3.findChild(QTableWidget, "tableWidget_3")
+        if table_widget3:
+            corner_button3 = table_widget3.findChild(QAbstractButton)
+
+            corner_button3.clicked.connect(self.copy_entire_table_to_clipboard_categorias)
+            table_widget3.horizontalHeader().sectionDoubleClicked.connect(self.copy_column_to_clipboard_categorias)
+            table_widget3.verticalHeader().sectionDoubleClicked.connect(self.copy_row_to_clipboard_categorias)
+            table_widget3.setEditTriggers(QTableWidget.NoEditTriggers)
+
+        #-----------------------
+
+        # borrar datos
+
+        self.borrar_datos()
+
+        # ----------------------
+
+        # funcion de admin de usuarios
+        
+        self.agregar_usuario()
+
+        self.editar_usuario()
+
+        # ----------------------
+
+        # mostrar usuario
+        global usuario_activo
+        self.mostrar_usuario_activo(usuario_activo)
+
+        # ----------------------
+
         
 
 
@@ -119,12 +155,12 @@ class DatosTab:
             
             
     def actualizar_variables_globales_de_uso(self, r, callback=None):
-        global categorias , proveedores, productos
+        global categorias , proveedores, productos, usuarios
      
         global categorias_cache, proveedores_cache, productos_cache
         global productos_por_id_cache, productos_por_nombre_cache
         global proveedores_por_nombre_cache, proveedores_por_telefono_cache
-        global categorias_por_nombre_cache
+        global categorias_por_nombre_cache, usuarios_por_nombre_cache
 
             # Si ya hay cache, úsalo y llama al callback
         if r == 1 and categorias_cache is not None:
@@ -139,6 +175,11 @@ class DatosTab:
             return
         if r == 3 and productos_cache is not None:
             productos = productos_cache
+            if callback:
+                callback()
+            return
+        if r == 4 and usuarios_cache is not None:
+            usuarios = usuarios_cache
             if callback:
                 callback()
             return
@@ -190,7 +231,18 @@ class DatosTab:
             self.productos_thread.resultado.connect(on_productos_obtenidos)
             self.start_thread(self.productos_thread)
 
-            
+            # obtener todos los usuarios
+            self.usuarios_thread = TraerTodosLosUsuariosThread()
+            def on_usuarios_obtenidos(usuarios_obtenidos):
+                global usuarios, usuarios_por_nombre_cache
+                usuarios = usuarios_obtenidos
+                usuarios_por_nombre_cache = {u[1].strip(): u for u in usuarios}
+                self._datos_cargados["usuarios"] = True
+                check_all_loaded()
+                print(f"Usuarios obtenidos: {usuarios}")  # Para verificar que los usuarios se actualizan correctamente
+            self.usuarios_thread.resultado.connect(on_usuarios_obtenidos)
+            self.start_thread(self.usuarios_thread)
+
         else:
             if r == 1:
                 # Obtener todas las categorías y asignarlas a la variable global 'categorias'
@@ -233,9 +285,21 @@ class DatosTab:
                         callback()
                 self.productos_thread.resultado.connect(on_productos_obtenidos)
                 self.start_thread(self.productos_thread)
+            elif r == 4:
+                 # obtener todos los usuarios
+                self.usuarios_thread = TraerTodosLosUsuariosThread()
+                def on_usuarios_obtenidos(usuarios_obtenidos):
+                    global usuarios, usuarios_por_nombre_cache
+                    usuarios = usuarios_obtenidos
+                    usuarios_por_nombre_cache = {u[1].strip(): u for u in usuarios}
+                    print(f"Usuarios obtenidos: {usuarios}")  # Para verificar que los usuarios se actualizan correctamente
+                    if callback:
+                        callback()
+                self.usuarios_thread.resultado.connect(on_usuarios_obtenidos)
+                self.start_thread(self.usuarios_thread)
 
     def limpiar_cache():
-        global categorias_cache, proveedores_cache, productos_cache, productos_por_id_cache, productos_por_nombre_cache, proveedores_por_nombre_cache, proveedores_por_telefono_cache, categorias_por_nombre_cache
+        global categorias_cache, proveedores_cache, productos_cache, productos_por_id_cache, productos_por_nombre_cache, proveedores_por_nombre_cache, proveedores_por_telefono_cache, categorias_por_nombre_cache, usuarios_cache, usuarios_por_nombre_cache
         categorias_cache = None
         proveedores_cache = None
         productos_cache = None
@@ -244,6 +308,9 @@ class DatosTab:
         proveedores_por_nombre_cache = None
         proveedores_por_telefono_cache = None
         categorias_por_nombre_cache = None
+        usuarios_cache = None
+        usuarios_por_nombre_cache = None
+        print("Cache limpiado")
 
         
         
@@ -2216,9 +2283,482 @@ class DatosTab:
 
 ################
 ################
+    # borrar datos
+    def borrar_datos(self):
+
+        push_button_30 = self.ui.frame_25.findChild(QPushButton, "pushButton_30")
+        if push_button_30:
+            push_button_30.setStyleSheet("background-color: red; padding: 5px;")
+            push_button_30.setShortcut(Qt.Key_Return)
+            push_button_30.clicked.connect(self.delete_all_data)
+        
+        push_button_29 = self.ui.frame_25.findChild(QPushButton, "pushButton_29")
+        if push_button_29:
+            push_button_29.clicked.connect(self.clear_checks)
 
 
-#$ SEGUIR CON CATEGORIAS
+        label_83 = self.ui.frame_25.findChild(QLabel, "label_83")
+        if label_83:
+            label_83.setStyleSheet("color: transparent")
+
+    def delete_all_data(self):
+        global usuario_activo
+
+        checkbox_categorias = self.ui.frame_25.findChild(QCheckBox, "checkBox_2")
+        checkbox_ventas_compras = self.ui.frame_25.findChild(QCheckBox, "checkBox")
+        checkbox_proveedores = self.ui.frame_25.findChild(QCheckBox, "checkBox_3")
+        checkbox_usuarios = self.ui.frame_25.findChild(QCheckBox, "checkBox_4")
+        checkbox_movimientos = self.ui.frame_25.findChild(QCheckBox, "checkBox_5")
+
+        if checkbox_categorias and checkbox_ventas_compras and checkbox_proveedores and checkbox_usuarios and checkbox_movimientos:
+            borrar_categorias = checkbox_categorias.isChecked()
+            borrar_ventas_compras = checkbox_ventas_compras.isChecked()
+            borrar_proveedores = checkbox_proveedores.isChecked()
+            borrar_usuarios = checkbox_usuarios.isChecked()
+            borrar_movimientos = checkbox_movimientos.isChecked()
+
+            if borrar_categorias or borrar_ventas_compras or borrar_proveedores or borrar_usuarios or borrar_movimientos:
+                if self.show_confirmation_dialog():
+                    # Ejecutar ambos hilos y mostrar mensaje cuando ambos terminen
+                    self.mov_thread = CargarMovimientosThread(usuario_activo)
+                    self.clear_thread = ClearDataThread(borrar_categorias, borrar_ventas_compras, borrar_proveedores, borrar_usuarios, borrar_movimientos)
+                    def on_clear_finished():
+                        if borrar_usuarios or borrar_proveedores:
+                            QMessageBox.information(self.ui.centralwidget, "Datos borrados", "Todos los datos seleccionados han sido borrados\nEl programa se cerrara.")
+                            sys.exit()
+                        if borrar_categorias:
+                            global categorias_cache, categorias_por_nombre_cache, categorias_por_id_cache
+                            categorias_cache = None
+                            categorias_por_nombre_cache = None
+                            categorias_por_id_cache = None
+
+                            self.actualizar_variables_globales_de_uso(1, lambda: (
+                                self.populate_combobox_with_categorias(self.ui.frame_7.findChild(QComboBox, "comboBox_4")),
+                                self.populate_table_with_categorias(),
+                                self.populate_combobox_categorias(),
+                                self.categorias()
+                            ))
+
+                        QMessageBox.information(self.ui.centralwidget, "Datos borrados", "Todos los datos seleccionados han sido borrados.")
+                    self.clear_thread.finished.connect(on_clear_finished)
+                    self.mov_thread.start()
+                    self.clear_thread.start()
+                else:
+                    self.clear_checks()
+            else:
+                label_83 = self.ui.frame_25.findChild(QLabel, "label_83")
+                if label_83:
+                    label_83.setText("Por favor, seleccione al menos una opción")
+                    label_83.setStyleSheet("color: red; font-weight: bold")
+                    QTimer.singleShot(6000, lambda: label_83.setStyleSheet("color: transparent"))
+
+            # se acutualiza el resto del programa
+            if borrar_categorias:
+                combobox_categorias = self.ui.frame_7.findChild(QComboBox, "comboBox_4")
+                if combobox_categorias:
+                    self.populate_combobox_with_categorias(combobox_categorias)
+                self.populate_combobox_categorias()
+                self.populate_table_with_categorias()
+                self.categorias()
+
+            if borrar_proveedores:
+                combobox_proveedores = self.ui.frame_7.findChild(QComboBox, "comboBox_7")
+                if combobox_proveedores:
+                    self.populate_combobox_with_proveedores(combobox_proveedores)
+                self.populate_combobox_proveedores()
+                self.populate_table_with_proveedores()
+                self.proveedores()
+                self.populate_table_with_products()
+                combobox_id = self.ui.frame_7.findChild(QComboBox, "comboBox_3")
+                if combobox_id:
+                    self.populate_combobox_with_ids(combobox_id)
+
+            self.clear_checks()
+
+
+    def show_confirmation_dialog(self):
+        
+        dialog = QMessageBox()
+        dialog.setWindowIcon(QIcon("C:/Users/mariano/Desktop/proyectos/minimarketclass(Pyside)/resources/r.ico"))
+        dialog.setWindowTitle("Confirmación")
+        dialog.setText("¿Está seguro de que desea borrar los datos seleccionados?")
+        dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        dialog.setDefaultButton(QMessageBox.No)
+        return dialog.exec() == QMessageBox.Yes
+
+    def clear_checks(self):
+        checkbox_categorias = self.ui.frame_25.findChild(QCheckBox, "checkBox_2")
+        checkbox_ventas_compras = self.ui.frame_25.findChild(QCheckBox, "checkBox")
+        checkbox_proveedores = self.ui.frame_25.findChild(QCheckBox, "checkBox_3")
+        checkbox_usuarios = self.ui.frame_25.findChild(QCheckBox, "checkBox_4")
+        checkbox_movimientos = self.ui.frame_25.findChild(QCheckBox, "checkBox_5")
+        checkbox_categorias.setChecked(False)
+        checkbox_ventas_compras.setChecked(False)
+        checkbox_proveedores.setChecked(False)
+        checkbox_usuarios.setChecked(False)
+        checkbox_movimientos.setChecked(False)
+
+
+
+################
+################
+
+    # funciones del usuario 
+
+    # agregar usuario 
+
+    def agregar_usuario(self):
+        combobox_14 = self.ui.frame_29.findChild(QComboBox, "comboBox_14")
+        line_edit_24 = self.ui.frame_29.findChild(QLineEdit, "lineEdit_24")
+        push_button_39 = self.ui.frame_29.findChild(QPushButton, "pushButton_39")
+        label_90 = self.ui.frame_29.findChild(QLabel, "label_90")
+        label_96 = self.ui.frame_29.findChild(QLabel, "label_96")
+        push_button_31 = self.ui.frame_29.findChild(QPushButton, "pushButton_31")
+        push_button_32 = self.ui.frame_29.findChild(QPushButton, "pushButton_32")
+
+
+        if combobox_14:
+            combobox_14.addItem("Administrador")
+            combobox_14.addItem("Usuario")
+
+        if line_edit_24:
+            line_edit_24.setEchoMode(QLineEdit.Password)
+        
+
+        if push_button_39:
+            push_button_39.setFocusPolicy(Qt.NoFocus)
+            push_button_39.setIcon(QIcon("C:/Users/mariano/Desktop/proyectos/minimarketclass(Pyside)/archivos_py/resources/eye_visible_hide_hidden_show_icon_145988.png"))
+            push_button_39.clicked.connect(self.setear_lineedit_avisual_agregar)
+
+        if label_90:
+            label_90.setStyleSheet("color: transparent")
+
+        if label_96:
+            label_96.setStyleSheet("color: transparent")
+
+        if push_button_31:
+            push_button_31.setFocusPolicy(Qt.NoFocus)
+            push_button_31.setStyleSheet("background-color: rgb(168, 225, 255)")
+            push_button_31.setShortcut(Qt.Key_Return)
+            push_button_31.clicked.connect(self.validar_agregar_usuario)
+
+        if push_button_32:
+            push_button_39.setFocusPolicy(Qt.NoFocus)
+            push_button_32.clicked.connect(self.clear_inputs_agregar_usuario)
+
+
+    def validar_agregar_usuario(self):
+        global usuario_activo
+
+        combobox_14 = self.ui.frame_29.findChild(QComboBox, "comboBox_14")
+        line_edit_23 = self.ui.frame_29.findChild(QLineEdit, "lineEdit_23")
+        line_edit_24 = self.ui.frame_29.findChild(QLineEdit, "lineEdit_24")
+        line_edit = self.ui.frame_29.findChild(QLineEdit, "lineEdit")
+        label_90 = self.ui.frame_29.findChild(QLabel, "label_90")
+        label_96 = self.ui.frame_29.findChild(QLabel, "label_96")
+        value_combobox_14 = combobox_14.currentText()
+        value_line_edit_23 = line_edit_23.text().strip()
+        value_line_edit_24 = line_edit_24.text().strip()
+        value_line_edit = line_edit.text().strip()
+        push_button_31 = self.ui.frame_29.findChild(QPushButton, "pushButton_31")
+        push_button_32 = self.ui.frame_29.findChild(QPushButton, "pushButton_32")
+
+        if value_combobox_14 and value_line_edit_23 and value_line_edit_24 and "@" in value_line_edit:
+            if len(value_line_edit_24) >= 8:
+
+                # verificar si el usuario ya existe
+                if value_line_edit_23 in [usuario[1] for usuario in usuarios]:
+                    label_90.setText("El usuario")
+                    label_90.setStyleSheet("color: red; font-weight: bold")
+                    label_96.setText("ya existe")
+                    label_96.setStyleSheet("color: red; font-weight: bold")
+                    line_edit_23.setFocus()
+                    line_edit_23.selectAll()
+                    return
+                # verificcar si el email ya existe
+                
+                if value_line_edit.lower() in [usuario[2].lower() for usuario in usuarios]:
+                    label_90.setText("El email ya esta en uso")
+                    label_90.setStyleSheet("color: red; font-weight: bold")
+                    label_96.setText("por otro usuario")
+                    label_96.setStyleSheet("color: red; font-weight: bold")
+                    line_edit.setFocus()
+                    line_edit.selectAll()
+                    return
+                
+                if push_button_31:
+                    push_button_31.setEnabled(False)
+                if push_button_32:
+                    push_button_32.setEnabled(False)
+                if label_90 and label_96:
+                    label_90.setText("Cargando")
+                    label_96.setText("usuario...")
+                    label_96.setStyleSheet("color: green; font-weight: bold")
+                    label_90.setStyleSheet("color: green; font-weight: bold")
+
+                self.registro_thread = AgregarRegistroUsuarioThread(value_combobox_14, value_line_edit_23, value_line_edit_24, value_line_edit)
+                def on_registro_finalizado(exito):
+                    if exito:
+                        self.movimiento_thread = CargarMovimientoAgregarUsuarioThread(value_line_edit_23, usuario_activo)
+                        self.movimiento_thread.start()
+                        self.clear_inputs_agregar_usuario()
+                        combobox_16 = self.ui.frame_45.findChild(QComboBox, "comboBox_16")
+                        self.populate_combobox_with_names(combobox_16)
+                        
+                        global usuarios_cache, usuarios_por_nombre_cache
+                        usuarios_cache = None
+                        usuarios_por_nombre_cache = None
+                        self.actualizar_variables_globales_de_uso(4, lambda: (
+                            self.populate_combobox_with_names(self.ui.frame_45.findChild(QComboBox, "comboBox_16"))
+                        ))
+
+                        label_90.setText("Usuario agregado")
+                        label_96.setText("con éxito")
+                        label_96.setStyleSheet("color: green; font-weight: bold")
+                        label_90.setStyleSheet("color: green; font-weight: bold")
+                        QTimer.singleShot(6000, lambda: label_96.setStyleSheet("color: transparent"))
+                        QTimer.singleShot(6000, lambda: label_90.setStyleSheet("color: transparent"))
+                        # Actualizar cache de usuarios
+                        
+                    else:
+                        print("no se pudo cargar el usuario")
+                self.registro_thread.resultado.connect(on_registro_finalizado)
+                self.registro_thread.start()
+
+            else:
+                label_90.setText("La contraseña debe tener")
+                label_96.setText("al menos 8 caracteres")
+                label_96.setStyleSheet("color: red; font-weight: bold")
+                label_90.setStyleSheet("color: red; font-weight: bold")
+        else:
+            label_90.setText("Por favor, complete todos")
+            label_96.setText("los campos correctamente")
+            label_96.setStyleSheet("color: red; font-weight: bold")
+            label_90.setStyleSheet("color: red; font-weight: bold")
+
+    def clear_inputs_agregar_usuario(self):
+        line_edit_23 = self.ui.frame_29.findChild(QLineEdit, "lineEdit_23")
+        line_edit_24 = self.ui.frame_29.findChild(QLineEdit, "lineEdit_24")
+        line_edit = self.ui.frame_29.findChild(QLineEdit, "lineEdit")
+        combobox_14 = self.ui.frame_29.findChild(QComboBox, "comboBox_14")
+        if line_edit_23 and line_edit_24 and line_edit:
+            line_edit_23.clear()
+            line_edit_24.clear()
+            line_edit.clear()
+            combobox_14.setCurrentIndex(0)
+            line_edit_23.setFocus()
+
+    def setear_lineedit_avisual_agregar(self):
+        line_edit_24 = self.ui.frame_29.findChild(QLineEdit, "lineEdit_24")
+        if line_edit_24:
+            if line_edit_24.echoMode() == QLineEdit.Password:
+                line_edit_24.setEchoMode(QLineEdit.Normal)
+            else:
+                line_edit_24.setEchoMode(QLineEdit.Password)
+
+    def setear_lineedit_avisual_editar(self):
+        line_edit_25 = self.ui.frame_45.findChild(QLineEdit, "lineEdit_25")
+        if line_edit_25:
+            if line_edit_25.echoMode() == QLineEdit.Password:
+                line_edit_25.setEchoMode(QLineEdit.Normal)
+            else:
+                line_edit_25.setEchoMode(QLineEdit.Password)
+
+
+################
+################
+
+    # editar usuario
+
+    def editar_usuario(self):
+        label_98 = self.ui.frame_45.findChild(QLabel, "label_98")
+        label_93 = self.ui.frame_45.findChild(QLabel, "label_93")
+        combobox_15 = self.ui.frame_45.findChild(QComboBox, "comboBox_15")
+        combobox_16 = self.ui.frame_45.findChild(QComboBox, "comboBox_16")
+        push_button_33 = self.ui.frame_45.findChild(QPushButton, "pushButton_33")
+        push_button_35 = self.ui.frame_45.findChild(QPushButton, "pushButton_35")
+        push_button_41 = self.ui.frame_45.findChild(QPushButton, "pushButton_41")
+        line_edit_25 = self.ui.frame_45.findChild(QLineEdit, "lineEdit_25")
+
+        if combobox_15:
+            combobox_15.addItem("Administrador")
+            combobox_15.addItem("Usuario")
+        
+        if combobox_16:
+            combobox_16.setEditable(False)  # Deshabilitar la edición
+            combobox_16.setInsertPolicy(QComboBox.NoInsert)  # Evitar inserciones
+            combobox_16.currentIndexChanged.connect(self.load_user_data)  # Conectar al cambio de índice
+            self.populate_combobox_with_names(combobox_16)  # Llenar el combobox con los nombres de usuarios
+            
+        if push_button_41:
+            push_button_41.setFocusPolicy(Qt.NoFocus)
+            push_button_41.setIcon(QIcon("C:/Users/mariano/Desktop/proyectos/minimarketclass(Pyside)/archivos_py/resources/eye_visible_hide_hidden_show_icon_145988.png"))
+            push_button_41.clicked.connect(self.setear_lineedit_avisual_editar)
+
+        if label_98:
+            label_98.setStyleSheet("color: transparent")
+
+        if label_93:
+            label_93.setStyleSheet("color: transparent")
+
+        if push_button_33:
+            push_button_33.setFocusPolicy(Qt.NoFocus)
+            push_button_33.setStyleSheet("background-color: rgb(255, 202, 96)")
+            push_button_33.setShortcut(Qt.Key_Return)
+            push_button_33.clicked.connect(lambda: self.validar_datos_iguales_usuario(usuario_selecc if usuario_selecc is not None else None))
+
+        if push_button_35:
+            push_button_35.setFocusPolicy(Qt.NoFocus)
+            push_button_35.clicked.connect(self.clear_inputs_editar_usuario)
+
+        if line_edit_25:
+            line_edit_25.setEchoMode(QLineEdit.Password)
+
+    def load_user_data(self):
+        global usuario_selecc, usuarios_por_nombre_cache
+
+        combobox_16 = self.ui.frame_45.findChild(QComboBox, "comboBox_16")
+        if combobox_16:
+            nombre = combobox_16.currentText()
+            if nombre and usuarios_por_nombre_cache and nombre in usuarios_por_nombre_cache:
+                usuario = usuarios_por_nombre_cache[nombre]
+                usuario_selecc = [usuario]  # Para mantener el formato de lista
+
+                if usuario and nombre == str(usuario[1]):
+                    if usuario[3]:  # admin (bool)
+                        self.ui.frame_45.findChild(QComboBox, "comboBox_15").setCurrentIndex(0)
+                    else:
+                        self.ui.frame_45.findChild(QComboBox, "comboBox_15").setCurrentIndex(1)
+                    self.ui.frame_45.findChild(QComboBox, "comboBox_16").setCurrentText(str(usuario[1]))
+                    self.ui.frame_45.findChild(QLineEdit, "lineEdit_25").setText(str(usuario[4]))  # email
+                    self.ui.frame_45.findChild(QLineEdit, "lineEdit_22").setText(str(usuario[2]))  # contraseña vacía o buscar aparte
+
+    def populate_combobox_with_names(self, combobox):
+        global usuarios_por_nombre_cache
+        combobox.clear()
+        if usuarios_por_nombre_cache:
+            nombres = sorted(usuarios_por_nombre_cache.keys())
+            combobox.addItems(nombres)
+            combobox.setMaxVisibleItems(4)
+        
+
+    def clear_inputs_editar_usuario(self):
+        self.load_user_data()
+
+    def validar_datos_iguales_usuario(self, usuario_selecc):
+        label_93 = self.ui.frame_45.findChild(QLabel, "label_93")
+        label_98 = self.ui.frame_45.findChild(QLabel, "label_98")
+
+        if usuario_selecc:
+            combobox_15 = self.ui.frame_45.findChild(QComboBox, "comboBox_15")
+            line_edit_25 = self.ui.frame_45.findChild(QLineEdit, "lineEdit_25")  # contraseña
+            line_edit_22 = self.ui.frame_45.findChild(QLineEdit, "lineEdit_22")  # email
+
+            value_line_edit_25 = line_edit_25.text().strip()  # contraseña
+            value_combobox_15 = combobox_15.currentText()
+            value_combobox_15 = True if value_combobox_15 == "Administrador" else False
+
+            # Comparar admin y contraseña
+            if usuario_selecc[0][2] == value_combobox_15 and str(usuario_selecc[0][3]) == str(value_line_edit_25) and str(usuario_selecc[0][4]).strip() == line_edit_22.text().strip():
+                label_93.setText("Porfavor, edite")
+                label_98.setText("los campos")
+                label_98.setStyleSheet("color: red; font-weight: bold")
+                label_93.setStyleSheet("color: red; font-weight: bold")
+            else:
+                self.validar_editar_usuario()
+
+    def validar_editar_usuario(self):
+        global usuario_selecc, usuario_activo, usuarios
+
+        combobox_15 = self.ui.frame_45.findChild(QComboBox, "comboBox_15")
+        line_edit_25 = self.ui.frame_45.findChild(QLineEdit, "lineEdit_25")  # mail
+        line_edit_22 = self.ui.frame_45.findChild(QLineEdit, "lineEdit_22")  # contraseña
+        value_line_edit_22 = line_edit_22.text().strip()  # contraseña
+        value_combobox_15 = combobox_15.currentText()
+        value_line_edit_25 = line_edit_25.text().strip()  # mail
+        label_93 = self.ui.frame_45.findChild(QLabel, "label_93")
+        label_98 = self.ui.frame_45.findChild(QLabel, "label_98")
+        combobox_16 = self.ui.frame_45.findChild(QComboBox, "comboBox_16")
+        value_combobox_16 = combobox_16.currentText().strip()
+
+        # Verificar si el mail ya existe en otro usuario
+        mail_ya_existe = False
+        for u in usuarios:
+            if str(u[2]).strip().lower() == value_line_edit_25.lower() and u[0] != usuario_selecc[0][0]:
+                mail_ya_existe = True
+                break
+
+        if mail_ya_existe:
+            QTimer.singleShot(0, lambda: QTimer().stop())
+            label_93.setText("El email")
+            label_98.setText("ya existe")
+            label_98.setStyleSheet("color: red; font-weight: bold")
+            label_93.setStyleSheet("color: red; font-weight: bold")
+            self.load_user_data()  # Recargar datos del usuario seleccionado
+            return
+        
+        if label_93 and label_98:
+            label_93.setText("Actualizando")
+            label_98.setText("usuario...")
+            label_98.setStyleSheet("color: green; font-weight: bold")
+            label_93.setStyleSheet("color: green; font-weight: bold")
+
+        self.actualizar_usuario_thread = ActualizarUsuarioThread(
+            usuario_selecc[0][0], value_combobox_15, value_line_edit_25, value_line_edit_22
+        )
+        def on_actualizado(s):
+            if s:
+                self.movimiento_thread = CargarMovimientoEditarUsuarioThread(
+                    usuario_selecc[0][0], value_combobox_16, usuario_activo
+                )
+                self.movimiento_thread.start()
+                QTimer.singleShot(0, lambda: QTimer().stop())
+                label_93.setText("Usuario")
+                label_98.setText("actualizado")
+                label_98.setStyleSheet("color: green; font-weight: bold")
+                label_93.setStyleSheet("color: green; font-weight: bold")
+                QTimer.singleShot(6000, lambda: label_93.setStyleSheet("color: transparent"))
+                QTimer.singleShot(6000, lambda: label_98.setStyleSheet("color: transparent"))
+
+                global usuarios_cache, usuarios_por_nombre_cache
+                usuarios_cache = None
+                usuarios_por_nombre_cache = None
+                combobox_16 = self.ui.frame_45.findChild(QComboBox, "comboBox_16")
+                self.actualizar_variables_globales_de_uso(4, lambda: (
+                    self.populate_combobox_with_names(combobox_16)
+                ))
+            else:
+                print("no se pudo actualizar el usuario")
+                
+        self.actualizar_usuario_thread.resultado.connect(on_actualizado)
+        self.actualizar_usuario_thread.start()
+
+
+
+################
+################
+
+    # Borrar usuario
+
+
+################
+################
+
+    # funcion para mostrar nombre del usuario activo
+
+    def mostrar_usuario_activo(self, usuario):
+        label_31 = self.ui.frame_9.findChild(QLabel, "label_31")
+        if label_31:
+            label_31.setText(usuario)
+
+        label_69 = self.ui.frame_39.findChild(QLabel, "label_69")
+        if label_69:
+            label_69.setText(usuario)
+            
+
+################
+################
+
 
 
 class BuscarDatosTab:
