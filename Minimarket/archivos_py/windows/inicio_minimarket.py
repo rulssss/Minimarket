@@ -2682,7 +2682,7 @@ class DatosTab:
         value_combobox_16 = combobox_16.currentText().strip()
 
         # Validar que la contraseña tenga al menos 8 caracteres
-        if len(value_line_edit_25) < 8:
+        if len(value_line_edit_25) <= 8:
             label_93.setText("La contraseña debe tener")
             label_98.setText("al menos 8 caracteres")
             label_98.setStyleSheet("color: red; font-weight: bold")
