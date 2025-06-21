@@ -2866,10 +2866,16 @@ class DatosTab:
 ################
 
 
-
 class BuscarDatosTab:
-    def __init__(self, ui):
+    def __init__(self, ui, datos_tab):
         self.ui = ui
+        self.datos_tab = datos_tab
+
+        # se crean variables globales de uso para actualizar datos
+        self.datos_tab.actualizar_variables_globales_de_uso(0, self.inicializar_ui_con_datos)
+
+    def inicializar_ui_con_datos(self):
+        pass
 
 class AdministracionTab:
     def __init__(self, ui, buscar_datos_tab, datos_tab):
@@ -2913,8 +2919,8 @@ class MainWindow(QMainWindow):
                 tab_widget.setTabText(tab_widget.indexOf(self.ui.tab), "Administración")
 
         # Crear instancias de las clases de las pestañas
-        self.buscar_datos_tab = BuscarDatosTab(self.ui)
         self.datos_tab = DatosTab(self.ui)
+        self.buscar_datos_tab = BuscarDatosTab(self.ui, self.datos_tab)
         self.administracion_tab = AdministracionTab(self.ui, self.buscar_datos_tab,  self.datos_tab)  # Inicialización de administracion_tab
 
         #establece inicio rls
