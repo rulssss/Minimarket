@@ -1,9 +1,10 @@
-from PySide6.QtWidgets import QMainWindow, QPushButton, QLineEdit, QComboBox, QTableWidget, QLabel, QDoubleSpinBox, QTableWidgetItem, QApplication, QAbstractButton, QMessageBox, QCheckBox
-from PySide6.QtCore import QTimer, Qt
+from PySide6.QtWidgets import QMainWindow, QPushButton, QLineEdit, QComboBox, QTableWidget, QLabel, QDoubleSpinBox, QTableWidgetItem, QApplication, QAbstractButton, QMessageBox, QCheckBox, QDateEdit
+from PySide6.QtCore import QTimer, Qt, QDate
 from PySide6.QtGui import QIcon, QFont, QIntValidator
 from archivos_py.ui.minimarket import Ui_MainWindow
 from archivos_py.threads.db_thread_minimarket import *
 import sys
+
 
 
 # ------------ VARIABLES DE CACHE GLOBALES ------------
@@ -21,7 +22,7 @@ categorias_por_nombre_cache = None
 usuarios_por_nombre_cache = None
 
 
-#$ SEGUIR CON BORRAR USIARIO 
+#$ BUSCAR DATOS
 # -----------------------------------------------------
 
 # 
@@ -2764,6 +2765,8 @@ class DatosTab:
             push_buttton_40.clicked.connect(self.delete_usuario)
 
     def delete_usuario(self):
+        global usuarios  # Asegúrate de tener la variable global usuarios cargada
+
         line_edit_29 = self.ui.frame_47.findChild(QLineEdit, "lineEdit_29")
         label_95 = self.ui.frame_47.findChild(QLabel, "label_95")
         value_line_edit_29 = line_edit_29.text().strip()
@@ -2781,70 +2784,67 @@ class DatosTab:
             line_edit_29.clear()
             line_edit_29.setFocus()
             return
-        
-        push_buttton_40 = self.ui.frame_47.findChild(QPushButton, "pushButton_40")
-        if push_buttton_40:
-            push_buttton_40.setEnabled(False)
-            
-        # Hilo para traer el id del usuario
-        self.traer_id_usuario_thread = TraerIdUsuarioThread(value_line_edit_29)
-        def on_id_obtenido(id_usuario):
-            if id_usuario is not None:
 
-                label_95 = self.ui.frame_47.findChild(QLabel, "label_95")
-                if label_95:
-                    label_95.setText("Borrando usuario...")
+        # Buscar el id_usuario en la variable global usuarios (lista de tuplas)
+        id_usuario = None
+        if usuarios:
+            for u in usuarios:
+                # u[1] es el nombre, u[0] es el id_usuario
+                if str(u[1]).strip() == value_line_edit_29:
+                    id_usuario = u[0]
+                    break
+
+        if id_usuario is not None:
+            push_buttton_40 = self.ui.frame_47.findChild(QPushButton, "pushButton_40")
+            if push_buttton_40:
+                push_buttton_40.setEnabled(False)
+
+            label_95.setText("Borrando usuario...")
+            label_95.setStyleSheet("color: green; font-weight: bold")
+
+            # Hilo para borrar el usuario
+            self.borrar_usuario_thread = BorrarUsuarioThread(value_line_edit_29)
+            def on_usuario_borrado(exito):
+                if exito:
+                    # Hilo para cargar el movimiento de usuario borrado
+                    self.movimiento_usuario_borrado_thread = MovimientoUsuarioBorradoThread(value_line_edit_29, id_usuario, usuario_activo)
+                    self.movimiento_usuario_borrado_thread.start()
+
+                    global usuarios_cache, usuarios_por_nombre_cache
+                    usuarios_cache = None
+                    usuarios_por_nombre_cache = None
+                    self.actualizar_variables_globales_de_uso(4, lambda: (
+                        self.populate_combobox_with_names(self.ui.frame_45.findChild(QComboBox, "comboBox_16"))
+                    ))
+
+                    label_95.setText("Usuario borrado con éxito")
                     label_95.setStyleSheet("color: green; font-weight: bold")
+                    QTimer.singleShot(6000, lambda: label_95.setStyleSheet("color: transparent"))
 
-                # Hilo para borrar el usuario
-                self.borrar_usuario_thread = BorrarUsuarioThread(value_line_edit_29)
-                def on_usuario_borrado(exito):
-                    if exito:
-                        # Hilo para cargar el movimiento de usuario borrado
-                        self.movimiento_usuario_borrado_thread = MovimientoUsuarioBorradoThread(value_line_edit_29, id_usuario, usuario_activo)
-                        def on_movimiento_cargado(_):
-                            
-                            combobox_16 = self.ui.frame_45.findChild(QComboBox, "comboBox_16")
-                            self.populate_combobox_with_names(combobox_16)
-                        self.movimiento_usuario_borrado_thread.finished.connect(on_movimiento_cargado)
-                        self.movimiento_usuario_borrado_thread.start()
-
-                        label_95 = self.ui.frame_47.findChild(QLabel, "label_95")
-                        if label_95:
-                            label_95.setText("Usuario borrado con éxito")
-                            label_95.setStyleSheet("color: green; font-weight: bold")
-                            QTimer.singleShot(6000, lambda: label_95.setStyleSheet("color: transparent"))
-
-                        line_edit_29 = self.ui.frame_47.findChild(QLineEdit, "lineEdit_29")
-                        if line_edit_29:
-                            line_edit_29.clear()
-                            line_edit_29.setFocus()
-
-                        push_buttton_40 = self.ui.frame_47.findChild(QPushButton, "pushButton_40")
-                        if push_buttton_40:
-                            push_buttton_40.setEnabled(True)
-
-                    else:
-                        print("No se pudo borrar el usuario")
-
-                self.borrar_usuario_thread.resultado.connect(on_usuario_borrado)
-                self.borrar_usuario_thread.start()
-            else:
-                label_95 = self.ui.frame_47.findChild(QLabel, "label_95")
-                label_95.setText("Usuario no encontrado")
-                label_95.setStyleSheet("color: red; font-weight: bold")
-        
-                push_buttton_40 = self.ui.frame_47.findChild(QPushButton, "pushButton_40")
-                if push_buttton_40:
-                    push_buttton_40.setEnabled(True)
-
-                line_edit_29 = self.ui.frame_47.findChild(QLineEdit, "lineEdit_29")
-                if line_edit_29:
-                    line_edit_29.selectAll()
+                    line_edit_29.clear()
                     line_edit_29.setFocus()
 
-        self.traer_id_usuario_thread.resultado.connect(on_id_obtenido)
-        self.traer_id_usuario_thread.start()
+                    if push_buttton_40:
+                        push_buttton_40.setEnabled(True)
+                else:
+                    print("Error al borrar el usuario")
+
+            self.borrar_usuario_thread.resultado.connect(on_usuario_borrado)
+            self.borrar_usuario_thread.start()
+        else:
+            label_95.setText("Usuario no encontrado")
+            label_95.setStyleSheet("color: red; font-weight: bold")
+            
+            push_buttton_40 = self.ui.frame_47.findChild(QPushButton, "pushButton_40")
+            if push_buttton_40:
+                push_buttton_40.setEnabled(True)
+
+            line_edit_29 = self.ui.frame_47.findChild(QLineEdit, "lineEdit_29")
+            if line_edit_29:
+                line_edit_29.selectAll()
+                line_edit_29.setFocus()
+
+            
 
 
 ################
@@ -2876,6 +2876,86 @@ class BuscarDatosTab:
 
     def inicializar_ui_con_datos(self):
         pass
+
+    def boton_mov(self):
+        push_button_48 = self.ui.tab_3.findChild(QPushButton, "pushButton_48")
+        if push_button_48:
+            push_button_48.clicked.connect(self.movimientos)
+
+    def movimientos(self):
+        # Iniciar combobox y tabla
+        combobox_17 = self.ui.frame_53.findChild(QComboBox, "comboBox_17")
+        combobox_18 = self.ui.frame_54.findChild(QComboBox, "comboBox_18")
+        date_edit = self.ui.frame_54.findChild(QDateEdit, "dateEdit_3")
+
+        if combobox_18:
+            combobox_18.setVisible(False)
+
+        if date_edit:
+            date_edit.setDisplayFormat("dd MM yyyy")
+            date_edit.setDate(QDate.currentDate())  # Establecer la fecha actual como predeterminada
+        
+         # Conectar eventos de doble clic
+        table_widget = self.ui.frame_52.findChild(QTableWidget, "tableWidget_5")
+        if table_widget:
+            table_widget.horizontalHeader().sectionDoubleClicked.connect(self.copy_column_to_clipboard)
+            table_widget.verticalHeader().sectionDoubleClicked.connect(self.copy_row_to_clipboard)
+
+        if combobox_17:
+            if combobox_17.count() == 0:
+                combobox_17.addItem("Fecha")
+                combobox_17.addItem("Usuario")
+                combobox_17.addItem("Acción")
+            else:
+                combobox_17.setCurrentIndex(0)  # Reiniciar a "Fecha" si ya tiene elementos
+
+            # Conectar el evento de cambio de texto al método
+            combobox_17.currentTextChanged.connect(self.setear_combobox_18)
+
+        # Inicializar la tabla con todos los movimientos
+        self.setear_combobox_18()
+
+    def setear_combobox_18(self):
+        combobox_17 = self.ui.frame_53.findChild(QComboBox, "comboBox_17")
+        combobox_18 = self.ui.frame_54.findChild(QComboBox, "comboBox_18")
+        date_edit = self.ui.frame_54.findChild(QDateEdit, "dateEdit_3")
+
+        if combobox_17 and combobox_18 and date_edit:
+            if combobox_17.currentText() == "Usuario":
+                combobox_18.setVisible(True)
+                date_edit.setDate(QDate())  
+                date_edit.setHidden(True)
+                self.populate_combobox_with_names(combobox_18)
+                self.filtro(combobox_17, combobox_18)
+                combobox_18.currentTextChanged.connect(lambda: self.filtro(combobox_17, combobox_18))
+
+            elif combobox_17.currentText() == "Fecha":
+                combobox_18.setVisible(False)
+                date_edit.setHidden(False)
+                date_edit.setStyleSheet("font-weight: bold;")
+                date_edit.setDate(QDate.currentDate())  # Establecer la fecha actual como predeterminada
+                self.filtro(combobox_17, combobox_18)
+                date_edit.dateChanged.connect(lambda: self.filtro(combobox_17, combobox_18))
+                
+
+            elif combobox_17.currentText() == "Acción":
+                combobox_18.setVisible(True)
+                date_edit.setDate(QDate())  
+                date_edit.setHidden(True)
+                self.populate_combobox_acciones(combobox_18)
+                self.filtro(combobox_17, combobox_18)
+                combobox_18.currentTextChanged.connect(lambda: self.filtro(combobox_17, combobox_18))
+    
+    def populate_combobox_acciones(self, combobox):
+        combobox.clear()
+        acciones = ["Agregar", "Borrar", "Editar", "Venta", "Compra"]
+        combobox.addItems(acciones)
+
+    def populate_combobox_with_names(self, combobox):
+        combobox.clear()
+        usuarios = traer_todos_los_usuarios()  # Asegúrate de tener una función para traer todos los usuarios
+        nombres = [usuario[1] for usuario in usuarios]  # Suponiendo que el nombre está en la posición 1
+        combobox.addItems(nombres)  # Agregar los nombres al combobox
 
 class AdministracionTab:
     def __init__(self, ui, buscar_datos_tab, datos_tab):
