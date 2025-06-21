@@ -133,8 +133,6 @@ class DatosTab:
 
         # ----------------------
 
-        
-
 
     def start_thread(self, thread):
         self.threads.append(thread)
@@ -2495,7 +2493,7 @@ class DatosTab:
                         push_button_31.setEnabled(False)
                     if push_button_32:
                         push_button_32.setEnabled(False)
-                        
+
                     if label_90 and label_96:
                         label_90.setText("Cargando")
                         label_96.setText("usuario...")
@@ -2897,11 +2895,24 @@ class BuscarDatosTab:
         self.ui = ui
         self.datos_tab = datos_tab
 
+        #crear arreglo con threads abiertos
+        self.threads = []
+
         # se crean variables globales de uso para actualizar datos
         self.datos_tab.actualizar_variables_globales_de_uso(0, self.inicializar_ui_con_datos)
 
     def inicializar_ui_con_datos(self):
-        pass
+        self.boton_mov()
+
+    def start_thread(self, thread):
+        self.threads.append(thread)
+        thread.finished.connect(lambda: self.threads.remove(thread) if thread in self.threads else None)
+        thread.start()
+
+
+################
+################
+    # Movimientos
 
     def boton_mov(self):
         push_button_48 = self.ui.tab_3.findChild(QPushButton, "pushButton_48")
@@ -2978,10 +2989,161 @@ class BuscarDatosTab:
         combobox.addItems(acciones)
 
     def populate_combobox_with_names(self, combobox):
+        global usuarios_por_nombre_cache
         combobox.clear()
-        usuarios = traer_todos_los_usuarios()  # Asegúrate de tener una función para traer todos los usuarios
-        nombres = [usuario[1] for usuario in usuarios]  # Suponiendo que el nombre está en la posición 1
-        combobox.addItems(nombres)  # Agregar los nombres al combobox
+        if usuarios_por_nombre_cache:
+            nombres = sorted(usuarios_por_nombre_cache.keys())
+            combobox.addItems(nombres)
+
+    def filtro(self, combobox_17, combobox_18):
+        date_edit = self.ui.frame_54.findChild(QDateEdit, "dateEdit_3")
+        filtro = combobox_17.currentText()
+        global movimientos
+
+        if filtro == "Usuario" and combobox_18:
+            usuario_seleccionado = combobox_18.currentText()
+            self.mov_thread = MovimientosPorUsuarioThread(usuario_seleccionado)
+            self.mov_thread.resultado.connect(self._on_movimientos_obtenidos)
+            self.start_thread(self.mov_thread)
+
+        elif filtro == "Fecha" and date_edit:
+            fecha_qdate = date_edit.date()
+            fecha_seleccionada = f"{fecha_qdate.year()}-{fecha_qdate.month():02d}-{fecha_qdate.day():02d}"
+            self.mov_thread = MovimientosPorFechaThread(fecha_seleccionada)
+            self.mov_thread.resultado.connect(self._on_movimientos_obtenidos)
+            self.start_thread(self.mov_thread)
+
+        elif filtro == "Acción" and combobox_18:
+            accion_seleccionada = combobox_18.currentText()
+            self.mov_thread = MovimientosPorAccionThread(accion_seleccionada)
+            self.mov_thread.resultado.connect(self._on_movimientos_obtenidos)
+            self.start_thread(self.mov_thread)
+
+    def _on_movimientos_obtenidos(self, movimientos_obtenidos):
+        global movimientos
+        movimientos = movimientos_obtenidos
+        self.setear_tabla_movimientos()
+
+
+    def setear_tabla_movimientos(self):
+        global movimientos
+
+        table = self.ui.frame_52.findChild(QTableWidget, "tableWidget_5")
+        
+        if table:
+            # Aplicar estilo mediante stylesheet con el color especificado
+            table.setStyleSheet("""
+                QHeaderView::section {
+                    font-size: 20px;
+                    font-weight: bold;
+                    font-family: Segoe UI;
+                    background-color: rgb(243, 66, 66);
+                    color: black;
+                }
+                QTableWidget {
+                    gridline-color: rgb(243, 66, 66);
+                }
+                
+            """)
+
+            table.clearContents()  # Limpiar el contenido de la tabla
+            table.setRowCount(0)  # Reiniciar el número de filas
+            table.setEditTriggers(QTableWidget.NoEditTriggers)  # Deshabilitar edición
+        
+
+            # Configurar las filas de la tabla
+            if len(movimientos) == 0:
+             # Si no hay movimientos, mostrar un mensaje
+                table.setColumnCount(1)
+                table.setHorizontalHeaderLabels(["Mensaje"])
+                table.setRowCount(1)
+                item = QTableWidgetItem("No hay movimientos")
+                item.setFont(QFont("Segoe UI", 12, QFont.Bold))
+                item.setTextAlignment(Qt.AlignCenter)
+                table.setItem(0, 0, item)
+                
+            else:
+                table.setColumnCount(5)
+                table.setHorizontalHeaderLabels(["Usuario", "Fecha", "Acción", "Entidad Afectada", "Descripción"])
+                table.setRowCount(len(movimientos))
+
+                for row, movimiento in enumerate(movimientos):
+                    for col, value in enumerate(movimiento):
+                        # Si es la primera columna (ID del usuario), obtener el nombre del usuario
+                        if col == 0:
+                            # Buscar el nombre del usuario usando la variable global usuarios
+                            nombre_usuario = ""
+                            if usuarios:
+                                for u in usuarios:
+                                    if str(u[0]) == str(value):
+                                        nombre_usuario = u[1]
+                                        break
+                            item = QTableWidgetItem(str(nombre_usuario))
+                        elif col == 1:  # Si es la columna de fecha, formatear la fecha
+                            fecha_formateada = value.strftime("%d-%m-%Y")
+                            item = QTableWidgetItem(fecha_formateada)
+                        else:
+                            item = QTableWidgetItem(str(value))
+
+                        item.setFont(QFont("Segoe UI", 12))
+                        item.setTextAlignment(Qt.AlignCenter)
+                        table.setItem(row, col, item)
+
+    # Función para copiar una columna al portapapeles
+    def copy_column_to_clipboard(self, column_index):
+        table_widget = self.ui.frame_52.findChild(QTableWidget, "tableWidget_5")
+        if table_widget:
+            column_data = []
+            for row in range(table_widget.rowCount()):
+                item = table_widget.item(row, column_index)
+                if item:
+                    column_data.append(item.text())
+            clipboard = QApplication.clipboard()
+            clipboard.setText("\n".join(column_data))
+            self.show_copied_message("Columna copiada al portapapeles")
+
+    # Función para copiar una fila al portapapeles
+    def copy_row_to_clipboard(self, row_index):
+        table_widget = self.ui.frame_52.findChild(QTableWidget, "tableWidget_5")
+        if table_widget:
+            row_data = []
+            for col in range(table_widget.columnCount()):
+                item = table_widget.item(row_index, col)
+                if item:
+                    row_data.append(item.text())
+            clipboard = QApplication.clipboard()
+            clipboard.setText("\t".join(row_data))
+            self.show_copied_message("Fila copiada al portapapeles")
+
+    # Función para mostrar el mensaje de copiado
+    def show_copied_message(self, message):
+        copied_label = QLabel(message, self.ui.centralwidget)
+        copied_label.setStyleSheet("""
+            QLabel {
+            background-color: rgba(0, 0, 0, 150);
+            color: white;
+            font-size: 16pt;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 5px;
+            }
+        """)
+        copied_label.setAlignment(Qt.AlignCenter)
+        copied_label.setFixedSize(350, 50)
+
+        # Centrar el QLabel en la pantalla
+        screen_geometry = QApplication.primaryScreen().geometry()
+        x = (screen_geometry.width() - copied_label.width()) // 2
+        y = (screen_geometry.height() - copied_label.height()) // 2
+        copied_label.move(x, y)
+        copied_label.show()
+
+        # Ocultar el QLabel después de 2 segundos
+        QTimer.singleShot(2000, copied_label.hide)
+
+
+################
+################
 
 class AdministracionTab:
     def __init__(self, ui, buscar_datos_tab, datos_tab):

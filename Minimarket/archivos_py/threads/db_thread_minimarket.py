@@ -2,7 +2,7 @@ from PySide6.QtCore import QThread, Signal
 from archivos_py.db.productos import *
 
 
-
+# ventana datos 
 
 #Agregar productos:
 
@@ -418,3 +418,41 @@ class MovimientoUsuarioBorradoThread(QThread):
         # Reemplaza esto por tu lógica real
         cargar_movimiento_usuario_borrado(self.nombre_usuario, self.id_usuario, self.usuario_activo)
         self.finished.emit(True)
+
+
+
+######################################
+######################################
+
+ # ventana buscar datos
+
+
+class MovimientosPorUsuarioThread(QThread):
+    resultado = Signal(list)
+    def __init__(self, usuario):
+        super().__init__()
+        self.usuario = usuario
+
+    def run(self):
+        movimientos = traer_movimientos_por_usuario(self.usuario)
+        self.resultado.emit(movimientos)
+
+class MovimientosPorFechaThread(QThread):
+    resultado = Signal(list)
+    def __init__(self, fecha):
+        super().__init__()
+        self.fecha = fecha
+
+    def run(self):
+        movimientos = traer_movimientos_por_fecha(self.fecha)
+        self.resultado.emit(movimientos)
+
+class MovimientosPorAccionThread(QThread):
+    resultado = Signal(list)
+    def __init__(self, accion):
+        super().__init__()
+        self.accion = accion
+
+    def run(self):
+        movimientos = traer_movimientos_por_accion(self.accion)
+        self.resultado.emit(movimientos)    

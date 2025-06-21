@@ -521,6 +521,42 @@ def borrar_usuario(usuario):
         return False  # Retorna False si no se encontró el usuario
     
 
+def traer_movimientos_por_usuario(usuario_seleccionado):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"SELECT m.id_usuario, m.fecha_hora, m.tipo_accion, m.entidad_afectada, m.descripcion FROM movimientos m INNER JOIN usuarios u ON m.id_usuario = u.id_usuario WHERE u.nombre = '{usuario_seleccionado}' ORDER BY m.fecha_hora DESC"
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return data  # Devuelve una lista con todos los movimientos realizados por el usuario seleccionado
+
+def traer_movimientos_por_fecha(fecha_seleccionada):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"SELECT m.id_usuario, m.fecha_hora, m.tipo_accion, m.entidad_afectada, m.descripcion FROM movimientos m INNER JOIN usuarios u ON m.id_usuario = u.id_usuario WHERE DATE(m.fecha_hora) = '{fecha_seleccionada}' ORDER BY m.fecha_hora DESC"
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return data  # Devuelve una lista con todos los movimientos realizados en la fecha seleccionada
+
+def traer_movimientos_por_accion(accion_seleccionada):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"SELECT m.id_usuario, m.fecha_hora, m.tipo_accion, m.entidad_afectada, m.descripcion FROM movimientos m INNER JOIN usuarios u ON m.id_usuario = u.id_usuario WHERE m.tipo_accion = '{accion_seleccionada}' ORDER BY m.fecha_hora DESC"
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return data  # Devuelve una lista con todos los movimientos realizados con la acción seleccionada
+
+
+
+
+
+
+
 # MOVIMIENTOS:
 
 def cargar_movimiento_producto_agregado(input_id_value, usuario):
@@ -699,4 +735,3 @@ def cargar_movimiento_usuario_borrado(nombre_usuario, id_usuario, usuario_activo
     conn.commit()
     conn.close()
     cursor.close()
-    
