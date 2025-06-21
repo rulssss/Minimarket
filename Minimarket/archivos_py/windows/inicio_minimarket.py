@@ -122,6 +122,8 @@ class DatosTab:
 
         self.editar_usuario()
 
+        self.borrar_usuario()
+
         # ----------------------
 
         # mostrar usuario
@@ -2743,6 +2745,106 @@ class DatosTab:
 ################
 
     # Borrar usuario
+
+    def borrar_usuario(self):
+        label_95 = self.ui.frame_47.findChild(QLabel, "label_95")
+        push_buttton_40 = self.ui.frame_47.findChild(QPushButton, "pushButton_40")
+        label_100 = self.ui.stackedWidget.findChild(QLabel, "label_100")
+
+        if label_100:
+            label_100.setAlignment(Qt.AlignCenter)
+            label_100.setText("ADVERTENCIA!\n"
+            "Si borra un usuario con ventas y compras realizadas tambien seran borradas.")
+
+        if label_95:
+            label_95.setStyleSheet("color: transparent")
+
+        if push_buttton_40:
+            push_buttton_40.setStyleSheet("background-color: red; padding: 5px;")
+            push_buttton_40.clicked.connect(self.delete_usuario)
+
+    def delete_usuario(self):
+        line_edit_29 = self.ui.frame_47.findChild(QLineEdit, "lineEdit_29")
+        label_95 = self.ui.frame_47.findChild(QLabel, "label_95")
+        value_line_edit_29 = line_edit_29.text().strip()
+
+        if value_line_edit_29 == "":
+            label_95.setText("Complete el campo")
+            label_95.setStyleSheet("color: red; font-weight: bold")
+            line_edit_29.setFocus()
+            return
+
+        if str(usuario_activo) == str(value_line_edit_29):
+            label_95.setText("No se puede borrar el usuario activo")
+            label_95.setStyleSheet("color: red; font-weight: bold")
+            QTimer.singleShot(6000, lambda: label_95.setStyleSheet("color: transparent"))
+            line_edit_29.clear()
+            line_edit_29.setFocus()
+            return
+        
+        push_buttton_40 = self.ui.frame_47.findChild(QPushButton, "pushButton_40")
+        if push_buttton_40:
+            push_buttton_40.setEnabled(False)
+            
+        # Hilo para traer el id del usuario
+        self.traer_id_usuario_thread = TraerIdUsuarioThread(value_line_edit_29)
+        def on_id_obtenido(id_usuario):
+            if id_usuario is not None:
+
+                label_95 = self.ui.frame_47.findChild(QLabel, "label_95")
+                if label_95:
+                    label_95.setText("Borrando usuario...")
+                    label_95.setStyleSheet("color: green; font-weight: bold")
+
+                # Hilo para borrar el usuario
+                self.borrar_usuario_thread = BorrarUsuarioThread(value_line_edit_29)
+                def on_usuario_borrado(exito):
+                    if exito:
+                        # Hilo para cargar el movimiento de usuario borrado
+                        self.movimiento_usuario_borrado_thread = MovimientoUsuarioBorradoThread(value_line_edit_29, id_usuario, usuario_activo)
+                        def on_movimiento_cargado(_):
+                            
+                            combobox_16 = self.ui.frame_45.findChild(QComboBox, "comboBox_16")
+                            self.populate_combobox_with_names(combobox_16)
+                        self.movimiento_usuario_borrado_thread.finished.connect(on_movimiento_cargado)
+                        self.movimiento_usuario_borrado_thread.start()
+
+                        label_95 = self.ui.frame_47.findChild(QLabel, "label_95")
+                        if label_95:
+                            label_95.setText("Usuario borrado con éxito")
+                            label_95.setStyleSheet("color: green; font-weight: bold")
+                            QTimer.singleShot(6000, lambda: label_95.setStyleSheet("color: transparent"))
+
+                        line_edit_29 = self.ui.frame_47.findChild(QLineEdit, "lineEdit_29")
+                        if line_edit_29:
+                            line_edit_29.clear()
+                            line_edit_29.setFocus()
+
+                        push_buttton_40 = self.ui.frame_47.findChild(QPushButton, "pushButton_40")
+                        if push_buttton_40:
+                            push_buttton_40.setEnabled(True)
+
+                    else:
+                        print("No se pudo borrar el usuario")
+
+                self.borrar_usuario_thread.resultado.connect(on_usuario_borrado)
+                self.borrar_usuario_thread.start()
+            else:
+                label_95 = self.ui.frame_47.findChild(QLabel, "label_95")
+                label_95.setText("Usuario no encontrado")
+                label_95.setStyleSheet("color: red; font-weight: bold")
+        
+                push_buttton_40 = self.ui.frame_47.findChild(QPushButton, "pushButton_40")
+                if push_buttton_40:
+                    push_buttton_40.setEnabled(True)
+
+                line_edit_29 = self.ui.frame_47.findChild(QLineEdit, "lineEdit_29")
+                if line_edit_29:
+                    line_edit_29.selectAll()
+                    line_edit_29.setFocus()
+
+        self.traer_id_usuario_thread.resultado.connect(on_id_obtenido)
+        self.traer_id_usuario_thread.start()
 
 
 ################

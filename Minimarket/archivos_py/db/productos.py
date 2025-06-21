@@ -492,7 +492,34 @@ def actualizar_usuario(id, tipo_usuario, contrasenia, mail):
         cursor.close()
         return False
 
+def borrar_usuario(usuario):
 
+    conn = get_connection()
+    cursor = conn.cursor()
+    # Buscar el id del usuario por su nombre
+    query_id_usuario = f"SELECT id_usuario FROM usuarios WHERE nombre = '{usuario}'"
+    cursor.execute(query_id_usuario)
+    data = cursor.fetchall()
+
+    if data:
+        id_usuario = data[0][0]
+
+        # Borrar la contraseña asociada al id del usuario
+        query_delete_password = f"DELETE FROM contrasenas WHERE id_usuario = {id_usuario}"
+        cursor.execute(query_delete_password)
+
+        # Borrar el usuario por su id
+        query_delete_user = f"DELETE FROM usuarios WHERE id_usuario = {id_usuario}"
+        cursor.execute(query_delete_user)
+        conn.commit()
+        conn.close()
+        cursor.close()
+        return True  # Retorna True si se borró correctamente
+    else:
+        conn.close()
+        cursor.close()
+        return False  # Retorna False si no se encontró el usuario
+    
 
 # MOVIMIENTOS:
 
@@ -660,3 +687,16 @@ def cargar_movimiento_editar_usuario(id_usuario, nombre_usuario,usuario_activo):
     conn.close()
     cursor.close()
 
+def cargar_movimiento_usuario_borrado(nombre_usuario, id_usuario, usuario_activo):
+                    
+    id_usuario = traer_id_usuario(usuario_activo)
+    fecha_hora = datetime.now().astimezone().isoformat()
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"INSERT INTO movimientos (id_usuario, fecha_hora, tipo_accion, entidad_afectada, id_entidad, descripcion) VALUES ({id_usuario}, '{fecha_hora}', 'Borrar', 'Usuarios', {id_usuario}, 'Usuario borrado: {nombre_usuario}')"
+    cursor.execute(query)
+    conn.commit()
+    conn.close()
+    cursor.close()
+    

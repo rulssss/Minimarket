@@ -375,3 +375,46 @@ class CargarMovimientoEditarUsuarioThread(QThread):
     def run(self):
         cargar_movimiento_editar_usuario(self.id_usuario, self.nombre_usuario, self.usuario_activo)
 
+
+class TraerIdUsuarioThread(QThread):
+    resultado = Signal(object)
+    def __init__(self, nombre_usuario):
+        super().__init__()
+        self.nombre_usuario = nombre_usuario
+
+    def run(self):
+        # Simula consulta a la base de datos
+        # Reemplaza esto por tu lógica real
+        id_usuario = traer_id_usuario(self.nombre_usuario)
+        self.resultado.emit(id_usuario)
+
+    
+
+# Hilo para borrar el usuario
+class BorrarUsuarioThread(QThread):
+    resultado = Signal(bool)
+    def __init__(self, nombre_usuario):
+        super().__init__()
+        self.nombre_usuario = nombre_usuario
+
+    def run(self):
+        # Simula borrado en la base de datos
+        # Reemplaza esto por tu lógica real
+        exito = borrar_usuario(self.nombre_usuario)
+        self.resultado.emit(exito)
+
+
+# Hilo para cargar el movimiento de usuario borrado
+class MovimientoUsuarioBorradoThread(QThread):
+    finished = Signal(object)
+    def __init__(self, nombre_usuario, id_usuario, usuario_activo):
+        super().__init__()
+        self.nombre_usuario = nombre_usuario
+        self.id_usuario = id_usuario
+        self.usuario_activo = usuario_activo
+
+    def run(self):
+        # Simula registrar el movimiento
+        # Reemplaza esto por tu lógica real
+        cargar_movimiento_usuario_borrado(self.nombre_usuario, self.id_usuario, self.usuario_activo)
+        self.finished.emit(True)
