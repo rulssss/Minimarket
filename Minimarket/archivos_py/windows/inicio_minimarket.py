@@ -2466,69 +2466,96 @@ class DatosTab:
         push_button_31 = self.ui.frame_29.findChild(QPushButton, "pushButton_31")
         push_button_32 = self.ui.frame_29.findChild(QPushButton, "pushButton_32")
 
-        if value_combobox_14 and value_line_edit_23 and value_line_edit_24 and "@" in value_line_edit:
+        if value_combobox_14 and value_line_edit_23 and value_line_edit_24:
             if len(value_line_edit_24) >= 8:
+                # verificar si el email es valido
+                if "@gmail" in value_line_edit or "@hotmail" in value_line_edit or "@outlook" in value_line_edit:
 
-                # verificar si el usuario ya existe
-                if value_line_edit_23 in [usuario[1] for usuario in usuarios]:
-                    label_90.setText("El usuario")
-                    label_90.setStyleSheet("color: red; font-weight: bold")
-                    label_96.setText("ya existe")
-                    label_96.setStyleSheet("color: red; font-weight: bold")
-                    line_edit_23.setFocus()
-                    line_edit_23.selectAll()
-                    return
-                # verificcar si el email ya existe
-                
-                if value_line_edit.lower() in [usuario[2].lower() for usuario in usuarios]:
-                    label_90.setText("El email ya esta en uso")
-                    label_90.setStyleSheet("color: red; font-weight: bold")
-                    label_96.setText("por otro usuario")
-                    label_96.setStyleSheet("color: red; font-weight: bold")
-                    line_edit.setFocus()
-                    line_edit.selectAll()
-                    return
-                
-                if push_button_31:
-                    push_button_31.setEnabled(False)
-                if push_button_32:
-                    push_button_32.setEnabled(False)
-                if label_90 and label_96:
-                    label_90.setText("Cargando")
-                    label_96.setText("usuario...")
-                    label_96.setStyleSheet("color: green; font-weight: bold")
-                    label_90.setStyleSheet("color: green; font-weight: bold")
+                    # verificar si el usuario ya existe
+                    if value_line_edit_23 in [usuario[1] for usuario in usuarios]:
+                        label_90.setText("El usuario")
+                        label_90.setStyleSheet("color: red; font-weight: bold")
+                        label_96.setText("ya existe")
+                        label_96.setStyleSheet("color: red; font-weight: bold")
+                        line_edit_23.setFocus()
+                        line_edit_23.selectAll()
+                        return
+                    # verificcar si el email ya existe
 
-                self.registro_thread = AgregarRegistroUsuarioThread(value_combobox_14, value_line_edit_23, value_line_edit_24, value_line_edit)
-                def on_registro_finalizado(exito):
-                    if exito:
-                        self.movimiento_thread = CargarMovimientoAgregarUsuarioThread(value_line_edit_23, usuario_activo)
-                        self.movimiento_thread.start()
-                        self.clear_inputs_agregar_usuario()
-                        combobox_16 = self.ui.frame_45.findChild(QComboBox, "comboBox_16")
-                        self.populate_combobox_with_names(combobox_16)
+                    if value_line_edit.lower() in [usuario[2].lower() for usuario in usuarios]:
+                        label_90.setText("El email ya esta en uso")
+                        label_90.setStyleSheet("color: red; font-weight: bold")
+                        label_96.setText("por otro usuario")
+                        label_96.setStyleSheet("color: red; font-weight: bold")
+                        line_edit.setFocus()
+                        line_edit.selectAll()
+                        return
+
+                    if push_button_31:
+                        push_button_31.setEnabled(False)
+                    if push_button_32:
+                        push_button_32.setEnabled(False)
                         
-                        global usuarios_cache, usuarios_por_nombre_cache
-                        usuarios_cache = None
-                        usuarios_por_nombre_cache = None
-                        self.actualizar_variables_globales_de_uso(4, lambda: (
-                            self.populate_combobox_with_names(self.ui.frame_45.findChild(QComboBox, "comboBox_16"))
-                        ))
-
-                        label_90.setText("Usuario agregado")
-                        label_96.setText("con éxito")
+                    if label_90 and label_96:
+                        label_90.setText("Cargando")
+                        label_96.setText("usuario...")
                         label_96.setStyleSheet("color: green; font-weight: bold")
                         label_90.setStyleSheet("color: green; font-weight: bold")
-                        QTimer.singleShot(6000, lambda: label_96.setStyleSheet("color: transparent"))
-                        QTimer.singleShot(6000, lambda: label_90.setStyleSheet("color: transparent"))
-                        # Actualizar cache de usuarios
-                        
-                    else:
-                        print("no se pudo cargar el usuario")
-                self.registro_thread.resultado.connect(on_registro_finalizado)
-                self.registro_thread.start()
 
-            else:
+                    self.registro_thread = AgregarRegistroUsuarioThread(value_combobox_14, value_line_edit_23, value_line_edit_24, value_line_edit)
+                    def on_registro_finalizado(exito):
+                        if exito:
+                            label_90 = self.ui.frame_29.findChild(QLabel, "label_90")
+                            label_96 = self.ui.frame_29.findChild(QLabel, "label_96")
+
+                            self.movimiento_thread = CargarMovimientoAgregarUsuarioThread(value_line_edit_23, usuario_activo)
+                            self.movimiento_thread.start()
+                            self.clear_inputs_agregar_usuario()
+                            combobox_16 = self.ui.frame_45.findChild(QComboBox, "comboBox_16")
+                            self.populate_combobox_with_names(combobox_16)
+
+                            global usuarios_cache, usuarios_por_nombre_cache
+                            usuarios_cache = None
+                            usuarios_por_nombre_cache = None
+                            self.actualizar_variables_globales_de_uso(4, lambda: (
+                                self.populate_combobox_with_names(self.ui.frame_45.findChild(QComboBox, "comboBox_16"))
+                            ))
+
+                            label_90.setText("Usuario agregado")
+                            label_96.setText("con éxito")
+                            label_96.setStyleSheet("color: green; font-weight: bold")
+                            label_90.setStyleSheet("color: green; font-weight: bold")
+                            QTimer.singleShot(6000, lambda: label_96.setStyleSheet("color: transparent"))
+                            QTimer.singleShot(6000, lambda: label_90.setStyleSheet("color: transparent"))
+                            # Actualizar cache de usuarios
+                            global usuarios
+                            usuarios = None
+                            
+                            self.actualizar_variables_globales_de_uso(1, lambda: (
+                                self.populate_combobox_with_names(self.ui.frame_45.findChild(QComboBox, "comboBox_16")),
+                            ))
+
+                            push_button_31 = self.ui.frame_29.findChild(QPushButton, "pushButton_31")
+                            push_button_32 = self.ui.frame_29.findChild(QPushButton, "pushButton_32")
+                            if push_button_31:
+                                push_button_31.setEnabled(True)
+                            if push_button_32:
+                                push_button_32.setEnabled(True)
+
+
+                        else:
+                           print("no se pudo cargar el usuario")
+                    self.registro_thread.resultado.connect(on_registro_finalizado)
+                    self.registro_thread.start()
+                else:
+                    label_90.setText("Complete correctamente")
+                    label_96.setText("el email")
+                    label_96.setStyleSheet("color: red; font-weight: bold")
+                    label_90.setStyleSheet("color: red; font-weight: bold")
+                    line_edit.setFocus()
+                    line_edit.selectAll()
+
+            else :
                 label_90.setText("La contraseña debe tener")
                 label_96.setText("al menos 8 caracteres")
                 label_96.setStyleSheet("color: red; font-weight: bold")
@@ -2727,9 +2754,8 @@ class DatosTab:
                 QTimer.singleShot(6000, lambda: label_93.setStyleSheet("color: transparent"))
                 QTimer.singleShot(6000, lambda: label_98.setStyleSheet("color: transparent"))
 
-                global usuarios_cache, usuarios_por_nombre_cache
+                global usuarios_cache
                 usuarios_cache = None
-                usuarios_por_nombre_cache = None
                 combobox_16 = self.ui.frame_45.findChild(QComboBox, "comboBox_16")
                 self.actualizar_variables_globales_de_uso(4, lambda: (
                     self.populate_combobox_with_names(combobox_16)
