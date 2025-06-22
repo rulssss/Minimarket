@@ -1,9 +1,12 @@
-from PySide6.QtWidgets import QMainWindow, QPushButton, QLineEdit, QComboBox, QTableWidget, QLabel, QDoubleSpinBox, QTableWidgetItem, QApplication, QAbstractButton, QMessageBox, QCheckBox, QDateEdit
+from PySide6.QtWidgets import QMainWindow, QPushButton, QLineEdit, QVBoxLayout, QComboBox, QTableWidget, QLabel, QDoubleSpinBox, QTableWidgetItem, QApplication, QAbstractButton, QMessageBox, QCheckBox, QDateEdit, QTextEdit, QWidget
 from PySide6.QtCore import QTimer, Qt, QDate
 from PySide6.QtGui import QIcon, QFont, QIntValidator
 from archivos_py.ui.minimarket import Ui_MainWindow
 from archivos_py.threads.db_thread_minimarket import *
 import sys
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
+from datetime import datetime, timedelta
 
 
 
@@ -22,7 +25,7 @@ categorias_por_nombre_cache = None
 usuarios_por_nombre_cache = None
 
 
-#$ BUSCAR DATOS
+#$ BUSCAR DATOS PERIODO EN ESTADISTICAS DA ERROR
 # -----------------------------------------------------
 
 # 
@@ -2903,6 +2906,8 @@ class BuscarDatosTab:
 
     def inicializar_ui_con_datos(self):
         self.boton_mov()
+        self.boton_corte()
+        self.boton_estadisticas()
 
     def start_thread(self, thread):
         self.threads.append(thread)
@@ -3144,6 +3149,1547 @@ class BuscarDatosTab:
 
 ################
 ################
+
+    # cortes
+
+    def boton_corte(self):
+        push_button_15 = self.ui.tab_3.findChild(QPushButton, "pushButton_15")
+        if push_button_15:
+            push_button_15.clicked.connect(self.inicializar_comboboxes_y_boton)
+
+    def inicializar_comboboxes_y_boton(self):
+        # Obtener los QComboBox
+        combobox_10_dia = self.ui.frame_32.findChild(QComboBox, "comboBox_10")
+        combobox_9_mes = self.ui.frame_32.findChild(QComboBox, "comboBox_9")
+        combobox_8_anio = self.ui.frame_32.findChild(QComboBox, "comboBox_8")
+        combobox_12 = self.ui.frame_31.findChild(QComboBox, "comboBox_12")
+        combobox_13 = self.ui.frame_31.findChild(QComboBox, "comboBox_13")
+        textedit = self.ui.frame_27.findChild(QTextEdit, "textEdit")
+        push_button_47 = self.ui.frame_31.findChild(QPushButton, "pushButton_47")
+
+        # Obtener la fecha actual
+        hoy = datetime.now()
+        anio_actual = hoy.year
+        mes_actual = hoy.month
+        dia_actual = hoy.day
+    
+        # Inicializar ComboBox de días
+        if combobox_10_dia:
+            combobox_10_dia.setStyleSheet("background-color: rgb(226, 245, 255);")
+            combobox_10_dia.setMaxVisibleItems(5)  # Mostrar un máximo de 5 elementos visibles
+            self.actualizar_dias_combobox(combobox_10_dia, mes_actual, anio_actual)
+            combobox_10_dia.setCurrentText(str(dia_actual))
+            combobox_10_dia.currentTextChanged.connect(lambda : self.enviar_a_setear_line_edits())
+    
+        # Inicializar ComboBox de meses
+        if combobox_9_mes:
+            combobox_9_mes.setStyleSheet("background-color: rgb(226, 245, 255);")
+            combobox_9_mes.addItems(["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                                     "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"])
+            combobox_9_mes.setCurrentIndex(mes_actual)  # Los índices comienzan en 0
+            combobox_9_mes.currentTextChanged.connect(lambda : self.enviar_a_setear_line_edits())
+    
+        # Inicializar ComboBox de años
+        if combobox_8_anio:
+            combobox_8_anio.setStyleSheet("background-color: rgb(226, 245, 255);")
+            combobox_8_anio.addItems([str(anio_actual - 1), str(anio_actual), str(anio_actual + 1)])
+            combobox_8_anio.setCurrentText(str(anio_actual))
+            combobox_8_anio.currentTextChanged.connect(lambda : self.enviar_a_setear_line_edits())
+            
+            # Conectar el evento de cambio de año para agregar dinámicamente un año posterior
+            combobox_8_anio.currentTextChanged.connect(lambda: self.actualizar_anios_combobox(combobox_8_anio, anio_actual))
+
+
+        # Conectar el evento de cambio de mes o año para actualizar los días
+        if combobox_9_mes and combobox_8_anio and combobox_10_dia:
+            combobox_9_mes.currentIndexChanged.connect(
+                lambda: self.actualizar_dias_combobox(combobox_10_dia, combobox_9_mes.currentIndex() + 1, int(combobox_8_anio.currentText()))
+            )
+            combobox_8_anio.currentTextChanged.connect(
+                lambda: self.actualizar_dias_combobox(combobox_10_dia, combobox_9_mes.currentIndex() + 1, int(combobox_8_anio.currentText()))
+            )
+
+        # Inicializar ComboBox de métodos de pago o usuarios solo si esta vacio
+        if combobox_12:
+            if combobox_12.count() == 0:
+                combobox_12.addItem("")
+                combobox_12.addItem("Metodo de Pago")
+                combobox_12.addItem("Usuario")
+
+            # Conectar el evento de cambio de texto para actualizar el combobox_13
+            combobox_12.currentTextChanged.connect(lambda: self.actualizar_combobox_13(combobox_12, combobox_13))
+            
+        
+        if combobox_13:
+            # Conectar el evento de cambio de texto para actualizar los datos
+            combobox_13.currentTextChanged.connect(lambda: self.enviar_a_setear_line_edits())   
+
+        if textedit:
+            if not textedit.toPlainText().strip():
+                self.enviar_a_setear_line_edits()
+
+        if push_button_47:
+            push_button_47.clicked.connect(self.hacer_corte)
+
+
+    def traer_nom_producto(self, id_producto):
+        global productos_por_id_cache
+        if productos_por_id_cache and str(id_producto) in productos_por_id_cache:
+            return productos_por_id_cache[str(id_producto)][1]
+        return ""
+    
+    def traer_usuario(self, id_usuario):
+        global usuarios_por_nombre_cache
+        if usuarios_por_nombre_cache:
+            for usuario in usuarios_por_nombre_cache.values():
+                if str(usuario[0]) == str(id_usuario):
+                    return usuario[1]
+        return ""
+    
+    def obtener_metodo_pago_id(self, nombre_metodo, callback):
+        self.metodo_pago_id_thread = TraerMetodoPagoIdThread(nombre_metodo)
+        self.metodo_pago_id_thread.resultado.connect(callback)
+        self.start_thread(self.metodo_pago_id_thread)
+
+    def obtener_metodo_pago(self, id_metodo, callback):
+        self.metodo_pago_thread = TraerMetodoPagoThread(id_metodo)
+        self.metodo_pago_thread.resultado.connect(callback)
+        self.start_thread(self.metodo_pago_thread)
+
+    def obtener_datos_ventas(self, id_metodo_o_usuario, fecha, callback):
+        self.ventas_thread = TraerDatosVentasMetodoUsuarioThread(id_metodo_o_usuario, fecha)
+        self.ventas_thread.resultado.connect(callback)
+        self.start_thread(self.ventas_thread)
+
+    def obtener_datos_compras(self, id_metodo_o_usuario, fecha, callback):
+        self.compras_thread = TraerDatosComprasMetodoUsuarioThread(id_metodo_o_usuario, fecha)
+        self.compras_thread.resultado.connect(callback)
+        self.compras_thread.start()
+    
+    def obtener_datos_arqueo_ventas_fecha(self, fecha, callback):
+        self.arqueo_ventas_thread = TraerDatosArqueoVentasFechaThread(fecha)
+        self.arqueo_ventas_thread.resultado.connect(callback)
+        self.start_thread(self.arqueo_ventas_thread)
+
+    def obtener_datos_arqueo_compras_fecha(self, fecha, callback):
+        self.arqueo_compras_thread = TraerDatosArqueoComprasFechaThread(fecha)
+        self.arqueo_compras_thread.resultado.connect(callback)
+        self.start_thread(self.arqueo_compras_thread)
+
+    def enviar_a_setear_line_edits(self):
+        combobox_10_dia = self.ui.frame_32.findChild(QComboBox, "comboBox_10")
+        combobox_9_mes = self.ui.frame_32.findChild(QComboBox, "comboBox_9")
+        combobox_8_anio = self.ui.frame_32.findChild(QComboBox, "comboBox_8")
+        combobox_12 = self.ui.frame_31.findChild(QComboBox, "comboBox_12")
+        combobox_13 = self.ui.frame_31.findChild(QComboBox, "comboBox_13")
+        valor_combobox_12 = combobox_12.currentText()
+        valor_combobox_13 = combobox_13.currentText()
+        valor_combobox_10_dia = combobox_10_dia.currentText()
+        valor_combobox_9_mes = combobox_9_mes.currentText()
+        valor_combobox_8_anio = combobox_8_anio.currentText()
+        textedit_compras = self.ui.frame_23.findChild(QTextEdit, "textEdit_2")
+        textedit_ventas = self.ui.frame_27.findChild(QTextEdit, "textEdit")
+        textedit_compras.setReadOnly(True)
+        textedit_ventas.setReadOnly(True)
+
+        label_58 = self.ui.frame_31.findChild(QLabel, "label_58")
+        if label_58:
+            label_58.setStyleSheet("color: green; font-weight: bold")
+        label_47 = self.ui.frame_30.findChild(QLabel, "label_47")
+        if label_47:
+            label_47.setStyleSheet("color: rgb(230, 180, 80); font-weight: bold")
+
+        if valor_combobox_8_anio:
+            if not valor_combobox_9_mes and not valor_combobox_10_dia:
+                fecha = valor_combobox_8_anio
+            elif valor_combobox_9_mes and not valor_combobox_10_dia:
+                fecha = f"{valor_combobox_8_anio}-{combobox_9_mes.currentIndex()}"
+            elif valor_combobox_9_mes and valor_combobox_10_dia:
+                fecha = f"{valor_combobox_8_anio}-{combobox_9_mes.currentIndex()}-{valor_combobox_10_dia}"
+            else:
+                fecha = None
+
+            if valor_combobox_12 == "Metodo de Pago" and valor_combobox_13:
+                def on_metodo_pago_id_obtenido(metodo_pago_id):
+                    def on_ventas_obtenidas(datos_ventas):
+                        total_ventas = 0
+                        if textedit_ventas:
+                            textedit_ventas.setFont(QFont("Segoe UI", 16))
+                            textedit_ventas.clear()
+                            for dato in datos_ventas:
+                                usuario = self.traer_usuario(dato[0])
+                                fecha_hora = dato[1].strftime("%d-%m-%Y %H:%M:%S")
+                                def on_metodo_pago_obtenido(metodo_pago):
+                                    producto = self.traer_nom_producto(dato[3])
+                                    cantidad = dato[4]
+                                    precio_unitario = dato[5]
+                                    nonlocal total_ventas
+                                    total_ventas += precio_unitario * cantidad
+                                    text = (
+                                        f"Usuario: {usuario}, "
+                                        f"Fecha y Hora: {fecha_hora}, "
+                                        f"Método de Pago: {metodo_pago}, "
+                                        f"Producto: {producto}, "
+                                        f"Cantidad: {cantidad}, "
+                                        f"Precio Unitario: ${precio_unitario}\n"
+                                    )
+                                    textedit_ventas.append(text)
+                                    if label_58:
+                                        label_58.setText(f"${total_ventas:.2f}")
+                                self.obtener_metodo_pago(dato[2], on_metodo_pago_obtenido)
+                    def on_compras_obtenidas(datos_compras):
+                        total_compras = 0
+                        if textedit_compras:
+                            textedit_compras.setFont(QFont("Segoe UI", 16))
+                            textedit_compras.clear()
+                            for dato in datos_compras:
+                                usuario = self.traer_usuario(dato[0])
+                                fecha_hora = dato[1].strftime("%d-%m-%Y %H:%M:%S")
+                                def on_metodo_pago_obtenido(metodo_pago):
+                                    producto = self.traer_nom_producto(dato[3])
+                                    cantidad = dato[4]
+                                    precio_unitario = dato[5]
+                                    nonlocal total_compras
+                                    total_compras += cantidad * precio_unitario
+                                    text = (
+                                        f"Usuario: {usuario}, "
+                                        f"Fecha y Hora: {fecha_hora}, "
+                                        f"Método de Pago: {metodo_pago}, "
+                                        f"Producto: {producto}, "
+                                        f"Cantidad: {cantidad}, "
+                                        f"Precio Unitario: ${precio_unitario}\n"
+                                    )
+                                    textedit_compras.append(text)
+                                    if label_47:
+                                        label_47.setText(f"${total_compras:.2f}")
+                                self.obtener_metodo_pago(dato[2], on_metodo_pago_obtenido)
+                    self.obtener_datos_ventas(metodo_pago_id, fecha, on_ventas_obtenidas)
+                    self.obtener_datos_compras(metodo_pago_id, fecha, on_compras_obtenidas)
+                self.obtener_metodo_pago_id(valor_combobox_13, on_metodo_pago_id_obtenido)
+
+            elif valor_combobox_12 == "Usuario" and valor_combobox_13:
+                global usuarios_por_nombre_cache
+                usuario_id = None
+                if usuarios_por_nombre_cache and valor_combobox_13 in usuarios_por_nombre_cache:
+                    usuario_id = usuarios_por_nombre_cache[valor_combobox_13][0]
+                if usuario_id:
+                    def on_ventas_obtenidas(datos_ventas):
+                        total_ventas = 0
+                        if textedit_ventas:
+                            textedit_ventas.setFont(QFont("Segoe UI", 16))
+                            textedit_ventas.clear()
+                            for dato in datos_ventas:
+                                usuario = self.traer_usuario(dato[0])
+                                fecha_hora = dato[1].strftime("%d-%m-%Y %H:%M:%S")
+                                def on_metodo_pago_obtenido(metodo_pago):
+                                    producto = self.traer_nom_producto(dato[3])
+                                    cantidad = dato[4]
+                                    precio_unitario = dato[5]
+                                    nonlocal total_ventas
+                                    total_ventas += precio_unitario * cantidad
+                                    text = (
+                                        f"Usuario: {usuario}, "
+                                        f"Fecha y Hora: {fecha_hora}, "
+                                        f"Método de Pago: {metodo_pago}, "
+                                        f"Producto: {producto}, "
+                                        f"Cantidad: {cantidad}, "
+                                        f"Precio Unitario: ${precio_unitario}\n"
+                                    )
+                                    textedit_ventas.append(text)
+                                    if label_58:
+                                        label_58.setText(f"${total_ventas:.2f}")
+                                self.obtener_metodo_pago(dato[2], on_metodo_pago_obtenido)
+                    def on_compras_obtenidas(datos_compras):
+                        total_compras = 0
+                        if textedit_compras:
+                            textedit_compras.setFont(QFont("Segoe UI", 16))
+                            textedit_compras.clear()
+                            for dato in datos_compras:
+                                usuario = self.traer_usuario(dato[0])
+                                fecha_hora = dato[1].strftime("%d-%m-%Y %H:%M:%S")
+                                def on_metodo_pago_obtenido(metodo_pago):
+                                    producto = self.traer_nom_producto(dato[3])
+                                    cantidad = dato[4]
+                                    precio_unitario = dato[5]
+                                    nonlocal total_compras
+                                    total_compras += cantidad * precio_unitario
+                                    text = (
+                                        f"Usuario: {usuario}, "
+                                        f"Fecha y Hora: {fecha_hora}, "
+                                        f"Método de Pago: {metodo_pago}, "
+                                        f"Producto: {producto}, "
+                                        f"Cantidad: {cantidad}, "
+                                        f"Precio Unitario: ${precio_unitario}\n"
+                                    )
+                                    textedit_compras.append(text)
+                                    if label_47:
+                                        label_47.setText(f"${total_compras:.2f}")
+                                self.obtener_metodo_pago(dato[2], on_metodo_pago_obtenido)
+                    self.obtener_datos_ventas(usuario_id, fecha, on_ventas_obtenidas)
+                    self.obtener_datos_compras(usuario_id, fecha, on_compras_obtenidas)
+
+            else:
+                def on_ventas_arqueo_obtenidas(datos_ventas):
+                    total_ventas = 0
+                    if textedit_ventas:
+                        textedit_ventas.setFont(QFont("Segoe UI", 16))
+                        textedit_ventas.clear()
+                        for dato in datos_ventas:
+                            usuario = self.traer_usuario(dato[0])
+                            fecha_hora = dato[1].strftime("%d-%m-%Y %H:%M:%S")
+                            def on_metodo_pago_obtenido(metodo_pago):
+                                producto = self.traer_nom_producto(dato[3])
+                                cantidad = dato[4]
+                                precio_unitario = dato[5]
+                                nonlocal total_ventas
+                                total_ventas += precio_unitario * cantidad
+                                text = (
+                                    f"Usuario: {usuario}, "
+                                    f"Fecha y Hora: {fecha_hora}, "
+                                    f"Método de Pago: {metodo_pago}, "
+                                    f"Producto: {producto}, "
+                                    f"Cantidad: {cantidad}, "
+                                    f"Precio Unitario: ${precio_unitario}\n"
+                                )
+                                textedit_ventas.append(text)
+                                if label_58:
+                                    label_58.setText(f"${total_ventas:.2f}")
+                            self.obtener_metodo_pago(dato[2], on_metodo_pago_obtenido)
+                def on_compras_arqueo_obtenidas(datos_compras):
+                    total_compras = 0
+                    if textedit_compras:
+                        textedit_compras.setFont(QFont("Segoe UI", 16))
+                        textedit_compras.clear()
+                        for dato in datos_compras:
+                            usuario = self.traer_usuario(dato[0])
+                            fecha_hora = dato[1].strftime("%d-%m-%Y %H:%M:%S")
+                            def on_metodo_pago_obtenido(metodo_pago):
+                                producto = self.traer_nom_producto(dato[3])
+                                cantidad = dato[4]
+                                precio_unitario = dato[5]
+                                nonlocal total_compras
+                                total_compras += cantidad * precio_unitario
+                                text = (
+                                    f"Usuario: {usuario}, "
+                                    f"Fecha y Hora: {fecha_hora}, "
+                                    f"Método de Pago: {metodo_pago}, "
+                                    f"Producto: {producto}, "
+                                    f"Cantidad: {cantidad}, "
+                                    f"Precio Unitario: ${precio_unitario}\n"
+                                )
+                                textedit_compras.append(text)
+                                if label_47:
+                                    label_47.setText(f"${total_compras:.2f}")
+                            self.obtener_metodo_pago(dato[2], on_metodo_pago_obtenido)
+                self.obtener_datos_arqueo_ventas_fecha(fecha, on_ventas_arqueo_obtenidas)
+                self.obtener_datos_arqueo_compras_fecha(fecha, on_compras_arqueo_obtenidas)
+
+        if textedit_compras:
+            textedit_compras.setReadOnly(True)
+        if textedit_ventas:
+            textedit_ventas.setReadOnly(True)
+
+
+    def actualizar_combobox_13(self, combobox_12, combobox_13):
+        combobox_13.clear()
+
+        if combobox_12.currentText() == "Metodo de Pago":
+            def on_metodos_obtenidos(metodos):
+                combobox_13.addItems([metodo[0] for metodo in metodos])
+            self.metodos_pago_thread = TraerMetodosDePagoThread()
+            self.metodos_pago_thread.resultado.connect(on_metodos_obtenidos)
+            self.metodos_pago_thread.start()
+
+        elif combobox_12.currentText() == "Usuario":
+            # Usar el cache global de usuarios
+            global usuarios_por_nombre_cache
+            if usuarios_por_nombre_cache:
+                nombres = sorted(usuarios_por_nombre_cache.keys())
+                combobox_13.addItems(nombres)
+
+        elif combobox_12.currentText() == "Categoría":
+            # Usar el cache global de categorías
+            global categorias_por_nombre_cache
+            if categorias_por_nombre_cache:
+                nombres = sorted(categorias_por_nombre_cache.keys())
+                combobox_13.addItems(nombres)
+
+        else:
+            combobox_13.addItem("")
+
+    def actualizar_dias_combobox(self, combobox_10_dia, mes, anio):
+        # Determinar el número de días en el mes
+        if mes in [1, 3, 5, 7, 8, 10, 12]:  # Meses con 31 días
+            dias = 31
+        elif mes in [4, 6, 9, 11]:  # Meses con 30 días
+            dias = 30
+        else:  # Febrero
+            # Año bisiesto: divisible por 4 y (no divisible por 100 o divisible por 400)
+            dias = 29 if (anio % 4 == 0 and (anio % 100 != 0 or anio % 400 == 0)) else 28
+    
+        # Actualizar los días en el ComboBox
+        combobox_10_dia.clear()
+        combobox_10_dia.addItem("")  # Agregar un elemento vacío como primera opción
+        combobox_10_dia.addItems([str(dia) for dia in range(1, dias + 1)])
+
+    def actualizar_anios_combobox(self, combobox_8_anio, anio_inicial):
+        # Obtener el año actual desde la hora del sistema
+        anio_actual = datetime.now().year
+
+        # Verificar si el año actual ha cambiado con respecto al año inicial
+        if anio_actual > anio_inicial:
+            # Si el año actual ha aumentado, agregar un nuevo año al combobox
+            if str(anio_actual) not in [combobox_8_anio.itemText(i) for i in range(combobox_8_anio.count())]:
+                combobox_8_anio.addItem(str(anio_actual + 1))
+
+        # Mantener los años iniciales (uno anterior, actual y uno posterior)
+        if combobox_8_anio.count() > 3:  # Asegurarse de que no haya más de 3 años en el combobox
+            combobox_8_anio.removeItem(0)
+
+    def hacer_corte(self):
+        import tempfile
+        from reportlab.lib.pagesizes import letter
+        from reportlab.pdfgen import canvas
+        import webbrowser
+
+    
+        combobox_10_dia = self.ui.frame_32.findChild(QComboBox, "comboBox_10")
+        combobox_9_mes = self.ui.frame_32.findChild(QComboBox, "comboBox_9")
+        combobox_8_anio = self.ui.frame_32.findChild(QComboBox, "comboBox_8")
+    
+        dia = combobox_10_dia.currentText()
+        mes = combobox_9_mes.currentIndex()
+        if mes == 0:
+            mes = None
+        anio = combobox_8_anio.currentText()
+    
+        resultados = {}
+        def check_and_generate_pdf():
+            if (dia and mes and anio and len(resultados) == 6) or \
+               (mes and anio and not dia and len(resultados) == 6) or \
+               (anio and not mes and not dia and len(resultados) == 6):
+                ventas_totales = resultados['ventas_totales']
+                ganancias_totales = resultados['ganancias_totales']
+                compras_totales = resultados['compras_totales']
+                numero_de_compras = resultados['numero_de_compras']
+                ventas_por_metodo = resultados['ventas_por_metodo']
+                numero_de_ventas = resultados['numero_de_ventas']
+    
+                if dia and mes and anio:
+                    titulo_corte = f"Corte del Día {dia}/{int(mes):02d}/{anio}"
+                elif mes and anio:
+                    titulo_corte = f"Corte del Mes {int(mes):02d}/{anio}"
+                else:
+                    titulo_corte = f"Corte del Año {anio}"
+    
+                fecha_actual = datetime.now().strftime("%d/%m/%Y")
+                hora_actual = datetime.now().strftime("%H:%M:%S")
+    
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_pdf:
+                    ruta_pdf = temp_pdf.name
+    
+                c = canvas.Canvas(ruta_pdf, pagesize=letter)
+                c.setFont("Helvetica", 12)
+                c.setFont("Helvetica-Bold", 16)
+                c.drawString(200, 750, titulo_corte)
+                c.setFont("Helvetica-Bold", 10)
+                c.drawString(50, 730, f"Fecha de corte realizado: {fecha_actual}")
+                c.drawString(50, 715, f"Hora de corte realizado: {hora_actual}")
+    
+                c.setFont("Helvetica-Bold", 14)
+                c.drawString(50, 690, f"Ventas Totales: ${ventas_totales:.2f}")
+                c.drawString(300, 690, f"Ganancias: ${ganancias_totales:.2f}")
+    
+                c.setFont("Helvetica-Bold", 12)
+                c.drawString(50, 660, "Ventas:")
+                c.setFont("Helvetica", 10)
+                y_pos = 645
+                c.drawString(70, y_pos, f"Número de Ventas: {numero_de_ventas}")
+                y_pos -= 15
+                for metodo, total in ventas_por_metodo.items():
+                    metodo_pago_nombre = self.traer_metodo_pago(metodo) if hasattr(self, "traer_metodo_pago") else str(metodo)
+                    c.drawString(70, y_pos, f"{metodo_pago_nombre}: ${total:.2f}")
+                    y_pos -= 15
+    
+                c.setFont("Helvetica-Bold", 12)
+                c.drawString(50, y_pos - 20, "Compras:")
+                c.setFont("Helvetica", 10)
+                y_pos -= 35
+                c.drawString(70, y_pos, f"Total Compras: ${compras_totales:.2f}")
+                c.drawString(70, y_pos - 15, f"Número de Compras: {numero_de_compras}")
+    
+                c.setFont("Helvetica-Oblique", 8)
+                c.drawString(50, 50, "Generado automáticamente por el sistema rls.")
+                c.save()
+                webbrowser.open(f"file://{ruta_pdf}")
+    
+        # Día seleccionado
+        if dia and mes and anio:
+            fecha_selecc = f"{anio}-{int(mes):02d}-{int(dia):02d}"
+            self.ventas_totales_thread = TraerVentasTotalesDiaThread(fecha_selecc)
+            self.ganancias_totales_thread = TraerGananciasTotalesDiaThread(fecha_selecc)
+            self.compras_totales_thread = TraerComprasTotalesDiaThread(fecha_selecc)
+            self.numero_de_compras_thread = TraerNumeroDeComprasDiaThread(fecha_selecc)
+            self.ventas_por_metodo_thread = TraerVentasPorMetodoDiaThread(fecha_selecc)
+            self.numero_de_ventas_thread = TraerNumeroDeVentasDiaThread(fecha_selecc)
+    
+            self.ventas_totales_thread.resultado.connect(lambda x: (resultados.update({'ventas_totales': x}), check_and_generate_pdf()))
+            self.ganancias_totales_thread.resultado.connect(lambda x: (resultados.update({'ganancias_totales': x}), check_and_generate_pdf()))
+            self.compras_totales_thread.resultado.connect(lambda x: (resultados.update({'compras_totales': x}), check_and_generate_pdf()))
+            self.numero_de_compras_thread.resultado.connect(lambda x: (resultados.update({'numero_de_compras': x}), check_and_generate_pdf()))
+            self.ventas_por_metodo_thread.resultado.connect(lambda x: (resultados.update({'ventas_por_metodo': x}), check_and_generate_pdf()))
+            self.numero_de_ventas_thread.resultado.connect(lambda x: (resultados.update({'numero_de_ventas': x}), check_and_generate_pdf()))
+    
+            self.start_thread(self.ventas_totales_thread)
+            self.start_thread(self.ganancias_totales_thread)
+            self.start_thread(self.compras_totales_thread)
+            self.start_thread(self.numero_de_compras_thread)
+            self.start_thread(self.ventas_por_metodo_thread)
+            self.start_thread(self.numero_de_ventas_thread)
+            
+    
+        # Mes seleccionado
+        elif mes and anio:
+            fecha_selecc = f"{anio}-{int(mes):02d}"
+            self.ventas_totales_thread = TraerVentasTotalesMesThread(anio, mes)
+            self.ganancias_totales_thread = TraerGananciasTotalesMesThread(anio, mes)
+            self.compras_totales_thread = TraerComprasTotalesMesThread(anio, mes)
+            self.numero_de_compras_thread = TraerNumeroDeComprasMesThread(anio, mes)
+            self.ventas_por_metodo_thread = TraerVentasPorMetodoMesThread(anio, mes)
+            self.numero_de_ventas_thread = TraerNumeroDeVentasMesThread(anio, mes)
+    
+            self.ventas_totales_thread.resultado.connect(lambda x: (resultados.update({'ventas_totales': x}), check_and_generate_pdf()))
+            self.ganancias_totales_thread.resultado.connect(lambda x: (resultados.update({'ganancias_totales': x}), check_and_generate_pdf()))
+            self.compras_totales_thread.resultado.connect(lambda x: (resultados.update({'compras_totales': x}), check_and_generate_pdf()))
+            self.numero_de_compras_thread.resultado.connect(lambda x: (resultados.update({'numero_de_compras': x}), check_and_generate_pdf()))
+            self.ventas_por_metodo_thread.resultado.connect(lambda x: (resultados.update({'ventas_por_metodo': x}), check_and_generate_pdf()))
+            self.numero_de_ventas_thread.resultado.connect(lambda x: (resultados.update({'numero_de_ventas': x}), check_and_generate_pdf()))
+    
+            self.start_thread(self.ventas_totales_thread)
+            self.start_thread(self.ganancias_totales_thread)
+            self.start_thread(self.compras_totales_thread)
+            self.start_thread(self.numero_de_compras_thread)
+            self.start_thread(self.ventas_por_metodo_thread)
+            self.start_thread(self.numero_de_ventas_thread)
+
+    
+        # Solo año seleccionado
+        elif anio:
+            fecha_selecc = f"{anio}"
+            self.ventas_totales_thread = TraerVentasTotalesAnoThread(anio)
+            self.ganancias_totales_thread = TraerGananciasTotalesAnoThread(anio)
+            self.compras_totales_thread = TraerComprasTotalesAnoThread(anio)
+            self.numero_de_compras_thread = TraerNumeroDeComprasAnoThread(anio)
+            self.ventas_por_metodo_thread = TraerVentasPorMetodoAnoThread(anio)
+            self.numero_de_ventas_thread = TraerNumeroDeVentasAnoThread(anio)
+    
+            self.ventas_totales_thread.resultado.connect(lambda x: (resultados.update({'ventas_totales': x}), check_and_generate_pdf()))
+            self.ganancias_totales_thread.resultado.connect(lambda x: (resultados.update({'ganancias_totales': x}), check_and_generate_pdf()))
+            self.compras_totales_thread.resultado.connect(lambda x: (resultados.update({'compras_totales': x}), check_and_generate_pdf()))
+            self.numero_de_compras_thread.resultado.connect(lambda x: (resultados.update({'numero_de_compras': x}), check_and_generate_pdf()))
+            self.ventas_por_metodo_thread.resultado.connect(lambda x: (resultados.update({'ventas_por_metodo': x}), check_and_generate_pdf()))
+            self.numero_de_ventas_thread.resultado.connect(lambda x: (resultados.update({'numero_de_ventas': x}), check_and_generate_pdf()))
+    
+            self.start_thread(self.ventas_totales_thread)
+            self.start_thread(self.ganancias_totales_thread)
+            self.start_thread(self.compras_totales_thread)
+            self.start_thread(self.numero_de_compras_thread)
+            self.start_thread(self.ventas_por_metodo_thread)
+            self.start_thread(self.numero_de_ventas_thread)
+
+    
+        else:
+            raise ValueError("Debe seleccionar al menos un año para realizar el corte.")  
+
+################
+################
+
+    # estadisticas
+
+    def boton_estadisticas(self):
+        push_button_13 = self.ui.tab_3.findChild(QPushButton, "pushButton_13")
+        if push_button_13:
+            push_button_13.clicked.connect(self.mostrar_estadisticas)
+
+    def mostrar_estadisticas(self):
+        label_101  = self.ui.stackedWidget.findChild(QLabel, "label_101")
+        label_102 = self.ui.stackedWidget.findChild(QLabel, "label_102")
+        label_103 = self.ui.stackedWidget.findChild(QLabel, "label_103")
+        label_108 = self.ui.stackedWidget.findChild(QLabel, "label_108")
+        label_109 = self.ui.stackedWidget.findChild(QLabel, "label_109")
+        label_110 = self.ui.stackedWidget.findChild(QLabel, "label_110")
+        label_111 = self.ui.stackedWidget.findChild(QLabel, "label_111")
+        date_edit1 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit")
+        date_edit2 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit_2")
+        semana_actual = self.ui.stackedWidget.findChild(QPushButton, "pushButton_46")
+        mes_anteriror = self.ui.stackedWidget.findChild(QPushButton, "pushButton_45")
+        mes_actual = self.ui.stackedWidget.findChild(QPushButton, "pushButton_44")
+        ano_actual = self.ui.stackedWidget.findChild(QPushButton, "pushButton_43")
+        periodo = self.ui.stackedWidget.findChild(QPushButton, "pushButton_42")
+
+        if label_101:
+            label_101.setText(f"Ventas")
+
+        if label_102:
+            label_102.setStyleSheet("color: transparent")
+        if label_103:
+            label_103.setStyleSheet("color: transparent")
+        if date_edit1:
+            date_edit1.setDisplayFormat("dd MM yyyy")
+            date_edit1.setVisible(False)
+        if date_edit2:
+            date_edit2.setDisplayFormat("dd MM yyyy")
+            date_edit2.setVisible(False)
+
+        
+        if label_108:
+            label_108.setText("$0.00")
+
+        if label_109:
+            label_109.setText("0")
+
+        if label_110:
+            label_110.setText("$0.00")
+
+        if label_111:
+            label_111.setText("$0.00")
+
+        
+        # acciones  
+
+        if ano_actual:
+            ano_actual.clicked.connect(self.mostrar_estadisticas_ano_actual)
+
+        if mes_actual:
+            mes_actual.clicked.connect(self.mostrar_estadisticas_mes_actual)
+
+        if mes_anteriror:
+            mes_anteriror.clicked.connect(self.mostrar_estadisticas_mes_anterior)
+
+        if semana_actual:
+            semana_actual.clicked.connect(self.mostrar_estadisticas_semana_actual)
+
+        if periodo:
+            periodo.clicked.connect(self.mostrar_estadisticas_periodo)
+
+        # Limpiar el gráfico en el widget
+        parent_widget = self.ui.stackedWidget.findChild(QWidget, "widget")
+        if parent_widget:
+            layout = parent_widget.layout()
+            if layout:
+                while layout.count():
+                    child = layout.takeAt(0)
+                    if child.widget():
+                        child.widget().deleteLater()
+
+        # Limpiar el gráfico en el widget_2
+        widget_2 = self.ui.stackedWidget.findChild(QWidget, "widget_2")
+        if widget_2:
+            layout = widget_2.layout()
+            if layout:
+                while layout.count():
+                    child = layout.takeAt(0)
+                    if child.widget():
+                        child.widget().deleteLater()
+
+    def mostrar_estadisticas_ano_actual(self):
+        label_102 = self.ui.stackedWidget.findChild(QLabel, "label_102")
+        label_103 = self.ui.stackedWidget.findChild(QLabel, "label_103")
+        date_edit1 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit")
+        date_edit2 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit_2")
+        label_101  = self.ui.stackedWidget.findChild(QLabel, "label_101")
+        label_108 = self.ui.stackedWidget.findChild(QLabel, "label_108")
+        label_109 = self.ui.stackedWidget.findChild(QLabel, "label_109")
+        label_110 = self.ui.stackedWidget.findChild(QLabel, "label_110")
+        label_111 = self.ui.stackedWidget.findChild(QLabel, "label_111")
+        widget_2 = self.ui.stackedWidget.findChild(QWidget, "widget_2")
+        parent_widget = self.ui.stackedWidget.findChild(QWidget, "widget")
+
+        ano_actual = datetime.now().year
+
+        if label_102:
+            label_102.setStyleSheet("color: transparent")
+        if label_103:
+            label_103.setStyleSheet("color: transparent")
+        if date_edit1:
+            date_edit1.setVisible(False)
+        if date_edit2:
+            date_edit2.setVisible(False)
+        if label_101:
+            label_101.setText(f"Ventas del Año {ano_actual}")
+
+        # --- Hilos para los labels ---
+        resultados = {}
+
+        def check_and_update_labels():
+            if len(resultados) == 4:
+                if label_108:
+                    label_108.setText(f"${resultados['ventas_totales']:.2f}")
+                if label_109:
+                    label_109.setText(f"{resultados['numero_de_ventas']}")
+                if label_110:
+                    label_110.setText(f"${resultados['venta_promedio']:.2f}")
+                if label_111:
+                    label_111.setText(f"${resultados['ganancias_totales']:.2f}")
+
+        self.ventas_totales_ano_thread = TraerVentasTotalesAnoThread(ano_actual)
+        self.numero_de_ventas_ano_thread = TraerNumeroDeVentasAnoThread(ano_actual)
+        self.venta_promedio_ano_thread = TraerVentaPromedioAnoThread(ano_actual)
+        self.ganancias_totales_ano_thread = TraerGananciasTotalesAnoThread(ano_actual)
+
+        self.ventas_totales_ano_thread.resultado.connect(lambda x: (resultados.update({'ventas_totales': x}), check_and_update_labels()))
+        self.numero_de_ventas_ano_thread.resultado.connect(lambda x: (resultados.update({'numero_de_ventas': x}), check_and_update_labels()))
+        self.venta_promedio_ano_thread.resultado.connect(lambda x: (resultados.update({'venta_promedio': x}), check_and_update_labels()))
+        self.ganancias_totales_ano_thread.resultado.connect(lambda x: (resultados.update({'ganancias_totales': x}), check_and_update_labels()))
+
+        self.start_thread(self.ventas_totales_ano_thread)
+        self.start_thread(self.numero_de_ventas_ano_thread)
+        self.start_thread(self.venta_promedio_ano_thread)
+        self.start_thread(self.ganancias_totales_ano_thread)
+
+        # --- Hilos para la gráfica de ventas y ganancias ---
+        meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+        graf_resultados = {}
+
+        def check_and_draw_graph():
+            if 'ventas' in graf_resultados and 'ganancias' in graf_resultados:
+                ventas = graf_resultados['ventas']
+                ganancias = graf_resultados['ganancias']
+                # Limpiar el layout si ya tiene un gráfico
+                layout = parent_widget.layout()
+                if layout:
+                    while layout.count():
+                        child = layout.takeAt(0)
+                        if child.widget():
+                            old_canvas = child.widget()
+                            if isinstance(old_canvas, FigureCanvas):
+                                old_canvas.figure.clear()
+                                old_canvas.close()
+                            old_canvas.deleteLater()
+                fig = Figure(figsize=(6, 4))
+                ax = fig.add_subplot(111)
+                x = range(len(meses))
+                ax.bar(x, ventas, width=0.4, label="Ventas", color="#2986CC", align="center")
+                ax.bar([i + 0.4 for i in x], ganancias, width=0.4, label="Ganancias", color="lightgreen", align="center")
+                ax.set_xticks([i + 0.2 for i in x])
+                ax.set_xticklabels(meses, fontname="Segoe UI", fontsize=8)
+                ax.set_ylabel("Monto ($)", fontname="Segoe UI", fontsize=10)
+                ax.set_title("Ventas y Ganancias", fontname="Segoe UI", fontsize=12)
+                legend = ax.legend(prop={"family": "Segoe UI", "size": 8}, frameon=True, facecolor="white", edgecolor="gray",loc="upper right")
+                legend.get_frame().set_alpha(0.8)
+                canvas = FigureCanvas(fig)
+                if not layout:
+                    layout = QVBoxLayout(parent_widget)
+                    parent_widget.setLayout(layout)
+                layout.addWidget(canvas)
+
+        self.ventas_ano_thread = TraerVentasAnoActualThread(ano_actual, meses)
+        self.ganancias_ano_thread = TraerGananciasAnoActualThread(ano_actual, meses)
+        self.ventas_ano_thread.resultado.connect(lambda x: (graf_resultados.update({'ventas': x}), check_and_draw_graph()))
+        self.ganancias_ano_thread.resultado.connect(lambda x: (graf_resultados.update({'ganancias': x}), check_and_draw_graph()))
+        self.start_thread(self.ventas_ano_thread)
+        self.start_thread(self.ganancias_ano_thread)
+
+        # --- Hilos para la gráfica de métodos de pago ---
+        if widget_2:
+            graf2_resultados = {}
+            colores = ["#FF5733", "#33FF57", "#3357FF", "#FF33A1", "#A133FF", "#33FFF5", "#FFC300", "#DAF7A6", "#C70039"]
+
+            def on_metodos_pago_obtenidos(metodos_pago):
+                graf2_resultados['metodos_pago'] = metodos_pago
+                graf2_resultados['datos_por_metodo'] = {}
+                if not metodos_pago:
+                    layout = widget_2.layout()
+                    if layout:
+                        while layout.count():
+                            child = layout.takeAt(0)
+                            if child.widget():
+                                old_canvas = child.widget()
+                                if isinstance(old_canvas, FigureCanvas):
+                                    old_canvas.figure.clear()
+                                    old_canvas.close()
+                                old_canvas.deleteLater()
+                    fig = Figure(figsize=(6, 4))
+                    ax = fig.add_subplot(111)
+                    ax.text(0.5, 0.5, "No hay métodos de pago disponibles", fontsize=12, ha='center', va='center', transform=ax.transAxes)
+                    ax.axis("off")
+                    canvas = FigureCanvas(fig)
+                    if not layout:
+                        layout = QVBoxLayout(widget_2)
+                        widget_2.setLayout(layout)
+                    layout.addWidget(canvas)
+                else:
+                    # Lanzar un hilo por cada método de pago
+                    for i, (id_metodo, nombre_metodo) in enumerate(metodos_pago):
+                        thread = TraerDatosPorMetodoYMesThread(ano_actual, id_metodo, meses)
+                        def make_callback(idx, nombre_metodo):
+                            return lambda datos: (
+                                graf2_resultados['datos_por_metodo'].__setitem__(nombre_metodo, datos),
+                                draw_metodos_graph()
+                            )
+                        thread.resultado.connect(make_callback(i, nombre_metodo))
+                        self.start_thread(thread)
+
+            def draw_metodos_graph():
+                metodos_pago = graf2_resultados.get('metodos_pago', [])
+                datos_por_metodo = graf2_resultados.get('datos_por_metodo', {})
+                if len(datos_por_metodo) == len(metodos_pago) and metodos_pago:
+                    layout = widget_2.layout()
+                    if layout:
+                        while layout.count():
+                            child = layout.takeAt(0)
+                            if child.widget():
+                                old_canvas = child.widget()
+                                if isinstance(old_canvas, FigureCanvas):
+                                    old_canvas.figure.clear()
+                                    old_canvas.close()
+                                old_canvas.deleteLater()
+                    fig = Figure(figsize=(6, 4))
+                    ax = fig.add_subplot(111)
+                    x = range(len(meses))
+                    ancho_barra = 0.8 / len(metodos_pago)
+                    for i, (id_metodo, nombre_metodo) in enumerate(metodos_pago):
+                        datos = datos_por_metodo.get(nombre_metodo, [0]*len(meses))
+                        posiciones = [pos + i * ancho_barra for pos in x]
+                        ax.bar(posiciones, datos, width=ancho_barra, label=nombre_metodo, color=colores[i % len(colores)], align="center")
+                    ax.set_xticks([pos + (ancho_barra * (len(metodos_pago) - 1)) / 2 for pos in x])
+                    ax.set_xticklabels(meses, fontname="Segoe UI", fontsize=8, rotation=0)
+                    ax.set_ylabel("Monto ($)", fontname="Segoe UI", fontsize=10)
+                    ax.set_title("Ventas por Método de Pago", fontname="Segoe UI", fontsize=12)
+                    legend = ax.legend(prop={"family": "Segoe UI", "size": 8}, frameon=True, facecolor="white", edgecolor="gray",loc="upper right")
+                    legend.get_frame().set_alpha(0.8)
+                    canvas = FigureCanvas(fig)
+                    if not layout:
+                        layout = QVBoxLayout(widget_2)
+                        widget_2.setLayout(layout)
+                    layout.addWidget(canvas)
+
+            self.metodos_pago_y_id_thread = TraerMetodosPagoYSuIdThread()
+            self.metodos_pago_y_id_thread.resultado.connect(on_metodos_pago_obtenidos)
+            self.start_thread(self.metodos_pago_y_id_thread)
+
+    def mostrar_estadisticas_mes_actual(self):
+        label_102 = self.ui.stackedWidget.findChild(QLabel, "label_102")
+        label_103 = self.ui.stackedWidget.findChild(QLabel, "label_103")
+        date_edit1 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit")
+        date_edit2 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit_2")
+        label_101 = self.ui.stackedWidget.findChild(QLabel, "label_101")
+        label_108 = self.ui.stackedWidget.findChild(QLabel, "label_108")
+        label_109 = self.ui.stackedWidget.findChild(QLabel, "label_109")
+        label_110 = self.ui.stackedWidget.findChild(QLabel, "label_110")
+        label_111 = self.ui.stackedWidget.findChild(QLabel, "label_111")
+        widget_2 = self.ui.stackedWidget.findChild(QWidget, "widget_2")
+        widget = self.ui.stackedWidget.findChild(QWidget, "widget")
+
+        mes_actual = datetime.now().month
+        ano_actual = datetime.now().year
+
+        if label_102:
+            label_102.setStyleSheet("color: transparent")
+        if label_103:
+            label_103.setStyleSheet("color: transparent")
+        if date_edit1:
+            date_edit1.setVisible(False)
+        if date_edit2:
+            date_edit2.setVisible(False)
+        if label_101:
+            label_101.setText(f"Ventas del Mes {mes_actual}")
+
+        # --- Hilos para los labels ---
+        resultados = {}
+
+        def check_and_update_labels():
+            if len(resultados) == 4:
+                if label_108:
+                    label_108.setText(f"${resultados['ventas_totales']:.2f}")
+                if label_109:
+                    label_109.setText(f"{resultados['numero_de_ventas']}")
+                if label_110:
+                    label_110.setText(f"${resultados['venta_promedio']:.2f}")
+                if label_111:
+                    label_111.setText(f"${resultados['ganancias_totales']:.2f}")
+
+        self.ventas_totales_mes_thread = TraerVentasTotalesMesThread(ano_actual, mes_actual)
+        self.numero_de_ventas_mes_thread = TraerNumeroDeVentasMesThread(ano_actual, mes_actual)
+        self.venta_promedio_mes_thread = TraerVentaPromedioMesThread(ano_actual, mes_actual)
+        self.ganancias_totales_mes_thread = TraerGananciasTotalesMesThread(ano_actual, mes_actual)
+
+        self.ventas_totales_mes_thread.resultado.connect(lambda x: (resultados.update({'ventas_totales': x}), check_and_update_labels()))
+        self.numero_de_ventas_mes_thread.resultado.connect(lambda x: (resultados.update({'numero_de_ventas': x}), check_and_update_labels()))
+        self.venta_promedio_mes_thread.resultado.connect(lambda x: (resultados.update({'venta_promedio': x}), check_and_update_labels()))
+        self.ganancias_totales_mes_thread.resultado.connect(lambda x: (resultados.update({'ganancias_totales': x}), check_and_update_labels()))
+
+        self.start_thread(self.ventas_totales_mes_thread)
+        self.start_thread(self.numero_de_ventas_mes_thread)
+        self.start_thread(self.venta_promedio_mes_thread)
+        self.start_thread(self.ganancias_totales_mes_thread)
+
+        # --- Hilos para la gráfica de ventas y ganancias del mes actual ---
+        if widget:
+            graf_resultados = {}
+
+            def check_and_draw_graph():
+                if 'ventas' in graf_resultados and 'ganancias' in graf_resultados:
+                    ventas = graf_resultados['ventas']
+                    ganancias = graf_resultados['ganancias']
+                    layout = widget.layout()
+                    if layout:
+                        while layout.count():
+                            child = layout.takeAt(0)
+                            if child.widget():
+                                old_canvas = child.widget()
+                                if isinstance(old_canvas, FigureCanvas):
+                                    old_canvas.figure.clear()
+                                    old_canvas.close()
+                                old_canvas.deleteLater()
+                    fig = Figure(figsize=(6, 4))  # Tamaño uniforme
+                    ax = fig.add_subplot(111)
+                    x = [mes_actual]  # Solo el mes actual
+                    ax.bar(x, [ventas], width=0.4, label="Ventas", color="#2986CC", align="center")
+                    ax.bar([i + 0.4 for i in x], [ganancias], width=0.4, label="Ganancias", color="lightgreen", align="center")
+                    ax.set_xticks([i + 0.2 for i in x])
+                    ax.set_xticklabels([mes_actual], fontname="Segoe UI", fontsize=8)
+                    ax.set_ylabel("Monto ($)", fontname="Segoe UI", fontsize=10)
+                    ax.set_title("Ventas y Ganancias del Mes Actual", fontname="Segoe UI", fontsize=12)
+                    legend = ax.legend(prop={"family": "Segoe UI", "size": 8}, frameon=True, facecolor="white", edgecolor="gray", loc="upper right")
+                    legend.get_frame().set_alpha(0.8)
+                    canvas = FigureCanvas(fig)
+                    if not layout:
+                        layout = QVBoxLayout(widget)
+                        widget.setLayout(layout)
+                    layout.addWidget(canvas)
+
+            self.ventas_mes_thread = TraerVentasTotalesMesThread(ano_actual, mes_actual)
+            self.ganancias_mes_thread = TraerGananciasTotalesMesThread(ano_actual, mes_actual)
+            self.ventas_mes_thread.resultado.connect(lambda x: (graf_resultados.update({'ventas': x}), check_and_draw_graph()))
+            self.ganancias_mes_thread.resultado.connect(lambda x: (graf_resultados.update({'ganancias': x}), check_and_draw_graph()))
+            self.start_thread(self.ventas_mes_thread)
+            self.start_thread(self.ganancias_mes_thread)
+
+        # --- Hilos para la gráfica de métodos de pago ---
+        if widget_2:
+            graf2_resultados = {}
+            colores = ["#FF5733", "#33FF57", "#3357FF", "#FF33A1", "#A133FF", "#33FFF5", "#FFC300", "#DAF7A6", "#C70039"]
+
+            def on_metodos_pago_obtenidos(metodos_pago):
+                graf2_resultados['metodos_pago'] = metodos_pago
+                graf2_resultados['datos_por_metodo'] = {}
+                if not metodos_pago:
+                    layout = widget_2.layout()
+                    if layout:
+                        while layout.count():
+                            child = layout.takeAt(0)
+                            if child.widget():
+                                old_canvas = child.widget()
+                                if isinstance(old_canvas, FigureCanvas):
+                                    old_canvas.figure.clear()
+                                    old_canvas.close()
+                                old_canvas.deleteLater()
+                    fig = Figure(figsize=(6, 4))
+                    ax = fig.add_subplot(111)
+                    ax.text(0.5, 0.5, "No hay métodos de pago disponibles", fontsize=12, ha='center', va='center', transform=ax.transAxes)
+                    ax.axis("off")
+                    canvas = FigureCanvas(fig)
+                    if not layout:
+                        layout = QVBoxLayout(widget_2)
+                        widget_2.setLayout(layout)
+                    layout.addWidget(canvas)
+                else:
+                    # Lanzar un hilo por cada método de pago
+                    for i, (id_metodo, nombre_metodo) in enumerate(metodos_pago):
+                        thread = TraerDatosPorMetodoYMesThread(ano_actual, id_metodo, [mes_actual])
+                        def make_callback(idx, nombre_metodo):
+                            return lambda datos: (
+                                graf2_resultados['datos_por_metodo'].__setitem__(nombre_metodo, datos),
+                                draw_metodos_graph()
+                            )
+                        thread.resultado.connect(make_callback(i, nombre_metodo))
+                        self.start_thread(thread)
+
+            def draw_metodos_graph():
+                metodos_pago = graf2_resultados.get('metodos_pago', [])
+                datos_por_metodo = graf2_resultados.get('datos_por_metodo', {})
+                if len(datos_por_metodo) == len(metodos_pago) and metodos_pago:
+                    layout = widget_2.layout()
+                    if layout:
+                        while layout.count():
+                            child = layout.takeAt(0)
+                            if child.widget():
+                                old_canvas = child.widget()
+                                if isinstance(old_canvas, FigureCanvas):
+                                    old_canvas.figure.clear()
+                                    old_canvas.close()
+                                old_canvas.deleteLater()
+                    fig = Figure(figsize=(6, 4))
+                    ax = fig.add_subplot(111)
+                    x = [mes_actual]
+                    ancho_barra = 0.8 / len(metodos_pago)
+                    for i, (id_metodo, nombre_metodo) in enumerate(metodos_pago):
+                        datos = datos_por_metodo.get(nombre_metodo, [0])
+                        posiciones = [pos + i * ancho_barra for pos in x]
+                        ax.bar(posiciones, datos, width=ancho_barra, label=nombre_metodo, color=colores[i % len(colores)], align="center")
+                    ax.set_xticks([pos + (ancho_barra * (len(metodos_pago) - 1)) / 2 for pos in x])
+                    ax.set_xticklabels([mes_actual], fontname="Segoe UI", fontsize=8, rotation=0)
+                    ax.set_ylabel("Monto ($)", fontname="Segoe UI", fontsize=10)
+                    ax.set_title("Ventas por Método de Pago del Mes Actual", fontname="Segoe UI", fontsize=12)
+                    legend = ax.legend(prop={"family": "Segoe UI", "size": 8}, frameon=True, facecolor="white", edgecolor="gray",loc="upper right")
+                    legend.get_frame().set_alpha(0.8)
+                    canvas = FigureCanvas(fig)
+                    if not layout:
+                        layout = QVBoxLayout(widget_2)
+                        widget_2.setLayout(layout)
+                    layout.addWidget(canvas)
+
+            self.metodos_pago_y_id_thread = TraerMetodosPagoYSuIdThread()
+            self.metodos_pago_y_id_thread.resultado.connect(on_metodos_pago_obtenidos)
+            self.start_thread(self.metodos_pago_y_id_thread)
+
+
+
+    def mostrar_estadisticas_mes_anterior(self):
+        label_102 = self.ui.stackedWidget.findChild(QLabel, "label_102")
+        label_103 = self.ui.stackedWidget.findChild(QLabel, "label_103")
+        date_edit1 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit")
+        date_edit2 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit_2")
+        label_101 = self.ui.stackedWidget.findChild(QLabel, "label_101")
+        label_108 = self.ui.stackedWidget.findChild(QLabel, "label_108")
+        label_109 = self.ui.stackedWidget.findChild(QLabel, "label_109")
+        label_110 = self.ui.stackedWidget.findChild(QLabel, "label_110")
+        label_111 = self.ui.stackedWidget.findChild(QLabel, "label_111")
+        widget_2 = self.ui.stackedWidget.findChild(QWidget, "widget_2")
+        widget = self.ui.stackedWidget.findChild(QWidget, "widget")
+
+        mes_anterior = datetime.now().month - 1
+        ano_actual = datetime.now().year
+
+        if label_102:
+            label_102.setStyleSheet("color: transparent")
+        if label_103:
+            label_103.setStyleSheet("color: transparent")
+        if date_edit1:
+            date_edit1.setVisible(False)
+        if date_edit2:
+            date_edit2.setVisible(False)
+        if label_101:
+            label_101.setText(f"Ventas del Mes {mes_anterior}")
+
+        # --- Hilos para los labels ---
+        resultados = {}
+
+        def check_and_update_labels():
+            if len(resultados) == 4:
+                if label_108:
+                    label_108.setText(f"${resultados['ventas_totales']:.2f}")
+                if label_109:
+                    label_109.setText(f"{resultados['numero_de_ventas']}")
+                if label_110:
+                    label_110.setText(f"${resultados['venta_promedio']:.2f}")
+                if label_111:
+                    label_111.setText(f"${resultados['ganancias_totales']:.2f}")
+
+        self.ventas_totales_mes_thread = TraerVentasTotalesMesThread(ano_actual, mes_anterior)
+        self.numero_de_ventas_mes_thread = TraerNumeroDeVentasMesThread(ano_actual, mes_anterior)
+        self.venta_promedio_mes_thread = TraerVentaPromedioMesThread(ano_actual, mes_anterior)
+        self.ganancias_totales_mes_thread = TraerGananciasTotalesMesThread(ano_actual, mes_anterior)
+
+        self.ventas_totales_mes_thread.resultado.connect(lambda x: (resultados.update({'ventas_totales': x}), check_and_update_labels()))
+        self.numero_de_ventas_mes_thread.resultado.connect(lambda x: (resultados.update({'numero_de_ventas': x}), check_and_update_labels()))
+        self.venta_promedio_mes_thread.resultado.connect(lambda x: (resultados.update({'venta_promedio': x}), check_and_update_labels()))
+        self.ganancias_totales_mes_thread.resultado.connect(lambda x: (resultados.update({'ganancias_totales': x}), check_and_update_labels()))
+
+        self.start_thread(self.ventas_totales_mes_thread)
+        self.start_thread(self.numero_de_ventas_mes_thread)
+        self.start_thread(self.venta_promedio_mes_thread)
+        self.start_thread(self.ganancias_totales_mes_thread)
+
+        # --- Hilos para la gráfica de métodos de pago ---
+        if widget_2:
+            graf2_resultados = {}
+            colores = ["#FF5733", "#33FF57", "#3357FF", "#FF33A1", "#A133FF", "#33FFF5", "#FFC300", "#DAF7A6", "#C70039"]
+
+            def on_metodos_pago_obtenidos(metodos_pago):
+                graf2_resultados['metodos_pago'] = metodos_pago
+                graf2_resultados['datos_por_metodo'] = {}
+                if not metodos_pago:
+                    layout = widget_2.layout()
+                    if layout:
+                        while layout.count():
+                            child = layout.takeAt(0)
+                            if child.widget():
+                                old_canvas = child.widget()
+                                if isinstance(old_canvas, FigureCanvas):
+                                    old_canvas.figure.clear()
+                                    old_canvas.close()
+                                old_canvas.deleteLater()
+                    fig = Figure(figsize=(6, 4))
+                    ax = fig.add_subplot(111)
+                    ax.text(0.5, 0.5, "No hay métodos de pago disponibles", fontsize=12, ha='center', va='center', transform=ax.transAxes)
+                    ax.axis("off")
+                    canvas = FigureCanvas(fig)
+                    if not layout:
+                        layout = QVBoxLayout(widget_2)
+                        widget_2.setLayout(layout)
+                    layout.addWidget(canvas)
+                else:
+                    # Lanzar un hilo por cada método de pago
+                    for i, (id_metodo, nombre_metodo) in enumerate(metodos_pago):
+                        thread = TraerDatosPorMetodoYMesThread(ano_actual, id_metodo, [mes_anterior])
+                        def make_callback(idx, nombre_metodo):
+                            return lambda datos: (
+                                graf2_resultados['datos_por_metodo'].__setitem__(nombre_metodo, datos),
+                                draw_metodos_graph()
+                            )
+                        thread.resultado.connect(make_callback(i, nombre_metodo))
+                        self.start_thread(thread)
+
+            def draw_metodos_graph():
+                metodos_pago = graf2_resultados.get('metodos_pago', [])
+                datos_por_metodo = graf2_resultados.get('datos_por_metodo', {})
+                if len(datos_por_metodo) == len(metodos_pago) and metodos_pago:
+                    layout = widget_2.layout()
+                    if layout:
+                        while layout.count():
+                            child = layout.takeAt(0)
+                            if child.widget():
+                                old_canvas = child.widget()
+                                if isinstance(old_canvas, FigureCanvas):
+                                    old_canvas.figure.clear()
+                                    old_canvas.close()
+                                old_canvas.deleteLater()
+                    fig = Figure(figsize=(6, 4))
+                    ax = fig.add_subplot(111)
+                    x = [mes_anterior]
+                    ancho_barra = 0.8 / len(metodos_pago)
+                    for i, (id_metodo, nombre_metodo) in enumerate(metodos_pago):
+                        datos = datos_por_metodo.get(nombre_metodo, [0])
+                        posiciones = [pos + i * ancho_barra for pos in x]
+                        ax.bar(posiciones, datos, width=ancho_barra, label=nombre_metodo, color=colores[i % len(colores)], align="center")
+                    ax.set_xticks([pos + (ancho_barra * (len(metodos_pago) - 1)) / 2 for pos in x])
+                    ax.set_xticklabels([mes_anterior], fontname="Segoe UI", fontsize=8, rotation=0)
+                    ax.set_ylabel("Monto ($)", fontname="Segoe UI", fontsize=10)
+                    ax.set_title("Ventas por Método de Pago del Mes Anterior", fontname="Segoe UI", fontsize=12)
+                    legend = ax.legend(prop={"family": "Segoe UI", "size": 8}, frameon=True, facecolor="white", edgecolor="gray",loc="upper right")
+                    legend.get_frame().set_alpha(0.8)
+                    canvas = FigureCanvas(fig)
+                    if not layout:
+                        layout = QVBoxLayout(widget_2)
+                        widget_2.setLayout(layout)
+                    layout.addWidget(canvas)
+
+            self.metodos_pago_y_id_thread = TraerMetodosPagoYSuIdThread()
+            self.metodos_pago_y_id_thread.resultado.connect(on_metodos_pago_obtenidos)
+            self.start_thread(self.metodos_pago_y_id_thread)
+
+        # --- Hilos para la gráfica de ventas y ganancias del mes anterior ---
+        if widget:
+            graf_resultados = {}
+
+            def check_and_draw_graph():
+                if 'ventas' in graf_resultados and 'ganancias' in graf_resultados:
+                    ventas = graf_resultados['ventas']
+                    ganancias = graf_resultados['ganancias']
+                    layout = widget.layout()
+                    if layout:
+                        while layout.count():
+                            child = layout.takeAt(0)
+                            if child.widget():
+                                old_canvas = child.widget()
+                                if isinstance(old_canvas, FigureCanvas):
+                                    old_canvas.figure.clear()
+                                    old_canvas.close()
+                                old_canvas.deleteLater()
+                    fig = Figure(figsize=(6, 4))
+                    ax = fig.add_subplot(111)
+                    x = [mes_anterior]
+                    ax.bar(x, [ventas], width=0.4, label="Ventas", color="#2986CC", align="center")
+                    ax.bar([i + 0.4 for i in x], [ganancias], width=0.4, label="Ganancias", color="lightgreen", align="center")
+                    ax.set_xticks([i + 0.2 for i in x])
+                    ax.set_xticklabels([mes_anterior], fontname="Segoe UI", fontsize=8)
+                    ax.set_ylabel("Monto ($)", fontname="Segoe UI", fontsize=10)
+                    ax.set_title("Ventas y Ganancias del Mes Anterior", fontname="Segoe UI", fontsize=12)
+                    legend = ax.legend(prop={"family": "Segoe UI", "size": 8}, frameon=True, facecolor="white", edgecolor="gray",loc="upper right")
+                    legend.get_frame().set_alpha(0.8)
+                    canvas = FigureCanvas(fig)
+                    if not layout:
+                        layout = QVBoxLayout(widget)
+                        widget.setLayout(layout)
+                    layout.addWidget(canvas)
+
+            self.ventas_mes_thread = TraerVentasTotalesMesThread(ano_actual, mes_anterior)
+            self.ganancias_mes_thread = TraerGananciasTotalesMesThread(ano_actual, mes_anterior)
+            self.ventas_mes_thread.resultado.connect(lambda x: (graf_resultados.update({'ventas': x}), check_and_draw_graph()))
+            self.ganancias_mes_thread.resultado.connect(lambda x: (graf_resultados.update({'ganancias': x}), check_and_draw_graph()))
+            self.start_thread(self.ventas_mes_thread)
+            self.start_thread(self.ganancias_mes_thread)
+
+
+    def mostrar_estadisticas_semana_actual(self):
+        label_102 = self.ui.stackedWidget.findChild(QLabel, "label_102")
+        label_103 = self.ui.stackedWidget.findChild(QLabel, "label_103")
+        date_edit1 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit")
+        date_edit2 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit_2")
+        label_101 = self.ui.stackedWidget.findChild(QLabel, "label_101")
+        label_108 = self.ui.stackedWidget.findChild(QLabel, "label_108")
+        label_109 = self.ui.stackedWidget.findChild(QLabel, "label_109")
+        label_110 = self.ui.stackedWidget.findChild(QLabel, "label_110")
+        label_111 = self.ui.stackedWidget.findChild(QLabel, "label_111")
+        widget_2 = self.ui.stackedWidget.findChild(QWidget, "widget_2")
+        widget = self.ui.stackedWidget.findChild(QWidget, "widget")
+
+        semana_actual = datetime.now().isocalendar()[1]
+        ano_actual = datetime.now().year
+
+        if label_102:
+            label_102.setStyleSheet("color: transparent")
+        if label_103:
+            label_103.setStyleSheet("color: transparent")
+        if date_edit1:
+            date_edit1.setVisible(False)
+        if date_edit2:
+            date_edit2.setVisible(False)
+        if label_101:
+            label_101.setText(f"Ventas de la Semana {semana_actual}")
+
+        # --- Hilos para los labels ---
+        resultados = {}
+
+        def check_and_update_labels():
+            if len(resultados) == 4:
+                if label_108:
+                    label_108.setText(f"${resultados['ventas_totales']:.2f}")
+                if label_109:
+                    label_109.setText(f"{resultados['numero_de_ventas']}")
+                if label_110:
+                    label_110.setText(f"${resultados['venta_promedio']:.2f}")
+                if label_111:
+                    label_111.setText(f"${resultados['ganancias_totales']:.2f}")
+
+        self.ventas_totales_semana_thread = TraerVentasTotalesSemanaThread(ano_actual, semana_actual)
+        self.numero_de_ventas_semana_thread = TraerNumeroDeVentasSemanaThread(ano_actual, semana_actual)
+        self.venta_promedio_semana_thread = TraerVentaPromedioSemanaThread(ano_actual, semana_actual)
+        self.ganancias_totales_semana_thread = TraerGananciasTotalesSemanaThread(ano_actual, semana_actual)
+
+        self.ventas_totales_semana_thread.resultado.connect(lambda x: (resultados.update({'ventas_totales': x}), check_and_update_labels()))
+        self.numero_de_ventas_semana_thread.resultado.connect(lambda x: (resultados.update({'numero_de_ventas': x}), check_and_update_labels()))
+        self.venta_promedio_semana_thread.resultado.connect(lambda x: (resultados.update({'venta_promedio': x}), check_and_update_labels()))
+        self.ganancias_totales_semana_thread.resultado.connect(lambda x: (resultados.update({'ganancias_totales': x}), check_and_update_labels()))
+
+        self.start_thread(self.ventas_totales_semana_thread)
+        self.start_thread(self.numero_de_ventas_semana_thread)
+        self.start_thread(self.venta_promedio_semana_thread)
+        self.start_thread(self.ganancias_totales_semana_thread)
+
+        # --- Hilos para la gráfica de ventas y ganancias de la semana ---
+        if widget:
+            dias_semana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
+            graf_resultados = {}
+
+            def check_and_draw_graph():
+                if 'ventas' in graf_resultados and 'ganancias' in graf_resultados:
+                    ventas = graf_resultados['ventas']
+                    ganancias = graf_resultados['ganancias']
+                    layout = widget.layout()
+                    if layout:
+                        while layout.count():
+                            child = layout.takeAt(0)
+                            if child.widget():
+                                old_canvas = child.widget()
+                                if isinstance(old_canvas, FigureCanvas):
+                                    old_canvas.figure.clear()
+                                    old_canvas.close()
+                                old_canvas.deleteLater()
+                    fig = Figure(figsize=(6, 4))
+                    ax = fig.add_subplot(111)
+                    x = range(len(dias_semana))
+                    ax.bar(x, ventas, width=0.4, label="Ventas", color="#2986CC", align="center")
+                    ax.bar([i + 0.4 for i in x], ganancias, width=0.4, label="Ganancias", color="lightgreen", align="center")
+                    ax.set_xticks([i + 0.2 for i in x])
+                    ax.set_xticklabels(dias_semana, fontname="Segoe UI", fontsize=8)
+                    ax.set_ylabel("Monto ($)", fontname="Segoe UI", fontsize=10)
+                    ax.set_title("Ventas y Ganancias de la Semana Actual", fontname="Segoe UI", fontsize=12)
+                    legend = ax.legend(prop={"family": "Segoe UI", "size": 8}, frameon=True, facecolor="white", edgecolor="gray",loc="upper right")
+                    legend.get_frame().set_alpha(0.8)
+                    canvas = FigureCanvas(fig)
+                    if not layout:
+                        layout = QVBoxLayout(widget)
+                        widget.setLayout(layout)
+                    layout.addWidget(canvas)
+
+            self.ventas_semana_thread = TraerVentasSemanaActualThread(ano_actual, semana_actual, dias_semana)
+            self.ganancias_semana_thread = TraerGananciasSemanaActualThread(ano_actual, semana_actual, dias_semana)
+            self.ventas_semana_thread.resultado.connect(lambda x: (graf_resultados.update({'ventas': x}), check_and_draw_graph()))
+            self.ganancias_semana_thread.resultado.connect(lambda x: (graf_resultados.update({'ganancias': x}), check_and_draw_graph()))
+            self.start_thread(self.ventas_semana_thread)
+            self.start_thread(self.ganancias_semana_thread)
+
+        # --- Hilos para la gráfica de métodos de pago de la semana ---
+        if widget_2:
+            graf2_resultados = {}
+            colores = ["#FF5733", "#33FF57", "#3357FF", "#FF33A1", "#A133FF", "#33FFF5", "#FFC300", "#DAF7A6", "#C70039"]
+            dias_semana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
+
+            def on_metodos_pago_obtenidos(metodos_pago):
+                graf2_resultados['metodos_pago'] = metodos_pago
+                graf2_resultados['datos_por_metodo'] = {}
+                if not metodos_pago:
+                    layout = widget_2.layout()
+                    if layout:
+                        while layout.count():
+                            child = layout.takeAt(0)
+                            if child.widget():
+                                old_canvas = child.widget()
+                                if isinstance(old_canvas, FigureCanvas):
+                                    old_canvas.figure.clear()
+                                    old_canvas.close()
+                                old_canvas.deleteLater()
+                    fig = Figure(figsize=(6, 4))
+                    ax = fig.add_subplot(111)
+                    ax.text(0.5, 0.5, "No hay métodos de pago disponibles", fontsize=12, ha='center', va='center', transform=ax.transAxes)
+                    ax.axis("off")
+                    canvas = FigureCanvas(fig)
+                    if not layout:
+                        layout = QVBoxLayout(widget_2)
+                        widget_2.setLayout(layout)
+                    layout.addWidget(canvas)
+                else:
+                    for i, (id_metodo, nombre_metodo) in enumerate(metodos_pago):
+                        thread = TraerDatosPorMetodoYDiaSemanaThread(ano_actual, semana_actual, id_metodo, dias_semana)
+                        def make_callback(idx, nombre_metodo):
+                            return lambda datos: (
+                                graf2_resultados['datos_por_metodo'].__setitem__(nombre_metodo, datos),
+                                draw_metodos_graph()
+                            )
+                        thread.resultado.connect(make_callback(i, nombre_metodo))
+                        self.start_thread(thread)
+
+            def draw_metodos_graph():
+                metodos_pago = graf2_resultados.get('metodos_pago', [])
+                datos_por_metodo = graf2_resultados.get('datos_por_metodo', {})
+                if len(datos_por_metodo) == len(metodos_pago) and metodos_pago:
+                    layout = widget_2.layout()
+                    if layout:
+                        while layout.count():
+                            child = layout.takeAt(0)
+                            if child.widget():
+                                old_canvas = child.widget()
+                                if isinstance(old_canvas, FigureCanvas):
+                                    old_canvas.figure.clear()
+                                    old_canvas.close()
+                                old_canvas.deleteLater()
+                    fig = Figure(figsize=(6, 4))
+                    ax = fig.add_subplot(111)
+                    x = range(len(dias_semana))
+                    ancho_barra = 0.8 / len(metodos_pago)
+                    for i, (id_metodo, nombre_metodo) in enumerate(metodos_pago):
+                        datos = datos_por_metodo.get(nombre_metodo, [0]*len(dias_semana))
+                        posiciones = [pos + i * ancho_barra for pos in x]
+                        ax.bar(posiciones, datos, width=ancho_barra, label=nombre_metodo, color=colores[i % len(colores)], align="center")
+                    ax.set_xticks([pos + (ancho_barra * (len(metodos_pago) - 1)) / 2 for pos in x])
+                    ax.set_xticklabels(dias_semana, fontname="Segoe UI", fontsize=8, rotation=0)
+                    ax.set_ylabel("Monto ($)", fontname="Segoe UI", fontsize=10)
+                    ax.set_title("Ventas por Método de Pago de la Semana Actual", fontname="Segoe UI", fontsize=12)
+                    legend = ax.legend(prop={"family": "Segoe UI", "size": 8}, frameon=True, facecolor="white", edgecolor="gray",loc="upper right")
+                    legend.get_frame().set_alpha(0.8)
+                    canvas = FigureCanvas(fig)
+                    if not layout:
+                        layout = QVBoxLayout(widget_2)
+                        widget_2.setLayout(layout)
+                    layout.addWidget(canvas)
+
+            self.metodos_pago_y_id_thread = TraerMetodosPagoYSuIdThread()
+            self.metodos_pago_y_id_thread.resultado.connect(on_metodos_pago_obtenidos)
+            self.start_thread(self.metodos_pago_y_id_thread)
+
+    def mostrar_estadisticas_periodo(self):
+        label_102 = self.ui.stackedWidget.findChild(QLabel, "label_102")
+        label_103 = self.ui.stackedWidget.findChild(QLabel, "label_103")
+        date_edit1 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit")
+        date_edit2 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit_2")
+        label_108 = self.ui.stackedWidget.findChild(QLabel, "label_108")
+        label_109 = self.ui.stackedWidget.findChild(QLabel, "label_109")
+        label_110 = self.ui.stackedWidget.findChild(QLabel, "label_110")
+        label_111 = self.ui.stackedWidget.findChild(QLabel, "label_111")
+
+        # Limpiar el gráfico en el widget
+        parent_widget = self.ui.stackedWidget.findChild(QWidget, "widget")
+        if parent_widget:
+            layout = parent_widget.layout()
+            if layout:
+                while layout.count():
+                    child = layout.takeAt(0)
+                    if child.widget():
+                        child.widget().deleteLater()
+
+        # Limpiar el gráfico en el widget_2
+        widget_2 = self.ui.stackedWidget.findChild(QWidget, "widget_2")
+        if widget_2:
+            layout = widget_2.layout()
+            if layout:
+                while layout.count():
+                    child = layout.takeAt(0)
+                    if child.widget():
+                        child.widget().deleteLater()
+
+        if label_108:
+            label_108.setText("$0.00")
+        if label_109:
+            label_109.setText("0")
+        if label_110:
+            label_110.setText("$0.00")
+        if label_111:
+            label_111.setText("$0.00")
+        if label_102:
+            label_102.setStyleSheet("color: black; font-weight: bold")
+        if label_103:
+            label_103.setStyleSheet("color: black; font-weight: bold")
+        if date_edit1:
+            date_edit1.setVisible(True)
+            date_timenow = datetime.now()
+            date_edit1.setDate(date_timenow.date())
+        if date_edit2:
+            date_edit2.setVisible(True)
+            date_time_tomorrow = datetime.now() + timedelta(days=1)
+            date_edit2.setDate(date_time_tomorrow.date())
+
+        # Conectar las señales después de inicializar los QDateEdit
+        self.funcion_ver_cuando_cambie_la_fecha()
+
+    def funcion_ver_cuando_cambie_la_fecha(self):
+        date_edit1 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit")
+        date_edit2 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit_2")
+
+        if date_edit1:
+            date_edit1.dateChanged.connect(self.mostrar_estadisticas_periodo_actualizado)
+        if date_edit2:
+            date_edit2.dateChanged.connect(self.mostrar_estadisticas_periodo_actualizado)
+
+    def mostrar_estadisticas_periodo_actualizado(self):
+        date_edit1 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit")
+        date_edit2 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit_2")
+        label_108 = self.ui.stackedWidget.findChild(QLabel, "label_108")
+        label_109 = self.ui.stackedWidget.findChild(QLabel, "label_109")
+        label_110 = self.ui.stackedWidget.findChild(QLabel, "label_110")
+        label_111 = self.ui.stackedWidget.findChild(QLabel, "label_111")
+        widget_2 = self.ui.stackedWidget.findChild(QWidget, "widget_2")
+        widget = self.ui.stackedWidget.findChild(QWidget, "widget")
+        label_101 = self.ui.stackedWidget.findChild(QLabel, "label_101")
+
+        if label_101:
+            label_101.setText("Ventas del Periodo: " + date_edit1.text() + " - " + date_edit2.text())
+
+        periodo1 = date_edit1.date().toPython()
+        periodo2 = date_edit2.date().toPython()
+
+        if periodo2 < periodo1:
+            if widget:
+                self.mostrar_mensaje_en_widget(widget, "No hay datos en este periodo")
+            if widget_2:
+                self.mostrar_mensaje_en_widget(widget_2, "No hay datos en este periodo")
+            return
+
+        resultados = {}
+        graf_resultados = {}
+        graf2_resultados = {}
+
+        def check_and_update_labels():
+            if len(resultados) == 4:
+                if label_108:
+                    label_108.setText(f"${resultados['ventas_totales']:.2f}")
+                if label_109:
+                    label_109.setText(f"{resultados['numero_de_ventas']}")
+                if label_110:
+                    label_110.setText(f"${resultados['venta_promedio']:.2f}")
+                if label_111:
+                    label_111.setText(f"${resultados['ganancias_totales']:.2f}")
+
+        def check_and_draw_graph():
+            if 'ventas' in graf_resultados and 'ganancias' in graf_resultados:
+                ventas = graf_resultados['ventas']
+                ganancias = graf_resultados['ganancias']
+                self.graficar_ventas_y_ganancias(widget, ventas, ganancias)
+
+        def on_metodos_pago_obtenidos(metodos_pago):
+            graf2_resultados['metodos_pago'] = metodos_pago
+            graf2_resultados['datos_por_metodo'] = {}
+            if not metodos_pago:
+                self.mostrar_mensaje_en_widget(widget_2, "No hay métodos de pago disponibles")
+            else:
+                for i, (id_metodo, nombre_metodo) in enumerate(metodos_pago):
+                    thread = TraerDatosPorMetodoYDiaPeriodoThread(periodo1, periodo2, id_metodo)
+                    def make_callback(idx, nombre_metodo):
+                        return lambda datos: (
+                            graf2_resultados['datos_por_metodo'].__setitem__(nombre_metodo, datos),
+                            draw_metodos_graph()
+                        )
+                    thread.resultado.connect(make_callback(i, nombre_metodo))
+                    self.start_thread(thread)
+        def draw_metodos_graph():
+            metodos_pago = graf2_resultados.get('metodos_pago', [])
+            datos_por_metodo = graf2_resultados.get('datos_por_metodo', {})
+            if len(datos_por_metodo) == len(metodos_pago) and metodos_pago:
+                layout = widget_2.layout()
+                if layout:
+                    while layout.count():
+                        child = layout.takeAt(0)
+                        if child.widget():
+                            old_canvas = child.widget()
+                            if isinstance(old_canvas, FigureCanvas):
+                                old_canvas.figure.clear()
+                                old_canvas.close()
+                            old_canvas.deleteLater()
+                fig = Figure(figsize=(6, 4))
+                ax = fig.add_subplot(111)
+                colores = ["#FF5733", "#33FF57", "#3357FF", "#FF33A1", "#A133FF", "#33FFF5", "#FFC300", "#DAF7A6", "#C70039"]
+                x = range(len(metodos_pago))
+                ancho_barra = 0.8 / len(metodos_pago)
+                for i, (id_metodo, nombre_metodo) in enumerate(metodos_pago):
+                    datos = datos_por_metodo.get(nombre_metodo, [0]*len(metodos_pago))
+                    posiciones = [pos + i * ancho_barra for pos in x]
+                    ax.bar(posiciones, datos, width=ancho_barra, label=nombre_metodo, color=colores[i % len(colores)], align="center")
+                ax.set_xticks([pos + (ancho_barra * (len(metodos_pago) - 1)) / 2 for pos in x])
+                ax.set_xticklabels([f"Día {i+1}" for i in x], fontname="Segoe UI", fontsize=8, rotation=0)
+                ax.set_ylabel("Monto ($)", fontname="Segoe UI", fontsize=10)
+                ax.set_title("Ventas por Método de Pago del Periodo", fontname="Segoe UI", fontsize=12)
+                legend = ax.legend(prop={"family": "Segoe UI", "size": 8}, frameon=True, facecolor="white", edgecolor="gray",loc="upper right")
+                legend.get_frame().set_alpha(0.8)
+                canvas = FigureCanvas(fig)
+                if not layout:
+                    layout = QVBoxLayout(widget_2)
+                    widget_2.setLayout(layout)
+                layout.addWidget(canvas)
+        
+        # Hilos para los labels
+        self.ventas_totales_periodo_thread = TraerVentasTotalesPeriodoThread(periodo1, periodo2)
+        self.numero_de_ventas_periodo_thread = TraerNumeroDeVentasPeriodoThread(periodo1, periodo2)
+        self.venta_promedio_periodo_thread = TraerVentaPromedioPeriodoThread(periodo1, periodo2)
+        self.ganancias_totales_periodo_thread = TraerGananciasTotalesPeriodoThread(periodo1, periodo2)
+
+        self.ventas_totales_periodo_thread.resultado.connect(lambda x: (resultados.update({'ventas_totales': x}), check_and_update_labels()))
+        self.numero_de_ventas_periodo_thread.resultado.connect(lambda x: (resultados.update({'numero_de_ventas': x}), check_and_update_labels()))
+        self.venta_promedio_periodo_thread.resultado.connect(lambda x: (resultados.update({'venta_promedio': x}), check_and_update_labels()))
+        self.ganancias_totales_periodo_thread.resultado.connect(lambda x: (resultados.update({'ganancias_totales': x}), check_and_update_labels()))
+
+        self.start_thread(self.ventas_totales_periodo_thread)
+        self.start_thread(self.numero_de_ventas_periodo_thread)
+        self.start_thread(self.venta_promedio_periodo_thread)
+        self.start_thread(self.ganancias_totales_periodo_thread)
+
+        # Hilos para la gráfica de ventas y ganancias
+        self.ventas_periodo_thread = TraerVentasPeriodoThread(periodo1, periodo2)
+        self.ganancias_periodo_thread = TraerGananciasPeriodoThread(periodo1, periodo2)
+        self.ventas_periodo_thread.resultado.connect(lambda x: (graf_resultados.update({'ventas': x}), check_and_draw_graph()))
+        self.ganancias_periodo_thread.resultado.connect(lambda x: (graf_resultados.update({'ganancias': x}), check_and_draw_graph()))
+        self.start_thread(self.ventas_periodo_thread)
+        self.start_thread(self.ganancias_periodo_thread)
+
+        # Hilos para la gráfica de métodos de pago
+        self.metodos_pago_y_id_thread = TraerMetodosPagoYSuIdThread()
+        self.metodos_pago_y_id_thread.resultado.connect(on_metodos_pago_obtenidos)
+        self.start_thread(self.metodos_pago_y_id_thread)
+
+################
+################
+
 
 class AdministracionTab:
     def __init__(self, ui, buscar_datos_tab, datos_tab):

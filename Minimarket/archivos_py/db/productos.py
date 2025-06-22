@@ -3,6 +3,20 @@ from psycopg2 import errors
 from datetime import datetime
 
 
+# variable globald e mapeo
+global month_mapping
+month_mapping = {
+    "Enero": 1, "Febrero": 2, "Marzo": 3, "Abril": 4,
+    "Mayo": 5, "Junio": 6, "Julio": 7, "Agosto": 8,
+    "Septiembre": 9, "Octubre": 10, "Noviembre": 11, "Diciembre": 12
+}
+global day_mapping
+# definir la variable day_mapping fuera de la función para que sea global y usarla en otras funciones
+day_mapping = {
+    "Domingo": 0, "Lunes": 1, "Martes": 2, "Miércoles": 3,
+    "Jueves": 4, "Viernes": 5, "Sábado": 6
+}
+
 
 def traer_categorias():
     conn = get_connection()
@@ -550,6 +564,988 @@ def traer_movimientos_por_accion(accion_seleccionada):
     cursor.close()
     conn.close()
     return data  # Devuelve una lista con todos los movimientos realizados con la acción seleccionada
+
+def traer_metodo_pago_id(valor):
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"SELECT id_mp FROM metodos_pago WHERE nombre_mp = '{valor}'" #trae el id del metodo de pago
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return data[0][0]
+
+def traer_datos_ventas_metodo_o_usuario(id, fecha):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    if fecha and "-" in fecha:
+        partes = fecha.split("-")
+        anio = partes[0]
+        mes = partes[1] if len(partes) > 1 else None
+        dia = partes[2] if len(partes) > 2 else None
+        
+        query = """
+            SELECT v.id_usuario, v.fecha_hora, v.id_metodo_pago, 
+                   dv.id_producto, dv.cantidad, dv.precio_unitario_venta
+            FROM ventas v
+            INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+            WHERE EXTRACT(YEAR FROM v.fecha_hora) = %s
+        """
+        parametros = [int(anio)]
+        
+        if mes:
+            query += " AND EXTRACT(MONTH FROM v.fecha_hora) = %s"
+            parametros.append(int(mes))
+            
+            if dia:
+                query += " AND EXTRACT(DAY FROM v.fecha_hora) = %s"
+                parametros.append(int(dia))
+        
+        query += " AND (v.id_usuario = %s OR v.id_metodo_pago = %s)"
+        parametros.extend([id, id])
+        cursor.execute(query, parametros)
+        
+    elif fecha:
+        query = """
+            SELECT v.id_usuario, v.fecha_hora, v.id_metodo_pago, 
+                   dv.id_producto, dv.cantidad, dv.precio_unitario_venta
+            FROM ventas v
+            INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+            WHERE EXTRACT(YEAR FROM v.fecha_hora) = %s
+              AND (v.id_usuario = %s OR v.id_metodo_pago = %s)
+        """
+        cursor.execute(query, (int(fecha), id, id))
+    else:
+        query = """
+            SELECT v.id_usuario, v.fecha_hora, v.id_metodo_pago, 
+                   dv.id_producto, dv.cantidad, dv.precio_unitario_venta
+            FROM ventas v
+            INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+            WHERE (v.id_usuario = %s OR v.id_metodo_pago = %s)
+        """
+        cursor.execute(query, (id, id))
+    
+    resultados = cursor.fetchall()
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return resultados
+
+def traer_datos_compras_metodo_o_usuario(id, fecha):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    if fecha and "-" in fecha:
+        partes = fecha.split("-")
+        anio = partes[0]
+        mes = partes[1] if len(partes) > 1 else None
+        dia = partes[2] if len(partes) > 2 else None
+        
+        query = """
+            SELECT c.id_usuario, c.fecha_hora, c.id_metodo_pago,
+                   dc.id_producto, dc.cantidad, dc.precio_unitario
+            FROM compras c
+            INNER JOIN detalle_compras dc ON c.id_compra = dc.id_compra
+            WHERE EXTRACT(YEAR FROM c.fecha_hora) = %s
+        """
+        parametros = [int(anio)]
+        
+        if mes:
+            query += " AND EXTRACT(MONTH FROM c.fecha_hora) = %s"
+            parametros.append(int(mes))
+            
+            if dia:
+                query += " AND EXTRACT(DAY FROM c.fecha_hora) = %s"
+                parametros.append(int(dia))
+        
+        query += " AND (c.id_usuario = %s OR c.id_metodo_pago = %s)"
+        parametros.extend([id, id])
+        cursor.execute(query, parametros)
+        
+    elif fecha:
+        query = """
+            SELECT c.id_usuario, c.fecha_hora, c.id_metodo_pago,
+                   dc.id_producto, dc.cantidad, dc.precio_unitario
+            FROM compras c
+            INNER JOIN detalle_compras dc ON c.id_compra = dc.id_compra
+            WHERE EXTRACT(YEAR FROM c.fecha_hora) = %s
+              AND (c.id_usuario = %s OR c.id_metodo_pago = %s)
+        """
+        cursor.execute(query, (int(fecha), id, id))
+    else:
+        query = """
+            SELECT c.id_usuario, c.fecha_hora, c.id_metodo_pago,
+                   dc.id_producto, dc.cantidad, dc.precio_unitario
+            FROM compras c
+            INNER JOIN detalle_compras dc ON c.id_compra = dc.id_compra
+            WHERE (c.id_usuario = %s OR c.id_metodo_pago = %s)
+        """
+        cursor.execute(query, (id, id))
+    
+    resultados = cursor.fetchall()
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return resultados
+
+
+def traer_metodo_pago(metodo): #traer el nombre del metodo de pago a traves del id
+    conn = get_connection()
+    cursor = conn.cursor()
+    query_nombre = f"SELECT nombre_mp FROM metodos_pago WHERE id_mp = {metodo}"
+    cursor.execute(query_nombre)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return data[0][0]
+
+
+
+def traer_datos_arqueo_ventas_fecha(fecha):
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    
+    if fecha and "-" in fecha:
+        partes = fecha.split("-")
+        anio = partes[0]
+        mes = partes[1] if len(partes) > 1 else None
+        dia = partes[2] if len(partes) > 2 else None
+        
+        query = """
+            SELECT v.id_usuario, v.fecha_hora, v.id_metodo_pago, 
+                   dv.id_producto, dv.cantidad, dv.precio_unitario_venta
+            FROM ventas v
+            INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+            WHERE EXTRACT(YEAR FROM v.fecha_hora) = %s
+        """
+        parametros = [int(anio)]
+        
+        if mes:
+            query += " AND EXTRACT(MONTH FROM v.fecha_hora) = %s"
+            parametros.append(int(mes))
+            
+            if dia:
+                query += " AND EXTRACT(DAY FROM v.fecha_hora) = %s"
+                parametros.append(int(dia))
+        
+        cursor.execute(query, parametros)
+        
+    elif fecha:
+        query = """
+            SELECT v.id_usuario, v.fecha_hora, v.id_metodo_pago, 
+                   dv.id_producto, dv.cantidad, dv.precio_unitario_venta
+            FROM ventas v
+            INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+            WHERE EXTRACT(YEAR FROM v.fecha_hora) = %s
+        """
+        cursor.execute(query, (int(fecha),))
+    else:
+        query = """
+            SELECT v.id_usuario, v.fecha_hora, v.id_metodo_pago, 
+                   dv.id_producto, dv.cantidad, dv.precio_unitario_venta
+            FROM ventas v
+            INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+        """
+        cursor.execute(query)
+
+    resultados = cursor.fetchall()
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return resultados
+
+def traer_datos_arqueo_compras_fecha(fecha):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    if fecha and "-" in fecha:
+        partes = fecha.split("-")
+        anio = partes[0]
+        mes = partes[1] if len(partes) > 1 else None
+        dia = partes[2] if len(partes) > 2 else None
+        
+        query = """
+            SELECT c.id_usuario, c.fecha_hora, c.id_metodo_pago,
+                   dc.id_producto, dc.cantidad, dc.precio_unitario
+            FROM compras c
+            INNER JOIN detalle_compras dc ON c.id_compra = dc.id_compra
+            WHERE EXTRACT(YEAR FROM c.fecha_hora) = %s
+        """
+        parametros = [int(anio)]
+        
+        if mes:
+            query += " AND EXTRACT(MONTH FROM c.fecha_hora) = %s"
+            parametros.append(int(mes))
+            
+            if dia:
+                query += " AND EXTRACT(DAY FROM c.fecha_hora) = %s"
+                parametros.append(int(dia))
+        
+        cursor.execute(query, parametros)
+        
+    elif fecha:
+        query = """
+            SELECT c.id_usuario, c.fecha_hora, c.id_metodo_pago,
+                   dc.id_producto, dc.cantidad, dc.precio_unitario
+            FROM compras c
+            INNER JOIN detalle_compras dc ON c.id_compra = dc.id_compra
+            WHERE EXTRACT(YEAR FROM c.fecha_hora) = %s
+        """
+        cursor.execute(query, (int(fecha),))
+    else:
+        query = """
+            SELECT c.id_usuario, c.fecha_hora, c.id_metodo_pago,
+                   dc.id_producto, dc.cantidad, dc.precio_unitario
+            FROM compras c
+            INNER JOIN detalle_compras dc ON c.id_compra = dc.id_compra
+        """
+        cursor.execute(query)
+    
+    resultados = cursor.fetchall()
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return resultados
+
+
+def traer_metodos_de_pago(): # trae todos los metodos de pago de la base de datos
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"SELECT nombre_mp FROM metodos_pago"
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return data
+
+def traer_ventas_totales_dia(fecha_selecc):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT SUM(dv.precio_unitario_venta * dv.cantidad)
+        FROM ventas v
+        INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+        WHERE DATE(v.fecha_hora) = '{fecha_selecc}'
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return data[0][0] if data[0][0] is not None else 0  # devuelve el total de ventas del dia actual
+
+
+def traer_ganancias_totales_dia(fecha_selecc):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT SUM((dv.precio_unitario_venta - dv.precio_unitario_compra) * dv.cantidad)
+        FROM ventas v
+        INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+        WHERE DATE(v.fecha_hora) = '{fecha_selecc}'
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    
+    return data[0][0] if data[0][0] is not None else 0  # devuelve el total de ganancias del dia actual
+
+def traer_compras_totales_dia(fecha_selecc):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT SUM(dc.precio_unitario * dc.cantidad)
+        FROM compras c
+        INNER JOIN detalle_compras dc ON c.id_compra = dc.id_compra
+        WHERE DATE(c.fecha_hora) = '{fecha_selecc}'
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return data[0][0] if data[0][0] is not None else 0  # devuelve el total de compras del dia actual
+
+def traer_numero_de_compras_dia(fecha_selecc):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT COUNT(*)
+        FROM compras c
+        WHERE DATE(c.fecha_hora) = '{fecha_selecc}'
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return data[0][0] if data[0][0] is not None else 0  # devuelve el total de compras del dia actual
+
+def traer_compras_totales_mes(anio, mes):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT SUM(dc.precio_unitario * dc.cantidad)
+        FROM compras c
+        INNER JOIN detalle_compras dc ON c.id_compra = dc.id_compra
+        WHERE EXTRACT(YEAR FROM c.fecha_hora) = {anio} AND EXTRACT(MONTH FROM c.fecha_hora) = {mes}
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return data[0][0] if data[0][0] is not None else 0  # devuelve el total de compras del mes actual
+
+def traer_numero_de_compras_mes(anio, mes):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT COUNT(*)
+        FROM compras c
+        WHERE EXTRACT(YEAR FROM c.fecha_hora) = {anio} AND EXTRACT(MONTH FROM c.fecha_hora) = {mes}
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return data[0][0] if data[0][0] is not None else 0  # devuelve el total de compras del mes actual
+
+def traer_compras_totales_ano_actual(anio):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT SUM(dc.precio_unitario * dc.cantidad)
+        FROM compras c
+        INNER JOIN detalle_compras dc ON c.id_compra = dc.id_compra
+        WHERE EXTRACT(YEAR FROM c.fecha_hora) = {anio}
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    
+    return data[0][0] if data[0][0] is not None else 0  # devuelve el total de compras del año actual
+
+def traer_numero_de_compras_ano_actual(anio):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT COUNT(*)
+        FROM compras c
+        WHERE EXTRACT(YEAR FROM c.fecha_hora) = {anio}
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return data[0][0] if data[0][0] is not None else 0  # devuelve el total de compras del año actual
+
+
+def traer_ventas_por_metodo_dia(fecha_selecc):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT v.id_metodo_pago, SUM(dv.precio_unitario_venta * dv.cantidad)
+        FROM ventas v
+        INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+        WHERE DATE(v.fecha_hora) = '{fecha_selecc}'
+        GROUP BY v.id_metodo_pago
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    # Convertir los resultados en un diccionario con el id del método de pago como clave y la suma como valor
+    resultados = {row[0]: row[1] for row in data}
+    return resultados  # Devuelve un diccionario con los resultados
+
+def traer_compras_por_metodo_dia(fecha_selecc):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT c.id_metodo_pago, SUM(dc.precio_unitario * dc.cantidad)
+        FROM compras c
+        INNER JOIN detalle_compras dc ON c.id_compra = dc.id_compra
+        WHERE DATE(c.fecha_hora) = '{fecha_selecc}'
+        GROUP BY c.id_metodo_pago
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    # Convertir los resultados en un diccionario con el id del método de pago como clave y la suma como valor
+    resultados = {row[0]: row[1] for row in data}
+    return resultados  # Devuelve un diccionario con los resultados
+
+def traer_ventas_por_metodo_mes(anio, mes):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT v.id_metodo_pago, SUM(dv.precio_unitario_venta * dv.cantidad)
+        FROM ventas v
+        INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+        WHERE EXTRACT(YEAR FROM v.fecha_hora) = {anio} AND EXTRACT(MONTH FROM v.fecha_hora) = {mes}
+        GROUP BY v.id_metodo_pago
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    # Convertir los resultados en un diccionario con el id del método de pago como clave y la suma como valor
+    resultados = {row[0]: row[1] for row in data}
+    return resultados  # Devuelve un diccionario con los resultados
+
+def traer_compras_por_metodo_mes(anio, mes):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT c.id_metodo_pago, SUM(dc.precio_unitario * dc.cantidad)
+        FROM compras c
+        INNER JOIN detalle_compras dc ON c.id_compra = dc.id_compra
+        WHERE EXTRACT(YEAR FROM c.fecha_hora) = {anio} AND EXTRACT(MONTH FROM c.fecha_hora) = {mes}
+        GROUP BY c.id_metodo_pago
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    # Convertir los resultados en un diccionario con el id del método de pago como clave y la suma como valor
+    resultados = {row[0]: row[1] for row in data}
+    return resultados  # Devuelve un diccionario con los resultados
+
+def traer_ventas_por_metodo_ano(anio):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT v.id_metodo_pago, SUM(dv.precio_unitario_venta * dv.cantidad)
+        FROM ventas v
+        INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+        WHERE EXTRACT(YEAR FROM v.fecha_hora) = {anio}
+        GROUP BY v.id_metodo_pago
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    # Convertir los resultados en un diccionario con el id del método de pago como clave y la suma como valor
+    resultados = {row[0]: row[1] for row in data}
+    return resultados  # Devuelve un diccionario con los resultados
+
+
+def traer_numero_de_ventas_ano(anio):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT COUNT(*)
+        FROM ventas v
+        WHERE EXTRACT(YEAR FROM v.fecha_hora) = {anio}
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return data[0][0] if data[0][0] is not None else 0  # devuelve el total de ventas del año actual
+
+def traer_numero_de_ventas_mes(anio, mes):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT COUNT(*)
+        FROM ventas v
+        WHERE EXTRACT(YEAR FROM v.fecha_hora) = {anio} AND EXTRACT(MONTH FROM v.fecha_hora) = {mes}
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return data[0][0] if data[0][0] is not None else 0  # devuelve el total de ventas del mes actual
+
+def traer_numero_de_ventas_dia(fecha_selecc):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT COUNT(*)
+        FROM ventas v
+        WHERE DATE(v.fecha_hora) = '{fecha_selecc}'
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    
+    return data[0][0] if data[0][0] is not None else 0  # devuelve el total de ventas del dia actual
+
+def traer_ventas_totales_ano_actual(ano_actual):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT SUM(dv.precio_unitario_venta * dv.cantidad)
+        FROM ventas v
+        INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+        WHERE EXTRACT(YEAR FROM v.fecha_hora) = {ano_actual}
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    
+    return data[0][0] if data[0][0] is not None else 0  # devuelve el total de ventas del año actual
+
+
+def traer_ganancias_totales_ano_actual(ano_actual):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT SUM((dv.precio_unitario_venta - dv.precio_unitario_compra) * dv.cantidad)
+        FROM ventas v
+        INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+        WHERE EXTRACT(YEAR FROM v.fecha_hora) = {ano_actual}
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    
+    return data[0][0] if data[0][0] is not None else 0  # devuelve el total de ganancias del año actual
+
+def traer_ganancias_totales_mes(ano_actual, mes_actual):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT SUM((dv.precio_unitario_venta - dv.precio_unitario_compra) * dv.cantidad)
+        FROM ventas v
+        INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+        WHERE EXTRACT(YEAR FROM v.fecha_hora) = {ano_actual}
+          AND EXTRACT(MONTH FROM v.fecha_hora) = {mes_actual}
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    
+    return data[0][0] if data[0][0] is not None else 0  # devuelve el total de ganancias del mes actual
+
+def traer_ventas_totales_mes(ano_actual, mes_actual):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT SUM(dv.precio_unitario_venta * dv.cantidad)
+        FROM ventas v
+        INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+        WHERE EXTRACT(YEAR FROM v.fecha_hora) = {ano_actual}
+          AND EXTRACT(MONTH FROM v.fecha_hora) = {mes_actual}
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    
+    return data[0][0] if data[0][0] is not None else 0  # devuelve el total de ventas del mes actual
+
+def traer_numero_de_ventas_ano_actual(ano_actual):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT COUNT(*)
+        FROM ventas v
+        WHERE EXTRACT(YEAR FROM v.fecha_hora) = {ano_actual}
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return data[0][0] if data[0][0] is not None else 0  # devuelve el total de ventas del año actual
+
+
+def traer_venta_promedio_ano_actual(ano_actual):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT AVG(dv.precio_unitario_venta * dv.cantidad)
+        FROM ventas v
+        INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+        WHERE EXTRACT(YEAR FROM v.fecha_hora) = {ano_actual}
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    
+    return data[0][0] if data[0][0] is not None else 0  # devuelve el total de ganancias del año actual
+
+
+def traer_ventas_ano_actual(ano_actual, meses):
+    conn = get_connection()
+    cursor = conn.cursor()
+    ventas_por_mes = []
+
+    global month_mapping
+
+    for mes in meses:
+        mes_numero = month_mapping.get(mes, mes)  # Map month name to number, or keep as is if already a number
+        query = f"""
+            SELECT SUM(dv.precio_unitario_venta * dv.cantidad)
+            FROM ventas v
+            INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+            WHERE EXTRACT(YEAR FROM v.fecha_hora) = {ano_actual}
+              AND EXTRACT(MONTH FROM v.fecha_hora) = {mes_numero}
+        """
+        cursor.execute(query)
+        data = cursor.fetchall()
+        ventas_por_mes.append(data[0][0] if data[0][0] is not None else 0)
+    
+    cursor.close()
+    conn.close()
+    return ventas_por_mes  # devuelve una lista con las ventas de cada mes en orden
+
+
+def traer_ganancias_ano_actual(ano_actual, meses):
+    conn = get_connection()
+    cursor = conn.cursor()
+    ganancias_por_mes = []
+    global month_mapping
+    for mes in meses:
+        mes_numero = month_mapping.get(mes, mes)  # Map month name to number, or keep as is if already a number
+        query = f"""
+            SELECT SUM((dv.precio_unitario_venta - dv.precio_unitario_compra) * dv.cantidad)
+            FROM ventas v
+            INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+            WHERE EXTRACT(YEAR FROM v.fecha_hora) = {ano_actual}
+              AND EXTRACT(MONTH FROM v.fecha_hora) = {mes_numero}
+        """
+        cursor.execute(query)
+        data = cursor.fetchall()
+        ganancias_por_mes.append(data[0][0] if data[0][0] is not None else 0)
+    cursor.close()
+    conn.close()
+    return ganancias_por_mes  # devuelve una lista con las ganancias de cada mes en orden
+
+def traer_metodos_pago_y_su_id(): # trae todos los metodos de pago de la base de datos
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"SELECT * FROM metodos_pago"
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return data
+
+def traer_datos_por_metodo_y_mes(ano_actual, metodo, meses):
+    conn = get_connection()
+    cursor = conn.cursor()
+    datos_por_mes = []
+
+    global month_mapping
+
+    for mes in meses:
+        mes_numero = month_mapping.get(mes, mes)  # Map month name to number, or keep as is if already a number
+        query = f"""
+            SELECT SUM(dv.precio_unitario_venta * dv.cantidad)
+            FROM ventas v
+            INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+            WHERE EXTRACT(YEAR FROM v.fecha_hora) = {ano_actual}
+              AND EXTRACT(MONTH FROM v.fecha_hora) = {mes_numero}
+              AND v.id_metodo_pago = {metodo}
+        """
+        cursor.execute(query)
+        data = cursor.fetchall()
+        datos_por_mes.append(data[0][0] if data[0][0] is not None else 0)
+    
+    cursor.close()
+    conn.close()
+    return datos_por_mes  # devuelve una lista con las ventas de cada mes en orden
+
+def traer_venta_promedio_mes(ano_actual, mes_actual):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT AVG(dv.precio_unitario_venta * dv.cantidad)
+        FROM ventas v
+        INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+        WHERE EXTRACT(YEAR FROM v.fecha_hora) = {ano_actual}
+          AND EXTRACT(MONTH FROM v.fecha_hora) = {mes_actual}
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    
+    return data[0][0] if data[0][0] is not None else 0  # devuelve el total de ganancias del mes actual
+
+def traer_numero_de_ventas_semana(ano_actual, semana_actual):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT COUNT(*)
+        FROM ventas v
+        WHERE EXTRACT(YEAR FROM v.fecha_hora) = {ano_actual}
+          AND EXTRACT(WEEK FROM v.fecha_hora) = {semana_actual}
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return data[0][0] if data[0][0] is not None else 0  # devuelve el total de ventas de la semana actual
+
+def traer_venta_promedio_semana(ano_actual, semana_actual):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT AVG(dv.precio_unitario_venta * dv.cantidad)
+        FROM ventas v
+        INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+        WHERE EXTRACT(YEAR FROM v.fecha_hora) = {ano_actual}
+          AND EXTRACT(WEEK FROM v.fecha_hora) = {semana_actual}
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    
+    return data[0][0] if data[0][0] is not None else 0  # devuelve el total de ganancias de la semana actual
+
+def traer_ganancias_totales_semana(ano_actual, semana_actual):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT SUM((dv.precio_unitario_venta - dv.precio_unitario_compra) * dv.cantidad)
+        FROM ventas v
+        INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+        WHERE EXTRACT(YEAR FROM v.fecha_hora) = {ano_actual}
+          AND EXTRACT(WEEK FROM v.fecha_hora) = {semana_actual}
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    
+    return data[0][0] if data[0][0] is not None else 0  # devuelve el total de ganancias de la semana actual
+
+def traer_ventas_semana_actual(ano_actual, semana_actual, dias_semana):
+    conn = get_connection()
+    cursor = conn.cursor()
+    ventas_por_dia = []
+
+    global day_mapping
+
+    for dia in dias_semana:
+        dia_numero = day_mapping.get(dia, dia)  # Map day name to number (1-7)
+        query = """
+            SELECT SUM(dv.precio_unitario_venta * dv.cantidad)
+            FROM ventas v
+            INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+            WHERE EXTRACT(YEAR FROM v.fecha_hora) = %s
+              AND EXTRACT(WEEK FROM v.fecha_hora) = %s
+              AND EXTRACT(DOW FROM v.fecha_hora) = %s  -- PostgreSQL: 0=domingo, 1=lunes, ..., 6=sábado
+        """
+        cursor.execute(query, (ano_actual, semana_actual, dia_numero))
+        data = cursor.fetchall()
+        ventas_por_dia.append(data[0][0] if data[0][0] is not None else 0)
+
+    conn.close()
+    return ventas_por_dia  # Devuelve una lista con las ventas de cada día de la semana en orden
+
+def traer_ganancias_semana_actual(ano_actual, semana_actual, dias_semana):
+    conn = get_connection()
+    cursor = conn.cursor()
+    ganancias_por_dia = []
+
+    global day_mapping
+
+    for dia in dias_semana:
+        dia_numero = day_mapping.get(dia, dia)  # Map day name to number (1-7)
+        query = f"""
+            SELECT SUM((dv.precio_unitario_venta - dv.precio_unitario_compra) * dv.cantidad)
+            FROM ventas v
+            INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+            WHERE EXTRACT(YEAR FROM v.fecha_hora) = {ano_actual}
+              AND EXTRACT(WEEK FROM v.fecha_hora) = {semana_actual}
+              AND EXTRACT(DOW FROM v.fecha_hora) = {dia_numero - 1}  -- PostgreSQL: 0=domingo, 1=lunes, ..., 6=sábado
+        """
+        cursor.execute(query)
+        data = cursor.fetchall()
+        ganancias_por_dia.append(data[0][0] if data[0][0] is not None else 0)
+    
+    conn.close()
+    cursor.close()
+    return ganancias_por_dia  # Devuelve una lista con las ganancias de cada día de la semana en orden
+
+def traer_datos_por_metodo_y_dia_semana(ano_actual, semana_actual, id_metodo, dias_semana):
+    conn = get_connection()
+    cursor = conn.cursor()
+    datos_por_dia = []
+
+    global day_mapping
+
+    for dia in dias_semana:
+        dia_numero = day_mapping.get(dia, dia)  # Map day name to number (1-7)
+        query = f"""
+            SELECT SUM(dv.precio_unitario_venta * dv.cantidad)
+            FROM ventas v
+            INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+            WHERE EXTRACT(YEAR FROM v.fecha_hora) = {ano_actual}
+              AND EXTRACT(WEEK FROM v.fecha_hora) = {semana_actual}
+              AND EXTRACT(DOW FROM v.fecha_hora) = {dia_numero - 1}  -- PostgreSQL: 0=domingo, 1=lunes, ..., 6=sábado
+              AND v.id_metodo_pago = {id_metodo}
+        """
+        cursor.execute(query)
+        data = cursor.fetchall()
+        datos_por_dia.append(data[0][0] if data[0][0] is not None else 0)
+    
+    conn.close()
+    cursor.close()
+    return datos_por_dia  # Devuelve una lista con las ventas de cada día de la semana en orden
+
+def traer_ventas_totales_semana(ano_actual, semana_actual):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT SUM(dv.precio_unitario_venta * dv.cantidad)
+        FROM ventas v
+        INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+        WHERE EXTRACT(YEAR FROM v.fecha_hora) = {ano_actual}
+          AND EXTRACT(WEEK FROM v.fecha_hora) = {semana_actual}
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    
+    return data[0][0] if data[0][0] is not None else 0  # devuelve el total de ventas de la semana actual
+
+def traer_ventas_totales_periodo(periodo1, periodo2):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT SUM(dv.precio_unitario_venta * dv.cantidad)
+        FROM ventas v
+        INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+        WHERE v.fecha_hora BETWEEN '{periodo1}' AND '{periodo2}'
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    
+    return data[0][0] if data[0][0] is not None else 0  # devuelve el total de ventas del periodo seleccionado
+
+def traer_numero_de_ventas_periodo(periodo1, periodo2):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT COUNT(*)
+        FROM ventas v
+        WHERE v.fecha_hora BETWEEN '{periodo1}' AND '{periodo2}'
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    
+    return data[0][0] if data[0][0] is not None else 0  # devuelve el total de ventas del periodo seleccionado
+
+def traer_venta_promedio_periodo(periodo1, periodo2):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT AVG(dv.precio_unitario_venta * dv.cantidad)
+        FROM ventas v
+        INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+        WHERE v.fecha_hora BETWEEN '{periodo1}' AND '{periodo2}'
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    
+    return data[0][0] if data[0][0] is not None else 0  # devuelve el total de ganancias del periodo seleccionado
+
+def traer_ganancias_totales_periodo(periodo1, periodo2):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT SUM((dv.precio_unitario_venta - dv.precio_unitario_compra) * dv.cantidad)
+        FROM ventas v
+        INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+        WHERE v.fecha_hora BETWEEN '{periodo1}' AND '{periodo2}'
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    
+    return data[0][0] if data[0][0] is not None else 0  # devuelve el total de ganancias del periodo seleccionado
+
+def traer_ventas_periodo(periodo1, periodo2):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT DATE(v.fecha_hora) AS dia, SUM(dv.precio_unitario_venta * dv.cantidad) AS total_ventas
+        FROM ventas v
+        INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+        WHERE v.fecha_hora BETWEEN '{periodo1}' AND '{periodo2}'
+        GROUP BY dia
+        ORDER BY dia
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    # Convertir los resultados en una lista de valores
+    ventas_por_dia = [row[1] if row[1] is not None else 0 for row in data]
+    return ventas_por_dia  # Devuelve una lista con las ventas por día
+
+def traer_ganancias_periodo(periodo1, periodo2):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT SUM((dv.precio_unitario_venta - dv.precio_unitario_compra) * dv.cantidad)
+        FROM ventas v
+        INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+        WHERE v.fecha_hora BETWEEN '{periodo1}' AND '{periodo2}'
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return data[0][0] if data[0][0] is not None else 0  # devuelve el total de ganancias del periodo seleccionado
+
+def traer_datos_por_metodo_y_dia_periodo(periodo1, periodo2, id_metodo):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"""
+        SELECT SUM(dv.precio_unitario_venta * dv.cantidad)
+        FROM ventas v
+        INNER JOIN detalle_ventas dv ON v.id_venta = dv.id_venta
+        WHERE v.fecha_hora BETWEEN '{periodo1}' AND '{periodo2}'
+          AND v.id_metodo_pago = {id_metodo}
+    """
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    
+    return data[0][0] if data[0][0] is not None else 0  # devuelve el total de ventas del periodo seleccionado
+
+
 
 
 
