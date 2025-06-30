@@ -859,74 +859,96 @@ class TraerDatosPorMetodoYDiaSemanaThread(QThread):
         datos = traer_datos_por_metodo_y_dia_semana(self.anio, self.semana, self.id_metodo, self.dias_semana)
         self.resultado.emit(datos)
 
+
+
+## periodo
+
 class TraerVentasTotalesPeriodoThread(QThread):
     resultado = Signal(float)
-    def __init__(self, fecha_inicio, fecha_fin):
+    def __init__(self, periodo1, periodo2):
         super().__init__()
-        self.fecha_inicio = fecha_inicio
-        self.fecha_fin = fecha_fin
+        self.periodo1 = periodo1
+        self.periodo2 = periodo2
     def run(self):
-        total = traer_ventas_totales_periodo(self.fecha_inicio, self.fecha_fin)
+        total = traer_ventas_totales_periodo(self.periodo1, self.periodo2)
         self.resultado.emit(total)
 
 class TraerNumeroDeVentasPeriodoThread(QThread):
     resultado = Signal(int)
-    def __init__(self, fecha_inicio, fecha_fin):
+    def __init__(self, periodo1, periodo2):
         super().__init__()
-        self.fecha_inicio = fecha_inicio
-        self.fecha_fin = fecha_fin
+        self.periodo1 = periodo1
+        self.periodo2 = periodo2
     def run(self):
-        total = traer_numero_de_ventas_periodo(self.fecha_inicio, self.fecha_fin)
+        total = traer_numero_de_ventas_periodo(self.periodo1, self.periodo2)
         self.resultado.emit(total)
 
 class TraerVentaPromedioPeriodoThread(QThread):
     resultado = Signal(float)
-    def __init__(self, fecha_inicio, fecha_fin):
+    def __init__(self, periodo1, periodo2):
         super().__init__()
-        self.fecha_inicio = fecha_inicio
-        self.fecha_fin = fecha_fin
+        self.periodo1 = periodo1
+        self.periodo2 = periodo2
     def run(self):
-        promedio = traer_venta_promedio_periodo(self.fecha_inicio, self.fecha_fin)
+        promedio = traer_venta_promedio_periodo(self.periodo1, self.periodo2)
         self.resultado.emit(promedio)
 
 class TraerGananciasTotalesPeriodoThread(QThread):
     resultado = Signal(float)
-    def __init__(self, fecha_inicio, fecha_fin):
+    def __init__(self, periodo1, periodo2):
         super().__init__()
-        self.fecha_inicio = fecha_inicio
-        self.fecha_fin = fecha_fin
+        self.periodo1 = periodo1
+        self.periodo2 = periodo2
     def run(self):
-        total = traer_ganancias_totales_periodo(self.fecha_inicio, self.fecha_fin)
+        total = traer_ganancias_totales_periodo(self.periodo1, self.periodo2)
         self.resultado.emit(total)
 
 class TraerVentasPeriodoThread(QThread):
     resultado = Signal(list)
-    def __init__(self, fecha_inicio, fecha_fin):
+    def __init__(self, periodo1, periodo2):
         super().__init__()
-        self.fecha_inicio = fecha_inicio
-        self.fecha_fin = fecha_fin
+        self.periodo1 = periodo1
+        self.periodo2 = periodo2
     def run(self):
-        ventas = traer_ventas_periodo(self.fecha_inicio, self.fecha_fin)
+        ventas = traer_ventas_periodo(self.periodo1, self.periodo2)
         self.resultado.emit(ventas)
 
 class TraerGananciasPeriodoThread(QThread):
     resultado = Signal(list)
-    def __init__(self, fecha_inicio, fecha_fin):
+    def __init__(self, periodo1, periodo2):
         super().__init__()
-        self.fecha_inicio = fecha_inicio
-        self.fecha_fin = fecha_fin
+        self.periodo1 = periodo1
+        self.periodo2 = periodo2
     def run(self):
-        ganancias = traer_ganancias_periodo(self.fecha_inicio, self.fecha_fin)
+        ganancias = traer_ganancias_periodo(self.periodo1, self.periodo2)
         self.resultado.emit(ganancias)
+
+class TraerMetodosPagoYSuIdThread(QThread):
+    resultado = Signal(list)
+    def __init__(self):
+        super().__init__()
+    def run(self):
+        metodos = traer_metodos_pago_y_su_id()
+        self.resultado.emit(metodos)
+
 
 class TraerDatosPorMetodoYDiaPeriodoThread(QThread):
     resultado = Signal(list)
-    def __init__(self, fecha_inicio, fecha_fin, id_metodo):
+    def __init__(self, periodo1, periodo2, id_metodo):
         super().__init__()
-        self.fecha_inicio = fecha_inicio
-        self.fecha_fin = fecha_fin
+        self.periodo1 = periodo1
+        self.periodo2 = periodo2
         self.id_metodo = id_metodo
     def run(self):
-        datos = traer_datos_por_metodo_y_dia_periodo(self.fecha_inicio, self.fecha_fin, self.id_metodo)
+        datos = traer_datos_por_metodo_y_dia_periodo(self.periodo1, self.periodo2, self.id_metodo)
         self.resultado.emit(datos)
+
+
+
+
+
+
+
+
+
 
