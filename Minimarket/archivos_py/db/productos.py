@@ -1546,8 +1546,215 @@ def traer_datos_por_metodo_y_dia_periodo(periodo1, periodo2, id_metodo):
     return data[0][0] if data[0][0] is not None else 0  # devuelve el total de ventas del periodo seleccionado
 
 
+def verificar_existencia_de_mp():
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"SELECT EXISTS (SELECT 1 FROM metodos_pago)"
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return data[0][0]
+
+def agregar_mp_default():
+    conn = get_connection()
+    cursor = conn.cursor()
+    query1 = f"INSERT INTO metodos_pago(nombre_mp) VALUES('Efectivo')"
+    query2 = f"INSERT INTO metodos_pago(nombre_mp) VALUES('Transferencia')"
+
+    cursor.execute(query1)
+    cursor.execute(query2)
+    
+    cursor.close()
+    conn.close()
+
+def agregar_mp_db(lineEdit_value):
+    conn = get_connection()
+    try:
+        cursor = conn.cursor()
+        query = f"INSERT INTO metodos_pago(nombre_mp) VALUES('{lineEdit_value}')"
+        cursor.execute(query)
+        
+        cursor.close()
+        
+        return True
+
+    except errors.UniqueViolation:
+        return False
+    
+def borrar_mp_db(combobox_value):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"DELETE FROM metodos_pago WHERE nombre_mp = '{combobox_value}'"
+    cursor.execute(query)
+    conn.commit()
+    cursor.close()
+
+def actualizar_cantidad_productos(producto_modificado, m, s):
+   
+    #s controla si es una venta o una compra o si no se proceso la venta/compra, para que devuelva los valores que se agregaron o restaron si es que hay
+    #m  controla si son varios arreglos o solo uno
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    if m:
+        if s:
+            for producto in producto_modificado:
+                nombre = producto[0]
+                cantidad = float(producto[2])
+                query_update_data = f"UPDATE productos SET stock=stock-{cantidad} WHERE nombre='{nombre}'"
+                cursor.execute(query_update_data)
+
+            
+            cursor.close()
+            
+        else:
+            for producto in producto_modificado:
+                nombre = producto[0]
+                cantidad = float(producto[2])
+                query_update_data = f"UPDATE productos SET stock=stock+{cantidad} WHERE nombre='{nombre}'"
+                cursor.execute(query_update_data)
+            
+            cursor.close()
+            
+    else:
+        
+        nombre = producto_modificado[0][0] # nombre
+        cantidad = float(producto_modificado[0][2])  # Cantidad del producto
+        if s:
+
+            query_update_data = f"UPDATE productos SET stock=stock-{cantidad} WHERE nombre='{nombre}'"
+            cursor.execute(query_update_data)
+        else:
+            query_update_data = f"UPDATE productos SET stock=stock+{cantidad} WHERE nombre='{nombre}'"
+            cursor.execute(query_update_data)
+        
+        cursor.close()
+
+def traer_stock_restante(id):
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    query_update_data = f"SELECT stock FROM productos WHERE id_producto = {id}"
+    cursor.execute(query_update_data)
+    data = cursor.fetchall()
+    cursor.close()
+    
+    return data[0][0]
+
+def controlar_cantidades(producto_modificado, s):
+    nombre = producto_modificado[0]
+    cantidad = float(producto_modificado[2])
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    query_update_data = f"SELECT stock FROM productos WHERE nombre='{nombre}'"
+    cursor.execute(query_update_data)
+    data = cursor.fetchall()
+    cursor.close()
+    
+
+    op = float(data[0][0]) - float(cantidad)
+    
+    if s:
+        
+        if op >= 0 and cantidad > 0:
+            return True
+        else:
+            return False
+            
+    else:
+        if cantidad > 0:
+            return True
+        else:
+            return False
 
 
+def agregar_a_registro(productos_seleccionados, s, usuario):
+    # s define si es una venta o una compra, si es true es una venta y si es false es una compra
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    id_usuario = traer_id_usuario(usuario)
+
+    # Recorrer cada producto en productos_seleccionados
+    for producto in productos_seleccionados:
+        # Asignar las variables correspondientes
+        nombre = producto[0]  # Nombre del producto
+        precio_compra = traer_precio_compra(nombre)
+        precio = float(producto[1]) # precio del producto
+        cantidad = float(producto[2])  # Cantidad del producto
+        fecha = datetime.now().strftime("%Y-%m-%d")
+        hora_actual = datetime.now().strftime("%I:%M:%S %p")
+        metodo_pago = producto[5]
+        fecha_hora = f"{fecha} {hora_actual}"
+        
+        #traer id del metodo de pago seleccionado
+        metodo_pago = traer_mp(metodo_pago)
+        if s:
+            # query para la tabla de la venta
+            query_add_datatoventas = f"INSERT INTO ventas(fecha_hora, id_metodo_pago, id_usuario) VALUES('{fecha_hora}', '{metodo_pago}', {id_usuario})"
+            cursor.execute(query_add_datatoventas)
+
+            query_search_id= f"SELECT id_venta FROM ventas ORDER BY id_venta DESC LIMIT 1"
+            cursor.execute(query_search_id)
+            data = cursor.fetchall()
+            id_venta = data[0][0]
+
+            query_search_idprod= f"SELECT id_producto FROM productos WHERE nombre = '{nombre}'"
+            cursor.execute(query_search_idprod)
+            data = cursor.fetchall()
+            id_prod = data[0][0]
+            
+
+            query_add_data = f"INSERT INTO detalle_ventas(id_venta, id_producto, cantidad, precio_unitario_venta, precio_unitario_compra) VALUES({id_venta},{id_prod},{cantidad},{precio},{precio_compra})"
+            cursor.execute(query_add_data)
+            
+
+        else:
+
+            # query para la tabla de compras
+            query_add_datatoventas = f"INSERT INTO compras(fecha_hora, id_usuario, id_metodo_pago) VALUES('{fecha_hora}', {id_usuario}, {metodo_pago})"
+            cursor.execute(query_add_datatoventas)
+
+            query_search_id= f"SELECT id_compra FROM compras ORDER BY id_compra DESC LIMIT 1"
+            cursor.execute(query_search_id)
+            data = cursor.fetchall()
+            id_compra = data[0][0]
+
+            query_search_idprod= f"SELECT id_producto FROM productos WHERE nombre = '{nombre}'"
+            cursor.execute(query_search_idprod)
+            data = cursor.fetchall()
+            id_prod = data[0][0]
+
+            query_add_data = f"INSERT INTO detalle_compras(id_compra, id_producto, cantidad, precio_unitario) VALUES({id_compra},{id_prod},{cantidad},{precio})"
+            cursor.execute(query_add_data)
+    
+    cursor.close()
+    conn.close()
+
+def traer_precio_compra(nombre):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query_precio = f"SELECT precio_de_compra FROM productos WHERE nombre = '{nombre}'"
+    cursor.execute(query_precio)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    
+    return data[0][0]
+
+def traer_mp(metodo_pago):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"SELECT id_mp FROM metodos_pago WHERE nombre_mp = '{metodo_pago}'"
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return data[0][0]
 
 
 
@@ -1731,3 +1938,43 @@ def cargar_movimiento_usuario_borrado(nombre_usuario, id_usuario, usuario_activo
     conn.commit()
     conn.close()
     cursor.close()
+
+def traer_id_venta():
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = "SELECT id_venta FROM ventas ORDER BY id_venta DESC LIMIT 1"
+    cursor.execute(query)
+    data = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return data[0]
+
+def traer_prod_vendido(id_venta):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"SELECT id_producto FROM detalle_ventas WHERE id_venta = {id_venta}"
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    # Devuelve el id del producto vendido, ya que solo se espera un producto por ID de venta
+    return data[0][0]
+
+
+def cargar_movimiento_venta(usuario_activo):
+    
+    
+    id_usuario = traer_id_usuario(usuario_activo)
+    fecha_hora = datetime.now().astimezone().isoformat()
+    id_venta = traer_id_venta()
+    id_prod = traer_prod_vendido(id_venta)
+    prod_vendido = traer_nom_producto(id_prod)
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"INSERT INTO movimientos (id_usuario, fecha_hora, tipo_accion, entidad_afectada, id_entidad, descripcion) VALUES ({id_usuario}, '{fecha_hora}', 'Venta', 'Ventas', {id_venta}, 'se vendió {prod_vendido}')"
+    cursor.execute(query)
+    conn.commit()
+    cursor.close()
+

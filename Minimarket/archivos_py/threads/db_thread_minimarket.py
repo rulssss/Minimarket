@@ -943,12 +943,100 @@ class TraerDatosPorMetodoYDiaPeriodoThread(QThread):
         datos = traer_datos_por_metodo_y_dia_periodo(self.periodo1, self.periodo2, self.id_metodo)
         self.resultado.emit(datos)
 
+### facturero ventas
 
+class VerificarYAgregarMPThread(QThread):
+    finished = Signal()
+    
+    def __init__(self):
+        super().__init__()
+    
+    def run(self):
+        
+        if not verificar_existencia_de_mp():
+            agregar_mp_default()
+        
+        self.finished.emit()
 
+class AgregarMPThread(QThread):
+    resultado = Signal(bool)
+    
+    def __init__(self, nombre_metodo):
+        super().__init__()
+        self.nombre_metodo = nombre_metodo
+    
+    def run(self):
+        exito = agregar_mp_db(self.nombre_metodo)
+        self.resultado.emit(exito)
 
+class BorrarMPThread(QThread):
+    resultado = Signal(bool)
+    
+    def __init__(self, nombre_metodo):
+        super().__init__()
+        self.nombre_metodo = nombre_metodo
+    
+    def run(self):
+        exito = borrar_mp_db(self.nombre_metodo)
+        self.resultado.emit(exito)
 
+class ActualizarCantidadProductosThread(QThread):
+    resultado = Signal(bool)
+    
+    def __init__(self, productos_seleccionados, m, s=False):
+        super().__init__()
+        self.productos_seleccionados = productos_seleccionados
+        self.m = m
+        self.s = s
+    
+    def run(self):
+        exito = actualizar_cantidad_productos(self.productos_seleccionados, self.m, self.s)
+        self.resultado.emit(exito)
 
+class ControlarCantidadesThread(QThread):
+    resultado = Signal(bool)
+    
+    def __init__(self, producto, s=True):
+        super().__init__()
+        self.producto = producto
+        self.s = s
+    
+    def run(self):
+        resultado = controlar_cantidades(self.producto, self.s)
+        self.resultado.emit(resultado)
 
+class TraerStockRestanteThread(QThread):
+    resultado = Signal(int)
+    
+    def __init__(self, id_producto):
+        super().__init__()
+        self.id_producto = id_producto
+    
+    def run(self):
+        stock = traer_stock_restante(self.id_producto)
+        self.resultado.emit(stock)
 
+class AgregarARegistroThread(QThread):
+    resultado = Signal(bool)
+    
+    def __init__(self, productos_seleccionados, s, usuario_activo):
+        super().__init__()
+        self.productos_seleccionados = productos_seleccionados
+        self.s = s
+        self.usuario_activo = usuario_activo
+    
+    def run(self):
+        exito = agregar_a_registro(self.productos_seleccionados, self.s, self.usuario_activo)
+        self.resultado.emit(exito)
 
+class CargarMovimientoVentaThread(QThread):
+    resultado = Signal(bool)
+    
+    def __init__(self, usuario_activo):
+        super().__init__()
+        self.usuario_activo = usuario_activo
+    
+    def run(self):
+        exito = cargar_movimiento_venta(self.usuario_activo)
+        self.resultado.emit(exito)
 

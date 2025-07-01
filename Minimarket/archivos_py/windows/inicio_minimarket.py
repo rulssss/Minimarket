@@ -2,8 +2,10 @@ from PySide6.QtWidgets import QMainWindow, QPushButton, QLineEdit, QDialog, QVBo
 from PySide6.QtCore import QTimer, Qt, QDate
 from PySide6.QtGui import QIcon, QFont, QIntValidator
 from archivos_py.ui.minimarket import Ui_MainWindow
-from archivos_py.ui import ventana_facturero_ventas as Ui_VentanaFactureroVentas
-from archivos_py.ui import ventana_facturero_compras as Ui_VentanaFacturerocompras
+from archivos_py.ui.ventana_facturero_ventas import Ui_Form_ventas as Ui_VentanaFactureroVentas
+from archivos_py.ui.ventana_agregar_metodo_de_pago import Ui_Form_agregar_mp as Ui_Dialog
+from archivos_py.ui.ventana_borrar_metodo_de_pago import Ui_Form_borrar_mp as Ui_Dialog2
+from archivos_py.ui.ventana_facturero_compras  import Ui_Form_compras as Ui_VentanaFacturerocompras
 from archivos_py.threads.db_thread_minimarket import *
 import sys
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -4771,6 +4773,11 @@ class AdministracionTab:
         self.buscar_datos_tab = buscar_datos_tab  # Guarda la referenciaBuscarDatosTab
         self.datos_tab = datos_tab
 
+    def start_thread(self, thread):
+        self.threads.append(thread)
+        thread.finished.connect(lambda: self.threads.remove(thread) if thread in self.threads else None)
+        thread.start()
+
     def open_facturero_ventas(self):
         if not self.facturero_ventas_window:
 
@@ -4812,8 +4819,9 @@ class AdministracionTab:
                 combobox_id.setCurrentText("")  # Setear el combobox en vacío al abrir la ventana
 
                 
-            if not verificar_existencia_de_mp():
-                agregar_mp_default()
+            self.verificar_mp_thread = VerificarYAgregarMPThread()
+            self.verificar_mp_thread.finished.connect(lambda: print("Métodos de pago verificados/agregados"))
+            self.start_thread(self.verificar_mp_thread)
 
             
             # Configuración del QComboBox de método de pago
@@ -4902,6 +4910,744 @@ class AdministracionTab:
             
         
         self.facturero_ventas_window.show()
+
+    def ventana_agregar_mp_ventas(self):
+        
+        # --- 1. Configurar el QDialog como ventana hija de self.facturero_ventas_window ---
+        dialogo_agregar_mp = QDialog(self.facturero_ventas_window)  # ¡Ventana hija del facturero!
+        dialogo_agregar_mp.setAttribute(Qt.WA_DeleteOnClose)  # Eliminar al cerrar
+
+        # --- 2. Cargar la interfaz ---
+        ui_ventana = Ui_Dialog()
+        ui_ventana.setupUi(dialogo_agregar_mp)
+        dialogo_agregar_mp.setWindowTitle("Agregar Método de Pago")
+        dialogo_agregar_mp.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\Minimarket\Minimarket\Minimarket\archivos_py\resources\r.ico"))
+
+        # --- 3. Configurar widgets ---
+        lineEdit = dialogo_agregar_mp.findChild(QLineEdit, "lineEdit")
+        if lineEdit:
+            lineEdit.setFocus()
+
+        pushButton = dialogo_agregar_mp.findChild(QPushButton, "pushButton")
+        if pushButton:
+            pushButton.clicked.connect(lambda: self.agregar_metodo_de_pago_ventas(dialogo_agregar_mp))
+            pushButton.setShortcut("Return")
+
+        label_2 = dialogo_agregar_mp.findChild(QLabel, "label_2")
+        if label_2:
+            label_2.setStyleSheet("color: transparent")
+
+        # --- 4. Mostrar la ventana ---
+        dialogo_agregar_mp.exec()
+
+    def agregar_metodo_de_pago_ventas(self, dialog):
+        lineEdit = dialog.findChild(QLineEdit, "lineEdit")
+        label_2 = dialog.findChild(QLabel, "label_2")
+        combobox_metodo_pago_facturero = self.facturero_ventas_window.findChild(QComboBox, "comboBox_3")
+
+        if lineEdit:
+            lineEdit_value = lineEdit.text()
+
+            if lineEdit_value != "":
+                lineEdit_value = lineEdit_value.strip()
+
+                if not lineEdit_value[0].isupper():
+                    lineEdit_value = lineEdit_value[0].upper() + lineEdit_value[1:]
+
+                # Usar el hilo para agregar método de pago
+                self.agregar_mp_thread = AgregarMPThread(lineEdit_value)
+
+                def on_resultado(exito):
+                    if exito:
+                        if label_2:
+                            label_2.setText("Método de pago agregado")
+                            label_2.setStyleSheet("color: green; font-weight: bold")
+                            QTimer.singleShot(1000, lambda: label_2.setStyleSheet("color: transparent"))
+                            lineEdit.clear()
+                            lineEdit.setFocus()
+
+                        # Actualizar el combobox usando un hilo
+                        self.metodos_pago_thread = TraerMetodosDePagoThread()
+                        self.metodos_pago_thread.resultado.connect(
+                            lambda metodos: combobox_metodo_pago_facturero.clear() or 
+                            combobox_metodo_pago_facturero.addItems([metodo[0] for metodo in metodos])
+                            if combobox_metodo_pago_facturero else None
+                        )
+                        self.start_thread(self.metodos_pago_thread)
+                    else:
+                        if label_2:
+                            label_2.setText("El método de pago ya existe")
+                            label_2.setStyleSheet("color: red; font-weight: bold")
+                            QTimer.singleShot(1000, lambda: label_2.setStyleSheet("color: transparent"))
+
+                self.agregar_mp_thread.resultado.connect(on_resultado)
+                self.start_thread(self.agregar_mp_thread)
+            else:
+                if label_2:
+                    label_2.setText("Por favor, complete el campo")
+                    label_2.setStyleSheet("color: red; font-weight: bold")
+                    QTimer.singleShot(1000, lambda: label_2.setStyleSheet("color: transparent"))
+
+    def ventana_borrar_mp_ventas(self):
+        
+        # --- 1. Configurar el QDialog como ventana hija de self.facturero_ventas_window ---
+        dialogo_borrar_mp = QDialog(self.facturero_ventas_window)  # Ventana hija del facturero
+        dialogo_borrar_mp.setAttribute(Qt.WA_DeleteOnClose)  # Eliminar al cerrar
+
+        # --- 2. Cargar la interfaz ---
+        ui_ventana = Ui_Dialog2()
+        ui_ventana.setupUi(dialogo_borrar_mp)
+        dialogo_borrar_mp.setWindowTitle("Borrar Método de Pago")
+        dialogo_borrar_mp.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\Minimarket\Minimarket\Minimarket\archivos_py\resources\r.ico"))
+
+        # --- 3. Configurar widgets ---
+        combobox = dialogo_borrar_mp.findChild(QComboBox, "comboBox")
+        if combobox:
+            combobox.clear()
+            combobox.addItems([metodo[0] for metodo in traer_metodos_de_pago()])
+            combobox.setFocus()
+
+        label = dialogo_borrar_mp.findChild(QLabel, "label")
+        if label:
+            label.setText("Método de Pago")
+
+        label_2 = dialogo_borrar_mp.findChild(QLabel, "label_2")
+        if label_2:
+            label_2.setStyleSheet("color: transparent")
+
+        label_3 = dialogo_borrar_mp.findChild(QLabel, "label_3")
+        if label_3:
+            label_3.setAlignment(Qt.AlignCenter)   
+            label_3.setStyleSheet("font-weight: bold; color: red;")
+            label_3.setText("Advertencia!\n Se eliminará lo relacionado al método")
+             
+        pushButton = dialogo_borrar_mp.findChild(QPushButton, "pushButton")
+        if pushButton:
+            pushButton.clicked.connect(lambda: self.borrar_metodo_de_pago_ventas(dialogo_borrar_mp))
+            pushButton.setShortcut("Return")
+
+        # --- 4. Mostrar la ventana ---
+        dialogo_borrar_mp.exec()
+
+    def borrar_metodo_de_pago_ventas(self, dialog):
+        combobox_mp = dialog.findChild(QComboBox, "comboBox")
+        label_2 = dialog.findChild(QLabel, "label_2")
+        combobox_mp_facturero = self.facturero_ventas_window.findChild(QComboBox, "comboBox_3")
+
+        if combobox_mp:
+            combobox_value = combobox_mp.currentText()
+
+            if combobox_value != "":
+                # Usar el hilo para borrar método de pago
+                self.borrar_mp_thread = BorrarMPThread(combobox_value)
+
+                def on_resultado(exito):
+                    if exito:
+                        if label_2:
+                            label_2.setStyleSheet("color: green; font-weight: bold")
+                            label_2.setText("Método de pago borrado")
+                            QTimer.singleShot(1000, lambda: label_2.setStyleSheet("color: transparent"))
+
+                        # Actualizar comboboxes usando un hilo
+                        self.metodos_pago_thread = TraerMetodosDePagoThread()
+                        self.metodos_pago_thread.resultado.connect(
+                            lambda metodos: (
+                                combobox_mp.clear(),
+                                combobox_mp.addItems([metodo[0] for metodo in metodos]),
+                                combobox_mp.setCurrentText(""),
+                                combobox_mp_facturero.clear() if combobox_mp_facturero else None,
+                                combobox_mp_facturero.addItems([metodo[0] for metodo in metodos]) if combobox_mp_facturero else None
+                            )
+                        )
+                        self.start_thread(self.metodos_pago_thread)
+                    else:
+                        if label_2:
+                            label_2.setText("Error al borrar el método de pago")
+                            label_2.setStyleSheet("color: red; font-weight: bold")
+                            QTimer.singleShot(1000, lambda: label_2.setStyleSheet("color: transparent"))
+
+                self.borrar_mp_thread.resultado.connect(on_resultado)
+                self.start_thread(self.borrar_mp_thread)
+            else:
+                if label_2:
+                    label_2.setStyleSheet("color: red; font-weight: bold")
+                    label_2.setText("Por favor, seleccione un método de pago")
+                    QTimer.singleShot(1000, lambda: label_2.setStyleSheet("color: transparent"))
+
+    def initialize_lineedits_ventas(self):
+        # Inicializar los QLineEdit en blanco y no editables
+        lineedit_nombre = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_5")
+        lineedit_precio = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit")
+        lineedit_cantidad = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_2")
+        lineedit_categoria = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_3")
+        lineedit_proveedor = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_4")
+        
+
+        if lineedit_nombre:
+            lineedit_nombre.setText("")
+            lineedit_nombre.setReadOnly(True)
+            lineedit_nombre.setFocusPolicy(Qt.NoFocus)
+
+        if lineedit_precio:
+            lineedit_precio.setText("")
+            lineedit_precio.setReadOnly(True)
+            lineedit_precio.setFocusPolicy(Qt.NoFocus)
+
+        if lineedit_cantidad:
+            lineedit_cantidad.setText("")
+            
+
+        if lineedit_categoria:
+            lineedit_categoria.setText("")
+            lineedit_categoria.setReadOnly(True)
+            lineedit_categoria.setFocusPolicy(Qt.NoFocus)
+
+        if lineedit_proveedor:
+            lineedit_proveedor.setText("")
+            lineedit_proveedor.setReadOnly(True)
+            lineedit_proveedor.setFocusPolicy(Qt.NoFocus)
+
+    def populate_combobox_with_ids(self, combobox):
+        # Llenar el QComboBox con IDs usando el cache global
+        combobox.clear()
+        global productos_cache, productos
+
+        # Si hay cache disponible, usarlo; si no, usar la variable global productos
+        if productos_cache:
+            productos_a_usar = productos_cache
+        else:
+            productos_a_usar = []
+
+        if productos_a_usar:
+            ids = [str(producto[0]) for producto in productos_a_usar]
+            combobox.addItems(ids)
+
+    def filter_combobox_ids(self, combobox, text):
+        # Filtrar los elementos del QComboBox usando el cache global
+        global productos_cache, productos
+        
+        # Si hay cache disponible, usarlo
+        if productos_cache:
+            productos_a_usar = productos_cache
+        else:
+            productos_a_usar = []
+        
+        if productos_a_usar:
+            ids = [str(producto[0]) for producto in productos_a_usar if text.lower() in str(producto[0]).lower()]
+            combobox.clear()
+            combobox.addItems(ids)
+            combobox.setCurrentText(text)
+
+    def cerrar_facturero_venta(self):
+        global productos_seleccionados_facturero_ventas
+    
+        if productos_seleccionados_facturero_ventas != []:
+            if len(productos_seleccionados_facturero_ventas) > 1:
+                m = True
+            else:
+                m = False
+    
+            # Usar el hilo para actualizar cantidad de productos
+            self.actualizar_cantidad_thread = ActualizarCantidadProductosThread(
+                productos_seleccionados_facturero_ventas, m, s=False
+            )
+            
+            def on_actualizacion_finalizada(exito):
+                if exito:
+                    # Se actualiza la tabla de productos
+                    self.borrar_lineedit_18()
+                    self.filter_products_facturero()
+                else:
+                    print("Error al actualizar la cantidad de productos")
+            
+            self.actualizar_cantidad_thread.resultado.connect(on_actualizacion_finalizada)
+            self.start_thread(self.actualizar_cantidad_thread)
+    
+        self.facturero_ventas_window.close()
+        self.facturero_ventas_window = None
+
+    def borrar_lineedit_18(self):
+        line_edit_18 = self.ui.frame_38.findChild(QLineEdit, "lineEdit_18")
+        if line_edit_18:
+            line_edit_18.clear()
+
+    def load_facturero_data_ventas(self):
+        # Cargar datos relacionados con el ID seleccionado en el QComboBox
+        combobox_id = self.facturero_ventas_window.findChild(QComboBox, "comboBox")
+        if combobox_id and combobox_id.currentText().isdigit():
+            id_producto = combobox_id.currentText()
+
+            # Usar el cache global de productos por ID
+            global productos_por_id_cache
+            producto = None
+
+            if productos_por_id_cache and id_producto in productos_por_id_cache:
+                producto = productos_por_id_cache[id_producto]
+
+            if producto:
+                # Suponiendo que `producto` es una tupla con los datos en este orden:
+                # (id, nombre, precio_compra, precio_venta, stock, stock_ideal, categoria, proveedor)
+                lineedit_nombre = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_5")
+                lineedit_precio = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit")
+                lineedit_cantidad = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_2")
+                lineedit_categoria = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_3")
+                lineedit_proveedor = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_4")
+
+                # Convertir los valores a cadenas antes de asignarlos
+                if lineedit_nombre:
+                    lineedit_nombre.setText(str(producto[1]))  # Nombre del producto
+
+                if lineedit_precio:
+                    lineedit_precio.setText(str(producto[3]))  # Precio de venta
+
+                if lineedit_cantidad:
+                    lineedit_cantidad.setText(str(1))  # cantidad
+
+                if lineedit_categoria:
+                    lineedit_categoria.setText(str(producto[6]))  # Categoría
+
+                if lineedit_proveedor:
+                    lineedit_proveedor.setText(str(producto[7]))  # Proveedor
+
+                # Seleccionar todo el texto del QComboBox para facilitar el borrado
+                combobox_id.lineEdit().selectAll()
+            else:
+                # Si no se encuentra el producto en el cache, limpiar los campos
+                self.initialize_lineedits_ventas()
+        else:
+            # Si no hay un ID válido seleccionado, limpiar los campos
+            self.initialize_lineedits_ventas()
+
+    def actualizar_total(self, s):
+
+        if s:
+            global total_facturero_ventas
+            label_12 = self.facturero_ventas_window.findChild(QLabel, "label_12")
+            if label_12:
+                label_12.setText(f"${total_facturero_ventas:.2f}")
+                label_12.setStyleSheet("color: green; font-weight: bold")
+        else:
+            global total_facturero_compras
+            label_12 = self.facturero_compras_window.findChild(QLabel, "label_12")
+            if label_12:
+                label_12.setText(f"${total_facturero_compras:.2f}")
+                label_12.setStyleSheet("color: rgb(230, 180, 80); font-weight: bold") 
+    
+    def es_decimal(self, valor):
+        try:
+            valor = valor.replace(",", ".")
+            float(valor)  # Intenta convertir el valor a un número flotante
+            return True
+        except ValueError:
+            return False
+        
+
+    def agregar_producto_a_tablewidget_ventas(self):
+        global productos_seleccionados_facturero_ventas, productos_por_id_cache
+
+        combobox_id = self.facturero_ventas_window.findChild(QComboBox, "comboBox")
+        combobox_id_value = combobox_id.currentText()
+        line_edit_nombre = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_5")
+        line_edit_precio = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit")
+        line_edit_cantidad = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_2")
+        line_edit_categoria = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_3")
+        line_edit_proveedor = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_4")
+        combobox_metodo_pago = self.facturero_ventas_window.findChild(QComboBox, "comboBox_3")
+
+        # Usar cache para verificar si el ID existe
+        bandera = False
+        if combobox_id_value.isdecimal() and productos_por_id_cache and combobox_id_value in productos_por_id_cache:
+            bandera = True
+
+        if bandera:
+            qtablewidget = self.facturero_ventas_window.findChild(QTableWidget, "tableWidget")  
+
+            # Verificar si hay una cantidad seleccionada
+            if line_edit_cantidad:
+                if "," in line_edit_cantidad.text():
+                    lineEdit_cantidad_value = line_edit_cantidad.text().replace(",", ".")
+                else:
+                    lineEdit_cantidad_value = line_edit_cantidad.text()
+
+            if qtablewidget: 
+                if (self.es_decimal(lineEdit_cantidad_value) or lineEdit_cantidad_value.isdigit()) and combobox_metodo_pago.currentText() != "":
+
+                    # Crear el producto para agregar
+                    producto_a_agregar = [
+                        line_edit_nombre.text(),
+                        float(line_edit_precio.text()),
+                        float(lineEdit_cantidad_value),
+                        line_edit_categoria.text(),
+                        line_edit_proveedor.text(),
+                        combobox_metodo_pago.currentText(),
+                        float(line_edit_precio.text()) * float(lineEdit_cantidad_value)
+                    ]
+
+                    # Usar hilo para controlar cantidades
+                    self.controlar_cantidades_thread = ControlarCantidadesThread(producto_a_agregar, s=True)
+
+                    def on_cantidades_controladas(resultado):
+                        if resultado:
+                            # Agregar a la lista global
+                            productos_seleccionados_facturero_ventas.append(producto_a_agregar)
+
+                            # Usar hilo para actualizar cantidad de productos (reutilizar el existente)
+                            self.actualizar_cantidad_thread = ActualizarCantidadProductosThread(
+                                [productos_seleccionados_facturero_ventas[-1]], m=False, s=True
+                            )
+
+                            def on_cantidad_actualizada(exito):
+                                if exito:
+                                    # Actualizar visualización de la tabla productos
+                                    self.filter_products_facturero()
+
+                                    # Agregar fila a la tabla
+                                    row = qtablewidget.rowCount()
+                                    qtablewidget.insertRow(row)
+                                    for column, value in enumerate(productos_seleccionados_facturero_ventas[-1]):
+                                        item = QTableWidgetItem(str(value))
+                                        item.setFont(QFont("Segoe UI", 10))
+                                        qtablewidget.setItem(row, column, item)
+
+                                    # Actualizar total
+                                    global total_facturero_ventas
+                                    total_facturero_ventas = sum([producto[-1] for producto in productos_seleccionados_facturero_ventas])
+                                    self.actualizar_total(s=True)
+
+                                    # Seleccionar todo el texto del QComboBox
+                                    combobox_id.setFocus()
+                                    combobox_id.lineEdit().selectAll()
+                                else:
+                                    print("Error al actualizar la cantidad de productos")
+
+                            self.actualizar_cantidad_thread.resultado.connect(on_cantidad_actualizada)
+                            self.start_thread(self.actualizar_cantidad_thread)
+
+                        else:
+                            label_9 = self.facturero_ventas_window.findChild(QLabel, "label_9")
+
+                            if label_9 and combobox_id_value:
+                                # Usar hilo para traer stock restante
+                                self.stock_restante_thread = TraerStockRestanteThread(combobox_id_value)
+
+                                def on_stock_obtenido(stock):
+                                    label_9.setText(f"Stock restante: {stock}")
+                                    label_9.setStyleSheet("color: red; font-weight: bold")
+                                    QTimer.singleShot(6000, lambda: label_9.setStyleSheet("color: transparent"))
+
+                                self.stock_restante_thread.resultado.connect(on_stock_obtenido)
+                                self.start_thread(self.stock_restante_thread)
+
+                            # Remover el último producto agregado si las cantidades no son válidas
+                            if productos_seleccionados_facturero_ventas:
+                                productos_seleccionados_facturero_ventas.pop()
+
+                    self.controlar_cantidades_thread.resultado.connect(on_cantidades_controladas)
+                    self.start_thread(self.controlar_cantidades_thread)
+
+                else:
+                    label_9 = self.facturero_ventas_window.findChild(QLabel, "label_9")
+                    if label_9:
+                        label_9.setText("Complete todos los\ncampos correctamente")
+                        label_9.setStyleSheet("color: red; font-weight: bold")
+                        QTimer.singleShot(2000, lambda: label_9.setStyleSheet("color: transparent"))
+
+        else:
+            label_9 = self.facturero_ventas_window.findChild(QLabel, "label_9")
+            if label_9:
+                label_9.setText("Seleccione un ID válido")
+                label_9.setStyleSheet("color: red; font-weight: bold")
+                QTimer.singleShot(2000, lambda: label_9.setStyleSheet("color: transparent"))
+
+        # Seleccionar todo el texto del QComboBox para facilitar el borrado
+        combobox_id.setFocus()
+        combobox_id.lineEdit().selectAll()
+
+    def procesar_factura_ventas(self):
+        s = True
+        global productos_seleccionados_facturero_ventas
+        global total_facturero_ventas
+        global usuario_activo
+
+        if productos_seleccionados_facturero_ventas:
+            # Usar hilo para agregar a registro
+            self.agregar_registro_thread = AgregarARegistroThread(
+                productos_seleccionados_facturero_ventas, s, usuario_activo
+            )
+
+            def on_registro_agregado(exito):
+                if exito:
+                    # Usar hilo para cargar movimiento de venta
+                    self.movimiento_venta_thread = CargarMovimientoVentaThread(usuario_activo)
+
+                    def on_movimiento_cargado(exito_movimiento):
+                        if exito_movimiento:
+                            # Actualizar tabla de productos
+                            self.filter_products_facturero()
+
+                            # Se actualiza la tabla de productos del administrador
+                            self.datos_tab.visualizar_datos()
+
+                            label_9 = self.facturero_ventas_window.findChild(QLabel, "label_9")
+                            if label_9:
+                                label_9.setText("Factura procesada con éxito")
+                                label_9.setStyleSheet("color: green; font-weight: bold")
+                                QTimer.singleShot(6000, lambda: label_9.setStyleSheet("color: transparent"))
+
+                            # Llamar a inicializar_comboboxes_y_boton de la clase buscar datos
+                            self.buscar_datos_tab.enviar_a_setear_line_edits()
+                        else:
+                            print("Error al cargar movimiento de venta")
+
+                    self.movimiento_venta_thread.resultado.connect(on_movimiento_cargado)
+                    self.start_thread(self.movimiento_venta_thread)
+                else:
+                    print("Error al agregar a registro")
+
+            self.agregar_registro_thread.resultado.connect(on_registro_agregado)
+            self.start_thread(self.agregar_registro_thread)
+        else:
+            label_9 = self.facturero_ventas_window.findChild(QLabel, "label_9")
+            if label_9:
+                label_9.setText("No hay productos agregados")
+                label_9.setStyleSheet("color: red; font-weight: bold")
+                QTimer.singleShot(6000, lambda: label_9.setStyleSheet("color: transparent"))
+
+        # Limpiar interfaz
+        combobox_id = self.facturero_ventas_window.findChild(QComboBox, "comboBox")
+        if combobox_id:
+            combobox_id.clear()
+            combobox_id.setFocus()
+
+        qtablewidget = self.facturero_ventas_window.findChild(QTableWidget, "tableWidget")
+        if qtablewidget:
+            qtablewidget.setRowCount(0)
+
+        total_facturero_ventas = 0
+        productos_seleccionados_facturero_ventas = []
+
+        self.actualizar_total(s=True)
+
+    def borrar_ultimo_agregado_ventas(self): 
+        global productos_seleccionados_facturero_ventas
+        global total_facturero_ventas
+
+        if productos_seleccionados_facturero_ventas:
+            # Usar el hilo existente para actualizar cantidad de productos
+            self.actualizar_cantidad_thread = ActualizarCantidadProductosThread(
+                [productos_seleccionados_facturero_ventas[-1]], m=False, s=False
+            )
+
+            def on_actualizacion_finalizada(exito):
+                if exito:
+                    # Se actualiza la tabla de productos
+                    self.filter_products_facturero()
+                else:
+                    print("Error al actualizar la cantidad de productos")
+
+            self.actualizar_cantidad_thread.resultado.connect(on_actualizacion_finalizada)
+            self.start_thread(self.actualizar_cantidad_thread)
+
+        # Actualizar la interfaz del facturero
+        qtablewidget = self.facturero_ventas_window.findChild(QTableWidget, "tableWidget") 
+        if qtablewidget:
+            row_count = qtablewidget.rowCount()
+            if row_count > 0:
+                qtablewidget.removeRow(row_count - 1)  # Remove the last row
+                if productos_seleccionados_facturero_ventas:
+                    productos_seleccionados_facturero_ventas.pop()
+                    # Actualiza el total de los productos agregados
+                    total_facturero_ventas = sum([producto[-1] for producto in productos_seleccionados_facturero_ventas])
+
+        # Edita el label del total
+        self.actualizar_total(s=True)
+
+
+    #FUNCION PARA ACTUALIZAR CONSTANTEMENTE la tabla de productos por detras
+
+    def visualizar_productos_facturero(self):
+        
+        self.populate_table_with_products_facturero()
+        
+
+        # Conectar el QLineEdit para filtrar productos
+        line_edit_18 = self.ui.frame_38.findChild(QLineEdit, "lineEdit_18")
+        if line_edit_18:
+            line_edit_18.setFocus()
+            line_edit_18.textChanged.connect(self.filter_products_facturero)
+    
+    def filter_products_facturero(self):
+        line_edit_18 = self.ui.frame_38.findChild(QLineEdit, "lineEdit_18")
+        table_widget = self.ui.frame_tabla_productos_4.findChild(QTableWidget, "tableWidget_4")
+
+        if line_edit_18 and table_widget:
+            filter_text = line_edit_18.text().lower()
+
+            # Usar el cache global de productos
+            global productos_cache, productos
+
+            # Si hay cache disponible, usarlo; si no, usar la variable global productos
+            if productos_cache:
+                productos_a_usar = productos_cache
+            elif productos:
+                productos_a_usar = productos
+            else:
+                productos_a_usar = []
+
+            filtered_productos = []
+            for producto in productos_a_usar:
+                if filter_text in producto[1].lower() or filter_text in str(producto[0]).lower():
+                    filtered_productos.append(producto)
+
+            # Si no se encuentran productos, mostrar un mensaje en la tabla
+            if len(filtered_productos) == 0:
+                table_widget.setRowCount(1)
+                table_widget.setColumnCount(1)
+                table_widget.setHorizontalHeaderLabels(["Mensaje"])
+                item = QTableWidgetItem("No se encontraron productos")
+                item.setFont(QFont("Segoe ui", 12))
+                item.setTextAlignment(Qt.AlignCenter)
+                table_widget.setItem(0, 0, item)
+            else:
+                # Si hay productos, llenar la tabla con los datos filtrados
+                table_widget.setRowCount(len(filtered_productos))
+                table_widget.setColumnCount(8)
+                table_widget.setHorizontalHeaderLabels(["ID", "Nombre", "Precio Compra", "Precio Venta", "Stock", "Stock Ideal", "Categoría", "Proveedor"])
+                for row, producto in enumerate(filtered_productos):
+                    for col, value in enumerate(producto):
+                        item = QTableWidgetItem(str(value))
+                        item.setFont(QFont("Segoe ui", 12))
+                        item.setTextAlignment(Qt.AlignCenter)
+
+    def populate_table_with_products_facturero(self):
+        table_widget = self.ui.frame_tabla_productos_4.findChild(QTableWidget, "tableWidget_4")
+
+        line_edit_18 = self.ui.frame_38.findChild(QLineEdit, "lineEdit_18")
+        if table_widget:
+            corner_button = table_widget.findChild(QAbstractButton)
+
+            corner_button.clicked.connect(self.copy_entire_table_to_clipboard)
+            table_widget.horizontalHeader().sectionDoubleClicked.connect(self.copy_column_to_clipboard)
+            table_widget.verticalHeader().sectionDoubleClicked.connect(self.copy_row_to_clipboard)
+            table_widget.setEditTriggers(QTableWidget.NoEditTriggers)
+
+            filter_text = line_edit_18.text().lower()
+
+            # Usar el cache global de productos
+            global productos_cache, productos
+
+            # Si hay cache disponible, usarlo; si no, usar la variable global productos
+            if productos_cache:
+                productos_a_usar = productos_cache
+            else:
+                productos_a_usar = []
+
+            # Si no se encuentran productos, mostrar un mensaje en la tabla
+            if len(productos_a_usar) == 0:
+                table_widget.setRowCount(1)
+                table_widget.setColumnCount(1)
+                table_widget.setHorizontalHeaderLabels(["Mensaje"])
+                item = QTableWidgetItem("No se encontraron productos")
+                item.setFont(QFont("Segoe ui", 12))
+                item.setTextAlignment(Qt.AlignCenter)
+                table_widget.setItem(0, 0, item)
+            else:
+                # Si hay productos, llenar la tabla con los datos
+                table_widget.setRowCount(len(productos_a_usar))
+                table_widget.setColumnCount(8)
+                table_widget.setHorizontalHeaderLabels(["ID", "Nombre", "Precio Compra", "Precio Venta", "Stock", "Stock Ideal", "Categoría", "Proveedor"])
+                header = table_widget.horizontalHeader()
+                header.setFont(QFont("Segoe UI", 16, QFont.Bold))  # Set font size to 16 and bold
+                for row, producto in enumerate(productos_a_usar):
+                    for col, value in enumerate(producto):
+                        item = QTableWidgetItem(str(value))
+                        item.setFont(QFont("Segoe ui", 12))  # Set the font size to 12pt
+                        item.setTextAlignment(Qt.AlignCenter)  # Center align the text
+                        if col == 4 and float(producto[4]) < float(producto[5]):  # Check if stock is less than stock ideal
+                            item.setForeground(Qt.red)
+                        table_widget.setItem(row, col, item)
+
+            line_edit_18.setText(filter_text)
+            line_edit_18.setFocus()
+
+    # Función para copiar una columna al portapapeles
+    def copy_column_to_clipboard(self, column_index):
+        table_widget = self.ui.frame_tabla_productos_4.findChild(QTableWidget, "tableWidget_4")
+        if table_widget:
+            column_data = []
+            for row in range(table_widget.rowCount()):
+                item = table_widget.item(row, column_index)
+                if item:
+                    column_data.append(item.text())
+            clipboard = QApplication.clipboard()
+            clipboard.setText("\n".join(column_data))
+            self.show_copied_message("Columna copiada al portapapeles")
+
+    # Función para copiar una fila al portapapeles
+    def copy_row_to_clipboard(self, row_index):
+        table_widget = self.ui.frame_tabla_productos_4.findChild(QTableWidget, "tableWidget_4")
+        if table_widget:
+            row_data = []
+            for col in range(table_widget.columnCount()):
+                item = table_widget.item(row_index, col)
+                if item:
+                    row_data.append(item.text())
+            clipboard = QApplication.clipboard()
+            clipboard.setText("\t".join(row_data))
+            self.show_copied_message("Fila copiada al portapapeles")
+
+    def copy_entire_table_to_clipboard(self):
+        table_widget = self.ui.frame_tabla_productos_4.findChild(QTableWidget, "tableWidget_4")
+        if not table_widget:
+            return
+        row_count = table_widget.rowCount()
+        col_count = table_widget.columnCount()
+        # Copiar encabezados
+        headers = [table_widget.horizontalHeaderItem(col).text() for col in range(col_count)]
+        data = ['\t'.join(headers)]
+        # Copiar filas
+        for row in range(row_count):
+            row_data = []
+            for col in range(col_count):
+                item = table_widget.item(row, col)
+                row_data.append(item.text() if item else "")
+            data.append('\t'.join(row_data))
+        # Copiar al portapapeles
+        clipboard = QApplication.clipboard()
+        clipboard.setText('\n'.join(data))
+        self.show_copied_message("Tabla copiada al portapapeles")
+
+    # Función para mostrar el mensaje de copiado
+    def show_copied_message(self, message):
+        copied_label = QLabel(message, self.ui.centralwidget)
+        copied_label.setStyleSheet("""
+            QLabel {
+            background-color: rgba(0, 0, 0, 150);
+            color: white;
+            font-size: 16pt;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 5px;
+            }
+        """)
+        copied_label.setAlignment(Qt.AlignCenter)
+        copied_label.setFixedSize(350, 50)
+
+        # Centrar el QLabel en la pantalla
+        screen_geometry = QApplication.primaryScreen().geometry()
+        x = (screen_geometry.width() - copied_label.width()) // 2
+        y = (screen_geometry.height() - copied_label.height()) // 2
+        copied_label.move(x, y)
+        copied_label.show()
+
+        # Ocultar el QLabel después de 2 segundos
+        QTimer.singleShot(2000, copied_label.hide)
+
+
+
+    #######################################################################################
+    #######################################################################################
+
 
     def open_facturero_compras(self):
         pass
