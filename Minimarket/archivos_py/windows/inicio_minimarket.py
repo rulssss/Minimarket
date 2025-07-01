@@ -4896,7 +4896,7 @@ class MainWindow(QMainWindow):
         push_button_48 = self.findChild(QPushButton, "pushButton_48")
         if push_button_48:
             push_button_48.setIcon(QIcon("C:/Users/mariano/Desktop/proyectos/minimarketclass(Pyside)/archivos_py/resources/eye_visible_hide_hidden_show_icon_145988.png"))
-            self.connect_button("pushButton_48", stacked_widget, 19,  lambda: self.focus_visualizar_movimientos())
+            self.connect_button("pushButton_48", stacked_widget, 19,  lambda: self.change_table_headers_color_visualizar_movimientos())
 
         # VENTANA ADMINISTRACION
 
