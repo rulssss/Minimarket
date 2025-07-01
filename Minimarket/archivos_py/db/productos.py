@@ -3,7 +3,7 @@ from psycopg2 import errors
 from datetime import datetime
 
 
-# variable globald e mapeo
+# variable global de mapeo
 global month_mapping
 month_mapping = {
     "Enero": 1, "Febrero": 2, "Marzo": 3, "Abril": 4,

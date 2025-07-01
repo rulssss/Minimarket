@@ -1,7 +1,9 @@
-from PySide6.QtWidgets import QMainWindow, QPushButton, QLineEdit, QVBoxLayout, QComboBox, QTableWidget, QLabel, QDoubleSpinBox, QTableWidgetItem, QApplication, QAbstractButton, QMessageBox, QCheckBox, QDateEdit, QTextEdit, QWidget
+from PySide6.QtWidgets import QMainWindow, QPushButton, QLineEdit, QDialog, QVBoxLayout, QComboBox, QTableWidget, QLabel, QDoubleSpinBox, QTableWidgetItem, QApplication, QAbstractButton, QMessageBox, QCheckBox, QDateEdit, QTextEdit, QWidget
 from PySide6.QtCore import QTimer, Qt, QDate
 from PySide6.QtGui import QIcon, QFont, QIntValidator
 from archivos_py.ui.minimarket import Ui_MainWindow
+from archivos_py.ui import ventana_facturero_ventas as Ui_VentanaFactureroVentas
+from archivos_py.ui import ventana_facturero_compras as Ui_VentanaFacturerocompras
 from archivos_py.threads.db_thread_minimarket import *
 import sys
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -2383,7 +2385,7 @@ class DatosTab:
     def show_confirmation_dialog(self):
         
         dialog = QMessageBox()
-        dialog.setWindowIcon(QIcon("C:/Users/mariano/Desktop/proyectos/minimarketclass(Pyside)/resources/r.ico"))
+        dialog.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\Minimarket\Minimarket\Minimarket\archivos_py\resources\r.ico"))
         dialog.setWindowTitle("Confirmación")
         dialog.setText("¿Está seguro de que desea borrar los datos seleccionados?")
         dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
@@ -2431,7 +2433,7 @@ class DatosTab:
 
         if push_button_39:
             push_button_39.setFocusPolicy(Qt.NoFocus)
-            push_button_39.setIcon(QIcon("C:/Users/mariano/Desktop/proyectos/minimarketclass(Pyside)/archivos_py/resources/eye_visible_hide_hidden_show_icon_145988.png"))
+            push_button_39.setIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\Minimarket\Minimarket\Minimarket\archivos_py\resources\eye_visible_hide_hidden_show_icon_145988.png"))
             push_button_39.clicked.connect(self.setear_lineedit_avisual_agregar)
 
         if label_90:
@@ -2623,7 +2625,7 @@ class DatosTab:
             
         if push_button_41:
             push_button_41.setFocusPolicy(Qt.NoFocus)
-            push_button_41.setIcon(QIcon("C:/Users/mariano/Desktop/proyectos/minimarketclass(Pyside)/archivos_py/resources/eye_visible_hide_hidden_show_icon_145988.png"))
+            push_button_41.setIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\Minimarket\Minimarket\Minimarket\archivos_py\resources\eye_visible_hide_hidden_show_icon_145988.png"))
             push_button_41.clicked.connect(self.setear_lineedit_avisual_editar)
 
         if label_98:
@@ -4764,9 +4766,142 @@ class BuscarDatosTab:
 class AdministracionTab:
     def __init__(self, ui, buscar_datos_tab, datos_tab):
         self.ui = ui
+        self.facturero_ventas_window = None
+        self.facturero_compras_window = None
+        self.buscar_datos_tab = buscar_datos_tab  # Guarda la referenciaBuscarDatosTab
+        self.datos_tab = datos_tab
 
     def open_facturero_ventas(self):
-        pass
+        if not self.facturero_ventas_window:
+
+            self.facturero_ventas_window = QDialog(self.ui.centralwidget)  # Set as a child of the main window
+            self.facturero_ui = Ui_VentanaFactureroVentas()
+            self.facturero_ui.setupUi(self.facturero_ventas_window)
+            # Establece el icono y el título de la ventana principal
+            self.facturero_ventas_window.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\Minimarket\Minimarket\Minimarket\archivos_py\resources\r.ico"))
+            self.facturero_ventas_window.setWindowTitle("Facturero Ventas")
+            self.facturero_ventas_window.setWindowModality(Qt.NonModal)
+            self.facturero_ventas_window.setFixedSize(self.facturero_ventas_window.size())
+
+            # Configuración de botones y etiquetas
+            self._customize_facturero_ui(self.facturero_ventas_window, "rgb(198, 255, 202)")
+
+            
+            #se inicializa el arreglo de productos seleccionados del facturer ventas
+            global productos_seleccionados_facturero_ventas
+            productos_seleccionados_facturero_ventas = []
+
+            # inicializar la variable donde acumula el total de los prod agregados 
+            global total_facturero_ventas
+            total_facturero_ventas = 0
+
+            # Configuración del QComboBox de IDs
+            combobox_id = self.facturero_ventas_window.findChild(QComboBox, "comboBox")
+            if combobox_id:
+                combobox_id.setEditable(True)
+                combobox_id.setFocus()
+                combobox_id.setMaxVisibleItems(5)
+                combobox_id.setInsertPolicy(QComboBox.NoInsert)
+                combobox_id.setCompleter(None)
+
+
+                # Eliminar la lógica que fuerza la apertura del menú desplegable
+                combobox_id.lineEdit().textEdited.connect(lambda text: self.filter_combobox_ids(combobox_id, text))
+                combobox_id.currentIndexChanged.connect(self.load_facturero_data_ventas)
+                self.populate_combobox_with_ids(combobox_id)
+                combobox_id.setCurrentText("")  # Setear el combobox en vacío al abrir la ventana
+
+                
+            if not verificar_existencia_de_mp():
+                agregar_mp_default()
+
+            
+            # Configuración del QComboBox de método de pago
+            combobox_metodo_pago = self.facturero_ventas_window.findChild(QComboBox, "comboBox_3")
+            if combobox_metodo_pago:
+                combobox_metodo_pago.clear()
+                combobox_metodo_pago.addItems([metodo[0] for metodo in traer_metodos_de_pago()])
+                
+                
+            
+             # Configuración del botón "Agregar"
+            boton_agregar = self.facturero_ventas_window.findChild(QPushButton, "pushButton_2")
+            if boton_agregar:
+                boton_agregar.setShortcut("Return")  # Conectar el botón al enter
+                boton_agregar.clicked.connect(self.agregar_producto_a_tablewidget_ventas)
+
+            label_9 = self.facturero_ventas_window.findChild(QLabel, "label_9")
+            if label_9:
+                label_9.setStyleSheet("color: transparent")
+
+            #color propio del label12 de ventas
+            label_12 = self.facturero_ventas_window.findChild(QLabel, "label_12")
+            if label_12:
+                label_12.setStyleSheet("color: green; font-weight: bold")
+
+            text_edit = self.facturero_ventas_window.findChild(QTextEdit, "textEdit")
+            if text_edit:
+                text_edit.setFont(QFont("Segoe UI", 12))  # Set the font to Segoe UI with size 12
+                text_edit.setReadOnly(True)
+                text_edit.setFocusPolicy(Qt.NoFocus)
+                
+
+            push_button_4 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_4")
+            if push_button_4:
+                push_button_4.clicked.connect(self.cerrar_facturero_venta)
+                push_button_4.setFocusPolicy(Qt.NoFocus)
+            
+            push_button = self.facturero_ventas_window.findChild(QPushButton, "pushButton")
+            if push_button:
+                push_button.clicked.connect(self.borrar_ultimo_agregado_ventas)
+                push_button.setFocusPolicy(Qt.NoFocus)  
+
+            pushbutton_3 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_3")
+            if pushbutton_3:
+                pushbutton_3.clicked.connect(self.procesar_factura_ventas)
+                pushbutton_3.setFocusPolicy(Qt.NoFocus)
+
+               
+
+            push_button_5 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_5")
+            if push_button_5:
+                push_button_5.clicked.connect(self.ventana_agregar_mp_ventas)  # Conectar al método
+                push_button_5.setFocusPolicy(Qt.NoFocus)                                 
+ 
+            push_button_6 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_6")
+            if push_button_6:
+                push_button_6.clicked.connect(self.ventana_borrar_mp_ventas)
+                push_button_6.setFocusPolicy(Qt.NoFocus)
+
+            # Limitar el QLineEdit de cantidad a 5 caracteres
+            lineedit_cantidad = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_2")
+            if lineedit_cantidad:
+                lineedit_cantidad.setMaxLength(5)
+
+            qtablewidget = self.facturero_ventas_window.findChild(QTableWidget, "tableWidget")  
+            if qtablewidget:
+                qtablewidget.setStyleSheet("""
+                QHeaderView::section {
+                    background-color: rgb(198, 255, 202);
+                    color: black;
+                }
+                """)
+                #edicion y agregacion de datos a la table widget
+                qtablewidget.setColumnCount(7)
+                qtablewidget.setHorizontalHeaderLabels(["Producto", "Precio", "Cantidad", "Categoría", "Proveedor", "MP", "Total"])
+                header = qtablewidget.horizontalHeader()
+                header.setFont(QFont("Segoe UI", 12))
+
+            
+            # Desactivar la cruz de cierre de la ventana
+            self.facturero_ventas_window.setWindowFlags(self.facturero_ventas_window.windowFlags() & ~Qt.WindowCloseButtonHint)
+
+        
+            # Inicializar los QLineEdit en blanco y no editables
+            self.initialize_lineedits_ventas()
+            
+        
+        self.facturero_ventas_window.show()
 
     def open_facturero_compras(self):
         pass
@@ -4787,7 +4922,7 @@ class MainWindow(QMainWindow):
         usuario_activo = self.usuario # se inicializa la variable global usuario para que sea la misma que la del mainwindow
         
         # Establece el icono y el título de la ventana principal
-        self.setWindowIcon(QIcon("C:/Users/mariano/Desktop/proyectos/minimarketclass(Pyside)/archivos_py/resources/r.ico"))
+        self.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\Minimarket\Minimarket\Minimarket\archivos_py\resources\r.ico"))
         self.setWindowTitle("rls")  
 
         # Cambia las tab si es usuario
@@ -4895,7 +5030,7 @@ class MainWindow(QMainWindow):
         self.connect_button("pushButton_48", stacked_widget, 19)
         push_button_48 = self.findChild(QPushButton, "pushButton_48")
         if push_button_48:
-            push_button_48.setIcon(QIcon("C:/Users/mariano/Desktop/proyectos/minimarketclass(Pyside)/archivos_py/resources/eye_visible_hide_hidden_show_icon_145988.png"))
+            push_button_48.setIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\Minimarket\Minimarket\Minimarket\archivos_py\resources\eye_visible_hide_hidden_show_icon_145988.png"))
             self.connect_button("pushButton_48", stacked_widget, 19,  lambda: self.change_table_headers_color_visualizar_movimientos())
 
         # VENTANA ADMINISTRACION
