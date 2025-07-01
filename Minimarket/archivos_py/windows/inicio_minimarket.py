@@ -3036,20 +3036,6 @@ class BuscarDatosTab:
         table = self.ui.frame_52.findChild(QTableWidget, "tableWidget_5")
         
         if table:
-            # Aplicar estilo mediante stylesheet con el color especificado
-            table.setStyleSheet("""
-                QHeaderView::section {
-                    font-size: 20px;
-                    font-weight: bold;
-                    font-family: Segoe UI;
-                    background-color: rgb(243, 66, 66);
-                    color: black;
-                }
-                QTableWidget {
-                    gridline-color: rgb(243, 66, 66);
-                }
-                
-            """)
 
             table.clearContents()  # Limpiar el contenido de la tabla
             table.setRowCount(0)  # Reiniciar el número de filas
@@ -4910,8 +4896,8 @@ class MainWindow(QMainWindow):
         push_button_48 = self.findChild(QPushButton, "pushButton_48")
         if push_button_48:
             push_button_48.setIcon(QIcon("C:/Users/mariano/Desktop/proyectos/minimarketclass(Pyside)/archivos_py/resources/eye_visible_hide_hidden_show_icon_145988.png"))
+            self.connect_button("pushButton_48", stacked_widget, 19,  lambda: self.focus_visualizar_movimientos())
 
- 
         # VENTANA ADMINISTRACION
 
         # Botón facturero ventas
@@ -5016,6 +5002,24 @@ class MainWindow(QMainWindow):
                 color: black;
             }
             """)
+
+    def change_table_headers_color_visualizar_movimientos(self):
+        table = self.ui.frame_52.findChild(QTableWidget, "tableWidget_5")
+        # Aplicar estilo mediante stylesheet con el color especificado
+        table.setStyleSheet("""
+            QHeaderView::section {
+                font-size: 20px;
+                font-weight: bold;
+                font-family: Segoe UI;
+                background-color: rgb(243, 66, 66);
+                color: black;
+            }
+            QTableWidget {
+                gridline-color: rgb(243, 66, 66);
+            }
+            
+        """)
+
 
             
     def change_table_headers_color_visualizar_proveedores(self):
