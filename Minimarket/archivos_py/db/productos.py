@@ -1632,6 +1632,8 @@ def actualizar_cantidad_productos(producto_modificado, m, s):
         
         cursor.close()
 
+    return True
+
 def traer_stock_restante(id):
 
     conn = get_connection()

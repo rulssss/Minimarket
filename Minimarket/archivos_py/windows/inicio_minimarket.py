@@ -4773,6 +4773,9 @@ class AdministracionTab:
         self.buscar_datos_tab = buscar_datos_tab  # Guarda la referenciaBuscarDatosTab
         self.datos_tab = datos_tab
 
+        #crear arreglo con threads abiertos
+        self.threads = []
+
     def start_thread(self, thread):
         self.threads.append(thread)
         thread.finished.connect(lambda: self.threads.remove(thread) if thread in self.threads else None)
@@ -5539,6 +5542,7 @@ class AdministracionTab:
             # Si hay cache disponible, usarlo; si no, usar la variable global productos
             if productos_cache:
                 productos_a_usar = productos_cache
+                
             else:
                 productos_a_usar = []
 
@@ -5651,6 +5655,25 @@ class AdministracionTab:
 
     def open_facturero_compras(self):
         pass
+
+
+    def _customize_facturero_ui(self, window, color):
+        # Configuración de botones
+        button = window.findChild(QPushButton, "pushButton_2")
+        if button:
+            button.setStyleSheet(f"background-color: {color}")
+
+        button3 = window.findChild(QPushButton, "pushButton_3")
+        if button3:
+            button3.setStyleSheet("background-color: rgb(200, 200, 200)")
+
+        button2 = window.findChild(QPushButton, "pushButton")
+        if button2:
+            button2.setStyleSheet("background-color: rgb(255, 127, 127)")
+
+        button4 = window.findChild(QPushButton, "pushButton_4")
+        if button4:
+            button4.setStyleSheet("background-color: rgb(200, 16, 16)")
 
 
 class MainWindow(QMainWindow):
@@ -5785,6 +5808,7 @@ class MainWindow(QMainWindow):
         button16 = self.findChild(QPushButton, "pushButton_16")
         if button16:
             button16.setStyleSheet("background-color: rgb(198, 255, 202)")
+            button16.clicked.connect(self.administracion_tab.visualizar_productos_facturero)
             self.connect_button("pushButton_16", stacked_widget, 15, self.administracion_tab.open_facturero_ventas)
             button16.clicked.connect(self.change_table_headers_color_ventas)
 
@@ -5792,6 +5816,7 @@ class MainWindow(QMainWindow):
         button17 = self.findChild(QPushButton, "pushButton_17")
         if button17:
             button17.setStyleSheet("background-color: rgb(255, 230, 107)")
+            button17.clicked.connect(self.administracion_tab.visualizar_productos_facturero)
             self.connect_button("pushButton_17", stacked_widget, 15, self.administracion_tab.open_facturero_compras)
             button17.clicked.connect(self.change_table_headers_color_compras)
 
