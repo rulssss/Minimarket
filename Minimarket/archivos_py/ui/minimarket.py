@@ -3671,7 +3671,7 @@ class Ui_MainWindow(object):
 
         self.tabWidget.setCurrentIndex(0)
         self.pushButton_3.setDefault(False)
-        self.stackedWidget.setCurrentIndex(4)
+        self.stackedWidget.setCurrentIndex(19)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -4034,16 +4034,6 @@ class Ui_MainWindow(object):
 
         __sortingEnabled4 = self.tableWidget_5.isSortingEnabled()
         self.tableWidget_5.setSortingEnabled(False)
-        ___qtablewidgetitem76 = self.tableWidget_5.item(0, 0)
-        ___qtablewidgetitem76.setText(QCoreApplication.translate("MainWindow", u"mariano", None));
-        ___qtablewidgetitem77 = self.tableWidget_5.item(0, 1)
-        ___qtablewidgetitem77.setText(QCoreApplication.translate("MainWindow", u"20/07/2025", None));
-        ___qtablewidgetitem78 = self.tableWidget_5.item(0, 2)
-        ___qtablewidgetitem78.setText(QCoreApplication.translate("MainWindow", u"Editar", None));
-        ___qtablewidgetitem79 = self.tableWidget_5.item(0, 3)
-        ___qtablewidgetitem79.setText(QCoreApplication.translate("MainWindow", u"Productos", None));
-        ___qtablewidgetitem80 = self.tableWidget_5.item(0, 4)
-        ___qtablewidgetitem80.setText(QCoreApplication.translate("MainWindow", u"se edito Miel", None));
         self.tableWidget_5.setSortingEnabled(__sortingEnabled4)
 
     # retranslateUi
