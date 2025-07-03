@@ -4814,7 +4814,6 @@ class AdministracionTab:
                 combobox_id.setInsertPolicy(QComboBox.NoInsert)
                 combobox_id.setCompleter(None)
 
-
                 # Eliminar la lógica que fuerza la apertura del menú desplegable
                 combobox_id.lineEdit().textEdited.connect(lambda text: self.filter_combobox_ids(combobox_id, text))
                 combobox_id.currentIndexChanged.connect(self.load_facturero_data_ventas)
