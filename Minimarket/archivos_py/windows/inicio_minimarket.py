@@ -21,6 +21,7 @@ productos_cache = None
 usuarios_cache = None
 
 
+productos_cache_temporal = None
 productos_por_id_cache = None
 productos_por_nombre_cache = None
 proveedores_por_nombre_cache = None
@@ -4801,9 +4802,18 @@ class AdministracionTab:
             global productos_seleccionados_facturero_ventas
             productos_seleccionados_facturero_ventas = []
 
+            # se inicializa el arreglo de productos cache temporal
+            global productos_cache_temporal, productos_cache
+            if productos_cache_temporal == None:
+                productos_cache_temporal = productos_cache
+
             # inicializar la variable donde acumula el total de los prod agregados 
             global total_facturero_ventas
             total_facturero_ventas = 0
+
+            line_edit_18 = self.ui.frame_38.findChild(QLineEdit, "lineEdit_18")
+            if line_edit_18:
+                line_edit_18.clear()  # Limpiar el QLineEdit al abrir la ventana
 
             # Configuración del QComboBox de IDs
             combobox_id = self.facturero_ventas_window.findChild(QComboBox, "comboBox")
@@ -4909,6 +4919,7 @@ class AdministracionTab:
         
             # Inicializar los QLineEdit en blanco y no editables
             self.initialize_lineedits_ventas()
+            self.visualizar_productos_facturero()
             
         
         self.facturero_ventas_window.show()
@@ -5242,10 +5253,10 @@ class AdministracionTab:
             return True
         except ValueError:
             return False
-        
+    
 
     def agregar_producto_a_tablewidget_ventas(self):
-        global productos_seleccionados_facturero_ventas, productos_por_id_cache
+        global productos_seleccionados_facturero_ventas, productos_por_id_cache, productos_cache_temporal
 
         combobox_id = self.facturero_ventas_window.findChild(QComboBox, "comboBox")
         combobox_id_value = combobox_id.currentText()
@@ -5284,68 +5295,47 @@ class AdministracionTab:
                         combobox_metodo_pago.currentText(),
                         float(line_edit_precio.text()) * float(lineEdit_cantidad_value)
                     ]
+                    
+                    # controla la cantidad para ver si sigue habiendo stock o no
+                    resultado = self.controlar_cantidades2(producto_a_agregar, s=True)
+        
+                    if resultado:
+                        # Agregar a la lista global
+                        productos_seleccionados_facturero_ventas.append(producto_a_agregar)
+                        #actualizar cantidad en producto
+                        self.actualizar_stock_producto(productos_seleccionados_facturero_ventas[-1], s=True)
 
-                    # Usar hilo para controlar cantidades
-                    self.controlar_cantidades_thread = ControlarCantidadesThread(producto_a_agregar, s=True)
+                        # Actualizar el QTableWidget
+                        self.filter_products_facturero()
+                         
+                        row = qtablewidget.rowCount()
+                        qtablewidget.insertRow(row)
+                        for column, value in enumerate(productos_seleccionados_facturero_ventas[-1]):
+                            item = QTableWidgetItem(str(value))
+                            item.setFont(QFont("Segoe UI", 10))
+                            qtablewidget.setItem(row, column, item)
 
-                    def on_cantidades_controladas(resultado):
-                        if resultado:
-                            # Agregar a la lista global
-                            productos_seleccionados_facturero_ventas.append(producto_a_agregar)
 
-                            # Usar hilo para actualizar cantidad de productos (reutilizar el existente)
-                            self.actualizar_cantidad_thread = ActualizarCantidadProductosThread(
-                                [productos_seleccionados_facturero_ventas[-1]], m=False, s=True
-                            )
+                    else:
+                        label_9 = self.facturero_ventas_window.findChild(QLabel, "label_9")
+                        if label_9 and combobox_id_value:
+                            
+                            stock = self.traer_stock_restante(combobox_id_value)
+                            on_stock_obtenido(stock)
+                            def on_stock_obtenido(stock):
+                                label_9.setText(f"Stock restante: {stock}")
+                                label_9.setStyleSheet("color: red; font-weight: bold")
+                                QTimer.singleShot(6000, lambda: label_9.setStyleSheet("color: transparent"))
+                        
+                        # Remover el último producto agregado si las cantidades no son válidas
+                        #if productos_seleccionados_facturero_ventas:
+                        #    productos_seleccionados_facturero_ventas.pop()
 
-                            def on_cantidad_actualizada(exito):
-                                if exito:
-                                    # Actualizar visualización de la tabla productos
-                                    self.filter_products_facturero()
-
-                                    # Agregar fila a la tabla
-                                    row = qtablewidget.rowCount()
-                                    qtablewidget.insertRow(row)
-                                    for column, value in enumerate(productos_seleccionados_facturero_ventas[-1]):
-                                        item = QTableWidgetItem(str(value))
-                                        item.setFont(QFont("Segoe UI", 10))
-                                        qtablewidget.setItem(row, column, item)
-
-                                    # Actualizar total
-                                    global total_facturero_ventas
-                                    total_facturero_ventas = sum([producto[-1] for producto in productos_seleccionados_facturero_ventas])
-                                    self.actualizar_total(s=True)
-
-                                    # Seleccionar todo el texto del QComboBox
-                                    combobox_id.setFocus()
-                                    combobox_id.lineEdit().selectAll()
-                                else:
-                                    print("Error al actualizar la cantidad de productos")
-
-                            self.actualizar_cantidad_thread.resultado.connect(on_cantidad_actualizada)
-                            self.start_thread(self.actualizar_cantidad_thread)
-
-                        else:
-                            label_9 = self.facturero_ventas_window.findChild(QLabel, "label_9")
-
-                            if label_9 and combobox_id_value:
-                                # Usar hilo para traer stock restante
-                                self.stock_restante_thread = TraerStockRestanteThread(combobox_id_value)
-
-                                def on_stock_obtenido(stock):
-                                    label_9.setText(f"Stock restante: {stock}")
-                                    label_9.setStyleSheet("color: red; font-weight: bold")
-                                    QTimer.singleShot(6000, lambda: label_9.setStyleSheet("color: transparent"))
-
-                                self.stock_restante_thread.resultado.connect(on_stock_obtenido)
-                                self.start_thread(self.stock_restante_thread)
-
-                            # Remover el último producto agregado si las cantidades no son válidas
-                            if productos_seleccionados_facturero_ventas:
-                                productos_seleccionados_facturero_ventas.pop()
-
-                    self.controlar_cantidades_thread.resultado.connect(on_cantidades_controladas)
-                    self.start_thread(self.controlar_cantidades_thread)
+                      #agregar total 
+                    global total_facturero_ventas
+                    #actualiza el total de los productos agregados
+                    total_facturero_ventas = sum([producto[-1] for producto in productos_seleccionados_facturero_ventas])
+                    self.actualizar_total(s=True)
 
                 else:
                     label_9 = self.facturero_ventas_window.findChild(QLabel, "label_9")
@@ -5365,11 +5355,105 @@ class AdministracionTab:
         combobox_id.setFocus()
         combobox_id.lineEdit().selectAll()
 
+        print("PRODUCTOS SELECCIONADOS: ", productos_seleccionados_facturero_ventas)
+
+    def actualizar_stock_producto(self, producto_modificado, s):
+        global productos_cache_temporal
+
+        if s:  # Si es venta
+            if productos_cache_temporal:
+                nombre_producto = producto_modificado[0]  # Nombre del producto
+                cantidad_vendida = float(producto_modificado[2])  # Cantidad vendida
+
+                # Buscar y actualizar el producto en el cache temporal
+                for i, producto in enumerate(productos_cache_temporal):
+                    if producto[1] == nombre_producto:  # Comparar por nombre (producto[1])
+                        # Crear una nueva tupla con el stock actualizado
+                        producto_actualizado = list(producto)
+                        producto_actualizado[4] = float(producto[4]) - cantidad_vendida  # Restar del stock
+                        productos_cache_temporal[i] = tuple(producto_actualizado)
+                        break
+        else:  # Si es compra
+            if productos_cache_temporal:
+                nombre_producto = producto_modificado[0]  # Nombre del producto
+                cantidad_comprada = float(producto_modificado[2])  # Cantidad comprada
+
+                # Buscar y actualizar el producto en el cache temporal
+                for i, producto in enumerate(productos_cache_temporal):
+                    if producto[1] == nombre_producto:  # Comparar por nombre (producto[1])
+                        # Crear una nueva tupla con el stock actualizado
+                        producto_actualizado = list(producto)
+                        producto_actualizado[4] = float(producto[4]) + cantidad_comprada  # Sumar al stock
+                        productos_cache_temporal[i] = tuple(producto_actualizado)
+                        break
+
+    def traer_stock_restante(id):
+        # Usar el cache global de productos
+        global productos_cache_temporal, productos_cache, productos_por_id_cache
+
+        # Primero intentar con el cache temporal (si existe)
+        if productos_cache_temporal:
+            for producto in productos_cache_temporal:
+                if str(producto[0]) == str(id):  # producto[0] es el ID
+                    return producto[4]  # producto[4] es el stock
+
+        # Si no hay cache temporal, usar el cache por ID
+        elif productos_por_id_cache and str(id) in productos_por_id_cache:
+            producto = productos_por_id_cache[str(id)]
+            return producto[4]  # producto[4] es el stock
+
+        # Como último recurso, usar el cache general
+        elif productos_cache:
+            for producto in productos_cache:
+                if str(producto[0]) == str(id):  # producto[0] es el ID
+                    return producto[4]  # producto[4] es el stock
+
+        # Si no se encuentra en ningún cache, devolver 0
+        return 0
+
+    def controlar_cantidades2(self, producto_modificado, s):
+        nombre = producto_modificado[0]
+        cantidad = float(producto_modificado[2])
+    
+        # Usar el cache global de productos
+        global productos_cache_temporal, productos_cache
+        
+        # Determinar qué cache usar
+        cache_a_usar = productos_cache_temporal if productos_cache_temporal else productos_cache
+        
+        if not cache_a_usar:
+            return False  # No hay datos en cache
+        
+        # Buscar el producto en el cache por nombre
+        stock_actual = None
+        for producto in cache_a_usar:
+            if producto[1] == nombre:  # producto[1] es el nombre
+                stock_actual = float(producto[4])  # producto[4] es el stock
+                break
+            
+        if stock_actual is None:
+            return False  # Producto no encontrado en cache
+        
+        op = stock_actual - cantidad
+        
+        if s:  # Si es venta
+            if op >= 0 and cantidad > 0:
+                return True
+            else:
+                return False
+        else:  # Si es compra
+            if cantidad > 0:
+                return True
+            else:
+                return False
+
     def procesar_factura_ventas(self):
         s = True
         global productos_seleccionados_facturero_ventas
         global total_facturero_ventas
         global usuario_activo
+        global productos_cache_temporal
+        global productos_cache
 
         if productos_seleccionados_facturero_ventas:
             # Usar hilo para agregar a registro
@@ -5428,27 +5512,25 @@ class AdministracionTab:
         total_facturero_ventas = 0
         productos_seleccionados_facturero_ventas = []
 
+        # actualiza el cache de productos
+        productos_cache = productos_cache_temporal if productos_cache_temporal else productos_cache
+
         self.actualizar_total(s=True)
 
     def borrar_ultimo_agregado_ventas(self): 
         global productos_seleccionados_facturero_ventas
         global total_facturero_ventas
+        global productos_cache_temporal
 
         if productos_seleccionados_facturero_ventas:
-            # Usar el hilo existente para actualizar cantidad de productos
-            self.actualizar_cantidad_thread = ActualizarCantidadProductosThread(
-                [productos_seleccionados_facturero_ventas[-1]], m=False, s=False
-            )
+            
+            self.actualizar_stock_producto(productos_seleccionados_facturero_ventas[-1], s=False)
 
-            def on_actualizacion_finalizada(exito):
-                if exito:
-                    # Se actualiza la tabla de productos
-                    self.filter_products_facturero()
-                else:
-                    print("Error al actualizar la cantidad de productos")
+            #actualiza tabla de productos
+            self.filter_products_facturero()
 
-            self.actualizar_cantidad_thread.resultado.connect(on_actualizacion_finalizada)
-            self.start_thread(self.actualizar_cantidad_thread)
+            self.actualizar_total(s=True)
+
 
         # Actualizar la interfaz del facturero
         qtablewidget = self.facturero_ventas_window.findChild(QTableWidget, "tableWidget") 
@@ -5468,7 +5550,8 @@ class AdministracionTab:
     #FUNCION PARA ACTUALIZAR CONSTANTEMENTE la tabla de productos por detras
 
     def visualizar_productos_facturero(self):
-        
+        global productos_cache_temporal, productos_cache
+        print("cache temproal: ", productos_cache_temporal)
         self.populate_table_with_products_facturero()
         
 
@@ -5479,6 +5562,7 @@ class AdministracionTab:
             line_edit_18.textChanged.connect(self.filter_products_facturero)
     
     def filter_products_facturero(self):
+        print("entor en el filtro al agregar")
         line_edit_18 = self.ui.frame_38.findChild(QLineEdit, "lineEdit_18")
         table_widget = self.ui.frame_tabla_productos_4.findChild(QTableWidget, "tableWidget_4")
 
@@ -5486,13 +5570,11 @@ class AdministracionTab:
             filter_text = line_edit_18.text().lower()
 
             # Usar el cache global de productos
-            global productos_cache, productos
+            global productos_cache_temporal
 
-            # Si hay cache disponible, usarlo; si no, usar la variable global productos
+            # Si hay cache disponible
             if productos_cache:
-                productos_a_usar = productos_cache
-            elif productos:
-                productos_a_usar = productos
+                productos_a_usar = productos_cache_temporal
             else:
                 productos_a_usar = []
 
@@ -5536,12 +5618,11 @@ class AdministracionTab:
             filter_text = line_edit_18.text().lower()
 
             # Usar el cache global de productos
-            global productos_cache, productos
+            global productos_cache_temporal
 
             # Si hay cache disponible, usarlo; si no, usar la variable global productos
-            if productos_cache:
-                productos_a_usar = productos_cache
-                
+            if productos_cache_temporal:
+                productos_a_usar = productos_cache_temporal
             else:
                 productos_a_usar = []
 

@@ -1634,44 +1634,6 @@ def actualizar_cantidad_productos(producto_modificado, m, s):
 
     return True
 
-def traer_stock_restante(id):
-
-    conn = get_connection()
-    cursor = conn.cursor()
-    query_update_data = f"SELECT stock FROM productos WHERE id_producto = {id}"
-    cursor.execute(query_update_data)
-    data = cursor.fetchall()
-    cursor.close()
-    
-    return data[0][0]
-
-def controlar_cantidades(producto_modificado, s):
-    nombre = producto_modificado[0]
-    cantidad = float(producto_modificado[2])
-
-    conn = get_connection()
-    cursor = conn.cursor()
-    query_update_data = f"SELECT stock FROM productos WHERE nombre='{nombre}'"
-    cursor.execute(query_update_data)
-    data = cursor.fetchall()
-    cursor.close()
-    
-
-    op = float(data[0][0]) - float(cantidad)
-    
-    if s:
-        
-        if op >= 0 and cantidad > 0:
-            return True
-        else:
-            return False
-            
-    else:
-        if cantidad > 0:
-            return True
-        else:
-            return False
-
 
 def agregar_a_registro(productos_seleccionados, s, usuario):
     # s define si es una venta o una compra, si es true es una venta y si es false es una compra

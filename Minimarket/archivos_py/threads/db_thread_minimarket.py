@@ -993,28 +993,7 @@ class ActualizarCantidadProductosThread(QThread):
         exito = actualizar_cantidad_productos(self.productos_seleccionados, self.m, self.s)
         self.resultado.emit(exito)
 
-class ControlarCantidadesThread(QThread):
-    resultado = Signal(bool)
-    
-    def __init__(self, producto, s=True):
-        super().__init__()
-        self.producto = producto
-        self.s = s
-    
-    def run(self):
-        resultado = controlar_cantidades(self.producto, self.s)
-        self.resultado.emit(resultado)
 
-class TraerStockRestanteThread(QThread):
-    resultado = Signal(int)
-    
-    def __init__(self, id_producto):
-        super().__init__()
-        self.id_producto = id_producto
-    
-    def run(self):
-        stock = traer_stock_restante(self.id_producto)
-        self.resultado.emit(stock)
 
 class AgregarARegistroThread(QThread):
     resultado = Signal(bool)
