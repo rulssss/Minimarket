@@ -4919,6 +4919,7 @@ class AdministracionTab:
         
             # Inicializar los QLineEdit en blanco y no editables
             self.initialize_lineedits_ventas()
+            #visualizar productos del facturero
             self.visualizar_productos_facturero()
             
         
@@ -5376,7 +5377,7 @@ class AdministracionTab:
                         producto_actualizado[4] = float(float(producto[4]) - cantidad_vendida)  # Restar del stock
                         productos_cache_temporal[i] = tuple(producto_actualizado)
                         break
-                print(" prod cache temp " ,productos_cache_temporal)
+                
         else:  # Si es compra
             if productos_cache_temporal:
                 nombre_producto = producto_modificado[0]  # Nombre del producto
@@ -5572,6 +5573,14 @@ class AdministracionTab:
         if line_edit_18 and table_widget:
             filter_text = line_edit_18.text().lower()
 
+            # Configurar la tabla (igual que en populate_table_with_products_facturero)
+            corner_button = table_widget.findChild(QAbstractButton)
+            if corner_button:
+                corner_button.clicked.connect(self.copy_entire_table_to_clipboard)
+            table_widget.horizontalHeader().sectionDoubleClicked.connect(self.copy_column_to_clipboard)
+            table_widget.verticalHeader().sectionDoubleClicked.connect(self.copy_row_to_clipboard)
+            table_widget.setEditTriggers(QTableWidget.NoEditTriggers)
+
             # Usar el cache global de productos
             global productos_cache_temporal
 
@@ -5600,11 +5609,26 @@ class AdministracionTab:
                 table_widget.setRowCount(len(filtered_productos))
                 table_widget.setColumnCount(8)
                 table_widget.setHorizontalHeaderLabels(["ID", "Nombre", "Precio Compra", "Precio Venta", "Stock", "Stock Ideal", "Categoría", "Proveedor"])
+
+                # Configurar el header (igual que en populate_table_with_products_facturero)
+                header = table_widget.horizontalHeader()
+                header.setFont(QFont("Segoe UI", 16, QFont.Bold))
+
                 for row, producto in enumerate(filtered_productos):
                     for col, value in enumerate(producto):
                         item = QTableWidgetItem(str(value))
                         item.setFont(QFont("Segoe ui", 12))
                         item.setTextAlignment(Qt.AlignCenter)
+
+                        # Aplicar color rojo si el stock es menor al ideal (igual que en populate_table_with_products_facturero)
+                        if col == 4 and float(producto[4]) < float(producto[5]):
+                            item.setForeground(Qt.red)
+
+                        table_widget.setItem(row, col, item)
+
+            # NO cambiar el texto del line_edit para mantener el filtro
+            # line_edit_18.setText(filter_text)  # Esta línea causaba problemas
+            # line_edit_18.setFocus()  # Esta línea también puede interferir
 
     def populate_table_with_products_facturero(self):
         table_widget = self.ui.frame_tabla_productos_4.findChild(QTableWidget, "tableWidget_4")
