@@ -5278,7 +5278,7 @@ class AdministracionTab:
             # Verificar si hay una cantidad seleccionada
             if line_edit_cantidad:
                 if "," in line_edit_cantidad.text():
-                    lineEdit_cantidad_value = line_edit_cantidad.text().replace(",", ".")
+                    lineEdit_cantidad_value = line_edit_cantidad.text().replace(",", ".")  
                 else:
                     lineEdit_cantidad_value = line_edit_cantidad.text()
 
@@ -5321,11 +5321,10 @@ class AdministracionTab:
                         if label_9 and combobox_id_value:
                             
                             stock = self.traer_stock_restante(combobox_id_value)
-                            on_stock_obtenido(stock)
-                            def on_stock_obtenido(stock):
-                                label_9.setText(f"Stock restante: {stock}")
-                                label_9.setStyleSheet("color: red; font-weight: bold")
-                                QTimer.singleShot(6000, lambda: label_9.setStyleSheet("color: transparent"))
+                            
+                            label_9.setText(f"Stock restante: {stock}")
+                            label_9.setStyleSheet("color: red; font-weight: bold")
+                            QTimer.singleShot(6000, lambda: label_9.setStyleSheet("color: transparent"))
                         
                         # Remover el último producto agregado si las cantidades no son válidas
                         #if productos_seleccionados_facturero_ventas:
@@ -5360,19 +5359,24 @@ class AdministracionTab:
     def actualizar_stock_producto(self, producto_modificado, s):
         global productos_cache_temporal
 
+
         if s:  # Si es venta
             if productos_cache_temporal:
+                
                 nombre_producto = producto_modificado[0]  # Nombre del producto
+                print("nombre producto", nombre_producto)
                 cantidad_vendida = float(producto_modificado[2])  # Cantidad vendida
+                print("cantidad vendida", cantidad_vendida)
 
                 # Buscar y actualizar el producto en el cache temporal
                 for i, producto in enumerate(productos_cache_temporal):
                     if producto[1] == nombre_producto:  # Comparar por nombre (producto[1])
                         # Crear una nueva tupla con el stock actualizado
                         producto_actualizado = list(producto)
-                        producto_actualizado[4] = float(producto[4]) - cantidad_vendida  # Restar del stock
+                        producto_actualizado[4] = float(float(producto[4]) - cantidad_vendida)  # Restar del stock
                         productos_cache_temporal[i] = tuple(producto_actualizado)
                         break
+                print(" prod cache temp " ,productos_cache_temporal)
         else:  # Si es compra
             if productos_cache_temporal:
                 nombre_producto = producto_modificado[0]  # Nombre del producto
@@ -5387,7 +5391,7 @@ class AdministracionTab:
                         productos_cache_temporal[i] = tuple(producto_actualizado)
                         break
 
-    def traer_stock_restante(id):
+    def traer_stock_restante(self, id):
         # Usar el cache global de productos
         global productos_cache_temporal, productos_cache, productos_por_id_cache
 
@@ -5551,7 +5555,6 @@ class AdministracionTab:
 
     def visualizar_productos_facturero(self):
         global productos_cache_temporal, productos_cache
-        print("cache temproal: ", productos_cache_temporal)
         self.populate_table_with_products_facturero()
         
 
@@ -5562,7 +5565,7 @@ class AdministracionTab:
             line_edit_18.textChanged.connect(self.filter_products_facturero)
     
     def filter_products_facturero(self):
-        print("entor en el filtro al agregar")
+        print("paso al filtro")
         line_edit_18 = self.ui.frame_38.findChild(QLineEdit, "lineEdit_18")
         table_widget = self.ui.frame_tabla_productos_4.findChild(QTableWidget, "tableWidget_4")
 
@@ -5573,7 +5576,7 @@ class AdministracionTab:
             global productos_cache_temporal
 
             # Si hay cache disponible
-            if productos_cache:
+            if productos_cache_temporal:
                 productos_a_usar = productos_cache_temporal
             else:
                 productos_a_usar = []
