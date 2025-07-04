@@ -4878,6 +4878,7 @@ class AdministracionTab:
 
             pushbutton_3 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_3")
             if pushbutton_3:
+                pushbutton_3.setEnabled(True)  # Deshabilitar el botón al inicio
                 pushbutton_3.clicked.connect(self.procesar_factura_ventas)
                 pushbutton_3.setFocusPolicy(Qt.NoFocus)
 
@@ -5153,29 +5154,15 @@ class AdministracionTab:
             combobox.setCurrentText(text)
 
     def cerrar_facturero_venta(self):
-        global productos_seleccionados_facturero_ventas
-    
-        if productos_seleccionados_facturero_ventas != []:
-            if len(productos_seleccionados_facturero_ventas) > 1:
-                m = True
-            else:
-                m = False
-    
-            # Usar el hilo para actualizar cantidad de productos
-            self.actualizar_cantidad_thread = ActualizarCantidadProductosThread(
-                productos_seleccionados_facturero_ventas, m, s=False
-            )
-            
-            def on_actualizacion_finalizada(exito):
-                if exito:
-                    # Se actualiza la tabla de productos
-                    self.borrar_lineedit_18()
-                    self.filter_products_facturero()
-                else:
-                    print("Error al actualizar la cantidad de productos")
-            
-            self.actualizar_cantidad_thread.resultado.connect(on_actualizacion_finalizada)
-            self.start_thread(self.actualizar_cantidad_thread)
+        global productos_seleccionados_facturero_ventas, productos_cache_temporal
+        
+        # volver a productos cache la variable de productos cache temporal(ya que no va a hacerse ningun cambio)
+        productos_cache_temporal = productos_cache
+
+        # Se actualiza la tabla de productos
+        self.borrar_lineedit_18()
+        self.filter_products_facturero()
+
     
         self.facturero_ventas_window.close()
         self.facturero_ventas_window = None
@@ -5460,6 +5447,10 @@ class AdministracionTab:
         global productos_cache_temporal
         global productos_cache
 
+        pushbutton_3 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_3")
+        if pushbutton_3:
+            pushbutton_3.setEnabled(False)
+
         if productos_seleccionados_facturero_ventas:
             # Usar hilo para agregar a registro
             self.agregar_registro_thread = AgregarARegistroThread(
@@ -5470,7 +5461,7 @@ class AdministracionTab:
                 if exito:
                     # Usar hilo para cargar movimiento de venta
                     self.movimiento_venta_thread = CargarMovimientoVentaThread(usuario_activo)
-
+                   
                     def on_movimiento_cargado(exito_movimiento):
                         if exito_movimiento:
                             # Actualizar tabla de productos
@@ -5484,6 +5475,10 @@ class AdministracionTab:
                                 label_9.setText("Factura procesada con éxito")
                                 label_9.setStyleSheet("color: green; font-weight: bold")
                                 QTimer.singleShot(6000, lambda: label_9.setStyleSheet("color: transparent"))
+
+                            pushbutton_3 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_3")
+                            if pushbutton_3:
+                                pushbutton_3.setEnabled(True)
 
                             # Llamar a inicializar_comboboxes_y_boton de la clase buscar datos
                             self.buscar_datos_tab.enviar_a_setear_line_edits()
@@ -5504,12 +5499,6 @@ class AdministracionTab:
                 label_9.setStyleSheet("color: red; font-weight: bold")
                 QTimer.singleShot(6000, lambda: label_9.setStyleSheet("color: transparent"))
 
-        # Limpiar interfaz
-        combobox_id = self.facturero_ventas_window.findChild(QComboBox, "comboBox")
-        if combobox_id:
-            combobox_id.clear()
-            combobox_id.setFocus()
-
         qtablewidget = self.facturero_ventas_window.findChild(QTableWidget, "tableWidget")
         if qtablewidget:
             qtablewidget.setRowCount(0)
@@ -5518,9 +5507,16 @@ class AdministracionTab:
         productos_seleccionados_facturero_ventas = []
 
         # actualiza el cache de productos
-        productos_cache = productos_cache_temporal if productos_cache_temporal else productos_cache
-
+        productos_cache = sorted(productos_cache_temporal, key=lambda producto: producto[1].lower()) if productos_cache_temporal else productos_cache
+        #$$$$ SEGUIR Y PROBAR EL PROCESAMIENTO
         self.actualizar_total(s=True)
+
+        # Limpiar interfaz
+        combobox_id = self.facturero_ventas_window.findChild(QComboBox, "comboBox")
+        if combobox_id:
+            combobox_id.setFocus()
+            combobox_id.lineEdit().selectAll()
+
 
     def borrar_ultimo_agregado_ventas(self): 
         global productos_seleccionados_facturero_ventas

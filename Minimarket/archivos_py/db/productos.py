@@ -1674,7 +1674,6 @@ def agregar_a_registro(productos_seleccionados, s, usuario):
 
             query_add_data = f"INSERT INTO detalle_ventas(id_venta, id_producto, cantidad, precio_unitario_venta, precio_unitario_compra) VALUES({id_venta},{id_prod},{cantidad},{precio},{precio_compra})"
             cursor.execute(query_add_data)
-            
 
         else:
 
@@ -1695,8 +1694,10 @@ def agregar_a_registro(productos_seleccionados, s, usuario):
             query_add_data = f"INSERT INTO detalle_compras(id_compra, id_producto, cantidad, precio_unitario) VALUES({id_compra},{id_prod},{cantidad},{precio})"
             cursor.execute(query_add_data)
     
+    conn.commit()  # Confirmar los cambios en la base de datos
     cursor.close()
     conn.close()
+    return True
 
 def traer_precio_compra(nombre):
     conn = get_connection()
@@ -1941,4 +1942,5 @@ def cargar_movimiento_venta(usuario_activo):
     cursor.execute(query)
     conn.commit()
     cursor.close()
+    return True
 
