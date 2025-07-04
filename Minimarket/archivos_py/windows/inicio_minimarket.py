@@ -4777,6 +4777,9 @@ class AdministracionTab:
         #crear arreglo con threads abiertos
         self.threads = []
 
+        # Agregar bandera de control
+        self.mp_verificados = False
+
     def start_thread(self, thread):
         self.threads.append(thread)
         thread.finished.connect(lambda: self.threads.remove(thread) if thread in self.threads else None)
@@ -4831,9 +4834,11 @@ class AdministracionTab:
                 combobox_id.setCurrentText("")  # Setear el combobox en vacío al abrir la ventana
 
                 
-            self.verificar_mp_thread = VerificarYAgregarMPThread()
-            self.verificar_mp_thread.finished.connect(lambda: print("Métodos de pago verificados/agregados"))
-            self.start_thread(self.verificar_mp_thread)
+            if not self.mp_verificados:
+                self.verificar_mp_thread = VerificarYAgregarMPThread()
+                self.verificar_mp_thread.finished.connect(lambda: print("Métodos de pago verificados/agregados"))
+                self.verificar_mp_thread.finished.connect(lambda: setattr(self, 'mp_verificados', True))
+                self.start_thread(self.verificar_mp_thread)
 
             
             # Configuración del QComboBox de método de pago
