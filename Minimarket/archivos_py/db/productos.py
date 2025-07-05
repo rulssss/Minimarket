@@ -1562,10 +1562,15 @@ def agregar_mp_default():
     cursor = conn.cursor()
     query1 = f"INSERT INTO metodos_pago(nombre_mp) VALUES('Efectivo')"
     query2 = f"INSERT INTO metodos_pago(nombre_mp) VALUES('Transferencia')"
+    query3 = f"INSERT INTO metodos_pago(nombre_mp) VALUES('Tarjeta de Crédito')"
+    query4 = f"INSERT INTO metodos_pago(nombre_mp) VALUES('Tarjeta de Débito')"
 
     cursor.execute(query1)
     cursor.execute(query2)
-    
+    cursor.execute(query3)
+    cursor.execute(query4)
+
+    conn.commit()  # Confirmar los cambios en la base de datos
     cursor.close()
     conn.close()
 
@@ -1577,6 +1582,7 @@ def agregar_mp_db(lineEdit_value):
         cursor.execute(query)
         
         cursor.close()
+        conn.commit()  # Confirmar los cambios en la base de datos
         
         return True
 
@@ -1590,6 +1596,8 @@ def borrar_mp_db(combobox_value):
     cursor.execute(query)
     conn.commit()
     cursor.close()
+
+    return True
 
 def actualizar_cantidad_productos(producto_modificado, m, s):
    
@@ -1722,9 +1730,25 @@ def traer_mp(metodo_pago):
     return data[0][0]
 
 
+def agregar_mp_db(lineEdit_value):
+    conn = get_connection()
+    try:
+        
+        cursor = conn.cursor()
+        query = f"INSERT INTO metodos_pago(nombre_mp) VALUES('{lineEdit_value}')"
+        cursor.execute(query)
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return True
+
+    except errors.UniqueViolation:
+        return False
 
 
-
+####################################################################
+####################################################################
 # MOVIMIENTOS:
 
 def cargar_movimiento_producto_agregado(input_id_value, usuario):
@@ -1944,3 +1968,28 @@ def cargar_movimiento_venta(usuario_activo):
     cursor.close()
     return True
 
+
+def cargar_movimiento_agregar_metodo_pago(metodo_pago, usuario_activo):
+    id_usuario = traer_id_usuario(usuario_activo)
+    fecha_hora = datetime.now().astimezone().isoformat()
+    id_entidad = traer_mp(metodo_pago)
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"INSERT INTO movimientos (id_usuario, fecha_hora, tipo_accion, entidad_afectada, id_entidad, descripcion) VALUES ({id_usuario}, '{fecha_hora}', 'Agregar', 'Metodos de Pago', {id_entidad}, 'Método de pago agregado: {metodo_pago}')"
+    cursor.execute(query)
+    conn.commit()
+    cursor.close()
+    return True
+
+def cargar_movimiento_borrar_metodo_pago(metodo_pago, usuario_activo, id):
+    id_usuario = traer_id_usuario(usuario_activo)
+    fecha_hora = datetime.now().astimezone().isoformat()
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"INSERT INTO movimientos (id_usuario, fecha_hora, tipo_accion, entidad_afectada, id_entidad, descripcion) VALUES ({id_usuario}, '{fecha_hora}', 'Borrar', 'Metodos de Pago', {id}, 'Método de pago borrado: {metodo_pago}')"
+    cursor.execute(query)
+    conn.commit()
+    cursor.close()
+    return True

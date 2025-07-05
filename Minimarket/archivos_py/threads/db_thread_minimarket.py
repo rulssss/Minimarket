@@ -970,15 +970,24 @@ class AgregarMPThread(QThread):
         self.resultado.emit(exito)
 
 class BorrarMPThread(QThread):
-    resultado = Signal(bool)
+    resultado = Signal(bool, int)  # ✅ Cambiar para emitir bool e int
     
     def __init__(self, nombre_metodo):
         super().__init__()
         self.nombre_metodo = nombre_metodo
-    
+        
     def run(self):
-        exito = borrar_mp_db(self.nombre_metodo)
-        self.resultado.emit(exito)
+        try:
+            #  Corregir: usar self.nombre_metodo en lugar de self.metodo_pago
+            id_metodo = traer_mp(self.nombre_metodo)
+            exito = borrar_mp_db(self.nombre_metodo)
+            
+            #  Emitir tanto el éxito como el ID
+            self.resultado.emit(exito, id_metodo)
+        except Exception as e:
+            print(f"Error al borrar método de pago: {e}")
+            #  En caso de error, emitir False y 0
+            self.resultado.emit(False, 0)
 
 class ActualizarCantidadProductosThread(QThread):
     resultado = Signal(bool)
@@ -1019,3 +1028,37 @@ class CargarMovimientoVentaThread(QThread):
         exito = cargar_movimiento_venta(self.usuario_activo)
         self.resultado.emit(exito)
 
+class MovimientoAgregarMetodoPagoThread(QThread):
+    finished = Signal()
+
+    def __init__(self, metodo_pago, usuario_activo):
+        super().__init__()
+        self.metodo_pago = metodo_pago
+        self.usuario_activo = usuario_activo
+
+    def run(self):
+        try:
+            # Llamar a la función que registra el movimiento en la base de datos
+            cargar_movimiento_agregar_metodo_pago(self.metodo_pago, self.usuario_activo)
+            self.finished.emit()
+        except Exception as e:
+            print(f"Error al cargar movimiento de agregar método de pago: {e}")
+            self.finished.emit()
+
+class MovimientoBorrarMetodoPagoThread(QThread):
+    finished = Signal()
+
+    def __init__(self, metodo_pago, usuario_activo, id):
+        super().__init__()
+        self.metodo_pago = metodo_pago
+        self.usuario_activo = usuario_activo
+        self.id = id
+
+    def run(self):
+        try:
+            # Llamar a la función que registra el movimiento en la base de datos
+            cargar_movimiento_borrar_metodo_pago(self.metodo_pago, self.usuario_activo, self.id)
+            self.finished.emit()
+        except Exception as e:
+            print(f"Error al cargar movimiento de borrar método de pago: {e}")
+            self.finished.emit()

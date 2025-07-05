@@ -4777,8 +4777,15 @@ class AdministracionTab:
         #crear arreglo con threads abiertos
         self.threads = []
 
-        # Agregar bandera de control
         self.mp_verificados = False
+
+        if not self.mp_verificados:
+            self.verificar_mp_thread = VerificarYAgregarMPThread()
+            def on_mp_verificado():
+                print("Métodos de pago verificados/agregados")
+                self.mp_verificados = True
+            self.verificar_mp_thread.finished.connect(on_mp_verificado)
+            self.start_thread(self.verificar_mp_thread)
 
     def start_thread(self, thread):
         self.threads.append(thread)
@@ -4833,13 +4840,6 @@ class AdministracionTab:
                 self.populate_combobox_with_ids(combobox_id)
                 combobox_id.setCurrentText("")  # Setear el combobox en vacío al abrir la ventana
 
-                
-            if not self.mp_verificados:
-                self.verificar_mp_thread = VerificarYAgregarMPThread()
-                self.verificar_mp_thread.finished.connect(lambda: print("Métodos de pago verificados/agregados"))
-                self.verificar_mp_thread.finished.connect(lambda: setattr(self, 'mp_verificados', True))
-                self.start_thread(self.verificar_mp_thread)
-
             
             # Configuración del QComboBox de método de pago
             combobox_metodo_pago = self.facturero_ventas_window.findChild(QComboBox, "comboBox_3")
@@ -4886,8 +4886,6 @@ class AdministracionTab:
                 pushbutton_3.setEnabled(True)  # Deshabilitar el botón al inicio
                 pushbutton_3.clicked.connect(self.procesar_factura_ventas)
                 pushbutton_3.setFocusPolicy(Qt.NoFocus)
-
-               
 
             push_button_5 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_5")
             if push_button_5:
@@ -4950,6 +4948,7 @@ class AdministracionTab:
 
         pushButton = dialogo_agregar_mp.findChild(QPushButton, "pushButton")
         if pushButton:
+            pushButton.setEnabled(True)  # Habilitar el botón al inicio
             pushButton.clicked.connect(lambda: self.agregar_metodo_de_pago_ventas(dialogo_agregar_mp))
             pushButton.setShortcut("Return")
 
@@ -4964,28 +4963,31 @@ class AdministracionTab:
         lineEdit = dialog.findChild(QLineEdit, "lineEdit")
         label_2 = dialog.findChild(QLabel, "label_2")
         combobox_metodo_pago_facturero = self.facturero_ventas_window.findChild(QComboBox, "comboBox_3")
+        
+        pushButton = dialog.findChild(QPushButton, "pushButton")
+        if pushButton:
+            pushButton.setEnabled(False)
+        
 
         if lineEdit:
             lineEdit_value = lineEdit.text()
-
+    
             if lineEdit_value != "":
                 lineEdit_value = lineEdit_value.strip()
-
+    
                 if not lineEdit_value[0].isupper():
                     lineEdit_value = lineEdit_value[0].upper() + lineEdit_value[1:]
-
+    
                 # Usar el hilo para agregar método de pago
                 self.agregar_mp_thread = AgregarMPThread(lineEdit_value)
-
+    
                 def on_resultado(exito):
                     if exito:
-                        if label_2:
-                            label_2.setText("Método de pago agregado")
-                            label_2.setStyleSheet("color: green; font-weight: bold")
-                            QTimer.singleShot(1000, lambda: label_2.setStyleSheet("color: transparent"))
-                            lineEdit.clear()
-                            lineEdit.setFocus()
-
+                        #  Hilo para cargar movimiento de agregar método de pago
+                        global usuario_activo
+                        self.movimiento_agregar_mp_thread = MovimientoAgregarMetodoPagoThread(lineEdit_value, usuario_activo)
+                        self.start_thread(self.movimiento_agregar_mp_thread)
+    
                         # Actualizar el combobox usando un hilo
                         self.metodos_pago_thread = TraerMetodosDePagoThread()
                         self.metodos_pago_thread.resultado.connect(
@@ -4994,20 +4996,41 @@ class AdministracionTab:
                             if combobox_metodo_pago_facturero else None
                         )
                         self.start_thread(self.metodos_pago_thread)
+    
+                        if label_2:
+                            label_2.setText("Método de pago agregado")
+                            label_2.setStyleSheet("color: green; font-weight: bold")
+                            QTimer.singleShot(1000, lambda: label_2.setStyleSheet("color: transparent"))
+                            lineEdit.clear()
+                            lineEdit.setFocus()
+
+                        pushButton = dialog.findChild(QPushButton, "pushButton")
+                        if pushButton:
+                            pushButton.setEnabled(True)
+    
                     else:
+                        pushButton = dialog.findChild(QPushButton, "pushButton")
+                        if pushButton:
+                            pushButton.setEnabled(False)
+
                         if label_2:
                             label_2.setText("El método de pago ya existe")
                             label_2.setStyleSheet("color: red; font-weight: bold")
                             QTimer.singleShot(1000, lambda: label_2.setStyleSheet("color: transparent"))
-
+    
                 self.agregar_mp_thread.resultado.connect(on_resultado)
                 self.start_thread(self.agregar_mp_thread)
             else:
+                pushButton = dialog.findChild(QPushButton, "pushButton")
+                if pushButton:
+                    pushButton.setEnabled(True)
+
                 if label_2:
                     label_2.setText("Por favor, complete el campo")
                     label_2.setStyleSheet("color: red; font-weight: bold")
                     QTimer.singleShot(1000, lambda: label_2.setStyleSheet("color: transparent"))
-
+                    
+    
     def ventana_borrar_mp_ventas(self):
         
         # --- 1. Configurar el QDialog como ventana hija de self.facturero_ventas_window ---
@@ -5024,7 +5047,13 @@ class AdministracionTab:
         combobox = dialogo_borrar_mp.findChild(QComboBox, "comboBox")
         if combobox:
             combobox.clear()
-            combobox.addItems([metodo[0] for metodo in traer_metodos_de_pago()])
+            #  Filtrar métodos de pago para excluir "Efectivo" y "Transferencia"
+            metodos_protegidos = {"Efectivo", "Transferencia", "Tarjeta de Crédito", "Tarjeta de Débito"}
+            metodos_disponibles = [
+                metodo[0] for metodo in traer_metodos_de_pago() 
+                if metodo[0] not in metodos_protegidos
+            ]
+            combobox.addItems(metodos_disponibles)
             combobox.setFocus()
 
         label = dialogo_borrar_mp.findChild(QLabel, "label")
@@ -5043,6 +5072,7 @@ class AdministracionTab:
              
         pushButton = dialogo_borrar_mp.findChild(QPushButton, "pushButton")
         if pushButton:
+            pushButton.setEnabled(True)  # Habilitar el botón al inicio
             pushButton.clicked.connect(lambda: self.borrar_metodo_de_pago_ventas(dialogo_borrar_mp))
             pushButton.setShortcut("Return")
 
@@ -5054,41 +5084,103 @@ class AdministracionTab:
         label_2 = dialog.findChild(QLabel, "label_2")
         combobox_mp_facturero = self.facturero_ventas_window.findChild(QComboBox, "comboBox_3")
 
+        pushButton = dialog.findChild(QPushButton, "pushButton")
+        if pushButton:
+            pushButton.setEnabled(False) 
+
         if combobox_mp:
             combobox_value = combobox_mp.currentText()
 
             if combobox_value != "":
-                # Usar el hilo para borrar método de pago
-                self.borrar_mp_thread = BorrarMPThread(combobox_value)
+                # ACA - Diálogo de confirmación
+                dialogo_confirmacion = QMessageBox(dialog)
+                dialogo_confirmacion.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\Minimarket\Minimarket\Minimarket\archivos_py\resources\r.ico"))
+                dialogo_confirmacion.setWindowTitle("Confirmar eliminación")
+                dialogo_confirmacion.setText(f"Está por borrar: \"{combobox_value}\"")
+                dialogo_confirmacion.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+                dialogo_confirmacion.setDefaultButton(QMessageBox.Cancel)
 
-                def on_resultado(exito):
-                    if exito:
-                        if label_2:
-                            label_2.setStyleSheet("color: green; font-weight: bold")
-                            label_2.setText("Método de pago borrado")
-                            QTimer.singleShot(1000, lambda: label_2.setStyleSheet("color: transparent"))
+                # Personalizar el texto de los botones
+                boton_aceptar = dialogo_confirmacion.button(QMessageBox.Ok)
+                boton_cancelar = dialogo_confirmacion.button(QMessageBox.Cancel)
+                if boton_aceptar:
+                    boton_aceptar.setText("Aceptar")
+                if boton_cancelar:
+                    boton_cancelar.setText("Cancelar")
 
-                        # Actualizar comboboxes usando un hilo
-                        self.metodos_pago_thread = TraerMetodosDePagoThread()
-                        self.metodos_pago_thread.resultado.connect(
-                            lambda metodos: (
-                                combobox_mp.clear(),
-                                combobox_mp.addItems([metodo[0] for metodo in metodos]),
-                                combobox_mp.setCurrentText(""),
-                                combobox_mp_facturero.clear() if combobox_mp_facturero else None,
-                                combobox_mp_facturero.addItems([metodo[0] for metodo in metodos]) if combobox_mp_facturero else None
-                            )
-                        )
-                        self.start_thread(self.metodos_pago_thread)
-                    else:
-                        if label_2:
-                            label_2.setText("Error al borrar el método de pago")
-                            label_2.setStyleSheet("color: red; font-weight: bold")
-                            QTimer.singleShot(1000, lambda: label_2.setStyleSheet("color: transparent"))
+                # Mostrar el diálogo y verificar la respuesta
+                respuesta = dialogo_confirmacion.exec()
 
-                self.borrar_mp_thread.resultado.connect(on_resultado)
-                self.start_thread(self.borrar_mp_thread)
+                if respuesta == QMessageBox.Ok:
+                    # Usuario confirmó, proceder con el borrado
+                    # Usar el hilo para borrar método de pago
+                    if label_2:
+                        label_2.setText("Borrando método de pago...")
+                        label_2.setStyleSheet("color: green; font-weight: bold")
+
+                    self.borrar_mp_thread = BorrarMPThread(combobox_value)
+
+                    def on_resultado(exito, id_metodo):
+                        if exito:
+                            #  Hilo para cargar movimiento de borrar método de pago
+                            global usuario_activo
+                            self.movimiento_borrar_mp_thread = MovimientoBorrarMetodoPagoThread(combobox_value, usuario_activo, id_metodo)
+
+                            def on_movimiento_cargado():
+
+                                 # Actualizar comboboxes usando un hilo
+                                self.metodos_pago_thread = TraerMetodosDePagoThread()
+                                self.metodos_pago_thread.resultado.connect(
+                                    lambda metodos: (
+                                        combobox_mp.clear(),
+                                        combobox_mp.addItems([metodo[0] for metodo in metodos]),
+                                        combobox_mp.setCurrentText(""),
+                                        combobox_mp_facturero.clear() if combobox_mp_facturero else None,
+                                        combobox_mp_facturero.addItems([metodo[0] for metodo in metodos]) if combobox_mp_facturero else None
+                                    )
+                                )
+                                self.start_thread(self.metodos_pago_thread)
+
+                                #  Mostrar mensaje final después de cargar el movimiento
+                                if label_2:
+                                    label_2.setStyleSheet("color: green; font-weight: bold")
+                                    label_2.setText("Método de pago eliminado con éxito")
+                                    QTimer.singleShot(2000, lambda: label_2.setStyleSheet("color: transparent"))
+
+                                pushButton = dialog.findChild(QPushButton, "pushButton")
+                                if pushButton:
+                                    pushButton.setEnabled(True) 
+
+                            self.movimiento_borrar_mp_thread.finished.connect(on_movimiento_cargado)
+                            self.start_thread(self.movimiento_borrar_mp_thread)
+
+                        else:
+                            pushButton = dialog.findChild(QPushButton, "pushButton")
+                            if pushButton:
+                                pushButton.setEnabled(True) 
+
+                            if label_2:
+                                label_2.setText("Error al borrar el método de pago")
+                                label_2.setStyleSheet("color: red; font-weight: bold")
+                                QTimer.singleShot(1000, lambda: label_2.setStyleSheet("color: transparent"))
+
+                    self.borrar_mp_thread.resultado.connect(on_resultado)
+                    self.start_thread(self.borrar_mp_thread)
+                else:
+                    # Usuario canceló, no hacer nada
+                    pushButton = dialog.findChild(QPushButton, "pushButton")
+                    if pushButton:
+                        pushButton.setEnabled(True) 
+
+                    if label_2:
+                        label_2.setText("Operación cancelada")
+                        label_2.setStyleSheet("color: blue; font-weight: bold")
+                        QTimer.singleShot(1500, lambda: label_2.setStyleSheet("color: transparent"))
             else:
+                pushButton = dialog.findChild(QPushButton, "pushButton")
+                if pushButton:
+                    pushButton.setEnabled(True) 
+
                 if label_2:
                     label_2.setStyleSheet("color: red; font-weight: bold")
                     label_2.setText("Por favor, seleccione un método de pago")
