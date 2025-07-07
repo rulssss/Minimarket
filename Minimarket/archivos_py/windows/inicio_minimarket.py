@@ -12,7 +12,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from datetime import datetime, timedelta
 
-
+#$ PROBAR BIEN METODO DE PAGO Y SEGUIR
 
 # ------------ VARIABLES DE CACHE GLOBALES ------------
 categorias_cache = None
@@ -5549,6 +5549,12 @@ class AdministracionTab:
             pushbutton_3.setEnabled(False)
 
         if productos_seleccionados_facturero_ventas:
+
+            label_9 = self.facturero_ventas_window.findChild(QLabel, "label_9")
+            if label_9:
+                label_9.setAlignment(Qt.AlignCenter)
+                label_9.setText("Procesando factura...")
+                label_9.setStyleSheet("color: green; font-weight: bold")
             # Usar hilo para agregar a registro
             self.agregar_registro_thread = AgregarARegistroThread(
                 productos_seleccionados_facturero_ventas, s, usuario_activo
@@ -5569,6 +5575,7 @@ class AdministracionTab:
 
                             label_9 = self.facturero_ventas_window.findChild(QLabel, "label_9")
                             if label_9:
+                                label_9.setAlignment(Qt.AlignCenter)
                                 label_9.setText("Factura procesada con éxito")
                                 label_9.setStyleSheet("color: green; font-weight: bold")
                                 QTimer.singleShot(6000, lambda: label_9.setStyleSheet("color: transparent"))
@@ -5592,6 +5599,7 @@ class AdministracionTab:
         else:
             label_9 = self.facturero_ventas_window.findChild(QLabel, "label_9")
             if label_9:
+                label_9.setAlignment(Qt.AlignCenter)
                 label_9.setText("No hay productos agregados")
                 label_9.setStyleSheet("color: red; font-weight: bold")
                 QTimer.singleShot(6000, lambda: label_9.setStyleSheet("color: transparent"))
