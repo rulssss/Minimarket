@@ -1787,7 +1787,7 @@ def cargar_movimiento_aumento_precios(combobox_20_value, usuario_activo, s):
 
     conn = get_connection()
     cursor = conn.cursor()
-    query = f"INSERT INTO movimientos (id_usuario, fecha_hora, tipo_accion, entidad_afectada, id_entidad, descripcion) VALUES ({id_usuario}, '{fecha_hora}', 'Aumento', 'Productos', {combobox_20_ID}, 'Aumento de precios de {combobox_20_value}')"
+    query = f"INSERT INTO movimientos (id_usuario, fecha_hora, tipo_accion, entidad_afectada, id_entidad, descripcion) VALUES ({id_usuario}, '{fecha_hora}', 'Aumento', 'Productos', {combobox_20_ID}, 'Aumento precios de: {combobox_20_value}')"
     cursor.execute(query)
     conn.commit()
     cursor.close()
@@ -1962,7 +1962,7 @@ def cargar_movimiento_venta(usuario_activo):
 
     conn = get_connection()
     cursor = conn.cursor()
-    query = f"INSERT INTO movimientos (id_usuario, fecha_hora, tipo_accion, entidad_afectada, id_entidad, descripcion) VALUES ({id_usuario}, '{fecha_hora}', 'Venta', 'Ventas', {id_venta}, 'se vendió {prod_vendido}')"
+    query = f"INSERT INTO movimientos (id_usuario, fecha_hora, tipo_accion, entidad_afectada, id_entidad, descripcion) VALUES ({id_usuario}, '{fecha_hora}', 'Venta', 'Ventas', {id_venta}, 'se vendió: {prod_vendido}')"
     cursor.execute(query)
     conn.commit()
     cursor.close()

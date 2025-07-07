@@ -3059,31 +3059,55 @@ class BuscarDatosTab:
                 table.setItem(0, 0, item)
                 
             else:
-                table.setColumnCount(5)
-                table.setHorizontalHeaderLabels(["Usuario", "Fecha", "Acción", "Entidad Afectada", "Descripción"])
+                table.setColumnCount(6)
+                table.setHorizontalHeaderLabels(["Usuario", "Fecha", "Hora", "Acción", "Entidad Afectada", "Descripción"])
                 table.setRowCount(len(movimientos))
-
+            
                 for row, movimiento in enumerate(movimientos):
-                    for col, value in enumerate(movimiento):
-                        # Si es la primera columna (ID del usuario), obtener el nombre del usuario
-                        if col == 0:
-                            # Buscar el nombre del usuario usando la variable global usuarios
-                            nombre_usuario = ""
-                            if usuarios:
-                                for u in usuarios:
-                                    if str(u[0]) == str(value):
-                                        nombre_usuario = u[1]
-                                        break
-                            item = QTableWidgetItem(str(nombre_usuario))
-                        elif col == 1:  # Si es la columna de fecha, formatear la fecha
-                            fecha_formateada = value.strftime("%d-%m-%Y")
-                            item = QTableWidgetItem(fecha_formateada)
-                        else:
-                            item = QTableWidgetItem(str(value))
-
-                        item.setFont(QFont("Segoe UI", 12))
-                        item.setTextAlignment(Qt.AlignCenter)
-                        table.setItem(row, col, item)
+                    # Si es la primera columna (ID del usuario), obtener el nombre del usuario
+                    nombre_usuario = ""
+                    if usuarios:
+                        for u in usuarios:
+                            if str(u[0]) == str(movimiento[0]):
+                                nombre_usuario = u[1]
+                                break
+                    item = QTableWidgetItem(str(nombre_usuario))
+                    item.setFont(QFont("Segoe UI", 12))
+                    item.setTextAlignment(Qt.AlignCenter)
+                    table.setItem(row, 0, item)
+            
+                    # Fecha
+                    fecha_formateada = movimiento[1].strftime("%d-%m-%Y")
+                    item = QTableWidgetItem(fecha_formateada)
+                    item.setFont(QFont("Segoe UI", 12))
+                    item.setTextAlignment(Qt.AlignCenter)
+                    table.setItem(row, 1, item)
+            
+                    # Hora
+                    timestamp_completo = movimiento[1]  # El timestamp completo está en la posición 1
+                    hora_formateada = timestamp_completo.strftime("%I:%M:%S %p")
+                    item = QTableWidgetItem(hora_formateada)
+                    item.setFont(QFont("Segoe UI", 12))
+                    item.setTextAlignment(Qt.AlignCenter)
+                    table.setItem(row, 2, item)
+            
+                    # Acción (posición 2 en movimiento)
+                    item = QTableWidgetItem(str(movimiento[2]))
+                    item.setFont(QFont("Segoe UI", 12))
+                    item.setTextAlignment(Qt.AlignCenter)
+                    table.setItem(row, 3, item)
+            
+                    # Entidad Afectada (posición 3 en movimiento)
+                    item = QTableWidgetItem(str(movimiento[3]))
+                    item.setFont(QFont("Segoe UI", 12))
+                    item.setTextAlignment(Qt.AlignCenter)
+                    table.setItem(row, 4, item)
+            
+                    # Descripción (posición 4 en movimiento)
+                    item = QTableWidgetItem(str(movimiento[4]))
+                    item.setFont(QFont("Segoe UI", 12))
+                    item.setTextAlignment(Qt.AlignCenter)
+                    table.setItem(row, 5, item)
 
     # Función para copiar una columna al portapapeles
     def copy_column_to_clipboard(self, column_index):
