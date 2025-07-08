@@ -1678,6 +1678,10 @@ def agregar_a_registro(productos_seleccionados, s, usuario):
             cursor.execute(query_search_idprod)
             data = cursor.fetchall()
             id_prod = data[0][0]
+
+            # query para reducir el stock en el producto
+            query_update_stock = f"UPDATE productos SET stock=stock-{cantidad} WHERE id_producto={id_prod}"
+            cursor.execute(query_update_stock)
             
 
             query_add_data = f"INSERT INTO detalle_ventas(id_venta, id_producto, cantidad, precio_unitario_venta, precio_unitario_compra) VALUES({id_venta},{id_prod},{cantidad},{precio},{precio_compra})"
@@ -1698,6 +1702,10 @@ def agregar_a_registro(productos_seleccionados, s, usuario):
             cursor.execute(query_search_idprod)
             data = cursor.fetchall()
             id_prod = data[0][0]
+
+            # query para sumar en el stock en el producto
+            query_update_stock = f"UPDATE productos SET stock=stock+{cantidad} WHERE id_producto={id_prod}"
+            cursor.execute(query_update_stock)
 
             query_add_data = f"INSERT INTO detalle_compras(id_compra, id_producto, cantidad, precio_unitario) VALUES({id_compra},{id_prod},{cantidad},{precio})"
             cursor.execute(query_add_data)
