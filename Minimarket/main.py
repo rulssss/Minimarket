@@ -21,5 +21,5 @@ if __name__ == "__main__":
     main_window = MainWindow(usuario="mariano", account="Administrador")
     main_window.resize(1690, 900)
     main_window.show()
-    sys.exit(app.exec())
+    sys.exit(app.exec())    
 

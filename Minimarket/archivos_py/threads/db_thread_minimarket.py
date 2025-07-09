@@ -1123,3 +1123,27 @@ class LimpiarAnotacionesThread(QThread):
         except Exception as e:
             print(f"Error en hilo al limpiar anotaciones: {e}")
             self.resultado.emit(False)
+
+class GuardarAlCerrarThread(QThread):
+    resultado = Signal(bool)  # Señal para indicar si se guardó correctamente
+    
+    def __init__(self, texto, usuario):
+        super().__init__()
+        self.texto = texto
+        self.usuario = usuario
+    
+    def run(self):
+        try:
+            # Guardar una última vez al cerrar (por si hay cambios sin guardar)
+            resultado = guardar_texto_anotador_sincrono(self.texto, self.usuario)
+            
+            if resultado:
+                print("Texto guardado al cerrar")
+                self.resultado.emit(True)
+            else:
+                print("Error al guardar texto al cerrar")
+                self.resultado.emit(False)
+                
+        except Exception as e:
+            print(f"Error al guardar: {e}")
+            self.resultado.emit(False)

@@ -6629,10 +6629,18 @@ class MainWindow(QMainWindow):
         self.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\Minimarket\Minimarket\Minimarket\archivos_py\resources\r.ico"))
         self.setWindowTitle("rls")  
 
+        # Mostrar overlay de carga al iniciar
+        self.mostrar_overlay(i=False)
+        
+        QTimer.singleShot(500, self.inicializar_aplicacion)  # Esperar 500ms antes de inicializar
+
+    def inicializar_aplicacion(self):
+        """Inicializar la aplicación después de mostrar el overlay"""
+
         # Cambia las tab si es usuario
         tab_widget = self.ui.tabWidget
         if tab_widget:
-            if account == "Administrador":
+            if self.account == "Administrador":
                 tab_widget.setTabText(tab_widget.indexOf(self.ui.tab_1), "Datos")
                 tab_widget.setTabText(tab_widget.indexOf(self.ui.tab_3), "Buscar datos")
                 tab_widget.setTabText(tab_widget.indexOf(self.ui.tab), "Administración")
@@ -6644,29 +6652,34 @@ class MainWindow(QMainWindow):
         # Crear instancias de las clases de las pestañas
         self.datos_tab = DatosTab(self.ui)
         self.buscar_datos_tab = BuscarDatosTab(self.ui, self.datos_tab)
-        self.administracion_tab = AdministracionTab(self.ui, self.buscar_datos_tab,  self.datos_tab)  # Inicialización de administracion_tab
+        self.administracion_tab = AdministracionTab(self.ui, self.buscar_datos_tab, self.datos_tab)
 
-        #establece inicio rls
+        # Establece inicio rls
         stacked_widget = self.ui.stackedWidget
         if stacked_widget:
-            stacked_widget.setCurrentIndex(2)  # Establece la página que se debe ver primero
+            stacked_widget.setCurrentIndex(2)
 
-        #crear arreglo con threads abiertos
+        # Crear arreglo con threads abiertos
         self.threads = []
-
         self.guardando_al_cerrar = False
 
         # Conectar botones 
         self.connect_buttons(stacked_widget)
-
         self.setear_fechayhora()
 
-        ## edicion de anotador
+        # Edicion de anotador
         self.inicializar_anotador(self.usuario)
         self.anotador(self.usuario)
-
         self.controlar_anotador()
 
+        # Ocultar el overlay después de 5 segundos
+        QTimer.singleShot(5000, self.ocultar_overlay_inicial)
+
+
+    def ocultar_overlay_inicial(self):
+        """Ocultar el overlay de carga inicial"""
+        if hasattr(self, 'overlay'):
+            self.overlay.hide()
 
     def controlar_anotador(self):
         #  Inicializar y ejecutar el hilo de limpieza automática de anotaciones
@@ -6726,8 +6739,7 @@ class MainWindow(QMainWindow):
             resultado = guardar_texto_anotador_sincrono(texto, usuario)
             if resultado:
                 print("Texto guardado exitosamente")
-            else:
-                print("Error al guardar texto")
+            
         except Exception as e:
             print(f"Error al guardar: {e}")
 
@@ -6747,30 +6759,36 @@ class MainWindow(QMainWindow):
         self._cerrando = True  # Marcar que está cerrando
 
         #  Crear y mostrar el overlay de guardado
-        self.mostrar_overlay_guardado()
+        self.mostrar_overlay(i=True)
+        
 
-        try:
-            texto = textEdit.toPlainText()
+        # Obtener el texto del QTextEdit
+        texto = textEdit.toPlainText()
 
-            # Guardar una última vez al cerrar (por si hay cambios sin guardar)
-            resultado = guardar_texto_anotador_sincrono(texto, usuario)
+        # Crear y ejecutar el hilo de guardado
+        self.guardar_cerrar_thread = GuardarAlCerrarThread(texto, usuario)
 
-            if resultado:
-                print("Texto guardado al cerrar")
-            else:
-                print("Error al guardar texto al cerrar")
+        def on_guardado_completado(exito):
+            if not exito:
+                # Ocultar el overlay si existe en caso de error
+                if hasattr(self, 'overlay'):
+                    self.overlay.hide()
 
-        except Exception as e:
-            print(f"Error al guardar: {e}")
+            # Ocultar el overlay y cerrar después de un breve delay
+            QTimer.singleShot(3000, self.cerrar_aplicacion_final)
 
-        #  Ocultar el overlay y cerrar después de un breve delay
-        QTimer.singleShot(5000, self.cerrar_aplicacion_final)
+        self.guardar_cerrar_thread.resultado.connect(on_guardado_completado)
+        self.start_thread(self.guardar_cerrar_thread)
 
-    def mostrar_overlay_guardado(self):
+    def mostrar_overlay(self, i):
         """Crear y mostrar el overlay de guardado"""
         # Crear el overlay que cubre toda la ventana
         self.overlay = QWidget(self)
         self.overlay.setGeometry(self.rect())
+
+        QApplication.processEvents()   # Asegurarse de que la geometría se actualice antes de aplicar el estilo
+
+        
         self.overlay.setStyleSheet("""
             QWidget {
                 background-color: rgba(0, 0, 0, 150);
@@ -6780,18 +6798,23 @@ class MainWindow(QMainWindow):
         # Crear el layout para el overlay
         layout = QVBoxLayout(self.overlay)
         layout.setAlignment(Qt.AlignCenter)
+        layout.setContentsMargins(0, 0, 0, 0)  # Sin márgenes para que ocupe toda la ventana
+        if i:
+            # Crear el label con el mensaje
+            label = QLabel("Guardando anotaciones")
+        else:
+             # Crear el label con el mensaje
+            label = QLabel("Cargando Datos")
 
-        # Crear el label con el mensaje
-        label = QLabel("Guardando anotaciones")
         label.setStyleSheet("""
-            QLabel {
-                color: white;
-                font-size: 24pt;
-                font-weight: bold;
-                font-family: 'Segoe UI';
-                background-color: transparent;
-                padding: 20px;
-            }
+                QLabel {
+                    color: white;
+                    font-size: 24pt;
+                    font-weight: bold;
+                    font-family: 'Segoe UI';
+                    background-color: transparent;
+                    padding: 20px;
+                }
         """)
         label.setAlignment(Qt.AlignCenter)
 
@@ -6831,7 +6854,7 @@ class MainWindow(QMainWindow):
 
     def cerrar_aplicacion_final(self):
         """Cerrar la aplicación después de guardar"""
-        # Ocultar el overlay si existe
+       
         if hasattr(self, 'overlay'):
             self.overlay.hide()
 
