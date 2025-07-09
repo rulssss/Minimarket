@@ -6630,7 +6630,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("rls")  
 
         # Mostrar overlay de carga al iniciar
-        self.mostrar_overlay(i=False)
+        QTimer.singleShot(0, lambda: self.mostrar_overlay(i=False))
         
         QTimer.singleShot(500, self.inicializar_aplicacion)  # Esperar 500ms antes de inicializar
 
@@ -6781,13 +6781,16 @@ class MainWindow(QMainWindow):
         self.start_thread(self.guardar_cerrar_thread)
 
     def mostrar_overlay(self, i):
+
+
         """Crear y mostrar el overlay de guardado"""
+
+        self.show()
+        QApplication.processEvents()
+
         # Crear el overlay que cubre toda la ventana
         self.overlay = QWidget(self)
         self.overlay.setGeometry(self.rect())
-
-        QApplication.processEvents()   # Asegurarse de que la geometría se actualice antes de aplicar el estilo
-
         
         self.overlay.setStyleSheet("""
             QWidget {
