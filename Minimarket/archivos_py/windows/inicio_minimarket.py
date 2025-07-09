@@ -14,7 +14,6 @@ from datetime import datetime, timedelta
 import copy
 
 
-
 # ------------ VARIABLES DE CACHE GLOBALES ------------
 categorias_cache = None
 proveedores_cache = None
@@ -5575,9 +5574,9 @@ class AdministracionTab:
                             pushbutton_3 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_3")
                             if pushbutton_3:
                                 pushbutton_3.setEnabled(True)
-
                             # Llamar a inicializar_comboboxes_y_boton de la clase buscar datos
                             self.buscar_datos_tab.enviar_a_setear_line_edits()
+
                         else:
                             print("Error al cargar movimiento de venta")
 
@@ -6652,8 +6651,208 @@ class MainWindow(QMainWindow):
         if stacked_widget:
             stacked_widget.setCurrentIndex(2)  # Establece la página que se debe ver primero
 
+        #crear arreglo con threads abiertos
+        self.threads = []
+
+        self.guardando_al_cerrar = False
+
         # Conectar botones 
         self.connect_buttons(stacked_widget)
+
+        self.setear_fechayhora()
+
+        ## edicion de anotador
+        self.inicializar_anotador(self.usuario)
+        self.anotador(self.usuario)
+
+        self.controlar_anotador()
+
+
+    def controlar_anotador(self):
+        #  Inicializar y ejecutar el hilo de limpieza automática de anotaciones
+        self.limpiar_anotaciones_thread = LimpiarAnotacionesThread()
+
+        def on_limpieza_completada(exito):
+            if exito:
+                pass
+
+        self.limpiar_anotaciones_thread.resultado.connect(on_limpieza_completada)
+        self.start_thread(self.limpiar_anotaciones_thread)
+
+
+    def start_thread(self, thread):
+        self.threads.append(thread)
+        thread.finished.connect(lambda: self.threads.remove(thread) if thread in self.threads else None)
+        thread.start()
+
+    def inicializar_anotador(self, usuario):
+        # Buscar el QTextEdit dentro del tabWidget
+        textEdit_3 = self.ui.tabWidget.findChild(QTextEdit, "textEdit_3")
+        if textEdit_3:
+
+            # Usar hilo para traer el último texto
+            self.traer_texto_thread = TraerUltimoTextoAnotadorThread()
+
+            def on_texto_obtenido(ultimo_texto):
+                if ultimo_texto:
+                    textEdit_3.setPlainText(ultimo_texto)
+                else:
+                    # Si no hay texto, establecer texto principal usando hilo
+                    self.set_texto_thread = SetTextoAnotadorThread(usuario)
+
+                    def on_texto_establecido(exito):
+                        if exito:
+                            # Traer el texto nuevamente después de establecerlo
+                            self.traer_texto_final_thread = TraerUltimoTextoAnotadorThread()
+                            self.traer_texto_final_thread.resultado.connect(
+                                lambda texto_final: textEdit_3.setPlainText(texto_final)
+                            )
+                            self.start_thread(self.traer_texto_final_thread)
+
+                        else:
+                            print("Error al establecer texto principal")
+
+                    self.set_texto_thread.resultado.connect(on_texto_establecido)
+                    self.start_thread(self.set_texto_thread)
+
+            self.traer_texto_thread.resultado.connect(on_texto_obtenido)
+            self.start_thread(self.traer_texto_thread)
+
+    def guardar_en_base_de_datos(self, textEdit, usuario):
+        texto = textEdit.toPlainText()
+
+        try:
+            #  Usar directamente la función síncrona
+            resultado = guardar_texto_anotador_sincrono(texto, usuario)
+            if resultado:
+                print("Texto guardado exitosamente")
+            else:
+                print("Error al guardar texto")
+        except Exception as e:
+            print(f"Error al guardar: {e}")
+
+    def iniciar_guardado_demorado(self):
+        # Reiniciar el temporizador cada vez que cambie el texto
+        self.save_timer.stop()
+        self.save_timer.start(3000)  # Esperar 3 segundos antes de guardar
+
+    def guardar_y_cerrar(self, event, textEdit, usuario):
+        # Si ya está en proceso de cierre, permitir el cierre
+        if hasattr(self, '_cerrando') and self._cerrando:
+            event.accept()
+            return
+
+        #  Rechazar el evento la primera vez para mostrar el overlay
+        event.ignore()
+        self._cerrando = True  # Marcar que está cerrando
+
+        #  Crear y mostrar el overlay de guardado
+        self.mostrar_overlay_guardado()
+
+        try:
+            texto = textEdit.toPlainText()
+
+            # Guardar una última vez al cerrar (por si hay cambios sin guardar)
+            resultado = guardar_texto_anotador_sincrono(texto, usuario)
+
+            if resultado:
+                print("Texto guardado al cerrar")
+            else:
+                print("Error al guardar texto al cerrar")
+
+        except Exception as e:
+            print(f"Error al guardar: {e}")
+
+        #  Ocultar el overlay y cerrar después de un breve delay
+        QTimer.singleShot(5000, self.cerrar_aplicacion_final)
+
+    def mostrar_overlay_guardado(self):
+        """Crear y mostrar el overlay de guardado"""
+        # Crear el overlay que cubre toda la ventana
+        self.overlay = QWidget(self)
+        self.overlay.setGeometry(self.rect())
+        self.overlay.setStyleSheet("""
+            QWidget {
+                background-color: rgba(0, 0, 0, 150);
+            }
+        """)
+
+        # Crear el layout para el overlay
+        layout = QVBoxLayout(self.overlay)
+        layout.setAlignment(Qt.AlignCenter)
+
+        # Crear el label con el mensaje
+        label = QLabel("Guardando anotaciones")
+        label.setStyleSheet("""
+            QLabel {
+                color: white;
+                font-size: 24pt;
+                font-weight: bold;
+                font-family: 'Segoe UI';
+                background-color: transparent;
+                padding: 20px;
+            }
+        """)
+        label.setAlignment(Qt.AlignCenter)
+
+        # Crear un indicador de carga (puntos animados)
+        self.puntos_label = QLabel("...")
+        self.puntos_label.setStyleSheet("""
+            QLabel {
+                color: white;
+                font-size: 18pt;
+                font-weight: bold;
+                font-family: 'Segoe UI';
+                background-color: transparent;
+            }
+        """)
+        self.puntos_label.setAlignment(Qt.AlignCenter)
+
+        # Agregar los elementos al layout
+        layout.addWidget(label)
+        layout.addWidget(self.puntos_label)
+
+        # Mostrar el overlay
+        self.overlay.show()
+
+        # Iniciar animación de puntos
+        self.animar_puntos()
+
+    def animar_puntos(self):
+        """Animar los puntos de carga"""
+        if hasattr(self, 'puntos_label'):
+            self.puntos_count = getattr(self, 'puntos_count', 0)
+            puntos_text = "." * ((self.puntos_count % 3) + 1)
+            self.puntos_label.setText(puntos_text)
+            self.puntos_count += 1
+
+            # Continuar la animación cada 300ms
+            QTimer.singleShot(300, self.animar_puntos)
+
+    def cerrar_aplicacion_final(self):
+        """Cerrar la aplicación después de guardar"""
+        # Ocultar el overlay si existe
+        if hasattr(self, 'overlay'):
+            self.overlay.hide()
+
+        # Cerrar la aplicación
+        self.close()
+
+    def anotador(self, usuario):
+        # Buscar el QTextEdit dentro del tabWidget
+        textEdit_3 = self.ui.tabWidget.findChild(QTextEdit, "textEdit_3")
+        if textEdit_3:
+
+            # Crear un QTimer para retrasar el guardado
+            self.save_timer = QTimer()
+            self.save_timer.setSingleShot(True)  # Asegurarse de que solo se ejecute una vez por evento
+            self.save_timer.timeout.connect(lambda: self.guardar_en_base_de_datos(textEdit_3, usuario))  # Conectar al método de guardado
+
+            # Conectar el evento textChanged al método que inicia el temporizador
+            textEdit_3.textChanged.connect(self.iniciar_guardado_demorado)
+
+            # Conectar el evento closeEvent para guardar el texto al cerrar
+            self.closeEvent = lambda event: self.guardar_y_cerrar(event, textEdit_3, usuario)
 
     
     # Muestra la página correspondiente en el stacked widget
@@ -6755,6 +6954,29 @@ class MainWindow(QMainWindow):
             button17.clicked.connect(self.administracion_tab.visualizar_productos_facturero)
             self.connect_button("pushButton_17", stacked_widget, 15, self.administracion_tab.open_facturero_compras)
             button17.clicked.connect(self.change_table_headers_color_compras)
+
+    def setear_fechayhora(self):
+        
+        def update_datetime():
+            fecha = datetime.now().strftime("%d/%m/%y")  # Formato día/mes/año (últimos 2 dígitos del año)
+            hora = datetime.now().strftime("%I:%M %p")
+
+            label_66 = self.findChild(QLabel, "label_66")
+            if label_66:
+                label_66.setText(fecha)
+
+            label_65 = self.findChild(QLabel, "label_65")
+            if label_65:
+                label_65.setText(hora)
+
+        # Crear un QTimer para actualizar la fecha y hora en tiempo real
+        timer = QTimer(self)
+        timer.timeout.connect(update_datetime)
+        timer.start(1000)  # Actualizar cada 1 segundo
+
+        # Llamar a la función una vez para inicializar los valores
+        update_datetime()
+
 
     #####FOCUS A LOS CAMPOS PRINCIPALES PARA ESCRIBIR APENAS SE ABRE LA FUNCION DESEADA
 

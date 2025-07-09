@@ -1062,3 +1062,64 @@ class MovimientoBorrarMetodoPagoThread(QThread):
         except Exception as e:
             print(f"Error al cargar movimiento de borrar método de pago: {e}")
             self.finished.emit()
+
+# anotador
+
+class TraerUltimoTextoAnotadorThread(QThread):
+    resultado = Signal(str)  # Emite el texto obtenido
+    
+    def run(self):
+        try:
+            ultimo_texto = traer_ultimo_agregado_anotador()
+            if ultimo_texto:
+                self.resultado.emit(ultimo_texto)
+            else:
+                self.resultado.emit("")  # Emite cadena vacía si no hay texto
+        except Exception as e:
+            print(f"Error al traer último texto del anotador: {e}")
+            self.resultado.emit("")  # Emite cadena vacía en caso de error
+
+
+class SetTextoAnotadorThread(QThread):
+    resultado = Signal(bool)  # Emite True si se estableció correctamente
+    
+    def __init__(self, usuario):
+        super().__init__()
+        self.usuario = usuario
+    
+    def run(self):
+        try:
+            set_text_principal(self.usuario)
+            self.resultado.emit(True)
+        except Exception as e:
+            print(f"Error al establecer texto principal del anotador: {e}")
+            self.resultado.emit(False)
+
+
+class GuardarTextoAnotadorThread(QThread):
+    resultado = Signal(bool)  # Emite True si se guardó correctamente
+    
+    def __init__(self, texto, usuario):
+        super().__init__()
+        self.texto = texto
+        self.usuario = usuario
+    
+    def run(self):
+        try:
+            # Aquí iría la función para guardar en BD
+            # Ejemplo: guardar_texto_anotador(self.texto, self.usuario)
+            self.resultado.emit(True)
+        except Exception as e:
+            print(f"Error al guardar texto del anotador: {e}")
+            self.resultado.emit(False)
+
+class LimpiarAnotacionesThread(QThread):
+    resultado = Signal(bool)  # Emite True si se limpiaron correctamente
+    
+    def run(self):
+        try:
+            exito = limpiar_anotaciones_automatico()
+            self.resultado.emit(exito)
+        except Exception as e:
+            print(f"Error en hilo al limpiar anotaciones: {e}")
+            self.resultado.emit(False)

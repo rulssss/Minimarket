@@ -1753,6 +1753,102 @@ def agregar_mp_db(lineEdit_value):
 
     except errors.UniqueViolation:
         return False
+    
+def traer_ultimo_agregado_anotador():
+    conn = get_connection()
+    cursor = conn.cursor()
+    query_update_data = f"SELECT contenido FROM anotador ORDER BY id_anotador DESC LIMIT 1"
+    cursor.execute(query_update_data)
+    data = cursor.fetchall()
+    cursor.close()
+    
+    conn.commit()
+    conn.close()
+
+
+    if data:
+
+        return data[0][0]
+    else:
+        return  None
+    
+def set_text_principal(usuario):
+    fecha_hora_actual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    conn = get_connection()
+    cursor = conn.cursor()
+    query_update_data = f"INSERT INTO anotador(id_nota, contenido, fecha_modificacion, tipo_cambio, usuario_id) VALUES(1,'GENERAL:\n','{fecha_hora_actual}','inicial',{traer_id_usuario(usuario)})"
+    cursor.execute(query_update_data)
+
+    conn.commit()
+    cursor.close()
+
+def guardar_texto_anotador_sincrono(texto, usuario):
+    """
+    Función síncrona para guardar texto del anotador en la base de datos
+    Retorna True si se guardó exitosamente, False en caso contrario
+    """
+    try:
+        conn = get_connection()  
+        cursor = conn.cursor()
+        
+        # Usar las columnas correctas de tu tabla
+        id_usuario = traer_id_usuario(usuario)
+        fecha_hora_actual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
+        # ✅ Query corregida con las columnas reales y valores correctos
+        query = """
+            INSERT INTO anotador (id_nota, contenido, tipo_cambio, usuario_id, fecha_modificacion) 
+            VALUES (%s, %s, %s, %s, %s)
+        """
+        
+        # ✅ Valores correctos según tu estructura
+        cursor.execute(query, (1, texto, 'editado', id_usuario, fecha_hora_actual))
+        conn.commit()
+        
+        cursor.close()
+        conn.close()
+        
+        return True
+        
+    except Exception as e:
+        return False
+    
+def limpiar_anotaciones_automatico():
+    """
+    Limpia automáticamente la tabla anotaciones si hay más de 5 registros
+    Retorna True si se limpió exitosamente, False en caso contrario
+    """
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        
+        # Contar cuántos registros hay
+        query_count = "SELECT COUNT(*) FROM anotador"
+        cursor.execute(query_count)
+        count = cursor.fetchone()[0]
+        
+        # Si hay más de 5 registros, limpiar
+        if count > 5:
+            #  Usar CTE para obtener el ID más reciente y luego eliminar
+            query_delete = """
+                WITH ultimo_registro AS (
+                    SELECT id_anotador 
+                    FROM anotador 
+                    ORDER BY fecha_modificacion DESC 
+                    LIMIT 1
+                )
+                DELETE FROM anotador 
+                WHERE id_anotador NOT IN (SELECT id_anotador FROM ultimo_registro)
+            """
+            cursor.execute(query_delete)
+            conn.commit()
+           
+        cursor.close()
+        conn.close()
+        return True
+        
+    except Exception as e:
+        return False
 
 
 ####################################################################
