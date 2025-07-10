@@ -2161,7 +2161,7 @@ class Ui_MainWindow(object):
         self.tableWidget_3.setObjectName(u"tableWidget_3")
         self.tableWidget_3.setShowGrid(False)
         self.tableWidget_3.horizontalHeader().setCascadingSectionResizes(False)
-        self.tableWidget_3.horizontalHeader().setDefaultSectionSize(800)
+        self.tableWidget_3.horizontalHeader().setDefaultSectionSize(680)
         self.tableWidget_3.horizontalHeader().setHighlightSections(True)
         self.tableWidget_3.horizontalHeader().setProperty(u"showSortIndicator", False)
         self.tableWidget_3.horizontalHeader().setStretchLastSection(True)

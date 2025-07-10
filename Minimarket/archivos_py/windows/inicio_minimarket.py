@@ -2249,23 +2249,44 @@ class DatosTab:
             line_edit.textChanged.connect(self.filter_categorias)
 
     def populate_table_with_categorias(self):
-        global categorias
+        global categorias, productos
+        cantidad_categorias = len(categorias)
+
+        label_127 = self.ui.frame_62.findChild(QLabel, "label_127")
+        if label_127:
+            label_127.clear()
+            label_127.setText(f"{cantidad_categorias}")
+
         table_widget = self.ui.frame_tabla_productos_3.findChild(QTableWidget, "tableWidget_3")
         if table_widget:
             table_widget.setRowCount(len(categorias))
             table_widget.setColumnCount(2)
-            table_widget.setHorizontalHeaderLabels(["ID", "Nombre"])
+            table_widget.setHorizontalHeaderLabels(["Nombre", "Productos"])
             header = table_widget.horizontalHeader()
             header.setFont(QFont("Segoe UI", 16, QFont.Bold))
             for row, categoria in enumerate(categorias):
-                for col, value in enumerate(categoria):
-                    item = QTableWidgetItem(str(value))
-                    item.setFont(QFont("Segoe ui", 12))
-                    item.setTextAlignment(Qt.AlignCenter)
-                    table_widget.setItem(row, col, item)
+                # Agregar solo el nombre de la categoría en la primera columna
+                item = QTableWidgetItem(str(categoria[1]))  # categoria[1] es el nombre
+                item.setFont(QFont("Segoe ui", 12))
+                item.setTextAlignment(Qt.AlignCenter)
+                table_widget.setItem(row, 0, item)
+                
+                # Contar productos para esta categoría
+                nombre_categoria = categoria[1]
+                cantidad_productos = 0
+                if productos:
+                    for producto in productos:
+                        if len(producto) > 6 and str(producto[6]) == nombre_categoria:
+                            cantidad_productos += 1
+                
+                # Agregar la cantidad de productos en la columna 1
+                item_productos = QTableWidgetItem(str(cantidad_productos))
+                item_productos.setFont(QFont("Segoe ui", 12))
+                item_productos.setTextAlignment(Qt.AlignCenter)
+                table_widget.setItem(row, 1, item_productos)
 
     def filter_categorias(self):
-        global categorias
+        global categorias, productos
         line_edit = self.ui.frame_26.findChild(QLineEdit, "lineEdit_19")
         table_widget = self.ui.frame_tabla_productos_3.findChild(QTableWidget, "tableWidget_3")
 
@@ -2277,8 +2298,15 @@ class DatosTab:
                 if filter_text in categoria[1].lower() or filter_text in str(categoria[0]).lower():
                     filtered_categorias.append(categoria)
 
+            cantidad_categorias = len(filtered_categorias)
+
             # Si no se encuentran categorías, mostrar un mensaje en la tabla
             if len(filtered_categorias) == 0:
+                label_127 = self.ui.frame_62.findChild(QLabel, "label_127")
+                if label_127:
+                    label_127.clear()
+                    label_127.setText(f"0")
+
                 table_widget.setRowCount(1)
                 table_widget.setColumnCount(1)
                 table_widget.setHorizontalHeaderLabels(["Mensaje"])
@@ -2287,16 +2315,35 @@ class DatosTab:
                 item.setTextAlignment(Qt.AlignCenter)
                 table_widget.setItem(0, 0, item)
             else:
+                label_127 = self.ui.frame_62.findChild(QLabel, "label_127")
+                if label_127:
+                    label_127.clear()
+                    label_127.setText(f"{cantidad_categorias}")
+
                 # Si hay categorías, llenar la tabla con los datos filtrados
                 table_widget.setRowCount(len(filtered_categorias))
-                table_widget.setColumnCount(2)  # Solo ID y Nombre
-                table_widget.setHorizontalHeaderLabels(["ID", "Nombre"])
+                table_widget.setColumnCount(2)  # Nombre y Productos
+                table_widget.setHorizontalHeaderLabels(["Nombre", "Productos"])
                 for row, categoria in enumerate(filtered_categorias):
-                    for col, value in enumerate(categoria[:2]):
-                        item = QTableWidgetItem(str(value))
-                        item.setFont(QFont("Segoe ui", 12))
-                        item.setTextAlignment(Qt.AlignCenter)
-                        table_widget.setItem(row, col, item)
+                    # Agregar solo el nombre de la categoría en la primera columna
+                    item = QTableWidgetItem(str(categoria[1]))  # categoria[1] es el nombre
+                    item.setFont(QFont("Segoe ui", 12))
+                    item.setTextAlignment(Qt.AlignCenter)
+                    table_widget.setItem(row, 0, item)
+                    
+                    # Contar productos para esta categoría filtrada
+                    nombre_categoria = categoria[1]
+                    cantidad_productos = 0
+                    if productos:
+                        for producto in productos:
+                            if len(producto) > 6 and str(producto[6]) == nombre_categoria:
+                                cantidad_productos += 1
+                    
+                    # Agregar la cantidad de productos en la columna 1
+                    item_productos = QTableWidgetItem(str(cantidad_productos))
+                    item_productos.setFont(QFont("Segoe ui", 12))
+                    item_productos.setTextAlignment(Qt.AlignCenter)
+                    table_widget.setItem(row, 1, item_productos)
 
     # Función para copiar una columna al portapapeles
     def copy_column_to_clipboard_categorias(self, column_index):
