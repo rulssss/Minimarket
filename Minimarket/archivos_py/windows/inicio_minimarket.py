@@ -5632,7 +5632,7 @@ class AdministracionTab:
             line_edit_18.textChanged.connect(self.filter_products_facturero)
     
     def filter_products_facturero(self):
-        print("paso al filtro de productos")
+        
         line_edit_18 = self.ui.frame_38.findChild(QLineEdit, "lineEdit_18")
         table_widget = self.ui.frame_tabla_productos_4.findChild(QTableWidget, "tableWidget_4")
 

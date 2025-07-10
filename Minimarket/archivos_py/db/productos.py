@@ -1668,31 +1668,26 @@ def agregar_a_registro(productos_seleccionados, s, usuario):
             # query para la tabla de la venta
             query_add_datatoventas = f"INSERT INTO ventas(fecha_hora, id_metodo_pago, id_usuario) VALUES('{fecha_hora}', '{metodo_pago}', {id_usuario})"
             cursor.execute(query_add_datatoventas)
-            print("se agrego a ventas:", fecha_hora, metodo_pago, id_usuario)
 
             query_search_id= f"SELECT id_venta FROM ventas ORDER BY id_venta DESC LIMIT 1"
             cursor.execute(query_search_id)
             data = cursor.fetchall()
             id_venta = data[0][0]
-            print("id de la venta:", id_venta)
 
             query_search_idprod= f"SELECT id_producto FROM productos WHERE nombre = '{nombre}'"
             cursor.execute(query_search_idprod)
             data = cursor.fetchall()
             id_prod = data[0][0]
-            print("id de l producto:", id_prod)
 
             # query para reducir el stock en el producto
             query_update_stock = f"UPDATE productos SET stock=stock-{cantidad} WHERE id_producto={id_prod}"
             cursor.execute(query_update_stock)
             
-
             query_add_data = f"INSERT INTO detalle_ventas(id_venta, id_producto, cantidad, precio_unitario_venta, precio_unitario_compra) VALUES({id_venta},{id_prod},{cantidad},{precio},{precio_compra})"
             cursor.execute(query_add_data)
-            print("en detalle ventas se agrego:", id_venta, id_prod, cantidad, precio, precio_compra)
 
             conn.commit()  # Confirmar los cambios en la base de datos
-            
+
             cargar_movimiento_venta(usuario)
 
 
@@ -2097,7 +2092,6 @@ def cargar_movimiento_venta(usuario_activo):
     id_venta = traer_id_venta()
     id_prod = traer_prod_vendido(id_venta)
     prod_vendido = traer_nom_producto(id_prod)
-    print("producto vendido:", prod_vendido)
 
     conn = get_connection()
     cursor = conn.cursor()
