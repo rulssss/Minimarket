@@ -1194,7 +1194,14 @@ class DatosTab:
         if table_widget:
             global productos
 
-            if len(productos) == 0:
+            cantidad_productos = len(productos)
+
+            if cantidad_productos == 0:
+                label_121 = self.ui.frame_59.findChild(QLabel, "label_121")
+                if label_121:
+                    label_121.clear()
+                    label_121.setText(f"0")
+
                 table_widget.setRowCount(1)
                 table_widget.setColumnCount(1)
                 table_widget.setHorizontalHeaderLabels(["Mensaje"])
@@ -1203,6 +1210,11 @@ class DatosTab:
                 item.setTextAlignment(Qt.AlignCenter)
                 table_widget.setItem(0, 0, item)
             else:
+                label_121 = self.ui.frame_59.findChild(QLabel, "label_121")
+                if label_121:
+                    label_121.clear()
+                    label_121.setText(f"{cantidad_productos}")
+
                 table_widget.setRowCount(len(productos))
                 table_widget.setColumnCount(8)
                 table_widget.setHorizontalHeaderLabels([
@@ -1243,8 +1255,16 @@ class DatosTab:
                         if combobox_2_value == producto[6]:
                             filtered_productos.append(producto)
                     elif combobox_value == "":
+                        combobox_2.clear()
                         filtered_productos.append(producto)
-            if len(filtered_productos) == 0:
+
+            cantidad_productos = len(filtered_productos)
+            if cantidad_productos == 0:
+                label_121 = self.ui.frame_59.findChild(QLabel, "label_121")
+                if label_121:
+                    label_121.clear()
+                    label_121.setText(f"0")
+
                 table_widget.setRowCount(1)
                 table_widget.setColumnCount(1)
                 table_widget.setHorizontalHeaderLabels(["Mensaje"])
@@ -1253,6 +1273,11 @@ class DatosTab:
                 item.setTextAlignment(Qt.AlignCenter)
                 table_widget.setItem(0, 0, item)
             else:
+                label_121 = self.ui.frame_59.findChild(QLabel, "label_121")
+                if label_121:
+                    label_121.clear()
+                    label_121.setText(f"{cantidad_productos}")
+
                 table_widget.setRowCount(len(filtered_productos))
                 table_widget.setColumnCount(8)
                 table_widget.setHorizontalHeaderLabels([
