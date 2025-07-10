@@ -5853,7 +5853,7 @@ class AdministracionTab:
 
 
         if self.facturero_activo == "ventas" and self.facturero_ventas_window:
-            self.cerrar_facturero_ventas()
+            self.cerrar_facturero_venta()
             
 
         if not self.facturero_compras_window:
@@ -5877,7 +5877,7 @@ class AdministracionTab:
             productos_seleccionados_facturero_compras = []
 
              # se inicializa el arreglo de productos cache temporal
-            global productos_cache_temporal, productos_caches
+            global productos_cache_temporal, productos_cache
             if productos_cache_temporal == None:
                 productos_cache_temporal = copy.deepcopy(productos_cache)
 
@@ -6470,8 +6470,8 @@ class AdministracionTab:
             def on_registro_agregado(exito):
                 if exito:
                     # Usar hilo para cargar movimiento de compra
-                    self.movimiento_venta_thread = CargarMovimientoVentaThread(usuario_activo)
-                   
+                    self.movimiento_compra_thread = CargarMovimientoCompraThread(usuario_activo)
+                    
                     def on_movimiento_cargado(exito_movimiento):
                         if exito_movimiento:
                             
@@ -6501,10 +6501,10 @@ class AdministracionTab:
                             # Llamar a inicializar_comboboxes_y_boton de la clase buscar datos
                             self.buscar_datos_tab.enviar_a_setear_line_edits()
                         else:
-                            print("Error al cargar movimiento de venta")
+                            print("Error al cargar movimiento de compra")
 
-                    self.movimiento_venta_thread.resultado.connect(on_movimiento_cargado)
-                    self.start_thread(self.movimiento_venta_thread)
+                    self.movimiento_compra_thread.resultado.connect(on_movimiento_cargado)
+                    self.start_thread(self.movimiento_compra_thread)
                 else:
                     print("Error al agregar a registro")
 

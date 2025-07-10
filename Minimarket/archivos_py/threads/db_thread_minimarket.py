@@ -1028,6 +1028,17 @@ class CargarMovimientoVentaThread(QThread):
         exito = cargar_movimiento_venta(self.usuario_activo)
         self.resultado.emit(exito)
 
+class CargarMovimientoCompraThread(QThread):
+    resultado = Signal(bool)
+    
+    def __init__(self, usuario_activo):
+        super().__init__()
+        self.usuario_activo = usuario_activo
+    
+    def run(self):
+        exito = cargar_movimiento_compra(self.usuario_activo)
+        self.resultado.emit(exito)
+
 class MovimientoAgregarMetodoPagoThread(QThread):
     finished = Signal()
 

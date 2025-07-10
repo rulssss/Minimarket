@@ -2043,6 +2043,16 @@ def traer_id_venta():
     conn.close()
     return data[0]
 
+def traer_id_compra():
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = "SELECT id_compra FROM compras ORDER BY id_compra DESC LIMIT 1"
+    cursor.execute(query)
+    data = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return data[0]
+
 def traer_prod_vendido(id_venta):
     conn = get_connection()
     cursor = conn.cursor()
@@ -2052,6 +2062,17 @@ def traer_prod_vendido(id_venta):
     cursor.close()
     conn.close()
     # Devuelve el id del producto vendido, ya que solo se espera un producto por ID de venta
+    return data[0][0]
+
+def traer_prod_compra(id_compra):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"SELECT id_producto FROM detalle_compras WHERE id_compra = {id_compra}"
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    # Devuelve el id del producto comprado, ya que solo se espera un producto por ID de compra
     return data[0][0]
 
 
@@ -2093,6 +2114,23 @@ def cargar_movimiento_borrar_metodo_pago(metodo_pago, usuario_activo, id):
     conn = get_connection()
     cursor = conn.cursor()
     query = f"INSERT INTO movimientos (id_usuario, fecha_hora, tipo_accion, entidad_afectada, id_entidad, descripcion) VALUES ({id_usuario}, '{fecha_hora}', 'Borrar', 'Metodos de Pago', {id}, 'Método de pago borrado: {metodo_pago}')"
+    cursor.execute(query)
+    conn.commit()
+    cursor.close()
+    return True
+
+
+def cargar_movimiento_compra(usuario_activo):
+
+    id_usuario = traer_id_usuario(usuario_activo)
+    fecha_hora = datetime.now().astimezone().isoformat()
+    id_compra = traer_id_compra()
+    id_prod = traer_prod_compra(id_compra)
+    prod_comprado = traer_nom_producto(id_prod)
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"INSERT INTO movimientos (id_usuario, fecha_hora, tipo_accion, entidad_afectada, id_entidad, descripcion) VALUES ({id_usuario}, '{fecha_hora}', 'Compra', 'Compras', NULL, 'se compro: {prod_comprado}')"
     cursor.execute(query)
     conn.commit()
     cursor.close()
