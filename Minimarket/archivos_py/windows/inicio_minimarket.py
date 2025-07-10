@@ -1862,7 +1862,7 @@ class DatosTab:
             line_edit.textChanged.connect(self.filter_proveedores)
 
     def populate_table_with_proveedores(self):
-        global proveedores
+        global proveedores, productos
         cantidad_proveedores = len(proveedores)
 
         label_124 = self.ui.frame_61.findChild(QLabel, "label_124")
@@ -1873,8 +1873,8 @@ class DatosTab:
         table_widget = self.ui.frame_tabla_productos_2.findChild(QTableWidget, "tableWidget_2")
         if table_widget:
             table_widget.setRowCount(len(proveedores))
-            table_widget.setColumnCount(3)
-            table_widget.setHorizontalHeaderLabels(["Nombre", "Teléfono", "Email"])
+            table_widget.setColumnCount(4)
+            table_widget.setHorizontalHeaderLabels(["Nombre", "Teléfono", "Email", "Productos"])
             header = table_widget.horizontalHeader()
             header.setFont(QFont("Segoe UI", 16, QFont.Bold))
             for row, proveedor in enumerate(proveedores):
@@ -1883,9 +1883,23 @@ class DatosTab:
                     item.setFont(QFont("Segoe UI", 12))
                     item.setTextAlignment(Qt.AlignCenter)
                     table_widget.setItem(row, col, item)
+                
+                # Contar productos para este proveedor
+                nombre_proveedor = proveedor[0]
+                cantidad_productos = 0
+                if productos:
+                    for producto in productos:
+                        if len(producto) > 7 and str(producto[7]) == nombre_proveedor:
+                            cantidad_productos += 1
+                
+                # Agregar la cantidad de productos en la columna 3
+                item_productos = QTableWidgetItem(str(cantidad_productos))
+                item_productos.setFont(QFont("Segoe UI", 12))
+                item_productos.setTextAlignment(Qt.AlignCenter)
+                table_widget.setItem(row, 3, item_productos)
 
     def filter_proveedores(self):
-        global proveedores
+        global proveedores, productos
         line_edit = self.ui.frame_16.findChild(QLineEdit, "lineEdit_27")
         table_widget = self.ui.frame_tabla_productos_2.findChild(QTableWidget, "tableWidget_2")
 
@@ -1922,14 +1936,28 @@ class DatosTab:
 
                 # Si hay proveedores, llenar la tabla con los datos filtrados
                 table_widget.setRowCount(len(filtered_proveedores))
-                table_widget.setColumnCount(3)  # Solo nombre, teléfono, email
-                table_widget.setHorizontalHeaderLabels(["Nombre", "Teléfono", "Email"])
+                table_widget.setColumnCount(4)  # Nombre, teléfono, email, productos
+                table_widget.setHorizontalHeaderLabels(["Nombre", "Teléfono", "Email", "Productos"])
                 for row, proveedor in enumerate(filtered_proveedores):
                     for col, value in enumerate(proveedor[:3]):
                         item = QTableWidgetItem(str(value))
                         item.setFont(QFont("Segoe ui", 12))
                         item.setTextAlignment(Qt.AlignCenter)
                         table_widget.setItem(row, col, item)
+                    
+                    # Contar productos para este proveedor filtrado
+                    nombre_proveedor = proveedor[0]
+                    cantidad_productos = 0
+                    if productos:
+                        for producto in productos:
+                            if len(producto) > 7 and str(producto[7]) == nombre_proveedor:
+                                cantidad_productos += 1
+                    
+                    # Agregar la cantidad de productos en la columna 3
+                    item_productos = QTableWidgetItem(str(cantidad_productos))
+                    item_productos.setFont(QFont("Segoe ui", 12))
+                    item_productos.setTextAlignment(Qt.AlignCenter)
+                    table_widget.setItem(row, 3, item_productos)
     
     # Función para copiar una columna al portapapeles
     def copy_column_to_clipboard_proveedores(self, column_index):

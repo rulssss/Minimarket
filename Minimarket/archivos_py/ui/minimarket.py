@@ -1961,7 +1961,7 @@ class Ui_MainWindow(object):
         self.tableWidget_2.setObjectName(u"tableWidget_2")
         self.tableWidget_2.setShowGrid(False)
         self.tableWidget_2.horizontalHeader().setCascadingSectionResizes(False)
-        self.tableWidget_2.horizontalHeader().setDefaultSectionSize(395)
+        self.tableWidget_2.horizontalHeader().setDefaultSectionSize(350)
         self.tableWidget_2.horizontalHeader().setStretchLastSection(True)
 
         self.verticalLayout_16.addWidget(self.tableWidget_2)
@@ -3643,7 +3643,7 @@ class Ui_MainWindow(object):
 
         self.tabWidget.setCurrentIndex(0)
         self.pushButton_3.setDefault(False)
-        self.stackedWidget.setCurrentIndex(2)
+        self.stackedWidget.setCurrentIndex(9)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
