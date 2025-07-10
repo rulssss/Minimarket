@@ -3584,7 +3584,7 @@ class BuscarDatosTab:
                     titulo_corte = f"Corte del Año {anio}"
     
                 fecha_actual = datetime.now().strftime("%d/%m/%Y")
-                hora_actual = datetime.now().strftime("%H:%M:%S")
+                hora_actual = datetime.now().strftime("%I:%M %p")
     
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_pdf:
                     ruta_pdf = temp_pdf.name
