@@ -2123,7 +2123,7 @@ def cargar_movimiento_borrar_metodo_pago(metodo_pago, usuario_activo, id):
 def cargar_movimiento_compra(usuario_activo):
 
     id_usuario = traer_id_usuario(usuario_activo)
-    fecha_hora = datetime.now().astimezone().isoformat()
+    fecha_hora = datetime.now().astimezone().strftime("%Y-%m-%d %I:%M:%S %p")
     id_compra = traer_id_compra()
     id_prod = traer_prod_compra(id_compra)
     prod_comprado = traer_nom_producto(id_prod)

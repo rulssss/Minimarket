@@ -12,6 +12,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from datetime import datetime, timedelta
 import copy
+import pytz 
 
 
 # ------------ VARIABLES DE CACHE GLOBALES ------------
@@ -3084,7 +3085,9 @@ class BuscarDatosTab:
             
                     # Hora
                     timestamp_completo = movimiento[1]  # El timestamp completo está en la posición 1
-                    hora_formateada = timestamp_completo.strftime("%I:%M:%S %p")
+                    local_tz = pytz.timezone('America/Argentina/Buenos_Aires')
+                    hora_local = timestamp_completo.replace(tzinfo=pytz.UTC).astimezone(local_tz)
+                    hora_formateada = hora_local.strftime("%I:%M:%S %p")
                     item = QTableWidgetItem(hora_formateada)
                     item.setFont(QFont("Segoe UI", 12))
                     item.setTextAlignment(Qt.AlignCenter)
