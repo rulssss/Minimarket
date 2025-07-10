@@ -1863,6 +1863,13 @@ class DatosTab:
 
     def populate_table_with_proveedores(self):
         global proveedores
+        cantidad_proveedores = len(proveedores)
+
+        label_124 = self.ui.frame_61.findChild(QLabel, "label_124")
+        if label_124:
+            label_124.clear()
+            label_124.setText(f"{cantidad_proveedores}")
+
         table_widget = self.ui.frame_tabla_productos_2.findChild(QTableWidget, "tableWidget_2")
         if table_widget:
             table_widget.setRowCount(len(proveedores))
@@ -1882,6 +1889,7 @@ class DatosTab:
         line_edit = self.ui.frame_16.findChild(QLineEdit, "lineEdit_27")
         table_widget = self.ui.frame_tabla_productos_2.findChild(QTableWidget, "tableWidget_2")
 
+
         if line_edit and table_widget:
             filter_text = line_edit.text().lower()
 
@@ -1890,8 +1898,15 @@ class DatosTab:
                 if filter_text in proveedor[0].lower() or filter_text in str(proveedor[1]).lower():
                     filtered_proveedores.append(proveedor)
 
+            cantidad_proveedores = len(filtered_proveedores)
+
             # Si no se encuentran proveedores, mostrar un mensaje en la tabla
-            if len(filtered_proveedores) == 0:
+            if cantidad_proveedores == 0:
+                label_124 = self.ui.frame_61.findChild(QLabel, "label_124")
+                if label_124:
+                    label_124.clear()
+                    label_124.setText(f"0")
+
                 table_widget.setRowCount(1)
                 table_widget.setColumnCount(1)
                 table_widget.setHorizontalHeaderLabels(["Mensaje"])
@@ -1900,6 +1915,11 @@ class DatosTab:
                 item.setTextAlignment(Qt.AlignCenter)
                 table_widget.setItem(0, 0, item)
             else:
+                label_124 = self.ui.frame_61.findChild(QLabel, "label_124")
+                if label_124:
+                    label_124.clear()
+                    label_124.setText(f"{cantidad_proveedores}")
+
                 # Si hay proveedores, llenar la tabla con los datos filtrados
                 table_widget.setRowCount(len(filtered_proveedores))
                 table_widget.setColumnCount(3)  # Solo nombre, teléfono, email
