@@ -2,7 +2,6 @@ from archivos_py.db.connection import get_connection
 from psycopg2 import errors
 from datetime import datetime
 
-
 # variable global de mapeo
 global month_mapping
 month_mapping = {
@@ -1687,6 +1686,8 @@ def agregar_a_registro(productos_seleccionados, s, usuario):
             query_add_data = f"INSERT INTO detalle_ventas(id_venta, id_producto, cantidad, precio_unitario_venta, precio_unitario_compra) VALUES({id_venta},{id_prod},{cantidad},{precio},{precio_compra})"
             cursor.execute(query_add_data)
 
+            cargar_movimiento_venta(usuario)
+
         else:
 
             # query para la tabla de compras
@@ -1709,6 +1710,8 @@ def agregar_a_registro(productos_seleccionados, s, usuario):
 
             query_add_data = f"INSERT INTO detalle_compras(id_compra, id_producto, cantidad, precio_unitario) VALUES({id_compra},{id_prod},{cantidad},{precio})"
             cursor.execute(query_add_data)
+
+            cargar_movimiento_compra(usuario)
     
     conn.commit()  # Confirmar los cambios en la base de datos
     cursor.close()
@@ -2123,7 +2126,7 @@ def cargar_movimiento_borrar_metodo_pago(metodo_pago, usuario_activo, id):
 def cargar_movimiento_compra(usuario_activo):
 
     id_usuario = traer_id_usuario(usuario_activo)
-    fecha_hora = datetime.now().astimezone().strftime("%Y-%m-%d %I:%M:%S %p")
+    fecha_hora = datetime.now().astimezone().isoformat()
     id_compra = traer_id_compra()
     id_prod = traer_prod_compra(id_compra)
     prod_comprado = traer_nom_producto(id_prod)

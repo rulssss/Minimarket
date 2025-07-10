@@ -153,6 +153,7 @@ class Inicio(QWidget):
         self.main_window.show()
         self.close()  # Cierra la ventana de login
 
+
     def open_register_window(self):
         
         self.ui.stackedWidget.setCurrentIndex(1)

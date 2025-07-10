@@ -3087,7 +3087,7 @@ class BuscarDatosTab:
                     timestamp_completo = movimiento[1]  # El timestamp completo está en la posición 1
                     local_tz = pytz.timezone('America/Argentina/Buenos_Aires')
                     hora_local = timestamp_completo.replace(tzinfo=pytz.UTC).astimezone(local_tz)
-                    hora_formateada = hora_local.strftime("%I:%M:%S %p")
+                    hora_formateada = hora_local.strftime("%I:%M %p")
                     item = QTableWidgetItem(hora_formateada)
                     item.setFont(QFont("Segoe UI", 12))
                     item.setTextAlignment(Qt.AlignCenter)
@@ -6472,42 +6472,34 @@ class AdministracionTab:
 
             def on_registro_agregado(exito):
                 if exito:
-                    # Usar hilo para cargar movimiento de compra
-                    self.movimiento_compra_thread = CargarMovimientoCompraThread(usuario_activo)
-                    
-                    def on_movimiento_cargado(exito_movimiento):
-                        if exito_movimiento:
                             
-                            #  ACTUALIZAR DESDE LA BASE DE DATOS, NO DESDE CACHE TEMPORAL
-                            global productos_cache, productos_por_id_cache, productos_por_nombre_cache
-                            productos_cache = None
-                            productos_por_id_cache = None  
-                            productos_por_nombre_cache = None
+                    #  ACTUALIZAR DESDE LA BASE DE DATOS, NO DESDE CACHE TEMPORAL
+                    global productos_cache, productos_por_id_cache, productos_por_nombre_cache
+                    productos_cache = None
+                    productos_por_id_cache = None  
+                    productos_por_nombre_cache = None
 
-                            # Actualizar el cache desde la base de datos
-                            self.datos_tab.actualizar_variables_globales_de_uso(3, lambda: (
-                                self.filter_products_facturero(),
-                                self.datos_tab.visualizar_datos()
-                            ))
+                    # Actualizar el cache desde la base de datos
+                    self.datos_tab.actualizar_variables_globales_de_uso(3, lambda: (
+                        self.filter_products_facturero(),
+                        self.datos_tab.visualizar_datos()
+                    ))
 
-                            label_9 = self.facturero_compras_window.findChild(QLabel, "label_9")
-                            if label_9:
-                                label_9.setAlignment(Qt.AlignCenter)
-                                label_9.setText("Factura procesada con éxito")
-                                label_9.setStyleSheet("color: green; font-weight: bold")
-                                QTimer.singleShot(6000, lambda: label_9.setStyleSheet("color: transparent"))
+                    label_9 = self.facturero_compras_window.findChild(QLabel, "label_9")
+                    if label_9:
+                        label_9.setAlignment(Qt.AlignCenter)
+                        label_9.setText("Factura procesada con éxito")
+                        label_9.setStyleSheet("color: green; font-weight: bold")
+                        QTimer.singleShot(6000, lambda: label_9.setStyleSheet("color: transparent"))
+                    pushbutton_3 = self.facturero_compras_window.findChild(QPushButton, "pushButton_3")
+                    if pushbutton_3:
+                        pushbutton_3.setEnabled(True)
 
-                            pushbutton_3 = self.facturero_compras_window.findChild(QPushButton, "pushButton_3")
-                            if pushbutton_3:
-                                pushbutton_3.setEnabled(True)
+                        # Llamar a inicializar_comboboxes_y_boton de la clase buscar datos
+                        self.buscar_datos_tab.enviar_a_setear_line_edits()
+                    else:
+                        print("Error al cargar movimiento de compra")
 
-                            # Llamar a inicializar_comboboxes_y_boton de la clase buscar datos
-                            self.buscar_datos_tab.enviar_a_setear_line_edits()
-                        else:
-                            print("Error al cargar movimiento de compra")
-
-                    self.movimiento_compra_thread.resultado.connect(on_movimiento_cargado)
-                    self.start_thread(self.movimiento_compra_thread)
                 else:
                     print("Error al agregar a registro")
 
@@ -6628,6 +6620,7 @@ class MainWindow(QMainWindow):
         global usuario_activo
         usuario_activo = self.usuario # se inicializa la variable global usuario para que sea la misma que la del mainwindow
         
+
         # Establece el icono y el título de la ventana principal
         self.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\Minimarket\Minimarket\Minimarket\archivos_py\resources\r.ico"))
         self.setWindowTitle("rls")  
