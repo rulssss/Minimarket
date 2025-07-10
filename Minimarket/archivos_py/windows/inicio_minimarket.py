@@ -210,7 +210,6 @@ class DatosTab:
                 self._datos_cargados["categorias"] = True
                 check_all_loaded()
                 
-                print(f"Categorías obtenidas: {categorias}")  # Para verificar que las categorías se actualizan correctamente
             self.categorias_thread.categorias_obtenidas.connect(on_categorias_obtenidas)
             self.start_thread(self.categorias_thread)
         
@@ -223,7 +222,7 @@ class DatosTab:
                 proveedores_por_telefono_cache = {str(p[1]).strip(): p for p in proveedores}
                 self._datos_cargados["proveedores"] = True
                 check_all_loaded()
-                print(f"Proveedores obtenidos: {proveedores}")  # Para verificar que los proveedores se actualizan correctamente
+            
             self.proveedores_thread.proveedores_obtenidos.connect(on_proveedores_obtenidos)
             self.start_thread(self.proveedores_thread)
         
@@ -236,7 +235,7 @@ class DatosTab:
                 productos_por_nombre_cache = {p[1].strip().lower(): p for p in productos}
                 self._datos_cargados["productos"] = True
                 check_all_loaded()
-                print(f"Productos obtenidos: {productos}")  # Para verificar que los productos se actualizan correctamente
+                
             self.productos_thread.resultado.connect(on_productos_obtenidos)
             self.start_thread(self.productos_thread)
 
@@ -248,7 +247,7 @@ class DatosTab:
                 usuarios_por_nombre_cache = {u[1].strip(): u for u in usuarios}
                 self._datos_cargados["usuarios"] = True
                 check_all_loaded()
-                print(f"Usuarios obtenidos: {usuarios}")  # Para verificar que los usuarios se actualizan correctamente
+                
             self.usuarios_thread.resultado.connect(on_usuarios_obtenidos)
             self.start_thread(self.usuarios_thread)
 
@@ -261,7 +260,7 @@ class DatosTab:
                     categorias = cats
                     categorias_cache = cats
                     categorias_por_nombre_cache = {c[1].strip().lower(): c for c in categorias}
-                    print(f"Categorías obtenidas: {categorias}")  # Para verificar que las categorías se actualizan correctamente
+                
                     if callback:
                         callback()
                 self.categorias_thread.categorias_obtenidas.connect(on_categorias_obtenidas)
@@ -275,7 +274,7 @@ class DatosTab:
                     proveedores_cache = provs
                     proveedores_por_nombre_cache = {p[0].strip().lower(): p for p in proveedores}
                     proveedores_por_telefono_cache = {str(p[1]).strip(): p for p in proveedores}
-                    print(f"Proveedores obtenidos: {proveedores}")  # Para verificar que los proveedores se actualizan correctamente
+                    
                     if callback:
                         callback()
                 self.proveedores_thread.proveedores_obtenidos.connect(on_proveedores_obtenidos)
@@ -289,7 +288,7 @@ class DatosTab:
                     productos_cache = productos_obtenidos
                     productos_por_id_cache = {str(p[0]): p for p in productos}
                     productos_por_nombre_cache = {p[1].strip().lower(): p for p in productos}
-                    print(f"Productos obtenidos: {productos}")  # Para verificar que los productos se actualizan correctamente
+                
                     if callback:
                         callback()
                 self.productos_thread.resultado.connect(on_productos_obtenidos)
@@ -301,27 +300,12 @@ class DatosTab:
                     global usuarios, usuarios_por_nombre_cache
                     usuarios = usuarios_obtenidos
                     usuarios_por_nombre_cache = {u[1].strip(): u for u in usuarios}
-                    print(f"Usuarios obtenidos: {usuarios}")  # Para verificar que los usuarios se actualizan correctamente
+                    
                     if callback:
                         callback()
                 self.usuarios_thread.resultado.connect(on_usuarios_obtenidos)
                 self.start_thread(self.usuarios_thread)
 
-    def limpiar_cache():
-        global categorias_cache, proveedores_cache, productos_cache, productos_por_id_cache, productos_por_nombre_cache, proveedores_por_nombre_cache, proveedores_por_telefono_cache, categorias_por_nombre_cache, usuarios_cache, usuarios_por_nombre_cache
-        categorias_cache = None
-        proveedores_cache = None
-        productos_cache = None
-        productos_por_id_cache = None
-        productos_por_nombre_cache = None
-        proveedores_por_nombre_cache = None
-        proveedores_por_telefono_cache = None
-        categorias_por_nombre_cache = None
-        usuarios_cache = None
-        usuarios_por_nombre_cache = None
-        print("Cache limpiado")
-
-        
         
 #################
 #################
@@ -5552,48 +5536,32 @@ class AdministracionTab:
 
             def on_registro_agregado(exito):
                 if exito:
+                    #  ACTUALIZAR DESDE LA BASE DE DATOS, NO DESDE CACHE TEMPORAL
+                    global productos_cache, productos_por_id_cache, productos_por_nombre_cache
+                    productos_cache = None
+                    productos_por_id_cache = None  
+                    productos_por_nombre_cache = None
+                    # Actualizar el cache desde la base de datos
+                    self.datos_tab.actualizar_variables_globales_de_uso(3, lambda: (
+                        self.filter_products_facturero(),
+                        self.datos_tab.visualizar_datos()
+                    ))
+                    label_9 = self.facturero_ventas_window.findChild(QLabel, "label_9")
+                    if label_9:
+                        label_9.setAlignment(Qt.AlignCenter)
+                        label_9.setText("Factura procesada con éxito")
+                        label_9.setStyleSheet("color: green; font-weight: bold")
+                        QTimer.singleShot(6000, lambda: label_9.setStyleSheet("color: transparent"))
+                    pushbutton_3 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_3")
+                    if pushbutton_3:
+                        pushbutton_3.setEnabled(True)
+                    push_button_4 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_4")
+                    if push_button_4:
+                        push_button_4.setEnabled(True)
+                    # Llamar a inicializar_comboboxes_y_boton de la clase buscar datos
+                    self.buscar_datos_tab.enviar_a_setear_line_edits()
 
-                    # Usar hilo para cargar movimiento de venta
-                    self.movimiento_venta_thread = CargarMovimientoVentaThread(usuario_activo)
-                   
-                    def on_movimiento_cargado(exito_movimiento):
-                        if exito_movimiento:
 
-                            #  ACTUALIZAR DESDE LA BASE DE DATOS, NO DESDE CACHE TEMPORAL
-                            global productos_cache, productos_por_id_cache, productos_por_nombre_cache
-                            productos_cache = None
-                            productos_por_id_cache = None  
-                            productos_por_nombre_cache = None
-
-                            # Actualizar el cache desde la base de datos
-                            self.datos_tab.actualizar_variables_globales_de_uso(3, lambda: (
-                                self.filter_products_facturero(),
-                                self.datos_tab.visualizar_datos()
-                            ))
-
-                            label_9 = self.facturero_ventas_window.findChild(QLabel, "label_9")
-                            if label_9:
-                                label_9.setAlignment(Qt.AlignCenter)
-                                label_9.setText("Factura procesada con éxito")
-                                label_9.setStyleSheet("color: green; font-weight: bold")
-                                QTimer.singleShot(6000, lambda: label_9.setStyleSheet("color: transparent"))
-
-                            pushbutton_3 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_3")
-                            if pushbutton_3:
-                                pushbutton_3.setEnabled(True)
-
-                            push_button_4 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_4")
-                            if push_button_4:
-                                push_button_4.setEnabled(True)
-
-                            # Llamar a inicializar_comboboxes_y_boton de la clase buscar datos
-                            self.buscar_datos_tab.enviar_a_setear_line_edits()
-
-                        else:
-                            print("Error al cargar movimiento de venta")
-
-                    self.movimiento_venta_thread.resultado.connect(on_movimiento_cargado)
-                    self.start_thread(self.movimiento_venta_thread)
                 else:
                     print("Error al agregar a registro")
 
@@ -6467,7 +6435,7 @@ class AdministracionTab:
         if pushbutton_3:
             pushbutton_3.setEnabled(False)
 
-        push_button_4 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_4")
+        push_button_4 = self.facturero_compras_window.findChild(QPushButton, "pushButton_4")
         if push_button_4:
             push_button_4.setEnabled(False)
 
@@ -6504,12 +6472,12 @@ class AdministracionTab:
                         label_9.setText("Factura procesada con éxito")
                         label_9.setStyleSheet("color: green; font-weight: bold")
                         QTimer.singleShot(6000, lambda: label_9.setStyleSheet("color: transparent"))
-                        
+
                     pushbutton_3 = self.facturero_compras_window.findChild(QPushButton, "pushButton_3")
                     if pushbutton_3:
                         pushbutton_3.setEnabled(True)
 
-                    push_button_4 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_4")
+                    push_button_4 = self.facturero_compras_window.findChild(QPushButton, "pushButton_4")
                     if push_button_4:
                         push_button_4.setEnabled(True)
 
@@ -6578,7 +6546,6 @@ class AdministracionTab:
         if s:  # Si es venta    
                 
             if productos_cache_temporal:
-                print("producto a actualizar:", producto_modificado)
             
                 nombre_producto = producto_modificado[0]  # Nombre del producto
                 cantidad_vendida = float(producto_modificado[2])  # Cantidad vendida
