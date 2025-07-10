@@ -5534,6 +5534,10 @@ class AdministracionTab:
         if pushbutton_3:
             pushbutton_3.setEnabled(False)
 
+        push_button_4 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_4")
+        if push_button_4:
+            push_button_4.setEnabled(False)
+
         if productos_seleccionados_facturero_ventas:
 
             label_9 = self.facturero_ventas_window.findChild(QLabel, "label_9")
@@ -5577,6 +5581,11 @@ class AdministracionTab:
                             pushbutton_3 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_3")
                             if pushbutton_3:
                                 pushbutton_3.setEnabled(True)
+
+                            push_button_4 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_4")
+                            if push_button_4:
+                                push_button_4.setEnabled(True)
+
                             # Llamar a inicializar_comboboxes_y_boton de la clase buscar datos
                             self.buscar_datos_tab.enviar_a_setear_line_edits()
 
@@ -6458,6 +6467,10 @@ class AdministracionTab:
         if pushbutton_3:
             pushbutton_3.setEnabled(False)
 
+        push_button_4 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_4")
+        if push_button_4:
+            push_button_4.setEnabled(False)
+
         if productos_seleccionados_facturero_compras:
 
             label_9 = self.facturero_compras_window.findChild(QLabel, "label_9")
@@ -6491,14 +6504,18 @@ class AdministracionTab:
                         label_9.setText("Factura procesada con éxito")
                         label_9.setStyleSheet("color: green; font-weight: bold")
                         QTimer.singleShot(6000, lambda: label_9.setStyleSheet("color: transparent"))
+                        
                     pushbutton_3 = self.facturero_compras_window.findChild(QPushButton, "pushButton_3")
                     if pushbutton_3:
                         pushbutton_3.setEnabled(True)
 
-                        # Llamar a inicializar_comboboxes_y_boton de la clase buscar datos
-                        self.buscar_datos_tab.enviar_a_setear_line_edits()
-                    else:
-                        print("Error al cargar movimiento de compra")
+                    push_button_4 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_4")
+                    if push_button_4:
+                        push_button_4.setEnabled(True)
+
+                    # Llamar a inicializar_comboboxes_y_boton de la clase buscar datos
+                    self.buscar_datos_tab.enviar_a_setear_line_edits()
+                   
 
                 else:
                     print("Error al agregar a registro")

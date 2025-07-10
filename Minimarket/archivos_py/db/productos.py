@@ -1651,6 +1651,7 @@ def agregar_a_registro(productos_seleccionados, s, usuario):
 
     # Recorrer cada producto en productos_seleccionados
     for producto in productos_seleccionados:
+        print("nombre del producto:", producto[0])
         # Asignar las variables correspondientes
         nombre = producto[0]  # Nombre del producto
         precio_compra = traer_precio_compra(nombre)
@@ -2087,6 +2088,7 @@ def cargar_movimiento_venta(usuario_activo):
     id_venta = traer_id_venta()
     id_prod = traer_prod_vendido(id_venta)
     prod_vendido = traer_nom_producto(id_prod)
+    print("producto vendido:", prod_vendido)
 
     conn = get_connection()
     cursor = conn.cursor()
