@@ -2144,14 +2144,29 @@ def cargar_movimiento_compra(usuario_activo):
     cursor.close()
     return True
 
+def traer_rol_usuario(usuario):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"SELECT admin FROM usuarios WHERE nombre = '{usuario}'"
+    cursor.execute(query)
+    data = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return data[0][0]
 
 def cargar_movimiento_inicio(usuario):
     id_usuario = traer_id_usuario(usuario)
     fecha_hora = datetime.now().astimezone().isoformat()
+    rol = traer_rol_usuario(usuario)
+
+    if rol:
+        usuario_rol = 'administrador'
+    else:
+        usuario_rol = 'usuario'
 
     conn = get_connection()
     cursor = conn.cursor()
-    query = f"INSERT INTO movimientos (id_usuario, fecha_hora, tipo_accion, entidad_afectada, id_entidad, descripcion) VALUES ({id_usuario}, '{fecha_hora}', 'Login', 'Sistema', NULL, 'Inició de sesión -> {usuario}')"
+    query = f"INSERT INTO movimientos (id_usuario, fecha_hora, tipo_accion, entidad_afectada, id_entidad, descripcion) VALUES ({id_usuario}, '{fecha_hora}', 'Login', 'Sistema', NULL, '{usuario_rol} : {usuario}')"
     cursor.execute(query)
     conn.commit()
     cursor.close()
