@@ -3294,7 +3294,6 @@ class BuscarDatosTab:
         combobox_8_anio = self.ui.frame_32.findChild(QComboBox, "comboBox_8")
         combobox_12 = self.ui.frame_31.findChild(QComboBox, "comboBox_12")
         combobox_13 = self.ui.frame_31.findChild(QComboBox, "comboBox_13")
-        textedit = self.ui.frame_27.findChild(QTextEdit, "textEdit")
         push_button_47 = self.ui.frame_31.findChild(QPushButton, "pushButton_47")
 
         # Obtener la fecha actual
@@ -3309,7 +3308,7 @@ class BuscarDatosTab:
             combobox_10_dia.setMaxVisibleItems(5)  # Mostrar un máximo de 5 elementos visibles
             self.actualizar_dias_combobox(combobox_10_dia, mes_actual, anio_actual)
             combobox_10_dia.setCurrentText(str(dia_actual))
-            combobox_10_dia.currentTextChanged.connect(lambda : self.enviar_a_setear_line_edits())
+            combobox_10_dia.currentTextChanged.connect(lambda : self.enviar_a_setear_tables())
     
         # Inicializar ComboBox de meses
         if combobox_9_mes:
@@ -3317,14 +3316,14 @@ class BuscarDatosTab:
             combobox_9_mes.addItems(["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
                                      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"])
             combobox_9_mes.setCurrentIndex(mes_actual)  # Los índices comienzan en 0
-            combobox_9_mes.currentTextChanged.connect(lambda : self.enviar_a_setear_line_edits())
+            combobox_9_mes.currentTextChanged.connect(lambda : self.enviar_a_setear_tables())
     
         # Inicializar ComboBox de años
         if combobox_8_anio:
             combobox_8_anio.setStyleSheet("background-color: rgb(226, 245, 255);")
             combobox_8_anio.addItems([str(anio_actual - 1), str(anio_actual), str(anio_actual + 1)])
             combobox_8_anio.setCurrentText(str(anio_actual))
-            combobox_8_anio.currentTextChanged.connect(lambda : self.enviar_a_setear_line_edits())
+            combobox_8_anio.currentTextChanged.connect(lambda : self.enviar_a_setear_tables())
             
             # Conectar el evento de cambio de año para agregar dinámicamente un año posterior
             combobox_8_anio.currentTextChanged.connect(lambda: self.actualizar_anios_combobox(combobox_8_anio, anio_actual))
@@ -3352,18 +3351,14 @@ class BuscarDatosTab:
         
         if combobox_13:
             # Conectar el evento de cambio de texto para actualizar los datos
-            combobox_13.currentTextChanged.connect(lambda: self.enviar_a_setear_line_edits())   
-
-        if textedit:
-            if not textedit.toPlainText().strip():
-                self.enviar_a_setear_line_edits()
+            combobox_13.currentTextChanged.connect(lambda: self.enviar_a_setear_tables())   
 
         if push_button_47:
             push_button_47.clicked.connect(self.hacer_corte)
 
           # *** CARGAR DATOS DE HOY AUTOMÁTICAMENTE ***
         # Usar QTimer para asegurar que todos los comboboxes estén configurados
-        QTimer.singleShot(100, self.enviar_a_setear_line_edits)
+        QTimer.singleShot(100, self.enviar_a_setear_tables)
 
 
     def traer_nom_producto(self, id_producto):
@@ -3411,7 +3406,7 @@ class BuscarDatosTab:
         self.start_thread(self.arqueo_compras_thread)
 
     
-    def enviar_a_setear_line_edits(self):
+    def enviar_a_setear_tables(self):
         # Obtener elementos UI una sola vez
         combobox_10_dia = self.ui.frame_32.findChild(QComboBox, "comboBox_10")
         combobox_9_mes = self.ui.frame_32.findChild(QComboBox, "comboBox_9")
@@ -3449,7 +3444,7 @@ class BuscarDatosTab:
 
         # Verificar cache de métodos de pago
         if not self._verificar_cache_metodos_pago():
-            QTimer.singleShot(500, self.enviar_a_setear_line_edits)
+            QTimer.singleShot(500, self.enviar_a_setear_tables)
             return
 
         # Procesar según el tipo de filtro
@@ -3463,7 +3458,7 @@ class BuscarDatosTab:
     def _configurar_tablewidgets(self, tablewidget_compras, tablewidget_ventas):
         """Configurar headers para ambos tablewidgets"""
         headers = ["Usuario", "Fecha", "Hora", "Método de Pago", "Producto", "Cantidad", "Precio Unitario"]
-        
+
         for widget in [tablewidget_compras, tablewidget_ventas]:
             if widget:
                 # Limpiar tabla primero
@@ -5686,7 +5681,7 @@ class AdministracionTab:
                     if push_button_4:
                         push_button_4.setEnabled(True)
                     # Llamar a inicializar_comboboxes_y_boton de la clase buscar datos
-                    self.buscar_datos_tab.enviar_a_setear_line_edits()
+                    self.buscar_datos_tab.enviar_a_setear_tables()
 
 
                 else:
@@ -6609,7 +6604,7 @@ class AdministracionTab:
                         push_button_4.setEnabled(True)
 
                     # Llamar a inicializar_comboboxes_y_boton de la clase buscar datos
-                    self.buscar_datos_tab.enviar_a_setear_line_edits()
+                    self.buscar_datos_tab.enviar_a_setear_tables()
                    
 
                 else:
@@ -7067,8 +7062,11 @@ class MainWindow(QMainWindow):
             self.connect_button("pushButton_22", stacked_widget, 18, lambda : self.focus_borrar_usuario())
 
         # VENTANA BUSCAR DATOS
+        botton_15 = self.findChild(QPushButton, "pushButton_15")
+        if botton_15:
+            self.connect_button("pushButton_15", stacked_widget, 13)
+            botton_15.clicked.connect(self.change_table_headers_color_arqueo)
 
-        self.connect_button("pushButton_15", stacked_widget, 13)
         self.connect_button("pushButton_13", stacked_widget, 14)
         self.connect_button("pushButton_48", stacked_widget, 19)
         push_button_48 = self.findChild(QPushButton, "pushButton_48")
@@ -7263,5 +7261,29 @@ class MainWindow(QMainWindow):
             QHeaderView::section {
                 background-color: rgb(255, 230, 107);
                 color: black;
+            }
+            """)
+
+    def change_table_headers_color_arqueo(self):
+        table_widget_6 = self.findChild(QTableWidget, "tableWidget_6")
+        table_widget_7 = self.findChild(QTableWidget, "tableWidget_7")
+
+        if table_widget_6 and table_widget_7:
+            table_widget_6.setStyleSheet("""
+            QHeaderView::section {
+                background-color: rgb(226, 245, 255);
+                color: black;
+                font-family: 'Segoe UI';
+                font-size: 12pt;
+                font-weight: bold;
+            }
+            """)
+            table_widget_7.setStyleSheet("""
+            QHeaderView::section {
+                background-color: rgb(226, 245, 255);
+                color: black;
+                font-family: 'Segoe UI';
+                font-size: 12pt;
+                font-weight: bold;
             }
             """)
