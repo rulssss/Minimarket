@@ -2995,12 +2995,10 @@ class DatosTab:
 
         label_69 = self.ui.frame_39.findChild(QLabel, "label_69")
         if label_69:
-            label_69.setText(usuario)
-            
+            label_69.setText(usuario)    
 
 ################
 ################
-
 
 class BuscarDatosTab:
     def __init__(self, ui, datos_tab):
@@ -4894,7 +4892,6 @@ class BuscarDatosTab:
 
 ################
 ################
-
 
 class AdministracionTab:
     def __init__(self, ui, buscar_datos_tab, datos_tab):
@@ -6880,14 +6877,20 @@ class MainWindow(QMainWindow):
         self.guardar_cerrar_thread.resultado.connect(on_guardado_completado)
         self.start_thread(self.guardar_cerrar_thread)
 
+    def resizeEvent(self, event):
+        """Manejar el redimensionamiento de la ventana"""
+        super().resizeEvent(event)
+        
+        # Si existe el overlay, redimensionarlo para que cubra toda la ventana
+        if hasattr(self, 'overlay') and self.overlay.isVisible():
+            self.overlay.setGeometry(self.rect())
+    
     def mostrar_overlay(self, i):
-
-
         """Crear y mostrar el overlay de guardado"""
-
+    
         self.show()
         QApplication.processEvents()
-
+    
         # Crear el overlay que cubre toda la ventana
         self.overlay = QWidget(self)
         self.overlay.setGeometry(self.rect())
@@ -6897,7 +6900,7 @@ class MainWindow(QMainWindow):
                 background-color: rgba(0, 0, 0, 150);
             }
         """)
-
+    
         # Crear el layout para el overlay
         layout = QVBoxLayout(self.overlay)
         layout.setAlignment(Qt.AlignCenter)
@@ -6908,7 +6911,7 @@ class MainWindow(QMainWindow):
         else:
              # Crear el label con el mensaje
             label = QLabel("Cargando Datos")
-
+    
         label.setStyleSheet("""
                 QLabel {
                     color: white;
@@ -6920,7 +6923,7 @@ class MainWindow(QMainWindow):
                 }
         """)
         label.setAlignment(Qt.AlignCenter)
-
+    
         # Crear un indicador de carga (puntos animados)
         self.puntos_label = QLabel("...")
         self.puntos_label.setStyleSheet("""
@@ -6933,14 +6936,14 @@ class MainWindow(QMainWindow):
             }
         """)
         self.puntos_label.setAlignment(Qt.AlignCenter)
-
+    
         # Agregar los elementos al layout
         layout.addWidget(label)
         layout.addWidget(self.puntos_label)
-
+    
         # Mostrar el overlay
         self.overlay.show()
-
+    
         # Iniciar animación de puntos
         self.animar_puntos()
 
