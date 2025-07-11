@@ -5300,7 +5300,7 @@ class AdministracionTab:
                 def on_resultado(exito):
                     if exito:
                         #  Hilo para cargar movimiento de agregar método de pago
-                        global usuario_activo
+                        global usuario_activo, metodos_pago_por_id_cache
                         self.movimiento_agregar_mp_thread = MovimientoAgregarMetodoPagoThread(lineEdit_value, usuario_activo)
                         self.start_thread(self.movimiento_agregar_mp_thread)
     
@@ -5312,7 +5312,9 @@ class AdministracionTab:
                             if combobox_metodo_pago_facturero else None
                         )
                         self.start_thread(self.metodos_pago_thread)
-    
+
+                        # Actualizar la variable cache de metodos
+                        metodos_pago_por_id_cache = None
                         if label_2:
                             label_2.setText("Método de pago agregado")
                             label_2.setStyleSheet("color: green; font-weight: bold")
@@ -5442,6 +5444,7 @@ class AdministracionTab:
                             self.movimiento_borrar_mp_thread = MovimientoBorrarMetodoPagoThread(combobox_value, usuario_activo, id_metodo)
 
                             def on_movimiento_cargado():
+                                global metodos_pago_por_id_cache
 
                                  # Actualizar comboboxes usando un hilo
                                 self.metodos_pago_thread = TraerMetodosDePagoThread()
@@ -5456,6 +5459,8 @@ class AdministracionTab:
                                 )
                                 self.start_thread(self.metodos_pago_thread)
 
+                                # Limpiar el cache de métodos de pago por ID
+                                metodos_pago_por_id_cache = None
                                 #  Mostrar mensaje final después de cargar el movimiento
                                 if label_2:
                                     label_2.setStyleSheet("color: green; font-weight: bold")
@@ -6322,7 +6327,7 @@ class AdministracionTab:
                 def on_resultado(exito):
                     if exito:
                         #  Hilo para cargar movimiento de agregar método de pago
-                        global usuario_activo
+                        global usuario_activo, metodos_pago_por_id_cache
                         self.movimiento_agregar_mp_thread = MovimientoAgregarMetodoPagoThread(lineEdit_value, usuario_activo)
                         self.start_thread(self.movimiento_agregar_mp_thread)
     
@@ -6334,7 +6339,9 @@ class AdministracionTab:
                             if combobox_metodo_pago_facturero else None
                         )
                         self.start_thread(self.metodos_pago_thread)
-    
+                        # actualizar metodos
+                        metodos_pago_por_id_cache = None
+
                         if label_2:
                             label_2.setText("Método de pago agregado")
                             label_2.setStyleSheet("color: green; font-weight: bold")
@@ -6464,7 +6471,8 @@ class AdministracionTab:
                             self.movimiento_borrar_mp_thread = MovimientoBorrarMetodoPagoThread(combobox_value, usuario_activo, id_metodo)
 
                             def on_movimiento_cargado():
-
+                                global metodos_pago_por_id_cache
+                                
                                  # Actualizar comboboxes usando un hilo
                                 self.metodos_pago_thread = TraerMetodosDePagoThread()
                                 self.metodos_pago_thread.resultado.connect(
@@ -6477,6 +6485,8 @@ class AdministracionTab:
                                     )
                                 )
                                 self.start_thread(self.metodos_pago_thread)
+
+                                metodos_pago_por_id_cache = None  # Actualizar el cache de métodos de pago
 
                                 #  Mostrar mensaje final después de cargar el movimiento
                                 if label_2:

@@ -1669,7 +1669,7 @@ def agregar_a_registro(productos_seleccionados, s, usuario):
 
     # Recorrer cada producto en productos_seleccionados
     for producto in productos_seleccionados:
-        print("nombre del producto:", producto[0])
+        
         # Asignar las variables correspondientes
         nombre = producto[0]  # Nombre del producto
         precio_compra = traer_precio_compra(nombre)
