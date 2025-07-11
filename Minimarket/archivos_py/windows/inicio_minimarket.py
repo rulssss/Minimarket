@@ -5964,8 +5964,15 @@ class AdministracionTab:
                 if filter_text in producto[1].lower() or filter_text in str(producto[0]).lower():
                     filtered_productos.append(producto)
 
+            cantidad = len(filtered_productos) if filtered_productos else 0
+
             # Si no se encuentran productos, mostrar un mensaje en la tabla
-            if len(filtered_productos) == 0:
+            if cantidad == 0:
+                label_123 = self.ui.frame_60.findChild(QLabel, "label_123")
+                if label_123:
+                    label_123.clear()
+                    label_123.setText("0")
+
                 table_widget.setRowCount(1)
                 table_widget.setColumnCount(1)
                 table_widget.setHorizontalHeaderLabels(["Mensaje"])
@@ -5974,6 +5981,11 @@ class AdministracionTab:
                 item.setTextAlignment(Qt.AlignCenter)
                 table_widget.setItem(0, 0, item)
             else:
+                label_123 = self.ui.frame_60.findChild(QLabel, "label_123")
+                if label_123:
+                    label_123.clear()
+                    label_123.setText(f"{cantidad}")
+
                 # Si hay productos, llenar la tabla con los datos filtrados
                 table_widget.setRowCount(len(filtered_productos))
                 table_widget.setColumnCount(8)
@@ -6022,10 +6034,16 @@ class AdministracionTab:
                 productos_a_usar = productos_cache
             else:
                 productos_a_usar = []
-            
 
+            cantidad = len(productos_a_usar) if productos_a_usar else 0
+            
             # Si no se encuentran productos, mostrar un mensaje en la tabla
-            if len(productos_a_usar) == 0:
+            if cantidad == 0:
+                label_123 = self.ui.frame_60.findChild(QLabel, "label_123")
+                if label_123:
+                    label_123.clear()
+                    label_123.setText("0")
+
                 table_widget.setRowCount(1)
                 table_widget.setColumnCount(1)
                 table_widget.setHorizontalHeaderLabels(["Mensaje"])
@@ -6034,6 +6052,11 @@ class AdministracionTab:
                 item.setTextAlignment(Qt.AlignCenter)
                 table_widget.setItem(0, 0, item)
             else:
+                label_123 = self.ui.frame_60.findChild(QLabel, "label_123")
+                if label_123:
+                    label_123.clear()
+                    label_123.setText(f"{cantidad}")
+                    
                 # Si hay productos, llenar la tabla con los datos
                 table_widget.setRowCount(len(productos_a_usar))
                 table_widget.setColumnCount(8)
@@ -6472,7 +6495,7 @@ class AdministracionTab:
 
                             def on_movimiento_cargado():
                                 global metodos_pago_por_id_cache
-                                
+
                                  # Actualizar comboboxes usando un hilo
                                 self.metodos_pago_thread = TraerMetodosDePagoThread()
                                 self.metodos_pago_thread.resultado.connect(
