@@ -1,5 +1,5 @@
 from PySide6.QtCore import QThread, Signal
-from archivos_py.db.productos import *
+from Minimarket.Minimarket.archivos_py.db.functions import *
 
 
 # ventana datos 
