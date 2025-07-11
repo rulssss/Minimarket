@@ -1147,14 +1147,28 @@ class GuardarAlCerrarThread(QThread):
         try:
             # Guardar una última vez al cerrar (por si hay cambios sin guardar)
             resultado = guardar_texto_anotador_sincrono(self.texto, self.usuario)
-            
-            if resultado:
-                print("Texto guardado al cerrar")
-                self.resultado.emit(True)
-            else:
-                print("Error al guardar texto al cerrar")
-                self.resultado.emit(False)
-                
+
+            self.resultado.emit(resultado)
+
         except Exception as e:
             print(f"Error al guardar: {e}")
             self.resultado.emit(False)
+
+
+# movimiento inicio de sesion
+
+class MovimientoLoginThread(QThread):
+    finished = Signal(bool)
+    
+    def __init__(self, usuario):
+        super().__init__()
+        self.usuario = usuario
+    
+    def run(self):
+        try:
+            # Llamar a la función movimiento_inicio
+            exito = cargar_movimiento_inicio(self.usuario)
+            self.finished.emit(exito)
+
+        except Exception as e:
+            self.finished.emit(False)

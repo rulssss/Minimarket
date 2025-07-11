@@ -2143,3 +2143,16 @@ def cargar_movimiento_compra(usuario_activo):
     conn.commit()
     cursor.close()
     return True
+
+
+def cargar_movimiento_inicio(usuario):
+    id_usuario = traer_id_usuario(usuario)
+    fecha_hora = datetime.now().astimezone().isoformat()
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = f"INSERT INTO movimientos (id_usuario, fecha_hora, tipo_accion, entidad_afectada, id_entidad, descripcion) VALUES ({id_usuario}, '{fecha_hora}', 'Inicio', 'Sistema', NULL, 'Inicio sesion el usuario: {usuario}')"
+    cursor.execute(query)
+    conn.commit()
+    cursor.close()
+    return True

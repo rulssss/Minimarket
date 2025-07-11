@@ -6,6 +6,7 @@ from archivos_py.db.usuarios import check_activation
 from archivos_py.threads.db_threads_login import LoginThread, RegistroCheckThread, EnviarCodigoThread, CodigoOtroAdminThread, RegistrarUsuarioThread, VerificarYEnviarCodigoThread, ActualizarContrasenaThread
 from PySide6 import QtGui
 from archivos_py.windows.inicio_minimarket import MainWindow
+from archivos_py.threads.db_thread_minimarket import MovimientoLoginThread
 
 
 
@@ -151,6 +152,11 @@ class Inicio(QWidget):
         self.main_window = MainWindow(usuario, account)
         self.main_window.resize(1690, 900)
         self.main_window.show()
+
+        # Crear y ejecutar hilo para cargar movimiento del usuario
+        self.movimiento_login_thread = MovimientoLoginThread(usuario)
+        self.start_thread(self.movimiento_login_thread)
+    
         self.close()  # Cierra la ventana de login
 
 
