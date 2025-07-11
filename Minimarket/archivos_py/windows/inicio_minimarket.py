@@ -29,6 +29,8 @@ proveedores_por_nombre_cache = None
 proveedores_por_telefono_cache = None
 categorias_por_nombre_cache = None
 usuarios_por_nombre_cache = None
+metodos_pago_cache = None
+metodos_pago_por_id_cache = None
 
 
 # -----------------------------------------------------
@@ -193,6 +195,7 @@ class DatosTab:
                 callback()
             return
 
+
         if r == 0:
             self._datos_cargados = {"categorias": False, "proveedores": False, "productos": False}
 
@@ -306,9 +309,9 @@ class DatosTab:
                 self.usuarios_thread.resultado.connect(on_usuarios_obtenidos)
                 self.start_thread(self.usuarios_thread)
 
-        
-#################
-#################
+
+        #################
+        #################
 
 
     # AGREGAR PRODUCTOS
@@ -3026,6 +3029,14 @@ class BuscarDatosTab:
 ################
     # Movimientos
 
+    def traer_metodo_pago_cache(self, id_metodo):
+        """Obtener método de pago desde cache local"""
+        global metodos_pago_por_id_cache
+
+        if metodos_pago_por_id_cache and str(id_metodo) in metodos_pago_por_id_cache:
+            return metodos_pago_por_id_cache[str(id_metodo)]
+        return "Método desconocido"
+
     def boton_mov(self):
         push_button_48 = self.ui.tab_3.findChild(QPushButton, "pushButton_48")
         if push_button_48:
@@ -3350,6 +3361,10 @@ class BuscarDatosTab:
         if push_button_47:
             push_button_47.clicked.connect(self.hacer_corte)
 
+          # *** CARGAR DATOS DE HOY AUTOMÁTICAMENTE ***
+        # Usar QTimer para asegurar que todos los comboboxes estén configurados
+        QTimer.singleShot(100, self.enviar_a_setear_line_edits)
+
 
     def traer_nom_producto(self, id_producto):
         global productos_por_id_cache
@@ -3395,220 +3410,215 @@ class BuscarDatosTab:
         self.arqueo_compras_thread.resultado.connect(callback)
         self.start_thread(self.arqueo_compras_thread)
 
+    
     def enviar_a_setear_line_edits(self):
+        # Obtener elementos UI una sola vez
         combobox_10_dia = self.ui.frame_32.findChild(QComboBox, "comboBox_10")
         combobox_9_mes = self.ui.frame_32.findChild(QComboBox, "comboBox_9")
         combobox_8_anio = self.ui.frame_32.findChild(QComboBox, "comboBox_8")
         combobox_12 = self.ui.frame_31.findChild(QComboBox, "comboBox_12")
         combobox_13 = self.ui.frame_31.findChild(QComboBox, "comboBox_13")
+        tablewidget_compras = self.ui.frame_23.findChild(QTableWidget, "tableWidget_7")
+        tablewidget_ventas = self.ui.frame_27.findChild(QTableWidget, "tableWidget_6")
+        label_58 = self.ui.frame_31.findChild(QLabel, "label_58")
+        label_47 = self.ui.frame_30.findChild(QLabel, "label_47")
+
+        # Obtener valores una sola vez
         valor_combobox_12 = combobox_12.currentText()
         valor_combobox_13 = combobox_13.currentText()
         valor_combobox_10_dia = combobox_10_dia.currentText()
         valor_combobox_9_mes = combobox_9_mes.currentText()
         valor_combobox_8_anio = combobox_8_anio.currentText()
-        textedit_compras = self.ui.frame_23.findChild(QTextEdit, "textEdit_2")
-        textedit_ventas = self.ui.frame_27.findChild(QTextEdit, "textEdit")
-        textedit_compras.setReadOnly(True)
-        textedit_ventas.setReadOnly(True)
 
-        label_58 = self.ui.frame_31.findChild(QLabel, "label_58")
+        # Configurar tablewidgets
+        self._configurar_tablewidgets(tablewidget_compras, tablewidget_ventas)
+
+        # Configurar labels
         if label_58:
             label_58.setStyleSheet("color: green; font-weight: bold")
-        label_47 = self.ui.frame_30.findChild(QLabel, "label_47")
+            label_58.setText("$0.00")  # Inicializar
         if label_47:
             label_47.setStyleSheet("color: rgb(230, 180, 80); font-weight: bold")
+            label_47.setText("$0.00")  # Inicializar
 
-        if valor_combobox_8_anio:
-            if not valor_combobox_9_mes and not valor_combobox_10_dia:
-                fecha = valor_combobox_8_anio
-            elif valor_combobox_9_mes and not valor_combobox_10_dia:
-                fecha = f"{valor_combobox_8_anio}-{combobox_9_mes.currentIndex()}"
-            elif valor_combobox_9_mes and valor_combobox_10_dia:
-                fecha = f"{valor_combobox_8_anio}-{combobox_9_mes.currentIndex()}-{valor_combobox_10_dia}"
-            else:
-                fecha = None
+        if not valor_combobox_8_anio:
+            return
 
-            if valor_combobox_12 == "Metodo de Pago" and valor_combobox_13:
-                def on_metodo_pago_id_obtenido(metodo_pago_id):
-                    def on_ventas_obtenidas(datos_ventas):
-                        total_ventas = 0
-                        if textedit_ventas:
-                            textedit_ventas.setFont(QFont("Segoe UI", 16))
-                            textedit_ventas.clear()
-                            for dato in datos_ventas:
-                                usuario = self.traer_usuario(dato[0])
-                                fecha_hora = dato[1].strftime("%d-%m-%Y %H:%M:%S")
-                                def on_metodo_pago_obtenido(metodo_pago):
-                                    producto = self.traer_nom_producto(dato[3])
-                                    cantidad = dato[4]
-                                    precio_unitario = dato[5]
-                                    nonlocal total_ventas
-                                    total_ventas += precio_unitario * cantidad
-                                    text = (
-                                        f"Usuario: {usuario}, "
-                                        f"Fecha y Hora: {fecha_hora}, "
-                                        f"Método de Pago: {metodo_pago}, "
-                                        f"Producto: {producto}, "
-                                        f"Cantidad: {cantidad}, "
-                                        f"Precio Unitario: ${precio_unitario}\n"
-                                    )
-                                    textedit_ventas.append(text)
-                                    if label_58:
-                                        label_58.setText(f"${total_ventas:.2f}")
-                                self.obtener_metodo_pago(dato[2], on_metodo_pago_obtenido)
-                    def on_compras_obtenidas(datos_compras):
-                        total_compras = 0
-                        if textedit_compras:
-                            textedit_compras.setFont(QFont("Segoe UI", 16))
-                            textedit_compras.clear()
-                            for dato in datos_compras:
-                                usuario = self.traer_usuario(dato[0])
-                                fecha_hora = dato[1].strftime("%d-%m-%Y %H:%M:%S")
-                                def on_metodo_pago_obtenido(metodo_pago):
-                                    producto = self.traer_nom_producto(dato[3])
-                                    cantidad = dato[4]
-                                    precio_unitario = dato[5]
-                                    nonlocal total_compras
-                                    total_compras += cantidad * precio_unitario
-                                    text = (
-                                        f"Usuario: {usuario}, "
-                                        f"Fecha y Hora: {fecha_hora}, "
-                                        f"Método de Pago: {metodo_pago}, "
-                                        f"Producto: {producto}, "
-                                        f"Cantidad: {cantidad}, "
-                                        f"Precio Unitario: ${precio_unitario}\n"
-                                    )
-                                    textedit_compras.append(text)
-                                    if label_47:
-                                        label_47.setText(f"${total_compras:.2f}")
-                                self.obtener_metodo_pago(dato[2], on_metodo_pago_obtenido)
-                    self.obtener_datos_ventas(metodo_pago_id, fecha, on_ventas_obtenidas)
-                    self.obtener_datos_compras(metodo_pago_id, fecha, on_compras_obtenidas)
-                self.obtener_metodo_pago_id(valor_combobox_13, on_metodo_pago_id_obtenido)
+        # Construir fecha
+        fecha = self._construir_fecha(valor_combobox_8_anio, valor_combobox_9_mes, valor_combobox_10_dia, combobox_9_mes)
 
-            elif valor_combobox_12 == "Usuario" and valor_combobox_13:
-                global usuarios_por_nombre_cache
-                usuario_id = None
-                if usuarios_por_nombre_cache and valor_combobox_13 in usuarios_por_nombre_cache:
-                    usuario_id = usuarios_por_nombre_cache[valor_combobox_13][0]
-                if usuario_id:
-                    def on_ventas_obtenidas(datos_ventas):
-                        total_ventas = 0
-                        if textedit_ventas:
-                            textedit_ventas.setFont(QFont("Segoe UI", 16))
-                            textedit_ventas.clear()
-                            for dato in datos_ventas:
-                                usuario = self.traer_usuario(dato[0])
-                                fecha_hora = dato[1].strftime("%d-%m-%Y %H:%M:%S")
-                                def on_metodo_pago_obtenido(metodo_pago):
-                                    producto = self.traer_nom_producto(dato[3])
-                                    cantidad = dato[4]
-                                    precio_unitario = dato[5]
-                                    nonlocal total_ventas
-                                    total_ventas += precio_unitario * cantidad
-                                    text = (
-                                        f"Usuario: {usuario}, "
-                                        f"Fecha y Hora: {fecha_hora}, "
-                                        f"Método de Pago: {metodo_pago}, "
-                                        f"Producto: {producto}, "
-                                        f"Cantidad: {cantidad}, "
-                                        f"Precio Unitario: ${precio_unitario}\n"
-                                    )
-                                    textedit_ventas.append(text)
-                                    if label_58:
-                                        label_58.setText(f"${total_ventas:.2f}")
-                                self.obtener_metodo_pago(dato[2], on_metodo_pago_obtenido)
-                    def on_compras_obtenidas(datos_compras):
-                        total_compras = 0
-                        if textedit_compras:
-                            textedit_compras.setFont(QFont("Segoe UI", 16))
-                            textedit_compras.clear()
-                            for dato in datos_compras:
-                                usuario = self.traer_usuario(dato[0])
-                                fecha_hora = dato[1].strftime("%d-%m-%Y %H:%M:%S")
-                                def on_metodo_pago_obtenido(metodo_pago):
-                                    producto = self.traer_nom_producto(dato[3])
-                                    cantidad = dato[4]
-                                    precio_unitario = dato[5]
-                                    nonlocal total_compras
-                                    total_compras += cantidad * precio_unitario
-                                    text = (
-                                        f"Usuario: {usuario}, "
-                                        f"Fecha y Hora: {fecha_hora}, "
-                                        f"Método de Pago: {metodo_pago}, "
-                                        f"Producto: {producto}, "
-                                        f"Cantidad: {cantidad}, "
-                                        f"Precio Unitario: ${precio_unitario}\n"
-                                    )
-                                    textedit_compras.append(text)
-                                    if label_47:
-                                        label_47.setText(f"${total_compras:.2f}")
-                                self.obtener_metodo_pago(dato[2], on_metodo_pago_obtenido)
-                    self.obtener_datos_ventas(usuario_id, fecha, on_ventas_obtenidas)
-                    self.obtener_datos_compras(usuario_id, fecha, on_compras_obtenidas)
+        # Verificar cache de métodos de pago
+        if not self._verificar_cache_metodos_pago():
+            QTimer.singleShot(500, self.enviar_a_setear_line_edits)
+            return
 
-            else:
-                def on_ventas_arqueo_obtenidas(datos_ventas):
-                    total_ventas = 0
-                    if textedit_ventas:
-                        textedit_ventas.setFont(QFont("Segoe UI", 16))
-                        textedit_ventas.clear()
-                        for dato in datos_ventas:
-                            usuario = self.traer_usuario(dato[0])
-                            fecha_hora = dato[1].strftime("%d-%m-%Y %H:%M:%S")
-                            def on_metodo_pago_obtenido(metodo_pago):
-                                producto = self.traer_nom_producto(dato[3])
-                                cantidad = dato[4]
-                                precio_unitario = dato[5]
-                                nonlocal total_ventas
-                                total_ventas += precio_unitario * cantidad
-                                text = (
-                                    f"Usuario: {usuario}, "
-                                    f"Fecha y Hora: {fecha_hora}, "
-                                    f"Método de Pago: {metodo_pago}, "
-                                    f"Producto: {producto}, "
-                                    f"Cantidad: {cantidad}, "
-                                    f"Precio Unitario: ${precio_unitario}\n"
-                                )
-                                textedit_ventas.append(text)
-                                if label_58:
-                                    label_58.setText(f"${total_ventas:.2f}")
-                            self.obtener_metodo_pago(dato[2], on_metodo_pago_obtenido)
-                def on_compras_arqueo_obtenidas(datos_compras):
-                    total_compras = 0
-                    if textedit_compras:
-                        textedit_compras.setFont(QFont("Segoe UI", 16))
-                        textedit_compras.clear()
-                        for dato in datos_compras:
-                            usuario = self.traer_usuario(dato[0])
-                            fecha_hora = dato[1].strftime("%d-%m-%Y %H:%M:%S")
-                            def on_metodo_pago_obtenido(metodo_pago):
-                                producto = self.traer_nom_producto(dato[3])
-                                cantidad = dato[4]
-                                precio_unitario = dato[5]
-                                nonlocal total_compras
-                                total_compras += cantidad * precio_unitario
-                                text = (
-                                    f"Usuario: {usuario}, "
-                                    f"Fecha y Hora: {fecha_hora}, "
-                                    f"Método de Pago: {metodo_pago}, "
-                                    f"Producto: {producto}, "
-                                    f"Cantidad: {cantidad}, "
-                                    f"Precio Unitario: ${precio_unitario}\n"
-                                )
-                                textedit_compras.append(text)
-                                if label_47:
-                                    label_47.setText(f"${total_compras:.2f}")
-                            self.obtener_metodo_pago(dato[2], on_metodo_pago_obtenido)
-                self.obtener_datos_arqueo_ventas_fecha(fecha, on_ventas_arqueo_obtenidas)
-                self.obtener_datos_arqueo_compras_fecha(fecha, on_compras_arqueo_obtenidas)
+        # Procesar según el tipo de filtro
+        if valor_combobox_12 == "Metodo de Pago" and valor_combobox_13:
+            self._procesar_por_metodo_pago(valor_combobox_13, fecha, tablewidget_ventas, tablewidget_compras, label_58, label_47)
+        elif valor_combobox_12 == "Usuario" and valor_combobox_13:
+            self._procesar_por_usuario(valor_combobox_13, fecha, tablewidget_ventas, tablewidget_compras, label_58, label_47)
+        else:
+            self._procesar_arqueo(fecha, tablewidget_ventas, tablewidget_compras, label_58, label_47)
 
-        if textedit_compras:
-            textedit_compras.setReadOnly(True)
-        if textedit_ventas:
-            textedit_ventas.setReadOnly(True)
+    def _configurar_tablewidgets(self, tablewidget_compras, tablewidget_ventas):
+        """Configurar headers para ambos tablewidgets"""
+        headers = ["Usuario", "Fecha", "Hora", "Método de Pago", "Producto", "Cantidad", "Precio Unitario"]
+        
+        for widget in [tablewidget_compras, tablewidget_ventas]:
+            if widget:
+                # Limpiar tabla primero
+                widget.clear()
+                widget.setColumnCount(7)
+                widget.setHorizontalHeaderLabels(headers)
+                widget.setEditTriggers(QTableWidget.NoEditTriggers)
+                header = widget.horizontalHeader()
+                header.setFont(QFont("Segoe UI", 12, QFont.Bold))
 
+    def _construir_fecha(self, anio, mes, dia, combobox_mes):
+        """Construir string de fecha según los parámetros seleccionados"""
+        if not mes and not dia:
+            return anio
+        elif mes and not dia:
+            return f"{anio}-{combobox_mes.currentIndex()}"
+        elif mes and dia:
+            return f"{anio}-{combobox_mes.currentIndex()}-{dia}"
+        return None
 
+    def _verificar_cache_metodos_pago(self):
+        """Verificar si el cache de métodos de pago está disponible"""
+        global metodos_pago_por_id_cache
+
+        if metodos_pago_por_id_cache is None:
+            # Cargar cache si no existe
+            self.metodos_pago_thread = TraerTodosLosMetodosPagoThread()
+
+            def on_metodos_obtenidos(metodos):
+                global metodos_pago_por_id_cache
+                metodos_pago_por_id_cache = {str(metodo[0]): metodo[1] for metodo in metodos}
+
+            self.metodos_pago_thread.resultado.connect(on_metodos_obtenidos)
+            self.start_thread(self.metodos_pago_thread)
+            return False
+
+        return True
+    
+    
+
+    def _procesar_datos_optimizado(self, datos, es_ventas, tablewidget, label_total):
+        """Procesar datos de ventas o compras usando cache de métodos de pago"""
+        if not tablewidget:
+            return
+
+        # Si no hay datos, mostrar mensaje
+        if not datos:
+            tablewidget.setRowCount(1)
+            tablewidget.setColumnCount(1)
+            tablewidget.setHorizontalHeaderLabels(["Mensaje"])
+
+            # Configurar header del mensaje
+            header = tablewidget.horizontalHeader()
+            header.setFont(QFont("Segoe UI", 12, QFont.Bold))
+
+            item = QTableWidgetItem("No se encontraron registros")
+            item.setFont(QFont("Segoe UI", 12))
+            item.setTextAlignment(Qt.AlignCenter)
+            tablewidget.setItem(0, 0, item)
+
+            # Resetear total a $0.00
+            if label_total:
+                label_total.setText("$0.00")
+            return
+
+        # Si hay datos, procesar normalmente
+        tablewidget.setRowCount(len(datos))
+        tablewidget.setColumnCount(7)
+        headers = ["Usuario", "Fecha", "Hora", "Método de Pago", "Producto", "Cantidad", "Precio Unitario"]
+        tablewidget.setHorizontalHeaderLabels(headers)
+
+        # Configurar header normal
+        header = tablewidget.horizontalHeader()
+        header.setFont(QFont("Segoe UI", 12, QFont.Bold))
+
+        total = 0
+
+        for row, dato in enumerate(datos):
+            usuario = self.traer_usuario(dato[0])
+            fecha_separada = dato[1].strftime("%d-%m-%Y")
+            hora_separada = dato[1].strftime("%I:%M %p")
+
+            # Usar cache para obtener método de pago (SÍNCRONO)
+            metodo_pago = self.traer_metodo_pago_cache(dato[2])
+
+            producto = self.traer_nom_producto(dato[3])
+            cantidad = dato[4]
+            precio_unitario = dato[5]
+            total += precio_unitario * cantidad
+
+            # Llenar la fila directamente
+            items = [usuario, fecha_separada, hora_separada, metodo_pago, producto, str(cantidad), f"${precio_unitario}"]
+            for col, item_text in enumerate(items):
+                item = QTableWidgetItem(str(item_text))
+                item.setFont(QFont("Segoe UI", 10))
+                item.setTextAlignment(Qt.AlignCenter)
+                tablewidget.setItem(row, col, item)
+
+        # Actualizar total
+        if label_total:
+            label_total.setText(f"${total:.2f}")
+
+    def _procesar_por_metodo_pago(self, metodo_pago_nombre, fecha, tablewidget_ventas, tablewidget_compras, label_58, label_47):
+        """Procesar datos filtrados por método de pago"""
+        def on_metodo_pago_id_obtenido(metodo_pago_id):
+            def on_ventas_obtenidas(datos_ventas):
+                self._procesar_datos_optimizado(datos_ventas, True, tablewidget_ventas, label_58)
+
+            def on_compras_obtenidas(datos_compras):
+                self._procesar_datos_optimizado(datos_compras, False, tablewidget_compras, label_47)
+
+            self.obtener_datos_ventas(metodo_pago_id, fecha, on_ventas_obtenidas)
+            self.obtener_datos_compras(metodo_pago_id, fecha, on_compras_obtenidas)
+
+        self.obtener_metodo_pago_id(metodo_pago_nombre, on_metodo_pago_id_obtenido)
+
+    def _procesar_por_usuario(self, usuario_nombre, fecha, tablewidget_ventas, tablewidget_compras, label_58, label_47):
+        """Procesar datos filtrados por usuario"""
+        global usuarios_por_nombre_cache
+
+        usuario_id = None
+        if usuarios_por_nombre_cache and usuario_nombre in usuarios_por_nombre_cache:
+            usuario_id = usuarios_por_nombre_cache[usuario_nombre][0]
+
+        if not usuario_id:
+            return
+
+        def on_ventas_obtenidas(datos_ventas):
+            self._procesar_datos_optimizado(datos_ventas, True, tablewidget_ventas, label_58)
+
+        def on_compras_obtenidas(datos_compras):
+            self._procesar_datos_optimizado(datos_compras, False, tablewidget_compras, label_47)
+
+        self.obtener_datos_ventas(usuario_id, fecha, on_ventas_obtenidas)
+        self.obtener_datos_compras(usuario_id, fecha, on_compras_obtenidas)
+
+    def _procesar_arqueo(self, fecha, tablewidget_ventas, tablewidget_compras, label_58, label_47):
+        """Procesar datos de arqueo (sin filtros específicos)"""
+        def on_ventas_arqueo_obtenidas(datos_ventas):
+            self._procesar_datos_optimizado(datos_ventas, True, tablewidget_ventas, label_58)
+
+        def on_compras_arqueo_obtenidas(datos_compras):
+            self._procesar_datos_optimizado(datos_compras, False, tablewidget_compras, label_47)
+
+        self.obtener_datos_arqueo_ventas_fecha(fecha, on_ventas_arqueo_obtenidas)
+        self.obtener_datos_arqueo_compras_fecha(fecha, on_compras_arqueo_obtenidas)
+
+    def traer_metodo_pago_cache(self, id_metodo):
+        """Obtener método de pago desde cache local"""
+        global metodos_pago_por_id_cache
+
+        if metodos_pago_por_id_cache and str(id_metodo) in metodos_pago_por_id_cache:
+            return metodos_pago_por_id_cache[str(id_metodo)]
+        return "Método desconocido"
+    
     def actualizar_combobox_13(self, combobox_12, combobox_13):
         combobox_13.clear()
 
@@ -6770,7 +6780,7 @@ class MainWindow(QMainWindow):
         self.controlar_anotador()
 
         # Ocultar el overlay después de 5 segundos
-        QTimer.singleShot(5000, self.ocultar_overlay_inicial)
+        QTimer.singleShot(8000, self.ocultar_overlay_inicial)
 
 
     def ocultar_overlay_inicial(self):

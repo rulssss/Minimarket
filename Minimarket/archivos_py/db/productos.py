@@ -575,6 +575,24 @@ def traer_metodo_pago_id(valor):
     conn.close()
     return data[0][0]
 
+def traer_todos_metodos_pago():
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute("SELECT id_mp, nombre_mp FROM metodos_pago")
+        metodos = cursor.fetchall()
+        
+        cursor.close()
+        conn.close()
+        
+        return metodos
+    except Exception as e:
+        print(f"Error al obtener métodos de pago: {e}")
+        return []
+    
+
+
 def traer_datos_ventas_metodo_o_usuario(id, fecha):
     conn = get_connection()
     cursor = conn.cursor()

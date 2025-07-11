@@ -460,6 +460,17 @@ class MovimientosPorAccionThread(QThread):
 
 # corte
 
+class TraerTodosLosMetodosPagoThread(QThread):
+    resultado = Signal(list)
+    
+    def run(self):
+        try:
+            metodos = traer_todos_metodos_pago()
+            self.resultado.emit(metodos)
+        except Exception as e:
+            print(f"Error al obtener métodos de pago: {e}")
+            self.resultado.emit([])
+
 class TraerMetodoPagoIdThread(QThread):
     resultado = Signal(object)
     def __init__(self, nombre_metodo):
