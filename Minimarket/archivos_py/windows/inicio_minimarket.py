@@ -3016,7 +3016,7 @@ class BuscarDatosTab:
 
     def inicializar_ui_con_datos(self):
         self.boton_mov()
-        self.boton_corte()
+        self.boton_arqueo()
         self.boton_estadisticas()
 
     def start_thread(self, thread):
@@ -3058,8 +3058,10 @@ class BuscarDatosTab:
          # Conectar eventos de doble clic
         table_widget = self.ui.frame_52.findChild(QTableWidget, "tableWidget_5")
         if table_widget:
+            corner_button = table_widget.findChild(QAbstractButton)
             table_widget.horizontalHeader().sectionDoubleClicked.connect(self.copy_column_to_clipboard)
             table_widget.verticalHeader().sectionDoubleClicked.connect(self.copy_row_to_clipboard)
+            corner_button.clicked.connect(self.copy_entire_table_to_clipboard)
 
         if combobox_17:
             if combobox_17.count() == 0:
@@ -3224,6 +3226,28 @@ class BuscarDatosTab:
                     item.setTextAlignment(Qt.AlignCenter)
                     table.setItem(row, 5, item)
 
+    def copy_entire_table_to_clipboard(self):
+        table_widget = self.ui.frame_52.findChild(QTableWidget, "tableWidget_5")
+        if not table_widget:
+            return
+        row_count = table_widget.rowCount()
+        col_count = table_widget.columnCount()
+        # Copiar encabezados
+        headers = [table_widget.horizontalHeaderItem(col).text() for col in range(col_count)]
+        data = ['\t'.join(headers)]
+        # Copiar filas
+        for row in range(row_count):
+            row_data = []
+            for col in range(col_count):
+                item = table_widget.item(row, col)
+                row_data.append(item.text() if item else "")
+            data.append('\t'.join(row_data))
+        # Copiar al portapapeles
+        clipboard = QApplication.clipboard()
+        clipboard.setText('\n'.join(data))
+        self.show_copied_message("Tabla copiada al portapapeles")
+
+
     # Función para copiar una columna al portapapeles
     def copy_column_to_clipboard(self, column_index):
         table_widget = self.ui.frame_52.findChild(QTableWidget, "tableWidget_5")
@@ -3282,10 +3306,28 @@ class BuscarDatosTab:
 
     # cortes
 
-    def boton_corte(self):
+    def boton_arqueo(self):
         push_button_15 = self.ui.tab_3.findChild(QPushButton, "pushButton_15")
         if push_button_15:
             push_button_15.clicked.connect(self.inicializar_comboboxes_y_boton)
+
+         # Conectar eventos de doble clic
+        table_widget_6 = self.ui.frame_27.findChild(QTableWidget, "tableWidget_6")
+        if table_widget_6:
+            corner_button_6 = table_widget_6.findChild(QAbstractButton)
+
+            table_widget_6.horizontalHeader().sectionDoubleClicked.connect(self.copy_column_to_clipboard_ventas)
+            table_widget_6.verticalHeader().sectionDoubleClicked.connect(self.copy_row_to_clipboard_ventas)
+            corner_button_6.clicked.connect(self.copy_entire_table_to_clipboard_ventas)
+
+        table_widget_7 = self.ui.frame_23.findChild(QTableWidget, "tableWidget_7")
+        if table_widget_7:
+            corner_button_7 = table_widget_7.findChild(QAbstractButton)
+            table_widget_7.horizontalHeader().sectionDoubleClicked.connect(self.copy_column_to_clipboard_compras)
+            table_widget_7.verticalHeader().sectionDoubleClicked.connect(self.copy_row_to_clipboard_compras)
+            corner_button_7.clicked.connect(self.copy_entire_table_to_clipboard_compras)
+
+    
 
     def inicializar_comboboxes_y_boton(self):
         # Obtener los QComboBox
@@ -3824,6 +3866,139 @@ class BuscarDatosTab:
     
         else:
             raise ValueError("Debe seleccionar al menos un año para realizar el corte.")  
+        
+
+
+    # Función para copiar una columna al portapapeles
+    
+    def copy_entire_table_to_clipboard_ventas(self):
+        table_widget = self.ui.frame_27.findChild(QTableWidget, "tableWidget_6")
+        if not table_widget:
+            return
+        row_count = table_widget.rowCount()
+        col_count = table_widget.columnCount()
+        # Copiar encabezados
+        headers = [table_widget.horizontalHeaderItem(col).text() for col in range(col_count)]
+        data = ['\t'.join(headers)]
+        # Copiar filas
+        for row in range(row_count):
+            row_data = []
+            for col in range(col_count):
+                item = table_widget.item(row, col)
+                row_data.append(item.text() if item else "")
+            data.append('\t'.join(row_data))
+        # Copiar al portapapeles
+        clipboard = QApplication.clipboard()
+        clipboard.setText('\n'.join(data))
+        self.show_copied_message("Tabla copiada al portapapeles")
+
+    def copy_column_to_clipboard_ventas(self, column_index):
+
+        # Intentar encontrar tableWidget_6 primero (ventas)
+        table_widget = self.ui.frame_27.findChild(QTableWidget, "tableWidget_6")
+        
+        if table_widget:
+            column_data = []
+            for row in range(table_widget.rowCount()):
+                item = table_widget.item(row, column_index)
+                if item:
+                    column_data.append(item.text())
+            clipboard = QApplication.clipboard()
+            clipboard.setText("\n".join(column_data))
+            self.show_copied_message("Columna copiada al portapapeles")
+
+    # Función para copiar una fila al portapapeles
+    def copy_row_to_clipboard_ventas(self, row_index):
+        # Intentar encontrar tableWidget_6 primero (ventas)
+        table_widget = self.ui.frame_27.findChild(QTableWidget, "tableWidget_6")
+
+        if table_widget:
+            row_data = []
+            for col in range(table_widget.columnCount()):
+                item = table_widget.item(row_index, col)
+                if item:
+                    row_data.append(item.text())
+            clipboard = QApplication.clipboard()
+            clipboard.setText("\t".join(row_data))
+            self.show_copied_message("Fila copiada al portapapeles")
+
+    def copy_entire_table_to_clipboard_compras(self):
+        table_widget = self.ui.frame_23.findChild(QTableWidget, "tableWidget_7")
+        if not table_widget:
+            return
+        row_count = table_widget.rowCount()
+        col_count = table_widget.columnCount()
+        # Copiar encabezados
+        headers = [table_widget.horizontalHeaderItem(col).text() for col in range(col_count)]
+        data = ['\t'.join(headers)]
+        # Copiar filas
+        for row in range(row_count):
+            row_data = []
+            for col in range(col_count):
+                item = table_widget.item(row, col)
+                row_data.append(item.text() if item else "")
+            data.append('\t'.join(row_data))
+        # Copiar al portapapeles
+        clipboard = QApplication.clipboard()
+        clipboard.setText('\n'.join(data))
+        self.show_copied_message("Tabla copiada al portapapeles")
+
+    def copy_column_to_clipboard_compras(self, column_index):
+
+        # Intentar encontrar tableWidget_7 primero (compras)
+        table_widget = self.ui.frame_23.findChild(QTableWidget, "tableWidget_7")
+
+        if table_widget:
+            column_data = []
+            for row in range(table_widget.rowCount()):
+                item = table_widget.item(row, column_index)
+                if item:
+                    column_data.append(item.text())
+            clipboard = QApplication.clipboard()
+            clipboard.setText("\n".join(column_data))
+            self.show_copied_message("Columna copiada al portapapeles")
+
+    # Función para copiar una fila al portapapeles
+    def copy_row_to_clipboard_compras(self, row_index):
+        # Intentar encontrar tableWidget_7 primero (compras)
+        table_widget = self.ui.frame_23.findChild(QTableWidget, "tableWidget_7")
+
+        if table_widget:
+            row_data = []
+            for col in range(table_widget.columnCount()):
+                item = table_widget.item(row_index, col)
+                if item:
+                    row_data.append(item.text())
+            clipboard = QApplication.clipboard()
+            clipboard.setText("\t".join(row_data))
+            self.show_copied_message("Fila copiada al portapapeles")
+
+    # Función para mostrar el mensaje de copiado
+    def show_copied_message(self, message):
+        copied_label = QLabel(message, self.ui.centralwidget)
+        copied_label.setStyleSheet("""
+            QLabel {
+            background-color: rgba(0, 0, 0, 150);
+            color: white;
+            font-size: 16pt;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 5px;
+            }
+        """)
+        copied_label.setAlignment(Qt.AlignCenter)
+        copied_label.setFixedSize(350, 50)
+
+        # Centrar el QLabel en la pantalla
+        screen_geometry = QApplication.primaryScreen().geometry()
+        x = (screen_geometry.width() - copied_label.width()) // 2
+        y = (screen_geometry.height() - copied_label.height()) // 2
+        copied_label.move(x, y)
+        copied_label.show()
+
+        # Ocultar el QLabel después de 2 segundos
+        QTimer.singleShot(2000, copied_label.hide)
+
 
 ################
 ################
