@@ -3097,7 +3097,7 @@ class BuscarDatosTab:
     
     def populate_combobox_acciones(self, combobox):
         combobox.clear()
-        acciones = ["Agregar", "Borrar", "Editar", "Venta", "Compra"]
+        acciones = ["Agregar", "Borrar", "Editar", "Venta", "Compra", "Login"]
         combobox.addItems(acciones)
 
     def populate_combobox_with_names(self, combobox):
