@@ -12,7 +12,7 @@ if __name__ == "__main__":
     window.show()
     sys.exit(app.exec())
 
-##
+
 # inicio del login pruebas del login rls
 #if __name__ == "__main__":
 #    app = QApplication(sys.argv)
