@@ -2495,7 +2495,7 @@ class DatosTab:
     def show_confirmation_dialog(self):
         
         dialog = QMessageBox()
-        dialog.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\Minimarket\Minimarket\Minimarket\archivos_py\resources\r.ico"))
+        dialog.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
         dialog.setWindowTitle("Confirmación")
         dialog.setText("¿Está seguro de que desea borrar los datos seleccionados?")
         dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
@@ -2543,7 +2543,7 @@ class DatosTab:
 
         if push_button_39:
             push_button_39.setFocusPolicy(Qt.NoFocus)
-            push_button_39.setIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\Minimarket\Minimarket\Minimarket\archivos_py\resources\eye_visible_hide_hidden_show_icon_145988.png"))
+            push_button_39.setIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\eye_visible_hide_hidden_show_icon_145988.png"))
             push_button_39.clicked.connect(self.setear_lineedit_avisual_agregar)
 
         if label_90:
@@ -2735,7 +2735,7 @@ class DatosTab:
             
         if push_button_41:
             push_button_41.setFocusPolicy(Qt.NoFocus)
-            push_button_41.setIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\Minimarket\Minimarket\Minimarket\archivos_py\resources\eye_visible_hide_hidden_show_icon_145988.png"))
+            push_button_41.setIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\eye_visible_hide_hidden_show_icon_145988.png"))
             push_button_41.clicked.connect(self.setear_lineedit_avisual_editar)
 
         if label_98:
@@ -5115,7 +5115,7 @@ class AdministracionTab:
             self.facturero_ui = Ui_VentanaFactureroVentas()
             self.facturero_ui.setupUi(self.facturero_ventas_window)
             # Establece el icono y el título de la ventana principal
-            self.facturero_ventas_window.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\Minimarket\Minimarket\Minimarket\archivos_py\resources\r.ico"))
+            self.facturero_ventas_window.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
             self.facturero_ventas_window.setWindowTitle("Facturero Ventas")
             self.facturero_ventas_window.setWindowModality(Qt.NonModal)
             self.facturero_ventas_window.setFixedSize(self.facturero_ventas_window.size())
@@ -5255,7 +5255,7 @@ class AdministracionTab:
         ui_ventana = Ui_Dialog()
         ui_ventana.setupUi(dialogo_agregar_mp)
         dialogo_agregar_mp.setWindowTitle("Agregar Método de Pago")
-        dialogo_agregar_mp.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\Minimarket\Minimarket\Minimarket\archivos_py\resources\r.ico"))
+        dialogo_agregar_mp.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
 
         # --- 3. Configurar widgets ---
         lineEdit = dialogo_agregar_mp.findChild(QLineEdit, "lineEdit")
@@ -5358,7 +5358,7 @@ class AdministracionTab:
         ui_ventana = Ui_Dialog2()
         ui_ventana.setupUi(dialogo_borrar_mp)
         dialogo_borrar_mp.setWindowTitle("Borrar Método de Pago")
-        dialogo_borrar_mp.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\Minimarket\Minimarket\Minimarket\archivos_py\resources\r.ico"))
+        dialogo_borrar_mp.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
 
         # --- 3. Configurar widgets ---
         combobox = dialogo_borrar_mp.findChild(QComboBox, "comboBox")
@@ -5411,7 +5411,7 @@ class AdministracionTab:
             if combobox_value != "":
                 # ACA - Diálogo de confirmación
                 dialogo_confirmacion = QMessageBox(dialog)
-                dialogo_confirmacion.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\Minimarket\Minimarket\Minimarket\archivos_py\resources\r.ico"))
+                dialogo_confirmacion.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
                 dialogo_confirmacion.setWindowTitle("Confirmar eliminación")
                 dialogo_confirmacion.setText(f"Está por borrar: \"{combobox_value}\"")
                 dialogo_confirmacion.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
@@ -6168,7 +6168,7 @@ class AdministracionTab:
             self.facturero_compras_window = QDialog(self.ui.centralwidget)
             self.facturero_ui = Ui_VentanaFactureroCompras()
             self.facturero_ui.setupUi(self.facturero_compras_window)
-            self.facturero_compras_window.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\Minimarket\Minimarket\Minimarket\archivos_py\resources\r.ico"))
+            self.facturero_compras_window.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
             self.facturero_compras_window.setWindowTitle("Facturero Compras")
             self.facturero_compras_window.setWindowModality(Qt.NonModal)
             self.facturero_compras_window.setFixedSize(self.facturero_compras_window.size())
@@ -6308,7 +6308,7 @@ class AdministracionTab:
         ui_ventana = Ui_Dialog()
         ui_ventana.setupUi(dialogo_agregar_mp)
         dialogo_agregar_mp.setWindowTitle("Agregar Método de Pago")
-        dialogo_agregar_mp.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\Minimarket\Minimarket\Minimarket\archivos_py\resources\r.ico"))
+        dialogo_agregar_mp.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
 
         # --- 3. Configurar widgets ---
         lineEdit = dialogo_agregar_mp.findChild(QLineEdit, "lineEdit")
@@ -6409,7 +6409,7 @@ class AdministracionTab:
         ui_ventana = Ui_Dialog2()
         ui_ventana.setupUi(dialogo_borrar_mp)
         dialogo_borrar_mp.setWindowTitle("Borrar Método de Pago")
-        dialogo_borrar_mp.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\Minimarket\Minimarket\Minimarket\archivos_py\resources\r.ico"))
+        dialogo_borrar_mp.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
 
        # --- 3. Configurar widgets ---
         combobox = dialogo_borrar_mp.findChild(QComboBox, "comboBox")
@@ -6461,7 +6461,7 @@ class AdministracionTab:
             if combobox_value != "":
                 # ACA - Diálogo de confirmación
                 dialogo_confirmacion = QMessageBox(dialog)
-                dialogo_confirmacion.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\Minimarket\Minimarket\Minimarket\archivos_py\resources\r.ico"))
+                dialogo_confirmacion.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
                 dialogo_confirmacion.setWindowTitle("Confirmar eliminación")
                 dialogo_confirmacion.setText(f"Está por borrar: \"{combobox_value}\"")
                 dialogo_confirmacion.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
@@ -6936,7 +6936,7 @@ class MainWindow(QMainWindow):
         
 
         # Establece el icono y el título de la ventana principal
-        self.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\Minimarket\Minimarket\Minimarket\archivos_py\resources\r.ico"))
+        self.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
         self.setWindowTitle("rls")  
 
         # Mostrar overlay de carga al iniciar
@@ -7279,7 +7279,7 @@ class MainWindow(QMainWindow):
         self.connect_button("pushButton_48", stacked_widget, 19)
         push_button_48 = self.findChild(QPushButton, "pushButton_48")
         if push_button_48:
-            push_button_48.setIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\Minimarket\Minimarket\Minimarket\archivos_py\resources\eye_visible_hide_hidden_show_icon_145988.png"))
+            push_button_48.setIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\eye_visible_hide_hidden_show_icon_145988.png"))
             self.connect_button("pushButton_48", stacked_widget, 19,  lambda: self.change_table_headers_color_visualizar_movimientos())
 
         # VENTANA ADMINISTRACION

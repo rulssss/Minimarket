@@ -24,7 +24,7 @@ class Inicio(QWidget):
         self.pushButton_connected = False
 
         # Establece el icono y el título de la ventana principal
-        self.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\Minimarket\Minimarket\Minimarket\archivos_py\resources\r.ico"))
+        self.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
         self.setWindowTitle("rls")
 
 
