@@ -38,6 +38,90 @@ class Ui_Form_login(object):
         self.stackedWidget = QStackedWidget(self.frame)
         self.stackedWidget.setObjectName(u"stackedWidget")
         self.stackedWidget.setMinimumSize(QSize(0, 39))
+        self.page_9 = QWidget()
+        self.page_9.setObjectName(u"page_9")
+        self.verticalLayout_9 = QVBoxLayout(self.page_9)
+        self.verticalLayout_9.setObjectName(u"verticalLayout_9")
+        self.label_24 = QLabel(self.page_9)
+        self.label_24.setObjectName(u"label_24")
+        font = QFont()
+        font.setPointSize(14)
+        font.setBold(True)
+        self.label_24.setFont(font)
+
+        self.verticalLayout_9.addWidget(self.label_24, 0, Qt.AlignmentFlag.AlignHCenter)
+
+        self.label_25 = QLabel(self.page_9)
+        self.label_25.setObjectName(u"label_25")
+        font1 = QFont()
+        font1.setPointSize(12)
+        self.label_25.setFont(font1)
+
+        self.verticalLayout_9.addWidget(self.label_25, 0, Qt.AlignmentFlag.AlignHCenter)
+
+        self.horizontalSpacer_5 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.verticalLayout_9.addItem(self.horizontalSpacer_5)
+
+        self.label_26 = QLabel(self.page_9)
+        self.label_26.setObjectName(u"label_26")
+        font2 = QFont()
+        font2.setBold(True)
+        self.label_26.setFont(font2)
+
+        self.verticalLayout_9.addWidget(self.label_26, 0, Qt.AlignmentFlag.AlignHCenter)
+
+        self.lineEdit_11 = QLineEdit(self.page_9)
+        self.lineEdit_11.setObjectName(u"lineEdit_11")
+        self.lineEdit_11.setMinimumSize(QSize(200, 0))
+        self.lineEdit_11.setMaximumSize(QSize(200, 16777215))
+        font3 = QFont()
+        font3.setPointSize(10)
+        self.lineEdit_11.setFont(font3)
+
+        self.verticalLayout_9.addWidget(self.lineEdit_11, 0, Qt.AlignmentFlag.AlignHCenter)
+
+        self.label_27 = QLabel(self.page_9)
+        self.label_27.setObjectName(u"label_27")
+        self.label_27.setFont(font2)
+
+        self.verticalLayout_9.addWidget(self.label_27, 0, Qt.AlignmentFlag.AlignHCenter)
+
+        self.lineEdit_12 = QLineEdit(self.page_9)
+        self.lineEdit_12.setObjectName(u"lineEdit_12")
+        self.lineEdit_12.setMinimumSize(QSize(200, 0))
+        self.lineEdit_12.setMaximumSize(QSize(200, 16777215))
+        self.lineEdit_12.setSizeIncrement(QSize(0, 0))
+        self.lineEdit_12.setFont(font3)
+
+        self.verticalLayout_9.addWidget(self.lineEdit_12, 0, Qt.AlignmentFlag.AlignHCenter)
+
+        self.horizontalSpacer_15 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.verticalLayout_9.addItem(self.horizontalSpacer_15)
+
+        self.pushButton_15 = QPushButton(self.page_9)
+        self.pushButton_15.setObjectName(u"pushButton_15")
+        self.pushButton_15.setMinimumSize(QSize(150, 0))
+        self.pushButton_15.setMaximumSize(QSize(150, 16777215))
+        font4 = QFont()
+        font4.setPointSize(11)
+        font4.setBold(True)
+        self.pushButton_15.setFont(font4)
+
+        self.verticalLayout_9.addWidget(self.pushButton_15, 0, Qt.AlignmentFlag.AlignHCenter)
+
+        self.pushButton_16 = QPushButton(self.page_9)
+        self.pushButton_16.setObjectName(u"pushButton_16")
+        font5 = QFont()
+        font5.setUnderline(True)
+        self.pushButton_16.setFont(font5)
+        self.pushButton_16.setAutoDefault(False)
+        self.pushButton_16.setFlat(True)
+
+        self.verticalLayout_9.addWidget(self.pushButton_16)
+
+        self.stackedWidget.addWidget(self.page_9)
         self.page = QWidget()
         self.page.setObjectName(u"page")
         self.verticalLayout = QVBoxLayout(self.page)
@@ -45,9 +129,6 @@ class Ui_Form_login(object):
         self.label_4 = QLabel(self.page)
         self.label_4.setObjectName(u"label_4")
         self.label_4.setMinimumSize(QSize(0, 25))
-        font = QFont()
-        font.setPointSize(14)
-        font.setBold(True)
         self.label_4.setFont(font)
 
         self.verticalLayout.addWidget(self.label_4, 0, Qt.AlignmentFlag.AlignHCenter)
@@ -58,10 +139,10 @@ class Ui_Form_login(object):
 
         self.label = QLabel(self.page)
         self.label.setObjectName(u"label")
-        font1 = QFont()
-        font1.setPointSize(12)
-        font1.setBold(True)
-        self.label.setFont(font1)
+        font6 = QFont()
+        font6.setPointSize(12)
+        font6.setBold(True)
+        self.label.setFont(font6)
 
         self.verticalLayout.addWidget(self.label, 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -69,15 +150,13 @@ class Ui_Form_login(object):
         self.comboBox.setObjectName(u"comboBox")
         self.comboBox.setMinimumSize(QSize(200, 0))
         self.comboBox.setMaximumSize(QSize(200, 16777215))
-        font2 = QFont()
-        font2.setPointSize(10)
-        self.comboBox.setFont(font2)
+        self.comboBox.setFont(font3)
 
         self.verticalLayout.addWidget(self.comboBox, 0, Qt.AlignmentFlag.AlignHCenter)
 
         self.label_2 = QLabel(self.page)
         self.label_2.setObjectName(u"label_2")
-        self.label_2.setFont(font1)
+        self.label_2.setFont(font6)
 
         self.verticalLayout.addWidget(self.label_2, 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -85,13 +164,13 @@ class Ui_Form_login(object):
         self.lineEdit.setObjectName(u"lineEdit")
         self.lineEdit.setMinimumSize(QSize(200, 0))
         self.lineEdit.setMaximumSize(QSize(200, 16777215))
-        self.lineEdit.setFont(font2)
+        self.lineEdit.setFont(font3)
 
         self.verticalLayout.addWidget(self.lineEdit, 0, Qt.AlignmentFlag.AlignHCenter)
 
         self.label_3 = QLabel(self.page)
         self.label_3.setObjectName(u"label_3")
-        self.label_3.setFont(font1)
+        self.label_3.setFont(font6)
 
         self.verticalLayout.addWidget(self.label_3, 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -99,7 +178,7 @@ class Ui_Form_login(object):
         self.lineEdit_2.setObjectName(u"lineEdit_2")
         self.lineEdit_2.setMinimumSize(QSize(200, 0))
         self.lineEdit_2.setMaximumSize(QSize(200, 16777215))
-        self.lineEdit_2.setFont(font2)
+        self.lineEdit_2.setFont(font3)
 
         self.verticalLayout.addWidget(self.lineEdit_2, 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -116,10 +195,7 @@ class Ui_Form_login(object):
         self.pushButton.setObjectName(u"pushButton")
         self.pushButton.setMinimumSize(QSize(150, 0))
         self.pushButton.setMaximumSize(QSize(150, 16777215))
-        font3 = QFont()
-        font3.setPointSize(11)
-        font3.setBold(True)
-        self.pushButton.setFont(font3)
+        self.pushButton.setFont(font4)
 
         self.verticalLayout.addWidget(self.pushButton, 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -163,7 +239,7 @@ class Ui_Form_login(object):
 
         self.label_6 = QLabel(self.page_2)
         self.label_6.setObjectName(u"label_6")
-        self.label_6.setFont(font1)
+        self.label_6.setFont(font6)
 
         self.verticalLayout_2.addWidget(self.label_6, 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -176,7 +252,7 @@ class Ui_Form_login(object):
 
         self.label_7 = QLabel(self.page_2)
         self.label_7.setObjectName(u"label_7")
-        self.label_7.setFont(font1)
+        self.label_7.setFont(font6)
 
         self.verticalLayout_2.addWidget(self.label_7, 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -189,7 +265,7 @@ class Ui_Form_login(object):
 
         self.label_8 = QLabel(self.page_2)
         self.label_8.setObjectName(u"label_8")
-        self.label_8.setFont(font1)
+        self.label_8.setFont(font6)
 
         self.verticalLayout_2.addWidget(self.label_8, 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -202,7 +278,7 @@ class Ui_Form_login(object):
 
         self.label_14 = QLabel(self.page_2)
         self.label_14.setObjectName(u"label_14")
-        self.label_14.setFont(font1)
+        self.label_14.setFont(font6)
 
         self.verticalLayout_2.addWidget(self.label_14, 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -210,9 +286,9 @@ class Ui_Form_login(object):
         self.lineEdit_8.setObjectName(u"lineEdit_8")
         self.lineEdit_8.setMinimumSize(QSize(200, 0))
         self.lineEdit_8.setMaximumSize(QSize(200, 16777215))
-        font4 = QFont()
-        font4.setPointSize(9)
-        self.lineEdit_8.setFont(font4)
+        font7 = QFont()
+        font7.setPointSize(9)
+        self.lineEdit_8.setFont(font7)
 
         self.verticalLayout_2.addWidget(self.lineEdit_8, 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -227,7 +303,7 @@ class Ui_Form_login(object):
         self.pushButton_4.setObjectName(u"pushButton_4")
         self.pushButton_4.setMinimumSize(QSize(150, 0))
         self.pushButton_4.setMaximumSize(QSize(150, 16777215))
-        self.pushButton_4.setFont(font3)
+        self.pushButton_4.setFont(font4)
 
         self.verticalLayout_2.addWidget(self.pushButton_4, 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -253,7 +329,7 @@ class Ui_Form_login(object):
 
         self.label_10 = QLabel(self.page_3)
         self.label_10.setObjectName(u"label_10")
-        self.label_10.setFont(font1)
+        self.label_10.setFont(font6)
 
         self.verticalLayout_3.addWidget(self.label_10, 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -261,16 +337,16 @@ class Ui_Form_login(object):
         self.lineEdit_5.setObjectName(u"lineEdit_5")
         self.lineEdit_5.setMinimumSize(QSize(200, 0))
         self.lineEdit_5.setMaximumSize(QSize(200, 16777215))
-        font5 = QFont()
-        font5.setPointSize(10)
-        font5.setBold(True)
-        self.lineEdit_5.setFont(font5)
+        font8 = QFont()
+        font8.setPointSize(10)
+        font8.setBold(True)
+        self.lineEdit_5.setFont(font8)
 
         self.verticalLayout_3.addWidget(self.lineEdit_5, 0, Qt.AlignmentFlag.AlignHCenter)
 
         self.label_11 = QLabel(self.page_3)
         self.label_11.setObjectName(u"label_11")
-        self.label_11.setFont(font1)
+        self.label_11.setFont(font6)
 
         self.verticalLayout_3.addWidget(self.label_11, 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -278,7 +354,7 @@ class Ui_Form_login(object):
         self.lineEdit_6.setObjectName(u"lineEdit_6")
         self.lineEdit_6.setMinimumSize(QSize(200, 0))
         self.lineEdit_6.setMaximumSize(QSize(200, 16777215))
-        self.lineEdit_6.setFont(font5)
+        self.lineEdit_6.setFont(font8)
 
         self.verticalLayout_3.addWidget(self.lineEdit_6, 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -291,7 +367,7 @@ class Ui_Form_login(object):
         self.pushButton_6.setObjectName(u"pushButton_6")
         self.pushButton_6.setMinimumSize(QSize(150, 0))
         self.pushButton_6.setMaximumSize(QSize(150, 16777215))
-        self.pushButton_6.setFont(font3)
+        self.pushButton_6.setFont(font4)
 
         self.verticalLayout_3.addWidget(self.pushButton_6, 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -325,7 +401,7 @@ class Ui_Form_login(object):
 
         self.label_13 = QLabel(self.page_4)
         self.label_13.setObjectName(u"label_13")
-        self.label_13.setFont(font1)
+        self.label_13.setFont(font6)
 
         self.verticalLayout_4.addWidget(self.label_13, 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -337,7 +413,7 @@ class Ui_Form_login(object):
         self.lineEdit_7.setObjectName(u"lineEdit_7")
         self.lineEdit_7.setMinimumSize(QSize(200, 0))
         self.lineEdit_7.setMaximumSize(QSize(200, 16777215))
-        self.lineEdit_7.setFont(font2)
+        self.lineEdit_7.setFont(font3)
 
         self.verticalLayout_4.addWidget(self.lineEdit_7, 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -350,11 +426,11 @@ class Ui_Form_login(object):
         self.pushButton_8.setObjectName(u"pushButton_8")
         self.pushButton_8.setMinimumSize(QSize(150, 0))
         self.pushButton_8.setMaximumSize(QSize(150, 16777215))
-        font6 = QFont()
-        font6.setPointSize(11)
-        font6.setBold(True)
-        font6.setStrikeOut(False)
-        self.pushButton_8.setFont(font6)
+        font9 = QFont()
+        font9.setPointSize(11)
+        font9.setBold(True)
+        font9.setStrikeOut(False)
+        self.pushButton_8.setFont(font9)
 
         self.verticalLayout_4.addWidget(self.pushButton_8, 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -388,7 +464,7 @@ class Ui_Form_login(object):
 
         self.label_15 = QLabel(self.page_5)
         self.label_15.setObjectName(u"label_15")
-        self.label_15.setFont(font1)
+        self.label_15.setFont(font6)
 
         self.verticalLayout_5.addWidget(self.label_15, 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -400,7 +476,7 @@ class Ui_Form_login(object):
         self.lineEdit_9.setObjectName(u"lineEdit_9")
         self.lineEdit_9.setMinimumSize(QSize(200, 0))
         self.lineEdit_9.setMaximumSize(QSize(200, 16777215))
-        self.lineEdit_9.setFont(font5)
+        self.lineEdit_9.setFont(font8)
 
         self.verticalLayout_5.addWidget(self.lineEdit_9, 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -413,7 +489,7 @@ class Ui_Form_login(object):
         self.pushButton_10.setObjectName(u"pushButton_10")
         self.pushButton_10.setMinimumSize(QSize(150, 0))
         self.pushButton_10.setMaximumSize(QSize(150, 16777215))
-        self.pushButton_10.setFont(font3)
+        self.pushButton_10.setFont(font4)
 
         self.verticalLayout_5.addWidget(self.pushButton_10, 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -471,7 +547,7 @@ class Ui_Form_login(object):
         self.pushButton_13.setObjectName(u"pushButton_13")
         self.pushButton_13.setMinimumSize(QSize(150, 0))
         self.pushButton_13.setMaximumSize(QSize(150, 16777215))
-        self.pushButton_13.setFont(font3)
+        self.pushButton_13.setFont(font4)
 
         self.verticalLayout_6.addWidget(self.pushButton_13, 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -510,9 +586,7 @@ class Ui_Form_login(object):
 
         self.label_29 = QLabel(self.page_8)
         self.label_29.setObjectName(u"label_29")
-        font7 = QFont()
-        font7.setPointSize(12)
-        self.label_29.setFont(font7)
+        self.label_29.setFont(font1)
 
         self.verticalLayout_8.addWidget(self.label_29, 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -520,13 +594,13 @@ class Ui_Form_login(object):
         self.lineEdit_13.setObjectName(u"lineEdit_13")
         self.lineEdit_13.setMinimumSize(QSize(200, 0))
         self.lineEdit_13.setMaximumSize(QSize(150, 16777215))
-        self.lineEdit_13.setFont(font2)
+        self.lineEdit_13.setFont(font3)
 
         self.verticalLayout_8.addWidget(self.lineEdit_13, 0, Qt.AlignmentFlag.AlignHCenter)
 
         self.label_30 = QLabel(self.page_8)
         self.label_30.setObjectName(u"label_30")
-        self.label_30.setFont(font7)
+        self.label_30.setFont(font1)
 
         self.verticalLayout_8.addWidget(self.label_30, 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -534,7 +608,7 @@ class Ui_Form_login(object):
         self.lineEdit_14.setObjectName(u"lineEdit_14")
         self.lineEdit_14.setMinimumSize(QSize(200, 0))
         self.lineEdit_14.setSizeIncrement(QSize(0, 0))
-        self.lineEdit_14.setFont(font2)
+        self.lineEdit_14.setFont(font3)
 
         self.verticalLayout_8.addWidget(self.lineEdit_14, 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -547,7 +621,7 @@ class Ui_Form_login(object):
         self.pushButton_18.setObjectName(u"pushButton_18")
         self.pushButton_18.setMinimumSize(QSize(150, 0))
         self.pushButton_18.setSizeIncrement(QSize(150, 0))
-        self.pushButton_18.setFont(font1)
+        self.pushButton_18.setFont(font6)
 
         self.verticalLayout_8.addWidget(self.pushButton_18, 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -565,7 +639,8 @@ class Ui_Form_login(object):
 
         self.retranslateUi(Form)
 
-        self.stackedWidget.setCurrentIndex(1)
+        self.stackedWidget.setCurrentIndex(0)
+        self.pushButton_16.setDefault(False)
         self.pushButton_3.setDefault(False)
 
 
@@ -574,7 +649,13 @@ class Ui_Form_login(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
-        self.label_4.setText(QCoreApplication.translate("Form", u"Login", None))
+        self.label_24.setText(QCoreApplication.translate("Form", u"Login", None))
+        self.label_25.setText(QCoreApplication.translate("Form", u"-- Ingrese su cuenta web --", None))
+        self.label_26.setText(QCoreApplication.translate("Form", u"Gmail :", None))
+        self.label_27.setText(QCoreApplication.translate("Form", u"Contrase\u00f1a :", None))
+        self.pushButton_15.setText(QCoreApplication.translate("Form", u"Ingresar", None))
+        self.pushButton_16.setText(QCoreApplication.translate("Form", u"Olvide mi contrase\u00f1a", None))
+        self.label_4.setText(QCoreApplication.translate("Form", u"Login rls", None))
         self.label.setText(QCoreApplication.translate("Form", u"Seleccione el tipo de cuenta :", None))
         self.label_2.setText(QCoreApplication.translate("Form", u"Usuario :", None))
         self.label_3.setText(QCoreApplication.translate("Form", u"Contrase\u00f1a :", None))

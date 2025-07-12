@@ -27,20 +27,19 @@ class Inicio(QWidget):
         self.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\Minimarket\Minimarket\Minimarket\archivos_py\resources\r.ico"))
         self.setWindowTitle("rls")
 
-        self.ui.stackedWidget.setCurrentIndex(0)  # Configura la página 0 como índice actual del stackedWidget
 
         #verificar si hay admin
         activated, validation_code = check_activation()
-        if not activated:
-            self.request_validation_code(validation_code)
-        else:
+        if activated:
             self.open_login_window()
+        else:
+            self.request_validation_code(validation_code)
 
 
     # funcion para abrir la ventana de login
     def open_login_window(self):
         
-        self.ui.stackedWidget.setCurrentIndex(0)
+        self.ui.stackedWidget.setCurrentIndex(1)
 
         label_21 = self.ui.stackedWidget.findChild(QWidget, "label_21")
         combobox = self.ui.stackedWidget.findChild(QWidget, "comboBox")
@@ -162,7 +161,7 @@ class Inicio(QWidget):
 
     def open_register_window(self):
         
-        self.ui.stackedWidget.setCurrentIndex(1)
+        self.ui.stackedWidget.setCurrentIndex(2)
 
         label_20 = self.ui.stackedWidget.findChild(QWidget, "label_20")
         combobox = self.ui.stackedWidget.findChild(QWidget, "comboBox_2")
@@ -344,7 +343,7 @@ class Inicio(QWidget):
             
     def open_verificar_codigo_cuent_admin(self):
 
-        self.ui.stackedWidget.setCurrentIndex(5)
+        self.ui.stackedWidget.setCurrentIndex(6)
         
 
         label_23 = self.ui.stackedWidget.findChild(QWidget, "label_23")
@@ -573,7 +572,7 @@ class Inicio(QWidget):
 
 
     def open_verificar_codigo_cuenta(self):
-        self.ui.stackedWidget.setCurrentIndex(5)
+        self.ui.stackedWidget.setCurrentIndex(6)
 
         label_23 = self.ui.stackedWidget.findChild(QWidget, "label_23")
         label_22 = self.ui.stackedWidget.findChild(QWidget, "label_22")
@@ -682,7 +681,7 @@ class Inicio(QWidget):
 
 
     def open_recover_window(self):
-        self.ui.stackedWidget.setCurrentIndex(3)
+        self.ui.stackedWidget.setCurrentIndex(4)
 
         label_17 = self.ui.stackedWidget.findChild(QWidget, "label_17")
         pushButton_8 = self.ui.stackedWidget.findChild(QWidget, "pushButton_8")
@@ -759,7 +758,7 @@ class Inicio(QWidget):
     
 
     def open_verificar_recuperar_contra(self):
-        self.ui.stackedWidget.setCurrentIndex(4)
+        self.ui.stackedWidget.setCurrentIndex(5)
 
         label_18 = self.ui.stackedWidget.findChild(QWidget, "label_18")
         pushButton_10 = self.ui.stackedWidget.findChild(QWidget, "pushButton_10")
@@ -845,7 +844,7 @@ class Inicio(QWidget):
 
     # ventana de recuperar contrasenia
     def open_recuperar_contra(self):
-        self.ui.stackedWidget.setCurrentIndex(2)
+        self.ui.stackedWidget.setCurrentIndex(3)
 
         label_19 = self.ui.stackedWidget.findChild(QWidget, "label_19")
         pushButton_6 = self.ui.stackedWidget.findChild(QWidget, "pushButton_6")
