@@ -1,16 +1,36 @@
 from PySide6.QtCore import QThread, Signal
-from archivos_py.db.usuarios import *
+import requests
+
+API_URL = "https://web-production-aa989.up.railway.app"
 
 class LoginThread(QThread):
     finished = Signal(bool, str)
-    def __init__(self, usuario, contrasenia, tipo):
+    def __init__(self, tipo, usuario, contrasenia):
         super().__init__()
         self.usuario = usuario
         self.contrasenia = contrasenia
         self.tipo = tipo
+
     def run(self):
-        exito = verificar_contrasenia(self.contrasenia, self.tipo, self.usuario)
-        self.finished.emit(not exito, "Login correcto" if not exito else "Error")
+        try:
+            url = f"{API_URL}/api/verificar_contrasenia"
+            payload = {
+                "tipo_usuario": self.tipo,
+                "usuario": self.usuario,
+                "contrasenia": self.contrasenia
+            }
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                data = response.json()
+                print(f"Respuesta del backend: {data}")
+                valido = data.get("valido", False)
+                mensaje = "Login correcto" if valido else "Usuario o contraseña incorrectos"
+                self.finished.emit(valido, mensaje)
+            else:
+                self.finished.emit(False, "Error de conexión con el backend")
+        except Exception as e:
+            print(f"Error en el thread de login: {e}")
+            self.finished.emit(False, f"Error interno: {str(e)}")
 
 class RegistroCheckThread(QThread):
     finished = Signal(dict)
@@ -23,13 +43,35 @@ class RegistroCheckThread(QThread):
         self.tipo_usuario = tipo_usuario
 
     def run(self):
-        result = {
-            "hay_admin": hay_admin() if self.tipo_usuario == "Administrador" else False,
-            "usuario_existe": verificar_usuario_existente(self.username),
-            "mail_existe": verificar_mail_existente(self.email),
-            "password_ok": len(self.password) >= 8
-        }
-        self.finished.emit(result)
+        try:
+            url = f"{API_URL}/api/registro_check"
+            payload = {
+                "username": self.username,
+                "password": self.password,
+                "email": self.email,
+                "tipo_usuario": self.tipo_usuario
+            }
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                data = response.json()
+                self.finished.emit(data)
+            else:
+                self.finished.emit({
+                    "hay_admin": False,
+                    "usuario_existe": False,
+                    "mail_existe": False,
+                    "password_ok": False,
+                    "error": "Error de conexión con el backend"
+                })
+        except Exception as e:
+            print(f"Error en el thread de registro: {e}")
+            self.finished.emit({
+                "hay_admin": False,
+                "usuario_existe": False,
+                "mail_existe": False,
+                "password_ok": False,
+                "error": f"Error interno: {str(e)}"
+            })
 
 
 class EnviarCodigoThread(QThread):
@@ -40,21 +82,45 @@ class EnviarCodigoThread(QThread):
         self.mail = mail
 
     def run(self):
-        codigo = enviar_codigo_verificacion(self.mail)
-        if codigo:
-            print(f"Codigo enviado al usuario: {codigo}")
-        self.finished.emit(codigo)
-
+        try:
+            url = f"{API_URL}/api/enviar_codigo_verificacion"
+            payload = {"mail": self.mail}
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                data = response.json()
+                codigo = data.get("codigo")
+                if codigo:
+                    print(f"Codigo enviado al usuario: {codigo}")
+                    self.finished.emit(codigo)
+                else:
+                    print("No se pudo enviar el código.")
+                    self.finished.emit(None)
+            else:
+                print(f"Error al enviar código: {response.text}")
+                self.finished.emit(None)
+        except Exception as e:
+            print(f"Error en el thread de enviar código: {e}")
+            self.finished.emit(None)
 
 class CodigoOtroAdminThread(QThread):
     finished = Signal(object)  # El código o None
 
     def run(self):
-        administrador = traer_administradores()
-        mail = traer_mail_admin(administrador)
-        codigo = enviar_codigo_verificacion(mail)
-        print("codigo enviado a admin", codigo)
-        self.finished.emit(codigo)
+        
+        try:
+            url = f"{API_URL}/api/codigo_otro_admin"
+            response = requests.post(url)
+            if response.status_code == 200:
+                data = response.json()
+                codigo = data.get("codigo")
+                print("codigo enviado a admin", codigo)
+                self.finished.emit(codigo)
+            else:
+                print(f"Error al obtener código de otro admin: {response.text}")
+                self.finished.emit(None)
+        except Exception as e:
+            print(f"Error en el thread de enviar código a admin: {e}")
+            self.finished.emit(None)
 
 class RegistrarUsuarioThread(QThread):
     finished = Signal(bool)
@@ -67,11 +133,24 @@ class RegistrarUsuarioThread(QThread):
         self.email = email
 
     def run(self):
+    
         try:
-            registrar_usuario(self.usuario, self.contrasena, self.tipo, self.email)
-            self.finished.emit(True)
-        except Exception:
+            url = f"{API_URL}/api/registrar_usuario"
+            payload = {
+                "usuario": self.usuario,
+                "contrasena": self.contrasena,
+                "tipo": self.tipo,
+                "email": self.email
+            }
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                self.finished.emit(True)
+            else:
+                self.finished.emit(False)
+        except Exception as e:
+            print(f"Error en el thread de registrar usuario: {e}")
             self.finished.emit(False)
+
 
 class VerificarYEnviarCodigoThread(QThread):
     finished = Signal(bool, object)  # (existe, codigo o None)
@@ -81,12 +160,25 @@ class VerificarYEnviarCodigoThread(QThread):
         self.mail = mail
 
     def run(self):
-        existe = existencia_mail(self.mail)
-        if existe:
-            codigo = enviar_codigo_verificacion(self.mail)
-            print(f"Codigo enviado al usuario: {codigo}")
-            self.finished.emit(True, codigo)
-        else:
+        try:
+            url = f"{API_URL}/api/verificar_y_enviar_codigo"
+            payload = {"mail": self.mail}
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                data = response.json()
+                existe = data.get("existe", False)
+                codigo = data.get("codigo")
+                if existe and codigo:
+                    print(f"Codigo enviado al usuario: {codigo}")
+                    self.finished.emit(True, codigo)
+                else:
+                    print("No se pudo enviar el código.")
+                    self.finished.emit(False, None)
+            else:
+                print(f"Error al verificar y enviar código: {response.text}")
+                self.finished.emit(False, None)
+        except Exception as e:
+            print(f"Error en el thread de verificar y enviar código: {e}")
             self.finished.emit(False, None)
 
 
@@ -99,5 +191,18 @@ class ActualizarContrasenaThread(QThread):
         self.email = email
 
     def run(self):
-        exito = actualizar_contrasena(self.nueva_contrasena, self.email)
-        self.finished.emit(exito)
+        try:
+            url = f"{API_URL}/api/actualizar_contrasena"
+            payload = {
+                "nueva_contrasena": self.nueva_contrasena,
+                "email": self.email
+            }
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                self.finished.emit(True)
+            else:
+                self.finished.emit(False)
+        except Exception as e:
+            print(f"Error en el thread de actualizar contraseña: {e}")
+            self.finished.emit(False)
+

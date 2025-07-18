@@ -660,7 +660,7 @@ class Ui_Form_login(object):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
         self.label_24.setText(QCoreApplication.translate("Form", u"Login", None))
         self.label_25.setText(QCoreApplication.translate("Form", u"-- Ingrese su cuenta web --", None))
-        self.label_26.setText(QCoreApplication.translate("Form", u"Gmail :", None))
+        self.label_26.setText(QCoreApplication.translate("Form", u"Email :", None))
         self.label_27.setText(QCoreApplication.translate("Form", u"Contrase\u00f1a :", None))
         self.label_32.setText(QCoreApplication.translate("Form", u"label error", None))
         self.pushButton_15.setText(QCoreApplication.translate("Form", u"Ingresar", None))

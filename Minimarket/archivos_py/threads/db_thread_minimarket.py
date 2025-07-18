@@ -1,8 +1,9 @@
 from PySide6.QtCore import QThread, Signal
-from archivos_py.db.functions import *
 
 
 # ventana datos 
+API_URL = "https://web-production-aa989.up.railway.app"
+
 
 #Agregar productos:
 
@@ -10,47 +11,91 @@ class CategoriasThread(QThread):
     categorias_obtenidas = Signal(list)
 
     def run(self):
-        categorias = traer_categorias()
-        if not categorias:
-            crear_categuno()
-            categorias = traer_categorias()
-            
-        self.categorias_obtenidas.emit(categorias)
+        import requests
+        try:
+            url = f"{API_URL}/api/categorias"
+            response = requests.get(url)
+            if response.status_code == 200:
+                data = response.json()
+                categorias = data.get("categorias", [])
+                self.categorias_obtenidas.emit(categorias)
+            else:
+                print(f"Error al obtener categorías: {response.text}")
+                self.categorias_obtenidas.emit([])
+        except Exception as e:
+            print(f"Error en CategoriasThread: {e}")
+            self.categorias_obtenidas.emit([])
+
 
 class ProveedoresThread(QThread):
     proveedores_obtenidos = Signal(list)
 
     def run(self):
-        proveedores = traer_proveedor()
-        if not proveedores:
-            crear_provuno()
-            proveedores = traer_proveedor()
-        self.proveedores_obtenidos.emit(proveedores)
-
+        import requests
+        try:
+            url = f"{API_URL}/api/proveedores"
+            response = requests.get(url)
+            if response.status_code == 200:
+                data = response.json()
+                proveedores = data.get("proveedores", [])
+                self.proveedores_obtenidos.emit(proveedores)
+            else:
+                print(f"Error al obtener proveedores: {response.text}")
+                self.proveedores_obtenidos.emit([])
+        except Exception as e:
+            print(f"Error en ProveedoresThread: {e}")
+            self.proveedores_obtenidos.emit([])
 
 class AgregarProductoThread(QThread):
     producto_agregado = Signal(bool)  # éxito
 
-    def __init__(self, *args):
+    def __init__(self, **kwargs):
         super().__init__()
-        self.args = args
+        self.producto_data = kwargs  # Recibe los datos del producto como diccionario
 
     def run(self):
-        # Llama a tu función de agregar producto
-        exito = cargar_producto(*self.args)
-        self.producto_agregado.emit(exito)
+        import requests
+        try:
+            url = f"{API_URL}/api/agregar_producto"
+            response = requests.post(url, json=self.producto_data)
+            if response.status_code == 200:
+                data = response.json()
+                exito = data.get("exito", False)
+                self.producto_agregado.emit(exito)
+            else:
+                print(f"Error al agregar producto: {response.text}")
+                self.producto_agregado.emit(False)
+        except Exception as e:
+            print(f"Error en AgregarProductoThread: {e}")
+            self.producto_agregado.emit(False)
 
 class MovimientoProductoThread(QThread):
     movimiento_cargado = Signal()
 
-    def __init__(self, input_id_value, usuario_activo):
+    def __init__(self, input_id_value, usuario):
         super().__init__()
         self.input_id_value = input_id_value
-        self.usuario_activo = usuario_activo
+        self.usuario = usuario
 
     def run(self):
-        cargar_movimiento_producto_agregado(self.input_id_value, self.usuario_activo)
-        self.movimiento_cargado.emit()
+        import requests
+        try:
+            url = f"{API_URL}/api/cargar_movimiento_producto_agregado"
+            payload = {
+                "input_id_value": self.input_id_value,
+                "usuario": self.usuario,
+            }
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                self.movimiento_cargado.emit()
+            else:
+                print(f"Error al cargar movimiento producto: {response.text}")
+                self.movimiento_cargado.emit()
+        except Exception as e:
+            print(f"Error en MovimientoProductoThread: {e}")
+            self.movimiento_cargado.emit()
+
+
 
 
 # Borrar productos: 
@@ -58,21 +103,52 @@ class MovimientoProductoThread(QThread):
 
 class TraerIdProductoThread(QThread):
     resultado = Signal(int)
-    def __init__(self, nombre):
+
+    def __init__(self, nombre, uid):
         super().__init__()
         self.nombre = nombre
+        self.uid = uid
+
     def run(self):
-        id_producto = traer_id_producto(self.nombre)
-        self.resultado.emit(id_producto)
+        import requests
+        try:
+            url = f"{API_URL}/api/traer_id_producto"
+            payload = {"nombre": self.nombre, "uid": self.uid}
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                data = response.json()
+                id_producto = data.get("id_producto", -1)
+                self.resultado.emit(id_producto)
+            else:
+                print(f"Error al traer id_producto: {response.text}")
+                self.resultado.emit(-1)
+        except Exception as e:
+            print(f"Error en TraerIdProductoThread: {e}")
+            self.resultado.emit(-1)
+
 
 class TraerNomProductoThread(QThread):
     resultado = Signal(str)
     def __init__(self, id_producto):
         super().__init__()
         self.id_producto = id_producto
+
     def run(self):
-        nombre_producto = traer_nom_producto(self.id_producto)
-        self.resultado.emit(nombre_producto)
+        import requests
+        try:
+            url = f"{API_URL}/api/traer_nom_producto"
+            payload = {"id_producto": self.id_producto}
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                data = response.json()
+                nombre_producto = data.get("nombre_producto", "")
+                self.resultado.emit(nombre_producto)
+            else:
+                print(f"Error al traer nombre de producto: {response.text}")
+                self.resultado.emit("")
+        except Exception as e:
+            print(f"Error en TraerNomProductoThread: {e}")
+            self.resultado.emit("")
 
 class BorrarProductoThread(QThread):
     resultado = Signal(bool)
@@ -80,8 +156,22 @@ class BorrarProductoThread(QThread):
         super().__init__()
         self.valor = valor
     def run(self):
-        exito = buscar_producto(self.valor)
-        self.resultado.emit(exito)
+        import requests
+        try:
+            url = f"{API_URL}/api/borrar_producto"
+            payload = {"valor": self.valor}
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                data = response.json()
+                exito = data.get("exito", False)
+                self.resultado.emit(exito)
+            else:
+                print(f"Error al borrar producto: {response.text}")
+                self.resultado.emit(False)
+        except Exception as e:
+            print(f"Error en BorrarProductoThread: {e}")
+            self.resultado.emit(False)
+
 
 class MovimientoProductoBorrarThread(QThread):
     movimiento_borrado = Signal()
@@ -93,8 +183,23 @@ class MovimientoProductoBorrarThread(QThread):
         self.usuario_activo = usuario_activo
 
     def run(self):
-        cargar_movimiento_producto_borrado(self._borrar_id, self.input_nombre_o_id_value, self.usuario_activo)
-        self.movimiento_borrado.emit()
+        import requests
+        try:
+            url = f"{API_URL}/api/movimiento_producto_borrado"
+            payload = {
+                "_borrar_id": self._borrar_id,
+                "input_nombre_o_id_value": self.input_nombre_o_id_value,
+                "usuario_activo": self.usuario_activo
+            }
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                self.movimiento_borrado.emit()
+            else:
+                print(f"Error al cargar movimiento producto borrado: {response.text}")
+                self.movimiento_borrado.emit()
+        except Exception as e:
+            print(f"Error en MovimientoProductoBorrarThread: {e}")
+            self.movimiento_borrado.emit()
 
 # editar productos
 
@@ -106,8 +211,24 @@ class AumentarPreciosCategoriaThread(QThread):
         self.valor2 = valor2
         self.categoria = categoria
     def run(self):
-        aumentar_precios_categoria(self.valor1, self.valor2, self.categoria)
-        self.finished.emit()
+        import requests
+        try:
+            url = f"{API_URL}/api/aumentar_precios_categoria"
+            payload = {
+                "valor1": self.valor1,
+                "valor2": self.valor2,
+                "categoria": self.categoria
+            }
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                self.finished.emit()
+            else:
+                print(f"Error al aumentar precios por categoría: {response.text}")
+                self.finished.emit()
+        except Exception as e:
+            print(f"Error en AumentarPreciosCategoriaThread: {e}")
+            self.finished.emit()
+
 
 class AumentarPreciosProveedorThread(QThread):
     finished = Signal()
@@ -117,8 +238,24 @@ class AumentarPreciosProveedorThread(QThread):
         self.valor2 = valor2
         self.proveedor = proveedor
     def run(self):
-        aumentar_precios_proveedor(self.valor1, self.valor2, self.proveedor)
-        self.finished.emit()
+        import requests
+        try:
+            url = f"{API_URL}/api/aumentar_precios_proveedor"
+            payload = {
+                "valor1": self.valor1,
+                "valor2": self.valor2,
+                "proveedor": self.proveedor
+            }
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                self.finished.emit()
+            else:
+                print(f"Error al aumentar precios por proveedor: {response.text}")
+                self.finished.emit()
+        except Exception as e:
+            print(f"Error en AumentarPreciosProveedorThread: {e}")
+            self.finished.emit()
+
 
 class MovimientoAumentoPreciosThread(QThread):
     finished = Signal()
@@ -128,8 +265,24 @@ class MovimientoAumentoPreciosThread(QThread):
         self.usuario = usuario
         self.es_categoria = es_categoria
     def run(self):
-        cargar_movimiento_aumento_precios(self.categoria_o_proveedor, self.usuario, self.es_categoria)
-        self.finished.emit()
+        import requests
+        try:
+            url = f"{API_URL}/api/movimiento_aumento_precios"
+            payload = {
+                "categoria_o_proveedor": self.categoria_o_proveedor,
+                "usuario": self.usuario,
+                "es_categoria": self.es_categoria
+            }
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                self.finished.emit()
+            else:
+                print(f"Error al cargar movimiento aumento precios: {response.text}")
+                self.finished.emit()
+        except Exception as e:
+            print(f"Error en MovimientoAumentoPreciosThread: {e}")
+            self.finished.emit()
+
 
 class TraerProductoPorIdThread(QThread):
     resultado = Signal(object)
@@ -137,8 +290,22 @@ class TraerProductoPorIdThread(QThread):
         super().__init__()
         self.id_producto = id_producto
     def run(self):
-        producto = traer_datosproducto_por_id(self.id_producto)
-        self.resultado.emit(producto)
+        import requests
+        try:
+            url = f"{API_URL}/api/traer_producto_por_id"
+            payload = {"id_producto": self.id_producto}
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                data = response.json()
+                producto = data.get("producto", None)
+                self.resultado.emit(producto)
+            else:
+                print(f"Error al traer producto por id: {response.text}")
+                self.resultado.emit(None)
+        except Exception as e:
+            print(f"Error en TraerProductoPorIdThread: {e}")
+            self.resultado.emit(None)
+
 
 class ActualizarProductoThread(QThread):
     finished = Signal()
@@ -154,11 +321,29 @@ class ActualizarProductoThread(QThread):
         self.proveedor = proveedor
 
     def run(self):
-        actualizar_producto(
-            self.id, self.nombre_prod, self.precio_compra, self.precio_venta,
-            self.stock, self.stock_ideal, self.categoria, self.proveedor
-        )
-        self.finished.emit()
+        import requests
+        try:
+            url = f"{API_URL}/api/actualizar_producto"
+            payload = {
+                "id": self.id,
+                "nombre_prod": self.nombre_prod,
+                "precio_compra": self.precio_compra,
+                "precio_venta": self.precio_venta,
+                "stock": self.stock,
+                "stock_ideal": self.stock_ideal,
+                "categoria": self.categoria,
+                "proveedor": self.proveedor
+            }
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                self.finished.emit()
+            else:
+                print(f"Error al actualizar producto: {response.text}")
+                self.finished.emit()
+        except Exception as e:
+            print(f"Error en ActualizarProductoThread: {e}")
+            self.finished.emit()
+
 
 class MovimientoProductoEditadoThread(QThread):
     movimiento_editado = Signal()
@@ -169,16 +354,44 @@ class MovimientoProductoEditadoThread(QThread):
         self.usuario_activo = usuario_activo
 
     def run(self):
-        cargar_movimiento_producto_editado(self.id_producto, self.usuario_activo)
-        self.movimiento_editado.emit()
+        import requests
+        try:
+            url = f"{API_URL}/api/movimiento_producto_editado"
+            payload = {
+                "id_producto": self.id_producto,
+                "usuario_activo": self.usuario_activo
+            }
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                self.movimiento_editado.emit()
+            else:
+                print(f"Error al cargar movimiento producto editado: {response.text}")
+                self.movimiento_editado.emit()
+        except Exception as e:
+            print(f"Error en MovimientoProductoEditadoThread: {e}")
+            self.movimiento_editado.emit()
+
 
 
 # visualizar productos
+
 class TraerTodosLosProductosThread(QThread):
     resultado = Signal(list)
     def run(self):
-        productos = traer_todos_los_productos()
-        self.resultado.emit(productos)
+        import requests
+        try:
+            url = f"{API_URL}/api/traer_todos_los_productos"
+            response = requests.get(url)
+            if response.status_code == 200:
+                data = response.json()
+                productos = data.get("productos", [])
+                self.resultado.emit(productos)
+            else:
+                print(f"Error al traer todos los productos: {response.text}")
+                self.resultado.emit([])
+        except Exception as e:
+            print(f"Error en TraerTodosLosProductosThread: {e}")
+            self.resultado.emit([])
 
 
 # agregar proveedor
@@ -192,8 +405,26 @@ class ProveedorThread(QThread):
         self.telefono = telefono
         self.direccion = direccion
     def run(self):
-        exito = cargar_proveedor(self.nombre, self.telefono, self.direccion)
-        self.proveedor_cargado.emit(exito)
+        import requests
+        try:
+            url = f"{API_URL}/api/agregar_proveedor"
+            payload = {
+                "nombre": self.nombre,
+                "telefono": self.telefono,
+                "direccion": self.direccion
+            }
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                data = response.json()
+                exito = data.get("exito", False)
+                self.proveedor_cargado.emit(exito)
+            else:
+                print(f"Error al agregar proveedor: {response.text}")
+                self.proveedor_cargado.emit(False)
+        except Exception as e:
+            print(f"Error en ProveedorThread: {e}")
+            self.proveedor_cargado.emit(False)
+
 
 class MovimientoProveedorThread(QThread):
     movimiento_cargado = Signal()
@@ -202,41 +433,99 @@ class MovimientoProveedorThread(QThread):
         self.nombre = nombre
         self.usuario_activo = usuario_activo
     def run(self):
-        cargar_movimiento_agregar_proveedor(self.nombre, self.usuario_activo)
-        self.movimiento_cargado.emit()
-
+        import requests
+        try:
+            url = f"{API_URL}/api/movimiento_agregar_proveedor"
+            payload = {
+                "nombre": self.nombre,
+                "usuario_activo": self.usuario_activo
+            }
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                self.movimiento_cargado.emit()
+            else:
+                print(f"Error al cargar movimiento agregar proveedor: {response.text}")
+                self.movimiento_cargado.emit()
+        except Exception as e:
+            print(f"Error en MovimientoProveedorThread: {e}")
+            self.movimiento_cargado.emit()
 
  # borrar proveedor
 
 # Hilo para buscar proveedor en la base
+
 class BuscarProveedorThread(QThread):
     resultado = Signal(bool)
     def __init__(self, nombre):
         super().__init__()
         self.nombre = nombre
     def run(self):
-        bandera = buscar_proveedor(self.nombre)
-        self.resultado.emit(bandera)
+        import requests
+        try:
+            url = f"{API_URL}/api/buscar_proveedor"
+            payload = {"nombre": self.nombre}
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                data = response.json()
+                bandera = data.get("existe", False)
+                self.resultado.emit(bandera)
+            else:
+                print(f"Error al buscar proveedor: {response.text}")
+                self.resultado.emit(False)
+        except Exception as e:
+            print(f"Error en BuscarProveedorThread: {e}")
+            self.resultado.emit(False)
+
 
 # Hilo para traer el ID del proveedor
+
 class TraerIdProveedorThread(QThread):
     resultado = Signal(int)
     def __init__(self, nombre):
         super().__init__()
         self.nombre = nombre
     def run(self):
-        id_prov = traer_id_proveedor(self.nombre)
-        self.resultado.emit(id_prov)
+        import requests
+        try:
+            url = f"{API_URL}/api/traer_id_proveedor"
+            payload = {"nombre": self.nombre}
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                data = response.json()
+                id_prov = data.get("id_proveedor", -1)
+                self.resultado.emit(id_prov)
+            else:
+                print(f"Error al traer id proveedor: {response.text}")
+                self.resultado.emit(-1)
+        except Exception as e:
+            print(f"Error en TraerIdProveedorThread: {e}")
+            self.resultado.emit(-1)
 
 # Hilo para cargar movimiento de proveedor borrado
+
 class MovimientoProveedorBorradoThread(QThread):
     def __init__(self, nombre, id_proveedor, usuario_activo):
         super().__init__()
         self.nombre = nombre
         self.id_proveedor = id_proveedor
         self.usuario_activo = usuario_activo
+
     def run(self):
-        cargar_movimiento_proveedor_borrado(self.nombre, self.id_proveedor, self.usuario_activo)
+        import requests
+        try:
+            url = f"{API_URL}/api/movimiento_proveedor_borrado"
+            payload = {
+                "nombre": self.nombre,
+                "id_proveedor": self.id_proveedor,
+                "usuario_activo": self.usuario_activo
+            }
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                print("Movimiento de proveedor borrado registrado correctamente.")
+            else:
+                print(f"Error al cargar movimiento proveedor borrado: {response.text}")
+        except Exception as e:
+            print(f"Error en MovimientoProveedorBorradoThread: {e}")
 
 # actualizar proveedor
 
@@ -248,8 +537,25 @@ class ActualizarProveedorThread(QThread):
         self.telefono = telefono
         self.direccion = direccion
     def run(self):
-        exito = actualizar_proveedor(self.nombre, self.telefono, self.direccion)
-        self.resultado.emit(exito)
+        import requests
+        try:
+            url = f"{API_URL}/api/actualizar_proveedor"
+            payload = {
+                "nombre": self.nombre,
+                "telefono": self.telefono,
+                "direccion": self.direccion
+            }
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                data = response.json()
+                exito = data.get("exito", False)
+                self.resultado.emit(exito)
+            else:
+                print(f"Error al actualizar proveedor: {response.text}")
+                self.resultado.emit(False)
+        except Exception as e:
+            print(f"Error en ActualizarProveedorThread: {e}")
+            self.resultado.emit(False)
 
 class MovimientoProveedorEditadoThread(QThread):
     def __init__(self, nombre, usuario_activo):
@@ -257,7 +563,20 @@ class MovimientoProveedorEditadoThread(QThread):
         self.nombre = nombre
         self.usuario_activo = usuario_activo
     def run(self):
-        cargar_movimiento_proveedor_editado(self.nombre, self.usuario_activo)
+        import requests
+        try:
+            url = f"{API_URL}/api/movimiento_proveedor_editado"
+            payload = {
+                "nombre": self.nombre,
+                "usuario_activo": self.usuario_activo
+            }
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                print("Movimiento de proveedor editado registrado correctamente.")
+            else:
+                print(f"Error al cargar movimiento proveedor editado: {response.text}")
+        except Exception as e:
+            print(f"Error en MovimientoProveedorEditadoThread: {e}")
 
 # agregar categoria
 
@@ -267,8 +586,21 @@ class CargarCategoriaThread(QThread):
         super().__init__()
         self.nombre_categoria = nombre_categoria
     def run(self):
-        exito = cargar_categoria(self.nombre_categoria)
-        self.resultado.emit(exito)
+        import requests
+        try:
+            url = f"{API_URL}/api/agregar_categoria"
+            payload = {"nombre_categoria": self.nombre_categoria}
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                data = response.json()
+                exito = data.get("exito", False)
+                self.resultado.emit(exito)
+            else:
+                print(f"Error al agregar categoría: {response.text}")
+                self.resultado.emit(False)
+        except Exception as e:
+            print(f"Error en CargarCategoriaThread: {e}")
+            self.resultado.emit(False)
 
 class MovimientoAgregarCategoriaThread(QThread):
     def __init__(self, nombre_categoria, usuario_activo):
@@ -276,7 +608,20 @@ class MovimientoAgregarCategoriaThread(QThread):
         self.nombre_categoria = nombre_categoria
         self.usuario_activo = usuario_activo
     def run(self):
-        cargar_movimiento_agregar_categoria(self.nombre_categoria, self.usuario_activo)
+        import requests
+        try:
+            url = f"{API_URL}/api/movimiento_agregar_categoria"
+            payload = {
+                "nombre_categoria": self.nombre_categoria,
+                "usuario_activo": self.usuario_activo
+            }
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                print("Movimiento de agregar categoría registrado correctamente.")
+            else:
+                print(f"Error al cargar movimiento agregar categoría: {response.text}")
+        except Exception as e:
+            print(f"Error en MovimientoAgregarCategoriaThread: {e}")
 
 # borrar categoria
 class BuscarCategoriaThread(QThread):
@@ -285,8 +630,22 @@ class BuscarCategoriaThread(QThread):
         super().__init__()
         self.nombre_categoria = nombre_categoria
     def run(self):
-        existe = buscar_categoria(self.nombre_categoria)
-        self.resultado.emit(existe)
+        import requests
+        try:
+            url = f"{API_URL}/api/buscar_categoria"
+            payload = {"nombre_categoria": self.nombre_categoria}
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                data = response.json()
+                existe = data.get("existe", False)
+                self.resultado.emit(existe)
+            else:
+                print(f"Error al buscar categoría: {response.text}")
+                self.resultado.emit(False)
+        except Exception as e:
+            print(f"Error en BuscarCategoriaThread: {e}")
+            self.resultado.emit(False)
+
 
 class MovimientoCategoriaBorradaThread(QThread):
     def __init__(self, nombre_categoria, id_categoria, usuario_activo):
@@ -295,8 +654,21 @@ class MovimientoCategoriaBorradaThread(QThread):
         self.id_categoria = id_categoria
         self.usuario_activo = usuario_activo
     def run(self):
-        cargar_movimiento_categoria_borrada(self.nombre_categoria, self.id_categoria, self.usuario_activo)
-
+        import requests
+        try:
+            url = f"{API_URL}/api/movimiento_categoria_borrada"
+            payload = {
+                "nombre_categoria": self.nombre_categoria,
+                "id_categoria": self.id_categoria,
+                "usuario_activo": self.usuario_activo
+            }
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                print("Movimiento de categoría borrada registrado correctamente.")
+            else:
+                print(f"Error al cargar movimiento categoría borrada: {response.text}")
+        except Exception as e:
+            print(f"Error en MovimientoCategoriaBorradaThread: {e}")
 
 # borrar datos
 
@@ -305,7 +677,17 @@ class CargarMovimientosThread(QThread):
         super().__init__()
         self.usuario_activo = usuario_activo
     def run(self):
-        cargar_movimientos_datos_borrados(self.usuario_activo)
+        import requests
+        try:
+            url = f"{API_URL}/api/cargar_movimientos_datos_borrados"
+            payload = {"usuario_activo": self.usuario_activo}
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                print("Movimientos de datos borrados cargados correctamente.")
+            else:
+                print(f"Error al cargar movimientos de datos borrados: {response.text}")
+        except Exception as e:
+            print(f"Error en CargarMovimientosThread: {e}")
 
 class ClearDataThread(QThread):
     finished = Signal()
@@ -317,8 +699,26 @@ class ClearDataThread(QThread):
         self.borrar_usuarios = borrar_usuarios
         self.borrar_movimientos = borrar_movimientos
     def run(self):
-        clear_data(self.borrar_categorias, self.borrar_ventas_compras, self.borrar_proveedores, self.borrar_usuarios, self.borrar_movimientos)
-        self.finished.emit()
+        import requests
+        try:
+            url = f"{API_URL}/api/clear_data"
+            payload = {
+                "borrar_categorias": self.borrar_categorias,
+                "borrar_ventas_compras": self.borrar_ventas_compras,
+                "borrar_proveedores": self.borrar_proveedores,
+                "borrar_usuarios": self.borrar_usuarios,
+                "borrar_movimientos": self.borrar_movimientos
+            }
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                self.finished.emit()
+            else:
+                print(f"Error al borrar datos: {response.text}")
+                self.finished.emit()
+        except Exception as e:
+            print(f"Error en ClearDataThread: {e}")
+            self.finished.emit()
+            
 
 
 # administrar usuarios

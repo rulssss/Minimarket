@@ -2,7 +2,6 @@ from PySide6.QtWidgets import QWidget, QLineEdit
 from PySide6.QtGui import QIcon, Qt
 from PySide6.QtCore import QTimer, QThread
 from archivos_py.ui.login import Ui_Form_login  # Importa la clase generada por qt Designer
-from archivos_py.db.usuarios import check_activation
 from archivos_py.threads.db_threads_login import LoginThread, RegistroCheckThread, EnviarCodigoThread, CodigoOtroAdminThread, RegistrarUsuarioThread, VerificarYEnviarCodigoThread, ActualizarContrasenaThread
 from PySide6 import QtGui
 from archivos_py.windows.inicio_minimarket import MainWindow
@@ -17,6 +16,7 @@ class Inicio(QWidget):
         self.ui = Ui_Form_login()
         self.ui.setupUi(self)  # Configura la interfaz en el widget base (self)
 
+
         # Inicializa los atributos necesarios para almacenar threads
         self.threads = []
 
@@ -27,13 +27,7 @@ class Inicio(QWidget):
         self.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
         self.setWindowTitle("rls")
 
-
-        #verificar si hay admin
-        activated, validation_code = check_activation()
-        if activated:
-            self.open_login_window()
-        else:
-            self.request_validation_code(validation_code)
+        self.open_login_window()
 
 
     # funcion para abrir la ventana de login
@@ -101,17 +95,15 @@ class Inicio(QWidget):
             pushButton.setEnabled(False)
             push_button_2.setEnabled(False)
             push_button_3.setEnabled(False)
-        
+
             # Aquí lanzas el thread en vez de llamar directo a la función lenta
-            self.login_thread = LoginThread(value_line_edit_2, value_combobox, value_line_edit)
+            self.login_thread = LoginThread(value_combobox, value_line_edit, value_line_edit_2)
             self.login_thread.finished.connect(
                 lambda exito, mensaje: self.on_login_finished(
                     exito, mensaje, pushButton, push_button_2, push_button_3, label_21, value_line_edit, value_combobox
                 )
             )
             self.start_thread(self.login_thread)
-            
-
 
         else:
             label_21.setText("Complete todos los campos correctamente")
@@ -119,6 +111,7 @@ class Inicio(QWidget):
             QTimer.singleShot(6000, lambda: label_21.setStyleSheet("color: transparent;"))
     
     def on_login_finished(self, exito, mensaje, pushButton, push_button_2, push_button_3, label_21, usuario, account):
+        print(mensaje)
         if not exito:
             pushButton.setEnabled(True)
             push_button_2.setEnabled(True)
@@ -243,7 +236,7 @@ class Inicio(QWidget):
         if value_line_edit_3 and value_line_edit_4 and value_line_edit_8 and ("@gmail" in value_line_edit_8 or "@hotmail" in value_line_edit_8 or "@outlook" in value_line_edit_8) and value_combobox_2:
             pushButton_4.setEnabled(False)
             push_button_5.setEnabled(False)
-
+            
             self.registro_thread = RegistroCheckThread(value_line_edit_3, value_line_edit_4, value_line_edit_8, value_combobox_2)
             self.registro_thread.finished.connect(
             lambda result: (
@@ -260,7 +253,7 @@ class Inicio(QWidget):
 
     def on_registro_check_finished(self, result, value_combobox_2, pushButton_4, pushButton_5):
         label_20 = self.ui.stackedWidget.findChild(QWidget, "label_20")
-    
+        print(result)
         if value_combobox_2 == "Administrador" and result["hay_admin"]:
             if result["usuario_existe"]:
                 label_20.setText("Usuario ya existente")
@@ -311,7 +304,7 @@ class Inicio(QWidget):
         QTimer.singleShot(6000, lambda: label_20.setStyleSheet("color: transparent;"))
 
     def verificar_cuenta_usuario(self):
-        line_edit_8 = self.ui.stackedWidget.widget(1).findChild(QWidget, "lineEdit_8")
+        line_edit_8 = self.ui.stackedWidget.widget(2).findChild(QWidget, "lineEdit_8")
         mail = line_edit_8.text()
         pushButton_4 = self.ui.stackedWidget.findChild(QWidget, "pushButton_4")
         if pushButton_4:
@@ -328,14 +321,19 @@ class Inicio(QWidget):
         global codigo_usuario
         codigo_usuario = codigo
         
-        pushButton_4 = self.ui.stackedWidget.findChild(QWidget, "pushButton_4")
-        if pushButton_4:
-            pushButton_4.setEnabled(True)
 
         label_20 = self.ui.stackedWidget.findChild(QWidget, "label_20")
         if codigo_usuario is not None:
             self.open_verificar_codigo_cuent_admin()
         else:
+            pushButton_4 = self.ui.stackedWidget.findChild(QWidget, "pushButton_4")
+            if pushButton_4:
+                pushButton_4.setEnabled(True)
+
+            pushButton_5 = self.ui.stackedWidget.findChild(QWidget, "pushButton_5")
+            if pushButton_5:
+                pushButton_5.setEnabled(True)
+
             label_20.setAlignment(Qt.AlignCenter)
             label_20.setText("El email no es válido porfavor editelo")
             label_20.setStyleSheet("color: red;")
@@ -395,7 +393,7 @@ class Inicio(QWidget):
             if int(codigo_usuario) == int(value_line_edit_10):
 
                 if label_23:
-                    if pushButton_13:
+                    if pushButton_13 and pushButton_14:
                         pushButton_13.setEnabled(False)
                         pushButton_14.setEnabled(False)
                         try:
@@ -414,11 +412,16 @@ class Inicio(QWidget):
                 label_23.setText("Codigo incorrecto")
                 label_23.setStyleSheet("color: red;")
                 QTimer.singleShot(6000, lambda: label_23.setStyleSheet("color: transparent;"))
-                pushButton_13.setEnabled(True)
-                pushButton_14.setEnabled(True)
+                
+                if pushButton_13 and pushButton_14:
+                    pushButton_13.setEnabled(False)
+                    pushButton_14.setEnabled(False)
                 
                 line_edit_10.clear()
         else:
+            if pushButton_13 and pushButton_14:
+                pushButton_13.setEnabled(False)
+                pushButton_14.setEnabled(False)
             QTimer.singleShot(0, lambda: QTimer().stop())
             label_23 = self.ui.stackedWidget.findChild(QWidget, "label_23")
             label_23.setText("Complete el código correctamente")
@@ -435,10 +438,17 @@ class Inicio(QWidget):
         global codigo_admin
         codigo_admin = codigo
 
+        pushButton_13 = self.ui.stackedWidget.findChild(QWidget, "pushButton_13")
+        pushButton_14 = self.ui.stackedWidget.findChild(QWidget, "pushButton_14")
+
         label_23 = self.ui.stackedWidget.findChild(QWidget, "label_23")
         if codigo_admin is not None:
             self.open_verificar_codigo_admin()
         else:
+            if pushButton_13 and pushButton_14:
+                pushButton_13.setEnabled(True)
+                pushButton_14.setEnabled(True)
+
             label_23.setAlignment(Qt.AlignCenter)
             label_23.setText("El email del admin principal no se encuentra\n disponible, edítelo o cámbielo en la sección de Datos")
             label_23.setStyleSheet("color: red;")
@@ -497,9 +507,9 @@ class Inicio(QWidget):
                 pushButton_13.setEnabled(False)
                 pushButton_14.setEnabled(False)
                 combobox = "Administrador"
-                line_edit_3 = self.ui.stackedWidget.widget(1).findChild(QWidget, "lineEdit_3")
-                line_edit_4 = self.ui.stackedWidget.widget(1).findChild(QWidget, "lineEdit_4")
-                line_edit_8 = self.ui.stackedWidget.widget(1).findChild(QWidget, "lineEdit_8")
+                line_edit_3 = self.ui.stackedWidget.widget(2).findChild(QWidget, "lineEdit_3")
+                line_edit_4 = self.ui.stackedWidget.widget(2).findChild(QWidget, "lineEdit_4")
+                line_edit_8 = self.ui.stackedWidget.widget(2).findChild(QWidget, "lineEdit_8")
                 value_line_edit_3 = line_edit_3.text()
                 value_line_edit_4 = line_edit_4.text()
                 value_line_edit_8 = line_edit_8.text()
@@ -549,7 +559,7 @@ class Inicio(QWidget):
 
     
     def verificar_codigo_para_agregar_otra_cuenta(self):
-        line_edit_8 = self.ui.stackedWidget.widget(1).findChild(QWidget, "lineEdit_8")
+        line_edit_8 = self.ui.stackedWidget.widget(2).findChild(QWidget, "lineEdit_8")
         mail = line_edit_8.text()
 
         self.enviar_codigo_cuenta_thread = EnviarCodigoThread(mail)
@@ -627,10 +637,10 @@ class Inicio(QWidget):
 
         if value_line_edit_10:
             if int(codigo_usuario) == int(value_line_edit_10):
-                combobox = self.ui.stackedWidget.widget(1).findChild(QWidget, "comboBox_2")
-                line_edit_3 = self.ui.stackedWidget.widget(1).findChild(QWidget, "lineEdit_3")
-                line_edit_4 = self.ui.stackedWidget.widget(1).findChild(QWidget, "lineEdit_4")
-                line_edit_8 = self.ui.stackedWidget.widget(1).findChild(QWidget, "lineEdit_8")
+                combobox = self.ui.stackedWidget.widget(2).findChild(QWidget, "comboBox_2")
+                line_edit_3 = self.ui.stackedWidget.widget(2).findChild(QWidget, "lineEdit_3")
+                line_edit_4 = self.ui.stackedWidget.widget(2).findChild(QWidget, "lineEdit_4")
+                line_edit_8 = self.ui.stackedWidget.widget(2).findChild(QWidget, "lineEdit_8")
                 value_line_edit_3 = line_edit_3.text()
                 value_line_edit_4 = line_edit_4.text()
                 value_line_edit_8 = line_edit_8.text()
@@ -737,9 +747,14 @@ class Inicio(QWidget):
             QTimer.singleShot(6000, lambda: label_17.setStyleSheet("color: transparent;"))
 
     def on_verificar_existencia_mail_finished(self, existe, codigo):
+        pushButton_8 = self.ui.stackedWidget.findChild(QWidget, "pushButton_8")
+        push_Button_9 = self.ui.stackedWidget.findChild(QWidget, "pushButton_9")
+
         line_edit_7 = self.ui.stackedWidget.findChild(QWidget, "lineEdit_7")
         label_17 = self.ui.stackedWidget.findChild(QWidget, "label_17")
         if existe:
+            pushButton_8.setEnabled(True)
+            push_Button_9.setEnabled(True)
             global codigo_recuperar
             codigo_recuperar = codigo
             if codigo:
@@ -752,6 +767,8 @@ class Inicio(QWidget):
                 QTimer.singleShot(15000, lambda: label_17.setStyleSheet("color: transparent;"))
             line_edit_7.clear()
         else:
+            pushButton_8.setEnabled(True)
+            push_Button_9.setEnabled(True)
             label_17.setText("Mail no existente")
             label_17.setStyleSheet("color: red;")
             QTimer.singleShot(6000, lambda: label_17.setStyleSheet("color: transparent;"))

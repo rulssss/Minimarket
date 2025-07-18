@@ -234,6 +234,18 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_2.addWidget(self.frame_9, 0, Qt.AlignmentFlag.AlignHCenter)
 
+        self.pushButton_50 = QPushButton(self.tab_1)
+        self.pushButton_50.setObjectName(u"pushButton_50")
+        self.pushButton_50.setMinimumSize(QSize(150, 0))
+        self.pushButton_50.setMaximumSize(QSize(150, 16777215))
+        font4 = QFont()
+        font4.setPointSize(10)
+        font4.setBold(True)
+        font4.setStrikeOut(False)
+        self.pushButton_50.setFont(font4)
+
+        self.verticalLayout_2.addWidget(self.pushButton_50, 0, Qt.AlignmentFlag.AlignHCenter)
+
         self.tabWidget.addTab(self.tab_1, "")
         self.tab_3 = QWidget()
         self.tab_3.setObjectName(u"tab_3")
@@ -334,12 +346,12 @@ class Ui_MainWindow(object):
 
         self.label_63 = QLabel(self.tab)
         self.label_63.setObjectName(u"label_63")
-        font4 = QFont()
-        font4.setPointSize(12)
-        font4.setBold(True)
-        font4.setUnderline(True)
-        font4.setStrikeOut(False)
-        self.label_63.setFont(font4)
+        font5 = QFont()
+        font5.setPointSize(12)
+        font5.setBold(True)
+        font5.setUnderline(True)
+        font5.setStrikeOut(False)
+        self.label_63.setFont(font5)
 
         self.verticalLayout_4.addWidget(self.label_63)
 
@@ -367,11 +379,11 @@ class Ui_MainWindow(object):
 
         self.label_69 = QLabel(self.frame_39)
         self.label_69.setObjectName(u"label_69")
-        font5 = QFont()
-        font5.setPointSize(12)
-        font5.setBold(True)
-        font5.setStrikeOut(False)
-        self.label_69.setFont(font5)
+        font6 = QFont()
+        font6.setPointSize(12)
+        font6.setBold(True)
+        font6.setStrikeOut(False)
+        self.label_69.setFont(font6)
 
         self.horizontalLayout_10.addWidget(self.label_69, 0, Qt.AlignmentFlag.AlignLeft)
 
@@ -442,18 +454,18 @@ class Ui_MainWindow(object):
         self.comboBox = QComboBox(self.frame_3)
         self.comboBox.setObjectName(u"comboBox")
         self.comboBox.setMinimumSize(QSize(150, 0))
-        font6 = QFont()
-        font6.setPointSize(10)
-        font6.setBold(False)
-        font6.setStrikeOut(False)
-        self.comboBox.setFont(font6)
+        font7 = QFont()
+        font7.setPointSize(10)
+        font7.setBold(False)
+        font7.setStrikeOut(False)
+        self.comboBox.setFont(font7)
 
         self.gridLayout_2.addWidget(self.comboBox, 0, 1, 1, 1)
 
         self.comboBox_2 = QComboBox(self.frame_3)
         self.comboBox_2.setObjectName(u"comboBox_2")
         self.comboBox_2.setMinimumSize(QSize(150, 0))
-        self.comboBox_2.setFont(font6)
+        self.comboBox_2.setFont(font7)
 
         self.gridLayout_2.addWidget(self.comboBox_2, 2, 1, 1, 1)
 
@@ -484,21 +496,21 @@ class Ui_MainWindow(object):
         self.verticalLayout_6.setObjectName(u"verticalLayout_6")
         self.label_8 = QLabel(self.frame_4)
         self.label_8.setObjectName(u"label_8")
-        font7 = QFont()
-        font7.setPointSize(12)
-        font7.setBold(False)
-        font7.setStrikeOut(False)
-        self.label_8.setFont(font7)
+        font8 = QFont()
+        font8.setPointSize(12)
+        font8.setBold(False)
+        font8.setStrikeOut(False)
+        self.label_8.setFont(font8)
 
         self.verticalLayout_6.addWidget(self.label_8, 0, Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignTop)
 
         self.lineEdit1 = QLineEdit(self.frame_4)
         self.lineEdit1.setObjectName(u"lineEdit1")
-        font8 = QFont()
-        font8.setPointSize(13)
-        font8.setBold(False)
-        font8.setStrikeOut(False)
-        self.lineEdit1.setFont(font8)
+        font9 = QFont()
+        font9.setPointSize(13)
+        font9.setBold(False)
+        font9.setStrikeOut(False)
+        self.lineEdit1.setFont(font9)
 
         self.verticalLayout_6.addWidget(self.lineEdit1, 0, Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignTop)
 
@@ -507,11 +519,11 @@ class Ui_MainWindow(object):
 
         self.label_5 = QLabel(self.frame_2)
         self.label_5.setObjectName(u"label_5")
-        font9 = QFont()
-        font9.setPointSize(31)
-        font9.setBold(True)
-        font9.setStrikeOut(False)
-        self.label_5.setFont(font9)
+        font10 = QFont()
+        font10.setPointSize(31)
+        font10.setBold(True)
+        font10.setStrikeOut(False)
+        self.label_5.setFont(font10)
 
         self.gridLayout.addWidget(self.label_5, 0, 2, 1, 1, Qt.AlignmentFlag.AlignHCenter|Qt.AlignmentFlag.AlignTop)
 
@@ -540,13 +552,13 @@ class Ui_MainWindow(object):
 
         self.label_120 = QLabel(self.frame_59)
         self.label_120.setObjectName(u"label_120")
-        self.label_120.setFont(font6)
+        self.label_120.setFont(font7)
 
         self.horizontalLayout_17.addWidget(self.label_120, 0, Qt.AlignmentFlag.AlignRight)
 
         self.label_121 = QLabel(self.frame_59)
         self.label_121.setObjectName(u"label_121")
-        self.label_121.setFont(font5)
+        self.label_121.setFont(font6)
 
         self.horizontalLayout_17.addWidget(self.label_121, 0, Qt.AlignmentFlag.AlignRight)
 
@@ -556,32 +568,32 @@ class Ui_MainWindow(object):
         self.tableWidget = QTableWidget(self.frame_tabla_productos)
         if (self.tableWidget.columnCount() < 8):
             self.tableWidget.setColumnCount(8)
-        font10 = QFont()
-        font10.setPointSize(16)
-        font10.setBold(True)
+        font11 = QFont()
+        font11.setPointSize(16)
+        font11.setBold(True)
         __qtablewidgetitem = QTableWidgetItem()
-        __qtablewidgetitem.setFont(font10);
+        __qtablewidgetitem.setFont(font11);
         self.tableWidget.setHorizontalHeaderItem(0, __qtablewidgetitem)
         __qtablewidgetitem1 = QTableWidgetItem()
-        __qtablewidgetitem1.setFont(font10);
+        __qtablewidgetitem1.setFont(font11);
         self.tableWidget.setHorizontalHeaderItem(1, __qtablewidgetitem1)
         __qtablewidgetitem2 = QTableWidgetItem()
-        __qtablewidgetitem2.setFont(font10);
+        __qtablewidgetitem2.setFont(font11);
         self.tableWidget.setHorizontalHeaderItem(2, __qtablewidgetitem2)
         __qtablewidgetitem3 = QTableWidgetItem()
-        __qtablewidgetitem3.setFont(font10);
+        __qtablewidgetitem3.setFont(font11);
         self.tableWidget.setHorizontalHeaderItem(3, __qtablewidgetitem3)
         __qtablewidgetitem4 = QTableWidgetItem()
-        __qtablewidgetitem4.setFont(font10);
+        __qtablewidgetitem4.setFont(font11);
         self.tableWidget.setHorizontalHeaderItem(4, __qtablewidgetitem4)
         __qtablewidgetitem5 = QTableWidgetItem()
-        __qtablewidgetitem5.setFont(font10);
+        __qtablewidgetitem5.setFont(font11);
         self.tableWidget.setHorizontalHeaderItem(5, __qtablewidgetitem5)
         __qtablewidgetitem6 = QTableWidgetItem()
-        __qtablewidgetitem6.setFont(font10);
+        __qtablewidgetitem6.setFont(font11);
         self.tableWidget.setHorizontalHeaderItem(6, __qtablewidgetitem6)
         __qtablewidgetitem7 = QTableWidgetItem()
-        __qtablewidgetitem7.setFont(font10);
+        __qtablewidgetitem7.setFont(font11);
         self.tableWidget.setHorizontalHeaderItem(7, __qtablewidgetitem7)
         if (self.tableWidget.rowCount() < 1):
             self.tableWidget.setRowCount(1)
@@ -643,7 +655,7 @@ class Ui_MainWindow(object):
 
         self.label_34 = QLabel(self.frame_17)
         self.label_34.setObjectName(u"label_34")
-        self.label_34.setFont(font5)
+        self.label_34.setFont(font6)
 
         self.gridLayout_8.addWidget(self.label_34, 1, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -663,11 +675,11 @@ class Ui_MainWindow(object):
         self.lineEdit_16.setObjectName(u"lineEdit_16")
         self.lineEdit_16.setMinimumSize(QSize(300, 0))
         self.lineEdit_16.setMaximumSize(QSize(300, 16777215))
-        font11 = QFont()
-        font11.setPointSize(14)
-        font11.setBold(False)
-        font11.setStrikeOut(False)
-        self.lineEdit_16.setFont(font11)
+        font12 = QFont()
+        font12.setPointSize(14)
+        font12.setBold(False)
+        font12.setStrikeOut(False)
+        self.lineEdit_16.setFont(font12)
 
         self.gridLayout_8.addWidget(self.lineEdit_16, 3, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -694,11 +706,11 @@ class Ui_MainWindow(object):
 
         self.label_80 = QLabel(self.frame_17)
         self.label_80.setObjectName(u"label_80")
-        font12 = QFont()
-        font12.setPointSize(8)
-        font12.setBold(True)
-        font12.setStrikeOut(False)
-        self.label_80.setFont(font12)
+        font13 = QFont()
+        font13.setPointSize(8)
+        font13.setBold(True)
+        font13.setStrikeOut(False)
+        self.label_80.setFont(font13)
 
         self.gridLayout_8.addWidget(self.label_80, 4, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -722,11 +734,11 @@ class Ui_MainWindow(object):
         self.gridLayout_6.setObjectName(u"gridLayout_6")
         self.label_30 = QLabel(self.frame_8)
         self.label_30.setObjectName(u"label_30")
-        font13 = QFont()
-        font13.setPointSize(59)
-        font13.setBold(True)
-        font13.setStrikeOut(False)
-        self.label_30.setFont(font13)
+        font14 = QFont()
+        font14.setPointSize(59)
+        font14.setBold(True)
+        font14.setStrikeOut(False)
+        self.label_30.setFont(font14)
 
         self.gridLayout_6.addWidget(self.label_30, 0, 0, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -778,13 +790,13 @@ class Ui_MainWindow(object):
         self.lineEdit_2.setObjectName(u"lineEdit_2")
         self.lineEdit_2.setMinimumSize(QSize(300, 0))
         self.lineEdit_2.setMaximumSize(QSize(300, 16777215))
-        self.lineEdit_2.setFont(font11)
+        self.lineEdit_2.setFont(font12)
 
         self.gridLayout_3.addWidget(self.lineEdit_2, 3, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.label_9 = QLabel(self.frame_6)
         self.label_9.setObjectName(u"label_9")
-        self.label_9.setFont(font5)
+        self.label_9.setFont(font6)
 
         self.gridLayout_3.addWidget(self.label_9, 1, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -792,17 +804,17 @@ class Ui_MainWindow(object):
         self.pushButton_21.setObjectName(u"pushButton_21")
         self.pushButton_21.setMinimumSize(QSize(130, 0))
         self.pushButton_21.setMaximumSize(QSize(150, 16777215))
-        self.pushButton_21.setFont(font7)
+        self.pushButton_21.setFont(font8)
 
         self.gridLayout_3.addWidget(self.pushButton_21, 5, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.label_72 = QLabel(self.frame_6)
         self.label_72.setObjectName(u"label_72")
-        font14 = QFont()
-        font14.setPointSize(8)
-        font14.setBold(False)
-        font14.setStrikeOut(False)
-        self.label_72.setFont(font14)
+        font15 = QFont()
+        font15.setPointSize(8)
+        font15.setBold(False)
+        font15.setStrikeOut(False)
+        self.label_72.setFont(font15)
 
         self.gridLayout_3.addWidget(self.label_72, 4, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -870,7 +882,7 @@ class Ui_MainWindow(object):
 
         self.label_74 = QLabel(self.frame_7)
         self.label_74.setObjectName(u"label_74")
-        self.label_74.setFont(font14)
+        self.label_74.setFont(font15)
 
         self.gridLayout_4.addWidget(self.label_74, 5, 5, 1, 1)
 
@@ -880,7 +892,7 @@ class Ui_MainWindow(object):
 
         self.label_12 = QLabel(self.frame_7)
         self.label_12.setObjectName(u"label_12")
-        self.label_12.setFont(font7)
+        self.label_12.setFont(font8)
 
         self.gridLayout_4.addWidget(self.label_12, 3, 3, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -917,13 +929,13 @@ class Ui_MainWindow(object):
 
         self.label_26 = QLabel(self.frame_7)
         self.label_26.setObjectName(u"label_26")
-        self.label_26.setFont(font7)
+        self.label_26.setFont(font8)
 
         self.gridLayout_4.addWidget(self.label_26, 3, 5, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.label_24 = QLabel(self.frame_7)
         self.label_24.setObjectName(u"label_24")
-        self.label_24.setFont(font7)
+        self.label_24.setFont(font8)
 
         self.gridLayout_4.addWidget(self.label_24, 3, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -947,7 +959,7 @@ class Ui_MainWindow(object):
 
         self.label_73 = QLabel(self.frame_7)
         self.label_73.setObjectName(u"label_73")
-        self.label_73.setFont(font14)
+        self.label_73.setFont(font15)
 
         self.gridLayout_4.addWidget(self.label_73, 5, 4, 1, 1, Qt.AlignmentFlag.AlignRight)
 
@@ -957,7 +969,7 @@ class Ui_MainWindow(object):
 
         self.label_27 = QLabel(self.frame_7)
         self.label_27.setObjectName(u"label_27")
-        self.label_27.setFont(font7)
+        self.label_27.setFont(font8)
 
         self.gridLayout_4.addWidget(self.label_27, 3, 7, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -967,13 +979,13 @@ class Ui_MainWindow(object):
 
         self.label_23 = QLabel(self.frame_7)
         self.label_23.setObjectName(u"label_23")
-        self.label_23.setFont(font7)
+        self.label_23.setFont(font8)
 
         self.gridLayout_4.addWidget(self.label_23, 3, 2, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.label_28 = QLabel(self.frame_7)
         self.label_28.setObjectName(u"label_28")
-        self.label_28.setFont(font7)
+        self.label_28.setFont(font8)
 
         self.gridLayout_4.addWidget(self.label_28, 3, 8, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -993,7 +1005,7 @@ class Ui_MainWindow(object):
 
         self.label_29 = QLabel(self.frame_7)
         self.label_29.setObjectName(u"label_29")
-        self.label_29.setFont(font5)
+        self.label_29.setFont(font6)
 
         self.gridLayout_4.addWidget(self.label_29, 1, 5, 1, 1)
 
@@ -1005,7 +1017,7 @@ class Ui_MainWindow(object):
 
         self.label_11 = QLabel(self.frame_7)
         self.label_11.setObjectName(u"label_11")
-        self.label_11.setFont(font5)
+        self.label_11.setFont(font6)
 
         self.gridLayout_4.addWidget(self.label_11, 1, 4, 1, 1, Qt.AlignmentFlag.AlignRight)
 
@@ -1027,7 +1039,7 @@ class Ui_MainWindow(object):
 
         self.label_25 = QLabel(self.frame_7)
         self.label_25.setObjectName(u"label_25")
-        self.label_25.setFont(font7)
+        self.label_25.setFont(font8)
 
         self.gridLayout_4.addWidget(self.label_25, 3, 4, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -1045,7 +1057,7 @@ class Ui_MainWindow(object):
 
         self.label_10 = QLabel(self.frame_7)
         self.label_10.setObjectName(u"label_10")
-        self.label_10.setFont(font7)
+        self.label_10.setFont(font8)
 
         self.gridLayout_4.addWidget(self.label_10, 3, 6, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -1077,13 +1089,13 @@ class Ui_MainWindow(object):
         self.gridLayout_32.setObjectName(u"gridLayout_32")
         self.label_116 = QLabel(self.frame_56)
         self.label_116.setObjectName(u"label_116")
-        self.label_116.setFont(font6)
+        self.label_116.setFont(font7)
 
         self.gridLayout_32.addWidget(self.label_116, 0, 0, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.label_117 = QLabel(self.frame_56)
         self.label_117.setObjectName(u"label_117")
-        self.label_117.setFont(font6)
+        self.label_117.setFont(font7)
 
         self.gridLayout_32.addWidget(self.label_117, 0, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -1102,7 +1114,7 @@ class Ui_MainWindow(object):
 
         self.doubleSpinBox = QDoubleSpinBox(self.frame_57)
         self.doubleSpinBox.setObjectName(u"doubleSpinBox")
-        self.doubleSpinBox.setFont(font6)
+        self.doubleSpinBox.setFont(font7)
 
         self.horizontalLayout_15.addWidget(self.doubleSpinBox)
 
@@ -1124,7 +1136,7 @@ class Ui_MainWindow(object):
 
         self.doubleSpinBox_2 = QDoubleSpinBox(self.frame_58)
         self.doubleSpinBox_2.setObjectName(u"doubleSpinBox_2")
-        self.doubleSpinBox_2.setFont(font6)
+        self.doubleSpinBox_2.setFont(font7)
 
         self.horizontalLayout_16.addWidget(self.doubleSpinBox_2)
 
@@ -1143,13 +1155,13 @@ class Ui_MainWindow(object):
         self.comboBox_19.setSizePolicy(sizePolicy3)
         self.comboBox_19.setMinimumSize(QSize(150, 0))
         self.comboBox_19.setMaximumSize(QSize(200, 16777215))
-        self.comboBox_19.setFont(font6)
+        self.comboBox_19.setFont(font7)
 
         self.gridLayout_31.addWidget(self.comboBox_19, 0, 2, 1, 1)
 
         self.label_114 = QLabel(self.frame_55)
         self.label_114.setObjectName(u"label_114")
-        self.label_114.setFont(font5)
+        self.label_114.setFont(font6)
 
         self.gridLayout_31.addWidget(self.label_114, 0, 0, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -1160,7 +1172,7 @@ class Ui_MainWindow(object):
         self.pushButton_49 = QPushButton(self.frame_55)
         self.pushButton_49.setObjectName(u"pushButton_49")
         self.pushButton_49.setMaximumSize(QSize(16777215, 50))
-        self.pushButton_49.setFont(font7)
+        self.pushButton_49.setFont(font8)
 
         self.gridLayout_31.addWidget(self.pushButton_49, 2, 2, 1, 1)
 
@@ -1170,7 +1182,7 @@ class Ui_MainWindow(object):
         self.comboBox_20.setSizePolicy(sizePolicy3)
         self.comboBox_20.setMinimumSize(QSize(150, 0))
         self.comboBox_20.setMaximumSize(QSize(200, 16777215))
-        self.comboBox_20.setFont(font6)
+        self.comboBox_20.setFont(font7)
 
         self.gridLayout_31.addWidget(self.comboBox_20, 1, 2, 1, 1)
 
@@ -1216,7 +1228,7 @@ class Ui_MainWindow(object):
         self.gridLayout_5.setObjectName(u"gridLayout_5")
         self.label_22 = QLabel(self.frame_5)
         self.label_22.setObjectName(u"label_22")
-        self.label_22.setFont(font7)
+        self.label_22.setFont(font8)
 
         self.gridLayout_5.addWidget(self.label_22, 3, 5, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -1226,7 +1238,7 @@ class Ui_MainWindow(object):
 
         self.label_20 = QLabel(self.frame_5)
         self.label_20.setObjectName(u"label_20")
-        self.label_20.setFont(font5)
+        self.label_20.setFont(font6)
 
         self.gridLayout_5.addWidget(self.label_20, 1, 3, 1, 1, Qt.AlignmentFlag.AlignRight)
 
@@ -1236,13 +1248,13 @@ class Ui_MainWindow(object):
 
         self.label_19 = QLabel(self.frame_5)
         self.label_19.setObjectName(u"label_19")
-        self.label_19.setFont(font7)
+        self.label_19.setFont(font8)
 
         self.gridLayout_5.addWidget(self.label_19, 3, 7, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.label_13 = QLabel(self.frame_5)
         self.label_13.setObjectName(u"label_13")
-        self.label_13.setFont(font7)
+        self.label_13.setFont(font8)
 
         self.gridLayout_5.addWidget(self.label_13, 3, 0, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -1254,7 +1266,7 @@ class Ui_MainWindow(object):
 
         self.label_18 = QLabel(self.frame_5)
         self.label_18.setObjectName(u"label_18")
-        self.label_18.setFont(font7)
+        self.label_18.setFont(font8)
 
         self.gridLayout_5.addWidget(self.label_18, 3, 6, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -1264,7 +1276,7 @@ class Ui_MainWindow(object):
 
         self.label_16 = QLabel(self.frame_5)
         self.label_16.setObjectName(u"label_16")
-        self.label_16.setFont(font7)
+        self.label_16.setFont(font8)
 
         self.gridLayout_5.addWidget(self.label_16, 3, 3, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -1296,7 +1308,7 @@ class Ui_MainWindow(object):
 
         self.label_21 = QLabel(self.frame_5)
         self.label_21.setObjectName(u"label_21")
-        self.label_21.setFont(font5)
+        self.label_21.setFont(font6)
 
         self.gridLayout_5.addWidget(self.label_21, 1, 4, 1, 1)
 
@@ -1340,13 +1352,13 @@ class Ui_MainWindow(object):
 
         self.label_17 = QLabel(self.frame_5)
         self.label_17.setObjectName(u"label_17")
-        self.label_17.setFont(font7)
+        self.label_17.setFont(font8)
 
         self.gridLayout_5.addWidget(self.label_17, 3, 4, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.label_15 = QLabel(self.frame_5)
         self.label_15.setObjectName(u"label_15")
-        self.label_15.setFont(font7)
+        self.label_15.setFont(font8)
 
         self.gridLayout_5.addWidget(self.label_15, 3, 2, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -1356,7 +1368,7 @@ class Ui_MainWindow(object):
 
         self.label_14 = QLabel(self.frame_5)
         self.label_14.setObjectName(u"label_14")
-        self.label_14.setFont(font7)
+        self.label_14.setFont(font8)
 
         self.gridLayout_5.addWidget(self.label_14, 3, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -1392,13 +1404,13 @@ class Ui_MainWindow(object):
 
         self.label_70 = QLabel(self.frame_5)
         self.label_70.setObjectName(u"label_70")
-        self.label_70.setFont(font14)
+        self.label_70.setFont(font15)
 
         self.gridLayout_5.addWidget(self.label_70, 5, 3, 1, 1, Qt.AlignmentFlag.AlignRight)
 
         self.label_71 = QLabel(self.frame_5)
         self.label_71.setObjectName(u"label_71")
-        self.label_71.setFont(font14)
+        self.label_71.setFont(font15)
 
         self.gridLayout_5.addWidget(self.label_71, 5, 4, 1, 1)
 
@@ -1445,7 +1457,7 @@ class Ui_MainWindow(object):
         self.gridLayout_7.setObjectName(u"gridLayout_7")
         self.label_37 = QLabel(self.frame_10)
         self.label_37.setObjectName(u"label_37")
-        self.label_37.setFont(font5)
+        self.label_37.setFont(font6)
 
         self.gridLayout_7.addWidget(self.label_37, 1, 3, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -1511,13 +1523,13 @@ class Ui_MainWindow(object):
         self.horizontalLayout_11.setObjectName(u"horizontalLayout_11")
         self.label_76 = QLabel(self.frame_40)
         self.label_76.setObjectName(u"label_76")
-        self.label_76.setFont(font12)
+        self.label_76.setFont(font13)
 
         self.horizontalLayout_11.addWidget(self.label_76, 0, Qt.AlignmentFlag.AlignRight)
 
         self.label_75 = QLabel(self.frame_40)
         self.label_75.setObjectName(u"label_75")
-        self.label_75.setFont(font12)
+        self.label_75.setFont(font13)
 
         self.horizontalLayout_11.addWidget(self.label_75)
 
@@ -1542,19 +1554,19 @@ class Ui_MainWindow(object):
 
         self.label_32 = QLabel(self.frame_10)
         self.label_32.setObjectName(u"label_32")
-        self.label_32.setFont(font7)
+        self.label_32.setFont(font8)
 
         self.gridLayout_7.addWidget(self.label_32, 3, 3, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.label_41 = QLabel(self.frame_10)
         self.label_41.setObjectName(u"label_41")
-        self.label_41.setFont(font7)
+        self.label_41.setFont(font8)
 
         self.gridLayout_7.addWidget(self.label_41, 3, 5, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.label_33 = QLabel(self.frame_10)
         self.label_33.setObjectName(u"label_33")
-        self.label_33.setFont(font7)
+        self.label_33.setFont(font8)
 
         self.gridLayout_7.addWidget(self.label_33, 3, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -1624,7 +1636,7 @@ class Ui_MainWindow(object):
         self.pushButton_34.setObjectName(u"pushButton_34")
         self.pushButton_34.setMinimumSize(QSize(130, 0))
         self.pushButton_34.setMaximumSize(QSize(150, 16777215))
-        self.pushButton_34.setFont(font7)
+        self.pushButton_34.setFont(font8)
 
         self.gridLayout_11.addWidget(self.pushButton_34, 5, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -1632,13 +1644,13 @@ class Ui_MainWindow(object):
         self.lineEdit_20.setObjectName(u"lineEdit_20")
         self.lineEdit_20.setMinimumSize(QSize(300, 0))
         self.lineEdit_20.setMaximumSize(QSize(300, 16777215))
-        self.lineEdit_20.setFont(font11)
+        self.lineEdit_20.setFont(font12)
 
         self.gridLayout_11.addWidget(self.lineEdit_20, 3, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.label_38 = QLabel(self.frame_12)
         self.label_38.setObjectName(u"label_38")
-        self.label_38.setFont(font5)
+        self.label_38.setFont(font6)
 
         self.gridLayout_11.addWidget(self.label_38, 1, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -1648,7 +1660,7 @@ class Ui_MainWindow(object):
 
         self.label_77 = QLabel(self.frame_12)
         self.label_77.setObjectName(u"label_77")
-        self.label_77.setFont(font12)
+        self.label_77.setFont(font13)
 
         self.gridLayout_11.addWidget(self.label_77, 4, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -1663,7 +1675,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_34.setObjectName(u"verticalLayout_34")
         self.label_82 = QLabel(self.frame_42)
         self.label_82.setObjectName(u"label_82")
-        self.label_82.setFont(font11)
+        self.label_82.setFont(font12)
 
         self.verticalLayout_34.addWidget(self.label_82, 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -1732,7 +1744,7 @@ class Ui_MainWindow(object):
 
         self.label_52 = QLabel(self.frame_13)
         self.label_52.setObjectName(u"label_52")
-        self.label_52.setFont(font7)
+        self.label_52.setFont(font8)
 
         self.gridLayout_13.addWidget(self.label_52, 3, 3, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -1785,7 +1797,7 @@ class Ui_MainWindow(object):
 
         self.label_50 = QLabel(self.frame_13)
         self.label_50.setObjectName(u"label_50")
-        self.label_50.setFont(font5)
+        self.label_50.setFont(font6)
 
         self.gridLayout_13.addWidget(self.label_50, 1, 3, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -1807,7 +1819,7 @@ class Ui_MainWindow(object):
 
         self.label_53 = QLabel(self.frame_13)
         self.label_53.setObjectName(u"label_53")
-        self.label_53.setFont(font7)
+        self.label_53.setFont(font8)
 
         self.gridLayout_13.addWidget(self.label_53, 3, 5, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -1821,7 +1833,7 @@ class Ui_MainWindow(object):
 
         self.label_51 = QLabel(self.frame_13)
         self.label_51.setObjectName(u"label_51")
-        self.label_51.setFont(font7)
+        self.label_51.setFont(font8)
 
         self.gridLayout_13.addWidget(self.label_51, 3, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -1834,13 +1846,13 @@ class Ui_MainWindow(object):
         self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
         self.label_78 = QLabel(self.frame_41)
         self.label_78.setObjectName(u"label_78")
-        self.label_78.setFont(font12)
+        self.label_78.setFont(font13)
 
         self.horizontalLayout_12.addWidget(self.label_78, 0, Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignVCenter)
 
         self.label_79 = QLabel(self.frame_41)
         self.label_79.setObjectName(u"label_79")
-        self.label_79.setFont(font12)
+        self.label_79.setFont(font13)
 
         self.horizontalLayout_12.addWidget(self.label_79, 0, Qt.AlignmentFlag.AlignVCenter)
 
@@ -1880,13 +1892,13 @@ class Ui_MainWindow(object):
         self.verticalLayout_15.setObjectName(u"verticalLayout_15")
         self.label_57 = QLabel(self.frame_18)
         self.label_57.setObjectName(u"label_57")
-        self.label_57.setFont(font7)
+        self.label_57.setFont(font8)
 
         self.verticalLayout_15.addWidget(self.label_57, 0, Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignTop)
 
         self.lineEdit_27 = QLineEdit(self.frame_18)
         self.lineEdit_27.setObjectName(u"lineEdit_27")
-        self.lineEdit_27.setFont(font8)
+        self.lineEdit_27.setFont(font9)
 
         self.verticalLayout_15.addWidget(self.lineEdit_27, 0, Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignTop)
 
@@ -1899,7 +1911,7 @@ class Ui_MainWindow(object):
 
         self.label_54 = QLabel(self.frame_16)
         self.label_54.setObjectName(u"label_54")
-        self.label_54.setFont(font9)
+        self.label_54.setFont(font10)
 
         self.gridLayout_14.addWidget(self.label_54, 0, 2, 1, 1, Qt.AlignmentFlag.AlignHCenter|Qt.AlignmentFlag.AlignTop)
 
@@ -1928,13 +1940,13 @@ class Ui_MainWindow(object):
 
         self.label_125 = QLabel(self.frame_61)
         self.label_125.setObjectName(u"label_125")
-        self.label_125.setFont(font6)
+        self.label_125.setFont(font7)
 
         self.horizontalLayout_19.addWidget(self.label_125, 0, Qt.AlignmentFlag.AlignRight)
 
         self.label_124 = QLabel(self.frame_61)
         self.label_124.setObjectName(u"label_124")
-        self.label_124.setFont(font5)
+        self.label_124.setFont(font6)
 
         self.horizontalLayout_19.addWidget(self.label_124, 0, Qt.AlignmentFlag.AlignRight)
 
@@ -1945,16 +1957,16 @@ class Ui_MainWindow(object):
         if (self.tableWidget_2.columnCount() < 4):
             self.tableWidget_2.setColumnCount(4)
         __qtablewidgetitem8 = QTableWidgetItem()
-        __qtablewidgetitem8.setFont(font10);
+        __qtablewidgetitem8.setFont(font11);
         self.tableWidget_2.setHorizontalHeaderItem(0, __qtablewidgetitem8)
         __qtablewidgetitem9 = QTableWidgetItem()
-        __qtablewidgetitem9.setFont(font10);
+        __qtablewidgetitem9.setFont(font11);
         self.tableWidget_2.setHorizontalHeaderItem(1, __qtablewidgetitem9)
         __qtablewidgetitem10 = QTableWidgetItem()
-        __qtablewidgetitem10.setFont(font10);
+        __qtablewidgetitem10.setFont(font11);
         self.tableWidget_2.setHorizontalHeaderItem(2, __qtablewidgetitem10)
         __qtablewidgetitem11 = QTableWidgetItem()
-        __qtablewidgetitem11.setFont(font10);
+        __qtablewidgetitem11.setFont(font11);
         self.tableWidget_2.setHorizontalHeaderItem(3, __qtablewidgetitem11)
         if (self.tableWidget_2.rowCount() < 1):
             self.tableWidget_2.setRowCount(1)
@@ -2009,7 +2021,7 @@ class Ui_MainWindow(object):
         self.lineEdit_21.setObjectName(u"lineEdit_21")
         self.lineEdit_21.setMinimumSize(QSize(300, 0))
         self.lineEdit_21.setMaximumSize(QSize(300, 16777215))
-        self.lineEdit_21.setFont(font11)
+        self.lineEdit_21.setFont(font12)
 
         self.gridLayout_12.addWidget(self.lineEdit_21, 3, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -2021,7 +2033,7 @@ class Ui_MainWindow(object):
         self.pushButton_36.setObjectName(u"pushButton_36")
         self.pushButton_36.setMinimumSize(QSize(130, 0))
         self.pushButton_36.setMaximumSize(QSize(150, 16777215))
-        self.pushButton_36.setFont(font7)
+        self.pushButton_36.setFont(font8)
 
         self.gridLayout_12.addWidget(self.pushButton_36, 5, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -2035,7 +2047,7 @@ class Ui_MainWindow(object):
 
         self.label_39 = QLabel(self.frame_20)
         self.label_39.setObjectName(u"label_39")
-        self.label_39.setFont(font5)
+        self.label_39.setFont(font6)
 
         self.gridLayout_12.addWidget(self.label_39, 1, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -2049,7 +2061,7 @@ class Ui_MainWindow(object):
 
         self.label_81 = QLabel(self.frame_20)
         self.label_81.setObjectName(u"label_81")
-        self.label_81.setFont(font12)
+        self.label_81.setFont(font13)
 
         self.gridLayout_12.addWidget(self.label_81, 4, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -2090,13 +2102,13 @@ class Ui_MainWindow(object):
         self.verticalLayout_21.setObjectName(u"verticalLayout_21")
         self.label_46 = QLabel(self.frame_26)
         self.label_46.setObjectName(u"label_46")
-        self.label_46.setFont(font7)
+        self.label_46.setFont(font8)
 
         self.verticalLayout_21.addWidget(self.label_46, 0, Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignTop)
 
         self.lineEdit_19 = QLineEdit(self.frame_26)
         self.lineEdit_19.setObjectName(u"lineEdit_19")
-        self.lineEdit_19.setFont(font8)
+        self.lineEdit_19.setFont(font9)
 
         self.verticalLayout_21.addWidget(self.lineEdit_19, 0, Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignTop)
 
@@ -2105,7 +2117,7 @@ class Ui_MainWindow(object):
 
         self.label_43 = QLabel(self.frame_24)
         self.label_43.setObjectName(u"label_43")
-        self.label_43.setFont(font9)
+        self.label_43.setFont(font10)
 
         self.gridLayout_15.addWidget(self.label_43, 0, 2, 1, 1, Qt.AlignmentFlag.AlignHCenter|Qt.AlignmentFlag.AlignTop)
 
@@ -2134,13 +2146,13 @@ class Ui_MainWindow(object):
 
         self.label_126 = QLabel(self.frame_62)
         self.label_126.setObjectName(u"label_126")
-        self.label_126.setFont(font6)
+        self.label_126.setFont(font7)
 
         self.horizontalLayout_20.addWidget(self.label_126, 0, Qt.AlignmentFlag.AlignRight)
 
         self.label_127 = QLabel(self.frame_62)
         self.label_127.setObjectName(u"label_127")
-        self.label_127.setFont(font5)
+        self.label_127.setFont(font6)
 
         self.horizontalLayout_20.addWidget(self.label_127, 0, Qt.AlignmentFlag.AlignRight)
 
@@ -2151,10 +2163,10 @@ class Ui_MainWindow(object):
         if (self.tableWidget_3.columnCount() < 2):
             self.tableWidget_3.setColumnCount(2)
         __qtablewidgetitem12 = QTableWidgetItem()
-        __qtablewidgetitem12.setFont(font10);
+        __qtablewidgetitem12.setFont(font11);
         self.tableWidget_3.setHorizontalHeaderItem(0, __qtablewidgetitem12)
         __qtablewidgetitem13 = QTableWidgetItem()
-        __qtablewidgetitem13.setFont(font10);
+        __qtablewidgetitem13.setFont(font11);
         self.tableWidget_3.setHorizontalHeaderItem(1, __qtablewidgetitem13)
         if (self.tableWidget_3.rowCount() < 1):
             self.tableWidget_3.setRowCount(1)
@@ -2235,13 +2247,13 @@ class Ui_MainWindow(object):
         self.pushButton_30.setObjectName(u"pushButton_30")
         self.pushButton_30.setMinimumSize(QSize(130, 0))
         self.pushButton_30.setMaximumSize(QSize(150, 16777215))
-        self.pushButton_30.setFont(font7)
+        self.pushButton_30.setFont(font8)
 
         self.gridLayout_16.addWidget(self.pushButton_30, 10, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.label_83 = QLabel(self.frame_25)
         self.label_83.setObjectName(u"label_83")
-        self.label_83.setFont(font14)
+        self.label_83.setFont(font15)
 
         self.gridLayout_16.addWidget(self.label_83, 9, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -2253,7 +2265,7 @@ class Ui_MainWindow(object):
         self.pushButton_29.setObjectName(u"pushButton_29")
         self.pushButton_29.setMinimumSize(QSize(100, 0))
         self.pushButton_29.setMaximumSize(QSize(90, 16777215))
-        self.pushButton_29.setFont(font6)
+        self.pushButton_29.setFont(font7)
 
         self.gridLayout_16.addWidget(self.pushButton_29, 11, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -2269,7 +2281,7 @@ class Ui_MainWindow(object):
 
         self.label_44 = QLabel(self.frame_25)
         self.label_44.setObjectName(u"label_44")
-        self.label_44.setFont(font5)
+        self.label_44.setFont(font6)
 
         self.gridLayout_16.addWidget(self.label_44, 1, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -2324,7 +2336,7 @@ class Ui_MainWindow(object):
         self.label_48 = QLabel(self.frame_30)
         self.label_48.setObjectName(u"label_48")
         self.label_48.setMaximumSize(QSize(170, 16777215))
-        self.label_48.setFont(font5)
+        self.label_48.setFont(font6)
 
         self.horizontalLayout_8.addWidget(self.label_48, 0, Qt.AlignmentFlag.AlignLeft)
 
@@ -2338,7 +2350,7 @@ class Ui_MainWindow(object):
 
         self.label_47 = QLabel(self.frame_30)
         self.label_47.setObjectName(u"label_47")
-        self.label_47.setFont(font5)
+        self.label_47.setFont(font6)
 
         self.horizontalLayout_8.addWidget(self.label_47, 0, Qt.AlignmentFlag.AlignLeft)
 
@@ -2352,29 +2364,29 @@ class Ui_MainWindow(object):
         self.tableWidget_7 = QTableWidget(self.frame_23)
         if (self.tableWidget_7.columnCount() < 7):
             self.tableWidget_7.setColumnCount(7)
-        font15 = QFont()
-        font15.setPointSize(12)
-        font15.setBold(True)
+        font16 = QFont()
+        font16.setPointSize(12)
+        font16.setBold(True)
         __qtablewidgetitem14 = QTableWidgetItem()
-        __qtablewidgetitem14.setFont(font15);
+        __qtablewidgetitem14.setFont(font16);
         self.tableWidget_7.setHorizontalHeaderItem(0, __qtablewidgetitem14)
         __qtablewidgetitem15 = QTableWidgetItem()
-        __qtablewidgetitem15.setFont(font15);
+        __qtablewidgetitem15.setFont(font16);
         self.tableWidget_7.setHorizontalHeaderItem(1, __qtablewidgetitem15)
         __qtablewidgetitem16 = QTableWidgetItem()
-        __qtablewidgetitem16.setFont(font15);
+        __qtablewidgetitem16.setFont(font16);
         self.tableWidget_7.setHorizontalHeaderItem(2, __qtablewidgetitem16)
         __qtablewidgetitem17 = QTableWidgetItem()
-        __qtablewidgetitem17.setFont(font15);
+        __qtablewidgetitem17.setFont(font16);
         self.tableWidget_7.setHorizontalHeaderItem(3, __qtablewidgetitem17)
         __qtablewidgetitem18 = QTableWidgetItem()
-        __qtablewidgetitem18.setFont(font15);
+        __qtablewidgetitem18.setFont(font16);
         self.tableWidget_7.setHorizontalHeaderItem(4, __qtablewidgetitem18)
         __qtablewidgetitem19 = QTableWidgetItem()
-        __qtablewidgetitem19.setFont(font15);
+        __qtablewidgetitem19.setFont(font16);
         self.tableWidget_7.setHorizontalHeaderItem(5, __qtablewidgetitem19)
         __qtablewidgetitem20 = QTableWidgetItem()
-        __qtablewidgetitem20.setFont(font15);
+        __qtablewidgetitem20.setFont(font16);
         self.tableWidget_7.setHorizontalHeaderItem(6, __qtablewidgetitem20)
         if (self.tableWidget_7.rowCount() < 1):
             self.tableWidget_7.setRowCount(1)
@@ -2406,14 +2418,14 @@ class Ui_MainWindow(object):
 
         self.label_62 = QLabel(self.frame_32)
         self.label_62.setObjectName(u"label_62")
-        self.label_62.setFont(font5)
+        self.label_62.setFont(font6)
 
         self.gridLayout_17.addWidget(self.label_62, 1, 4, 1, 1, Qt.AlignmentFlag.AlignRight)
 
         self.comboBox_10 = QComboBox(self.frame_32)
         self.comboBox_10.setObjectName(u"comboBox_10")
         self.comboBox_10.setMaximumSize(QSize(100, 16777215))
-        self.comboBox_10.setFont(font6)
+        self.comboBox_10.setFont(font7)
 
         self.gridLayout_17.addWidget(self.comboBox_10, 1, 1, 1, 1)
 
@@ -2423,33 +2435,33 @@ class Ui_MainWindow(object):
 
         self.label_61 = QLabel(self.frame_32)
         self.label_61.setObjectName(u"label_61")
-        self.label_61.setFont(font5)
+        self.label_61.setFont(font6)
 
         self.gridLayout_17.addWidget(self.label_61, 1, 2, 1, 1, Qt.AlignmentFlag.AlignRight)
 
         self.comboBox_9 = QComboBox(self.frame_32)
         self.comboBox_9.setObjectName(u"comboBox_9")
         self.comboBox_9.setMaximumSize(QSize(100, 16777215))
-        self.comboBox_9.setFont(font6)
+        self.comboBox_9.setFont(font7)
 
         self.gridLayout_17.addWidget(self.comboBox_9, 1, 3, 1, 1)
 
         self.label_60 = QLabel(self.frame_32)
         self.label_60.setObjectName(u"label_60")
-        self.label_60.setFont(font5)
+        self.label_60.setFont(font6)
 
         self.gridLayout_17.addWidget(self.label_60, 1, 0, 1, 1, Qt.AlignmentFlag.AlignRight)
 
         self.comboBox_8 = QComboBox(self.frame_32)
         self.comboBox_8.setObjectName(u"comboBox_8")
         self.comboBox_8.setMaximumSize(QSize(100, 16777215))
-        self.comboBox_8.setFont(font6)
+        self.comboBox_8.setFont(font7)
 
         self.gridLayout_17.addWidget(self.comboBox_8, 1, 5, 1, 1)
 
         self.label_59 = QLabel(self.frame_32)
         self.label_59.setObjectName(u"label_59")
-        self.label_59.setFont(font5)
+        self.label_59.setFont(font6)
 
         self.gridLayout_17.addWidget(self.label_59, 0, 0, 1, 1)
 
@@ -2471,14 +2483,14 @@ class Ui_MainWindow(object):
         self.gridLayout_10.setObjectName(u"gridLayout_10")
         self.label_58 = QLabel(self.frame_31)
         self.label_58.setObjectName(u"label_58")
-        self.label_58.setFont(font5)
+        self.label_58.setFont(font6)
 
         self.gridLayout_10.addWidget(self.label_58, 3, 1, 1, 1)
 
         self.comboBox_13 = QComboBox(self.frame_31)
         self.comboBox_13.setObjectName(u"comboBox_13")
         self.comboBox_13.setMinimumSize(QSize(120, 0))
-        self.comboBox_13.setFont(font14)
+        self.comboBox_13.setFont(font15)
 
         self.gridLayout_10.addWidget(self.comboBox_13, 1, 1, 1, 1)
 
@@ -2489,7 +2501,7 @@ class Ui_MainWindow(object):
         self.comboBox_12 = QComboBox(self.frame_31)
         self.comboBox_12.setObjectName(u"comboBox_12")
         self.comboBox_12.setMinimumSize(QSize(120, 0))
-        self.comboBox_12.setFont(font14)
+        self.comboBox_12.setFont(font15)
 
         self.gridLayout_10.addWidget(self.comboBox_12, 0, 1, 1, 1)
 
@@ -2500,14 +2512,14 @@ class Ui_MainWindow(object):
         self.pushButton_47 = QPushButton(self.frame_31)
         self.pushButton_47.setObjectName(u"pushButton_47")
         self.pushButton_47.setMinimumSize(QSize(100, 0))
-        self.pushButton_47.setFont(font5)
+        self.pushButton_47.setFont(font6)
 
         self.gridLayout_10.addWidget(self.pushButton_47, 0, 4, 1, 1)
 
         self.label_56 = QLabel(self.frame_31)
         self.label_56.setObjectName(u"label_56")
         self.label_56.setMaximumSize(QSize(100, 16777215))
-        self.label_56.setFont(font5)
+        self.label_56.setFont(font6)
 
         self.gridLayout_10.addWidget(self.label_56, 3, 0, 1, 1)
 
@@ -2517,7 +2529,7 @@ class Ui_MainWindow(object):
 
         self.label_40 = QLabel(self.frame_31)
         self.label_40.setObjectName(u"label_40")
-        self.label_40.setFont(font6)
+        self.label_40.setFont(font7)
 
         self.gridLayout_10.addWidget(self.label_40, 1, 0, 1, 1, Qt.AlignmentFlag.AlignRight)
 
@@ -2527,7 +2539,7 @@ class Ui_MainWindow(object):
 
         self.label_36 = QLabel(self.frame_31)
         self.label_36.setObjectName(u"label_36")
-        self.label_36.setFont(font6)
+        self.label_36.setFont(font7)
 
         self.gridLayout_10.addWidget(self.label_36, 0, 0, 1, 1)
 
@@ -2538,25 +2550,25 @@ class Ui_MainWindow(object):
         if (self.tableWidget_6.columnCount() < 7):
             self.tableWidget_6.setColumnCount(7)
         __qtablewidgetitem21 = QTableWidgetItem()
-        __qtablewidgetitem21.setFont(font15);
+        __qtablewidgetitem21.setFont(font16);
         self.tableWidget_6.setHorizontalHeaderItem(0, __qtablewidgetitem21)
         __qtablewidgetitem22 = QTableWidgetItem()
-        __qtablewidgetitem22.setFont(font15);
+        __qtablewidgetitem22.setFont(font16);
         self.tableWidget_6.setHorizontalHeaderItem(1, __qtablewidgetitem22)
         __qtablewidgetitem23 = QTableWidgetItem()
-        __qtablewidgetitem23.setFont(font15);
+        __qtablewidgetitem23.setFont(font16);
         self.tableWidget_6.setHorizontalHeaderItem(2, __qtablewidgetitem23)
         __qtablewidgetitem24 = QTableWidgetItem()
-        __qtablewidgetitem24.setFont(font15);
+        __qtablewidgetitem24.setFont(font16);
         self.tableWidget_6.setHorizontalHeaderItem(3, __qtablewidgetitem24)
         __qtablewidgetitem25 = QTableWidgetItem()
-        __qtablewidgetitem25.setFont(font15);
+        __qtablewidgetitem25.setFont(font16);
         self.tableWidget_6.setHorizontalHeaderItem(4, __qtablewidgetitem25)
         __qtablewidgetitem26 = QTableWidgetItem()
-        __qtablewidgetitem26.setFont(font15);
+        __qtablewidgetitem26.setFont(font16);
         self.tableWidget_6.setHorizontalHeaderItem(5, __qtablewidgetitem26)
         __qtablewidgetitem27 = QTableWidgetItem()
-        __qtablewidgetitem27.setFont(font15);
+        __qtablewidgetitem27.setFont(font16);
         self.tableWidget_6.setHorizontalHeaderItem(6, __qtablewidgetitem27)
         if (self.tableWidget_6.rowCount() < 1):
             self.tableWidget_6.setRowCount(1)
@@ -2580,7 +2592,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
         self.label_35 = QLabel(self.frame_28)
         self.label_35.setObjectName(u"label_35")
-        self.label_35.setFont(font5)
+        self.label_35.setFont(font6)
 
         self.horizontalLayout_9.addWidget(self.label_35, 0, Qt.AlignmentFlag.AlignHCenter|Qt.AlignmentFlag.AlignVCenter)
 
@@ -2616,37 +2628,37 @@ class Ui_MainWindow(object):
         self.gridLayout_26.setObjectName(u"gridLayout_26")
         self.label_102 = QLabel(self.frame_48)
         self.label_102.setObjectName(u"label_102")
-        self.label_102.setFont(font7)
+        self.label_102.setFont(font8)
 
         self.gridLayout_26.addWidget(self.label_102, 0, 2, 1, 1, Qt.AlignmentFlag.AlignRight)
 
         self.dateEdit = QDateEdit(self.frame_48)
         self.dateEdit.setObjectName(u"dateEdit")
         self.dateEdit.setMaximumSize(QSize(100, 16777215))
-        self.dateEdit.setFont(font5)
+        self.dateEdit.setFont(font6)
 
         self.gridLayout_26.addWidget(self.dateEdit, 0, 3, 1, 1)
 
         self.label_101 = QLabel(self.frame_48)
         self.label_101.setObjectName(u"label_101")
-        font16 = QFont()
-        font16.setPointSize(14)
-        font16.setBold(True)
-        font16.setStrikeOut(False)
-        self.label_101.setFont(font16)
+        font17 = QFont()
+        font17.setPointSize(14)
+        font17.setBold(True)
+        font17.setStrikeOut(False)
+        self.label_101.setFont(font17)
 
         self.gridLayout_26.addWidget(self.label_101, 0, 0, 1, 1, Qt.AlignmentFlag.AlignLeft)
 
         self.dateEdit_2 = QDateEdit(self.frame_48)
         self.dateEdit_2.setObjectName(u"dateEdit_2")
         self.dateEdit_2.setMaximumSize(QSize(100, 16777215))
-        self.dateEdit_2.setFont(font5)
+        self.dateEdit_2.setFont(font6)
 
         self.gridLayout_26.addWidget(self.dateEdit_2, 0, 6, 1, 1)
 
         self.label_103 = QLabel(self.frame_48)
         self.label_103.setObjectName(u"label_103")
-        self.label_103.setFont(font7)
+        self.label_103.setFont(font8)
 
         self.gridLayout_26.addWidget(self.label_103, 0, 5, 1, 1, Qt.AlignmentFlag.AlignRight)
 
@@ -2665,40 +2677,40 @@ class Ui_MainWindow(object):
         self.gridLayout_23.setObjectName(u"gridLayout_23")
         self.pushButton_42 = QPushButton(self.frame_46)
         self.pushButton_42.setObjectName(u"pushButton_42")
-        font17 = QFont()
-        font17.setPointSize(11)
-        font17.setBold(False)
-        font17.setUnderline(True)
-        font17.setStrikeOut(False)
-        self.pushButton_42.setFont(font17)
+        font18 = QFont()
+        font18.setPointSize(11)
+        font18.setBold(False)
+        font18.setUnderline(True)
+        font18.setStrikeOut(False)
+        self.pushButton_42.setFont(font18)
         self.pushButton_42.setFlat(True)
 
         self.gridLayout_23.addWidget(self.pushButton_42, 0, 4, 1, 1)
 
         self.pushButton_44 = QPushButton(self.frame_46)
         self.pushButton_44.setObjectName(u"pushButton_44")
-        self.pushButton_44.setFont(font17)
+        self.pushButton_44.setFont(font18)
         self.pushButton_44.setFlat(True)
 
         self.gridLayout_23.addWidget(self.pushButton_44, 0, 2, 1, 1)
 
         self.pushButton_45 = QPushButton(self.frame_46)
         self.pushButton_45.setObjectName(u"pushButton_45")
-        self.pushButton_45.setFont(font17)
+        self.pushButton_45.setFont(font18)
         self.pushButton_45.setFlat(True)
 
         self.gridLayout_23.addWidget(self.pushButton_45, 0, 1, 1, 1)
 
         self.pushButton_43 = QPushButton(self.frame_46)
         self.pushButton_43.setObjectName(u"pushButton_43")
-        self.pushButton_43.setFont(font17)
+        self.pushButton_43.setFont(font18)
         self.pushButton_43.setFlat(True)
 
         self.gridLayout_23.addWidget(self.pushButton_43, 0, 3, 1, 1)
 
         self.pushButton_46 = QPushButton(self.frame_46)
         self.pushButton_46.setObjectName(u"pushButton_46")
-        self.pushButton_46.setFont(font17)
+        self.pushButton_46.setFont(font18)
         self.pushButton_46.setFlat(True)
 
         self.gridLayout_23.addWidget(self.pushButton_46, 0, 0, 1, 1)
@@ -2745,13 +2757,13 @@ class Ui_MainWindow(object):
 
         self.label_104 = QLabel(self.frame_51)
         self.label_104.setObjectName(u"label_104")
-        self.label_104.setFont(font16)
+        self.label_104.setFont(font17)
 
         self.gridLayout_28.addWidget(self.label_104, 0, 0, 1, 1, Qt.AlignmentFlag.AlignLeft)
 
         self.label_108 = QLabel(self.frame_51)
         self.label_108.setObjectName(u"label_108")
-        self.label_108.setFont(font11)
+        self.label_108.setFont(font12)
 
         self.gridLayout_28.addWidget(self.label_108, 0, 1, 1, 1)
 
@@ -2842,7 +2854,7 @@ class Ui_MainWindow(object):
 
         self.label_64 = QLabel(self.frame_36)
         self.label_64.setObjectName(u"label_64")
-        self.label_64.setFont(font9)
+        self.label_64.setFont(font10)
 
         self.gridLayout_18.addWidget(self.label_64, 0, 2, 1, 1, Qt.AlignmentFlag.AlignHCenter|Qt.AlignmentFlag.AlignTop)
 
@@ -2854,13 +2866,13 @@ class Ui_MainWindow(object):
         self.verticalLayout_30.setObjectName(u"verticalLayout_30")
         self.label_67 = QLabel(self.frame_38)
         self.label_67.setObjectName(u"label_67")
-        self.label_67.setFont(font7)
+        self.label_67.setFont(font8)
 
         self.verticalLayout_30.addWidget(self.label_67, 0, Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignTop)
 
         self.lineEdit_18 = QLineEdit(self.frame_38)
         self.lineEdit_18.setObjectName(u"lineEdit_18")
-        self.lineEdit_18.setFont(font8)
+        self.lineEdit_18.setFont(font9)
 
         self.verticalLayout_30.addWidget(self.lineEdit_18, 0, Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignTop)
 
@@ -2882,13 +2894,13 @@ class Ui_MainWindow(object):
 
         self.label_122 = QLabel(self.frame_60)
         self.label_122.setObjectName(u"label_122")
-        self.label_122.setFont(font6)
+        self.label_122.setFont(font7)
 
         self.horizontalLayout_18.addWidget(self.label_122, 0, Qt.AlignmentFlag.AlignRight)
 
         self.label_123 = QLabel(self.frame_60)
         self.label_123.setObjectName(u"label_123")
-        self.label_123.setFont(font5)
+        self.label_123.setFont(font6)
 
         self.horizontalLayout_18.addWidget(self.label_123, 0, Qt.AlignmentFlag.AlignRight)
 
@@ -2905,28 +2917,28 @@ class Ui_MainWindow(object):
         if (self.tableWidget_4.columnCount() < 8):
             self.tableWidget_4.setColumnCount(8)
         __qtablewidgetitem28 = QTableWidgetItem()
-        __qtablewidgetitem28.setFont(font10);
+        __qtablewidgetitem28.setFont(font11);
         self.tableWidget_4.setHorizontalHeaderItem(0, __qtablewidgetitem28)
         __qtablewidgetitem29 = QTableWidgetItem()
-        __qtablewidgetitem29.setFont(font10);
+        __qtablewidgetitem29.setFont(font11);
         self.tableWidget_4.setHorizontalHeaderItem(1, __qtablewidgetitem29)
         __qtablewidgetitem30 = QTableWidgetItem()
-        __qtablewidgetitem30.setFont(font10);
+        __qtablewidgetitem30.setFont(font11);
         self.tableWidget_4.setHorizontalHeaderItem(2, __qtablewidgetitem30)
         __qtablewidgetitem31 = QTableWidgetItem()
-        __qtablewidgetitem31.setFont(font10);
+        __qtablewidgetitem31.setFont(font11);
         self.tableWidget_4.setHorizontalHeaderItem(3, __qtablewidgetitem31)
         __qtablewidgetitem32 = QTableWidgetItem()
-        __qtablewidgetitem32.setFont(font10);
+        __qtablewidgetitem32.setFont(font11);
         self.tableWidget_4.setHorizontalHeaderItem(4, __qtablewidgetitem32)
         __qtablewidgetitem33 = QTableWidgetItem()
-        __qtablewidgetitem33.setFont(font10);
+        __qtablewidgetitem33.setFont(font11);
         self.tableWidget_4.setHorizontalHeaderItem(5, __qtablewidgetitem33)
         __qtablewidgetitem34 = QTableWidgetItem()
-        __qtablewidgetitem34.setFont(font10);
+        __qtablewidgetitem34.setFont(font11);
         self.tableWidget_4.setHorizontalHeaderItem(6, __qtablewidgetitem34)
         __qtablewidgetitem35 = QTableWidgetItem()
-        __qtablewidgetitem35.setFont(font10);
+        __qtablewidgetitem35.setFont(font11);
         self.tableWidget_4.setHorizontalHeaderItem(7, __qtablewidgetitem35)
         if (self.tableWidget_4.rowCount() < 1):
             self.tableWidget_4.setRowCount(1)
@@ -3016,13 +3028,13 @@ class Ui_MainWindow(object):
 
         self.label_87 = QLabel(self.frame_29)
         self.label_87.setObjectName(u"label_87")
-        self.label_87.setFont(font5)
+        self.label_87.setFont(font6)
 
         self.gridLayout_19.addWidget(self.label_87, 1, 4, 1, 1)
 
         self.label_89 = QLabel(self.frame_29)
         self.label_89.setObjectName(u"label_89")
-        self.label_89.setFont(font7)
+        self.label_89.setFont(font8)
 
         self.gridLayout_19.addWidget(self.label_89, 3, 2, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -3038,13 +3050,13 @@ class Ui_MainWindow(object):
 
         self.label_85 = QLabel(self.frame_29)
         self.label_85.setObjectName(u"label_85")
-        self.label_85.setFont(font7)
+        self.label_85.setFont(font8)
 
         self.gridLayout_19.addWidget(self.label_85, 3, 4, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.label_88 = QLabel(self.frame_29)
         self.label_88.setObjectName(u"label_88")
-        self.label_88.setFont(font7)
+        self.label_88.setFont(font8)
 
         self.gridLayout_19.addWidget(self.label_88, 3, 3, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -3058,13 +3070,13 @@ class Ui_MainWindow(object):
 
         self.label_45 = QLabel(self.frame_29)
         self.label_45.setObjectName(u"label_45")
-        self.label_45.setFont(font5)
+        self.label_45.setFont(font6)
 
         self.gridLayout_19.addWidget(self.label_45, 1, 2, 1, 1, Qt.AlignmentFlag.AlignRight)
 
         self.label_42 = QLabel(self.frame_29)
         self.label_42.setObjectName(u"label_42")
-        self.label_42.setFont(font7)
+        self.label_42.setFont(font8)
 
         self.gridLayout_19.addWidget(self.label_42, 3, 6, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -3078,13 +3090,13 @@ class Ui_MainWindow(object):
 
         self.label_55 = QLabel(self.frame_29)
         self.label_55.setObjectName(u"label_55")
-        self.label_55.setFont(font7)
+        self.label_55.setFont(font8)
 
         self.gridLayout_19.addWidget(self.label_55, 3, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.label_90 = QLabel(self.frame_29)
         self.label_90.setObjectName(u"label_90")
-        self.label_90.setFont(font14)
+        self.label_90.setFont(font15)
 
         self.gridLayout_19.addWidget(self.label_90, 5, 2, 1, 1, Qt.AlignmentFlag.AlignRight)
 
@@ -3120,7 +3132,7 @@ class Ui_MainWindow(object):
 
         self.label_96 = QLabel(self.frame_29)
         self.label_96.setObjectName(u"label_96")
-        self.label_96.setFont(font14)
+        self.label_96.setFont(font15)
 
         self.gridLayout_19.addWidget(self.label_96, 5, 4, 1, 1)
 
@@ -3150,25 +3162,25 @@ class Ui_MainWindow(object):
         self.gridLayout_21.setObjectName(u"gridLayout_21")
         self.label_86 = QLabel(self.frame_45)
         self.label_86.setObjectName(u"label_86")
-        self.label_86.setFont(font7)
+        self.label_86.setFont(font8)
 
         self.gridLayout_21.addWidget(self.label_86, 3, 4, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.label_84 = QLabel(self.frame_45)
         self.label_84.setObjectName(u"label_84")
-        self.label_84.setFont(font7)
+        self.label_84.setFont(font8)
 
         self.gridLayout_21.addWidget(self.label_84, 3, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.label_92 = QLabel(self.frame_45)
         self.label_92.setObjectName(u"label_92")
-        self.label_92.setFont(font7)
+        self.label_92.setFont(font8)
 
         self.gridLayout_21.addWidget(self.label_92, 3, 2, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.label_91 = QLabel(self.frame_45)
         self.label_91.setObjectName(u"label_91")
-        self.label_91.setFont(font7)
+        self.label_91.setFont(font8)
 
         self.gridLayout_21.addWidget(self.label_91, 3, 3, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -3183,7 +3195,7 @@ class Ui_MainWindow(object):
 
         self.label_49 = QLabel(self.frame_45)
         self.label_49.setObjectName(u"label_49")
-        self.label_49.setFont(font5)
+        self.label_49.setFont(font6)
 
         self.gridLayout_21.addWidget(self.label_49, 1, 2, 1, 1, Qt.AlignmentFlag.AlignRight)
 
@@ -3197,7 +3209,7 @@ class Ui_MainWindow(object):
 
         self.label_93 = QLabel(self.frame_45)
         self.label_93.setObjectName(u"label_93")
-        self.label_93.setFont(font14)
+        self.label_93.setFont(font15)
 
         self.gridLayout_21.addWidget(self.label_93, 5, 2, 1, 1, Qt.AlignmentFlag.AlignRight)
 
@@ -3232,7 +3244,7 @@ class Ui_MainWindow(object):
 
         self.label_99 = QLabel(self.frame_45)
         self.label_99.setObjectName(u"label_99")
-        self.label_99.setFont(font5)
+        self.label_99.setFont(font6)
 
         self.gridLayout_21.addWidget(self.label_99, 1, 4, 1, 1)
 
@@ -3271,7 +3283,7 @@ class Ui_MainWindow(object):
 
         self.label_97 = QLabel(self.frame_45)
         self.label_97.setObjectName(u"label_97")
-        self.label_97.setFont(font7)
+        self.label_97.setFont(font8)
 
         self.gridLayout_21.addWidget(self.label_97, 3, 6, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -3325,7 +3337,7 @@ class Ui_MainWindow(object):
         self.lineEdit_29.setObjectName(u"lineEdit_29")
         self.lineEdit_29.setMinimumSize(QSize(300, 0))
         self.lineEdit_29.setMaximumSize(QSize(300, 16777215))
-        self.lineEdit_29.setFont(font11)
+        self.lineEdit_29.setFont(font12)
 
         self.gridLayout_24.addWidget(self.lineEdit_29, 3, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -3337,7 +3349,7 @@ class Ui_MainWindow(object):
         self.pushButton_40.setObjectName(u"pushButton_40")
         self.pushButton_40.setMinimumSize(QSize(130, 0))
         self.pushButton_40.setMaximumSize(QSize(150, 16777215))
-        self.pushButton_40.setFont(font7)
+        self.pushButton_40.setFont(font8)
 
         self.gridLayout_24.addWidget(self.pushButton_40, 5, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -3351,7 +3363,7 @@ class Ui_MainWindow(object):
 
         self.label_94 = QLabel(self.frame_47)
         self.label_94.setObjectName(u"label_94")
-        self.label_94.setFont(font5)
+        self.label_94.setFont(font6)
 
         self.gridLayout_24.addWidget(self.label_94, 1, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -3365,7 +3377,7 @@ class Ui_MainWindow(object):
 
         self.label_95 = QLabel(self.frame_47)
         self.label_95.setObjectName(u"label_95")
-        self.label_95.setFont(font12)
+        self.label_95.setFont(font13)
 
         self.gridLayout_24.addWidget(self.label_95, 4, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -3390,7 +3402,7 @@ class Ui_MainWindow(object):
 
         self.label_100 = QLabel(self.page_17)
         self.label_100.setObjectName(u"label_100")
-        self.label_100.setFont(font11)
+        self.label_100.setFont(font12)
 
         self.gridLayout_25.addWidget(self.label_100, 6, 0, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
@@ -3412,11 +3424,11 @@ class Ui_MainWindow(object):
 
         self.label_112 = QLabel(self.frame_49)
         self.label_112.setObjectName(u"label_112")
-        font18 = QFont()
-        font18.setPointSize(30)
-        font18.setBold(True)
-        font18.setStrikeOut(False)
-        self.label_112.setFont(font18)
+        font19 = QFont()
+        font19.setPointSize(30)
+        font19.setBold(True)
+        font19.setStrikeOut(False)
+        self.label_112.setFont(font19)
 
         self.horizontalLayout_13.addWidget(self.label_112, 0, Qt.AlignmentFlag.AlignHCenter)
 
@@ -3447,14 +3459,14 @@ class Ui_MainWindow(object):
         self.horizontalLayout_14.setObjectName(u"horizontalLayout_14")
         self.comboBox_18 = QComboBox(self.frame_54)
         self.comboBox_18.setObjectName(u"comboBox_18")
-        self.comboBox_18.setFont(font6)
+        self.comboBox_18.setFont(font7)
 
         self.horizontalLayout_14.addWidget(self.comboBox_18)
 
         self.dateEdit_3 = QDateEdit(self.frame_54)
         self.dateEdit_3.setObjectName(u"dateEdit_3")
         self.dateEdit_3.setMinimumSize(QSize(100, 0))
-        self.dateEdit_3.setFont(font6)
+        self.dateEdit_3.setFont(font7)
 
         self.horizontalLayout_14.addWidget(self.dateEdit_3)
 
@@ -3465,7 +3477,7 @@ class Ui_MainWindow(object):
         self.comboBox_17.setObjectName(u"comboBox_17")
         self.comboBox_17.setMinimumSize(QSize(150, 0))
         self.comboBox_17.setMaximumSize(QSize(200, 16777215))
-        self.comboBox_17.setFont(font6)
+        self.comboBox_17.setFont(font7)
 
         self.gridLayout_30.addWidget(self.comboBox_17, 0, 1, 1, 1)
 
@@ -3484,34 +3496,34 @@ class Ui_MainWindow(object):
         self.tableWidget_5 = QTableWidget(self.frame_52)
         if (self.tableWidget_5.columnCount() < 6):
             self.tableWidget_5.setColumnCount(6)
-        font19 = QFont()
-        font19.setPointSize(14)
-        font19.setBold(True)
+        font20 = QFont()
+        font20.setPointSize(14)
+        font20.setBold(True)
         __qtablewidgetitem36 = QTableWidgetItem()
-        __qtablewidgetitem36.setFont(font19);
+        __qtablewidgetitem36.setFont(font20);
         self.tableWidget_5.setHorizontalHeaderItem(0, __qtablewidgetitem36)
         __qtablewidgetitem37 = QTableWidgetItem()
-        __qtablewidgetitem37.setFont(font19);
+        __qtablewidgetitem37.setFont(font20);
         self.tableWidget_5.setHorizontalHeaderItem(1, __qtablewidgetitem37)
         __qtablewidgetitem38 = QTableWidgetItem()
-        __qtablewidgetitem38.setFont(font19);
+        __qtablewidgetitem38.setFont(font20);
         self.tableWidget_5.setHorizontalHeaderItem(2, __qtablewidgetitem38)
         __qtablewidgetitem39 = QTableWidgetItem()
-        __qtablewidgetitem39.setFont(font19);
+        __qtablewidgetitem39.setFont(font20);
         self.tableWidget_5.setHorizontalHeaderItem(3, __qtablewidgetitem39)
         __qtablewidgetitem40 = QTableWidgetItem()
-        __qtablewidgetitem40.setFont(font19);
+        __qtablewidgetitem40.setFont(font20);
         self.tableWidget_5.setHorizontalHeaderItem(4, __qtablewidgetitem40)
         __qtablewidgetitem41 = QTableWidgetItem()
-        __qtablewidgetitem41.setFont(font19);
+        __qtablewidgetitem41.setFont(font20);
         self.tableWidget_5.setHorizontalHeaderItem(5, __qtablewidgetitem41)
         if (self.tableWidget_5.rowCount() < 1):
             self.tableWidget_5.setRowCount(1)
-        font20 = QFont()
-        font20.setPointSize(11)
+        font21 = QFont()
+        font21.setPointSize(11)
         __qtablewidgetitem42 = QTableWidgetItem()
         __qtablewidgetitem42.setTextAlignment(Qt.AlignCenter);
-        __qtablewidgetitem42.setFont(font20);
+        __qtablewidgetitem42.setFont(font21);
         self.tableWidget_5.setItem(0, 0, __qtablewidgetitem42)
         __qtablewidgetitem43 = QTableWidgetItem()
         self.tableWidget_5.setItem(0, 1, __qtablewidgetitem43)
@@ -3669,6 +3681,7 @@ class Ui_MainWindow(object):
         self.pushButton_12.setText(QCoreApplication.translate("MainWindow", u" Borrar Datos", None))
         self.label_4.setText(QCoreApplication.translate("MainWindow", u"Usuario :", None))
         self.label_31.setText(QCoreApplication.translate("MainWindow", u"rls", None))
+        self.pushButton_50.setText(QCoreApplication.translate("MainWindow", u"Cerrar Sesi\u00f3n Web", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_1), QCoreApplication.translate("MainWindow", u"Tab 1", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Contenido Buscar Datos", None))
         self.pushButton_15.setText(QCoreApplication.translate("MainWindow", u" Arqueo", None))
