@@ -47,14 +47,33 @@ class ProveedoresThread(QThread):
             self.proveedores_obtenidos.emit([])
 
 class AgregarProductoThread(QThread):
-    producto_agregado = Signal(bool)  # éxito
+    producto_agregado = Signal(bool)  # Señal de éxito
 
-    def __init__(self, **kwargs):
+    def __init__(
+        self,
+        id_producto,
+        nombre_producto,
+        precio_compra_producto,
+        precio_venta_producto,
+        cantidad_producto,
+        stock_ideal,
+        categoria_producto,
+        proveedor_producto
+    ):
         super().__init__()
-        self.producto_data = kwargs  # Recibe los datos del producto como diccionario
+        self.producto_data = {
+            "id_producto": id_producto,
+            "nombre_producto": nombre_producto,
+            "precio_compra_producto": precio_compra_producto,
+            "precio_venta_producto": precio_venta_producto,
+            "cantidad_producto": cantidad_producto,
+            "stock_ideal": stock_ideal,
+            "categoria_producto": categoria_producto,
+            "proveedor_producto": proveedor_producto
+        }
 
     def run(self):
-        
+        import requests
         try:
             url = f"{API_URL}/api/agregar_producto"
             response = requests.post(url, json=self.producto_data)
@@ -68,6 +87,7 @@ class AgregarProductoThread(QThread):
         except Exception as e:
             print(f"Error en AgregarProductoThread: {e}")
             self.producto_agregado.emit(False)
+            
 
 class MovimientoProductoThread(QThread):
     movimiento_cargado = Signal()
