@@ -5169,7 +5169,7 @@ class AdministracionTab:
             combobox_metodo_pago = self.facturero_ventas_window.findChild(QComboBox, "comboBox_3")
             if combobox_metodo_pago:
                 combobox_metodo_pago.clear()
-                combobox_metodo_pago.addItems([metodo[0] for metodo in traer_metodos_de_pago()])
+                combobox_metodo_pago.addItems([metodo[0] for metodo in self.traer_metodos_de_pago()])
                 
                 
             
@@ -5375,7 +5375,7 @@ class AdministracionTab:
             #  Filtrar métodos de pago para excluir "Efectivo" y "Transferencia"
             metodos_protegidos = {"Efectivo", "Transferencia", "Tarjeta de Crédito", "Tarjeta de Débito"}
             metodos_disponibles = [
-                metodo[0] for metodo in traer_metodos_de_pago() 
+                metodo[0] for metodo in self.traer_metodos_de_pago() 
                 if metodo[0] not in metodos_protegidos
             ]
             combobox.addItems(metodos_disponibles)
@@ -6223,7 +6223,7 @@ class AdministracionTab:
             combobox_metodo_pago = self.facturero_compras_window.findChild(QComboBox, "comboBox_3")
             if combobox_metodo_pago:
                 combobox_metodo_pago.clear()
-                combobox_metodo_pago.addItems([metodo[0] for metodo in traer_metodos_de_pago()])
+                combobox_metodo_pago.addItems([metodo[0] for metodo in self.traer_metodos_de_pago()])
                 
                 
             
@@ -6426,7 +6426,7 @@ class AdministracionTab:
             #  Filtrar métodos de pago para excluir "Efectivo" y "Transferencia"
             metodos_protegidos = {"Efectivo", "Transferencia", "Tarjeta de Crédito", "Tarjeta de Débito"}
             metodos_disponibles = [
-                metodo[0] for metodo in traer_metodos_de_pago() 
+                metodo[0] for metodo in self.traer_metodos_de_pago() 
                 if metodo[0] not in metodos_protegidos
             ]
             combobox.addItems(metodos_disponibles)
@@ -6453,6 +6453,13 @@ class AdministracionTab:
 
         # --- 4. Mostrar la ventana ---
         dialogo_borrar_mp.exec()
+
+    def traer_metodos_de_pago(self):
+        global metodos_pago_por_id_cache
+        if metodos_pago_por_id_cache:
+            # Retorna solo los nombres (los valores del diccionario)
+            return list(metodos_pago_por_id_cache.values())
+        return []
 
     def borrar_metodo_de_pago_compras(self, dialog):
         combobox_mp = dialog.findChild(QComboBox, "comboBox")
@@ -7124,12 +7131,11 @@ class MainWindow(QMainWindow):
     def guardar_en_base_de_datos(self, textEdit, usuario):
         texto = textEdit.toPlainText()
 
+        texto = textEdit.toPlainText()
         try:
-            #  Usar directamente la función síncrona
-            resultado = guardar_texto_anotador_sincrono(texto, usuario)
-            if resultado:
-                print("Texto guardado exitosamente")
-            
+            # Crear y ejecutar el hilo de guardado
+            self.guardar_cerrar_thread = GuardarAlCerrarThread(texto, usuario)
+            self.start_thread(self.guardar_cerrar_thread)
         except Exception as e:
             print(f"Error al guardar: {e}")
 

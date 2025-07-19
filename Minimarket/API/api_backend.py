@@ -1221,28 +1221,32 @@ def api_borrar_mp_db():
 @app.route('/api/actualizar_cantidad_productos', methods=['POST'])
 def api_actualizar_cantidad_productos():
     data = request.json
-    productos = data.get('productos')  # Lista de productos modificados
-    m = data.get('m')                  # Booleano: varios arreglos o solo uno
-    s = data.get('s')                  # Booleano: venta (True) o compra (False)
-    uid = data.get('uid')
-    if productos is None or m is None or s is None or not uid:
-        return jsonify({"error": "Faltan datos"}), 400
-    
-    resultado = actualizar_cantidad_productos(productos, m, s)
-    return jsonify({"actualizado": resultado})
+    productos_seleccionados = data.get('productos_seleccionados')
+    m = data.get('m')
+    s = data.get('s', False)
+    if productos_seleccionados is None or m is None:
+        return jsonify({"exito": False, "error": "Faltan datos"}), 400
+
+    try:
+        exito = actualizar_cantidad_productos(productos_seleccionados, m, s)
+        return jsonify({"exito": exito})
+    except Exception as e:
+        return jsonify({"exito": False, "error": str(e)}), 500
 
 @app.route('/api/agregar_a_registro', methods=['POST'])
 def api_agregar_a_registro():
     data = request.json
-    productos = data.get('productos')  # Lista de productos seleccionados
-    s = data.get('s')                  # Booleano: venta (True) o compra (False)
-    usuario = data.get('usuario')      # Nombre de usuario
-    uid = data.get('uid')
-    if productos is None or s is None or not usuario or not uid:
-        return jsonify({"error": "Faltan datos"}), 400
-    
-    resultado = agregar_a_registro(productos, s, usuario)
-    return jsonify({"agregado": resultado})
+    productos_seleccionados = data.get('productos_seleccionados')
+    s = data.get('s')
+    usuario_activo = data.get('usuario_activo')
+    if productos_seleccionados is None or s is None or usuario_activo is None:
+        return jsonify({"exito": False, "error": "Faltan datos"}), 400
+
+    try:
+        exito = agregar_a_registro(productos_seleccionados, s, usuario_activo)
+        return jsonify({"exito": exito})
+    except Exception as e:
+        return jsonify({"exito": False, "error": str(e)}), 500
 
 @app.route('/api/traer_precio_compra', methods=['POST'])
 def api_traer_precio_compra():
@@ -1311,28 +1315,28 @@ def api_set_text_principal():
     set_text_principal(usuario)
     return jsonify({"resultado": "Texto principal inicializado"})
 
-@app.route('/api/guardar_texto_anotador_sincrono', methods=['POST'])
-def api_guardar_texto_anotador_sincrono():
+@app.route('/api/guardar_texto_anotador', methods=['POST'])
+def api_guardar_texto_anotador():
     data = request.json
     texto = data.get('texto')
     usuario = data.get('usuario')
-    uid = data.get('uid')
-    if not texto or not usuario or not uid:
-        return jsonify({"error": "Faltan datos"}), 400
-    
-    resultado = guardar_texto_anotador_sincrono(texto, usuario)
-    return jsonify({"guardado": resultado})
+    if texto is None or usuario is None:
+        return jsonify({"exito": False, "error": "Faltan datos"}), 400
+
+    try:
+        exito = guardar_texto_anotador_sincrono(texto, usuario)
+        return jsonify({"exito": exito})
+    except Exception as e:
+        return jsonify({"exito": False, "error": str(e)}), 500
 
 
-@app.route('/api/limpiar_anotaciones_automatico', methods=['POST'])
-def api_limpiar_anotaciones_automatico():
-    data = request.json
-    uid = data.get('uid')
-    if not uid:
-        return jsonify({"error": "Falta UID"}), 400
-    
-    resultado = limpiar_anotaciones_automatico()
-    return jsonify({"limpiado": resultado})
+@app.route('/api/limpiar_anotaciones', methods=['POST'])
+def api_limpiar_anotaciones():
+    try:
+        exito = limpiar_anotaciones_automatico()
+        return jsonify({"exito": exito})
+    except Exception as e:
+        return jsonify({"exito": False, "error": str(e)}), 500
 
 
 @app.route('/api/traer_todos_los_productos', methods=['GET'])
@@ -1573,8 +1577,8 @@ def api_traer_prod_compra():
 def api_cargar_movimiento_venta():
     data = request.json
     usuario = data.get('usuario')
-    uid = data.get('uid')
-    if not usuario or not uid:
+
+    if not usuario:
         return jsonify({"error": "Faltan datos"}), 400
     
     resultado = cargar_movimiento_venta(usuario)
@@ -1601,14 +1605,47 @@ def api_agregar_metodo_pago():
     exito = agregar_mp_db(nombre_metodo)
     return jsonify({"exito": exito})
 
+@app.route('/api/borrar_metodo_pago', methods=['POST'])
+def api_borrar_metodo_pago():
+    data = request.json
+    nombre_metodo = data.get('nombre_metodo')
+    if not nombre_metodo:
+        return jsonify({"exito": False, "error": "Falta el nombre del método"}), 400
+    try:
+        exito = borrar_mp_db(nombre_metodo)
+        return jsonify({"exito": exito})
+    except Exception as e:
+        return jsonify({"exito": False, "error": str(e)}), 500
+    
+@app.route('/api/traer_ultimo_texto_anotador', methods=['GET'])
+def api_traer_ultimo_texto_anotador():
+    try:
+        ultimo_texto = traer_ultimo_agregado_anotador()
+        return jsonify({"ultimo_texto": ultimo_texto})
+    except Exception as e:
+        return jsonify({"ultimo_texto": ""}), 500
+    
+@app.route('/api/set_texto_principal_anotador', methods=['POST'])
+def api_set_texto_principal_anotador():
+    data = request.json
+    usuario = data.get('usuario')
+    if not usuario:
+        return jsonify({"exito": False, "error": "Falta el usuario"}), 400
+
+    try:
+        exito = set_text_principal(usuario)
+        return jsonify({"exito": exito})
+    except Exception as e:
+        return jsonify({"exito": False, "error": str(e)}), 500
+
 @app.route('/api/cargar_movimiento_borrar_metodo_pago', methods=['POST'])
 def api_cargar_movimiento_borrar_metodo_pago():
     data = request.json
     metodo_pago = data.get('metodo_pago')
     usuario = data.get('usuario')
     id_metodo = data.get('id_metodo')
-    uid = data.get('uid')
-    if not metodo_pago or not usuario or id_metodo is None or not uid:
+    
+    if not metodo_pago or not usuario or id_metodo is None:
         return jsonify({"error": "Faltan datos"}), 400
     
     resultado = cargar_movimiento_borrar_metodo_pago(metodo_pago, usuario, id_metodo)
@@ -1619,8 +1656,8 @@ def api_cargar_movimiento_borrar_metodo_pago():
 def api_cargar_movimiento_compra():
     data = request.json
     usuario = data.get('usuario')
-    uid = data.get('uid')
-    if not usuario or not uid:
+
+    if not usuario:
         return jsonify({"error": "Faltan datos"}), 400
     
     resultado = cargar_movimiento_compra(usuario)
@@ -1641,12 +1678,15 @@ def api_traer_rol_usuario():
 def api_cargar_movimiento_inicio():
     data = request.json
     usuario = data.get('usuario')
-    uid = data.get('uid')
-    if not usuario or not uid:
-        return jsonify({"error": "Faltan datos"}), 400
+    if not usuario:
+        return jsonify({"exito": False, "error": "Falta el usuario"}), 400
+
+    try:
+        exito = cargar_movimiento_inicio(usuario)
+        return jsonify({"exito": exito})
+    except Exception as e:
+        return jsonify({"exito": False, "error": str(e)}), 500
     
-    resultado = cargar_movimiento_inicio(usuario)
-    return jsonify({"resultado": resultado})
 
 
 @app.route('/api/categorias', methods=['GET'])

@@ -2163,24 +2163,42 @@ class AgregarMPThread(QThread):
             self.resultado.emit(False)
 
 class BorrarMPThread(QThread):
-    resultado = Signal(bool, int)  # ✅ Cambiar para emitir bool e int
-    
+    resultado = Signal(bool, int)  # Emite bool e int
+
     def __init__(self, nombre_metodo):
         super().__init__()
         self.nombre_metodo = nombre_metodo
-        
+
     def run(self):
+        import requests
         try:
-            #  Corregir: usar self.nombre_metodo en lugar de self.metodo_pago
-            id_metodo = traer_mp(self.nombre_metodo)
-            exito = borrar_mp_db(self.nombre_metodo)
-            
-            #  Emitir tanto el éxito como el ID
-            self.resultado.emit(exito, id_metodo)
+            # Traer el id del método de pago
+            url_id = f"{API_URL}/api/traer_metodo_pago_id"
+            payload_id = {"nombre_metodo": self.nombre_metodo}
+            response_id = requests.post(url_id, json=payload_id)
+            if response_id.status_code == 200:
+                data_id = response_id.json()
+                id_metodo = data_id.get("id_metodo", 0)
+            else:
+                print(f"Error al traer id del método de pago: {response_id.text}")
+                self.resultado.emit(False, 0)
+                return
+
+            # Borrar el método de pago
+            url_borrar = f"{API_URL}/api/borrar_metodo_pago"
+            payload_borrar = {"nombre_metodo": self.nombre_metodo}
+            response_borrar = requests.post(url_borrar, json=payload_borrar)
+            if response_borrar.status_code == 200:
+                data_borrar = response_borrar.json()
+                exito = data_borrar.get("exito", False)
+                self.resultado.emit(exito, id_metodo)
+            else:
+                print(f"Error al borrar método de pago: {response_borrar.text}")
+                self.resultado.emit(False, id_metodo)
         except Exception as e:
-            print(f"Error al borrar método de pago: {e}")
-            #  En caso de error, emitir False y 0
+            print(f"Error en BorrarMPThread: {e}")
             self.resultado.emit(False, 0)
+
 
 class ActualizarCantidadProductosThread(QThread):
     resultado = Signal(bool)
@@ -2192,10 +2210,25 @@ class ActualizarCantidadProductosThread(QThread):
         self.s = s
     
     def run(self):
-        exito = actualizar_cantidad_productos(self.productos_seleccionados, self.m, self.s)
-        self.resultado.emit(exito)
-
-
+        import requests
+        try:
+            url = f"{API_URL}/api/actualizar_cantidad_productos"
+            payload = {
+                "productos_seleccionados": self.productos_seleccionados,
+                "m": self.m,
+                "s": self.s
+            }
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                data = response.json()
+                exito = data.get("exito", False)
+                self.resultado.emit(exito)
+            else:
+                print(f"Error al actualizar cantidad de productos: {response.text}")
+                self.resultado.emit(False)
+        except Exception as e:
+            print(f"Error en ActualizarCantidadProductosThread: {e}")
+            self.resultado.emit(False)
 
 class AgregarARegistroThread(QThread):
     resultado = Signal(bool)
@@ -2207,8 +2240,26 @@ class AgregarARegistroThread(QThread):
         self.usuario_activo = usuario_activo
     
     def run(self):
-        exito = agregar_a_registro(self.productos_seleccionados, self.s, self.usuario_activo)
-        self.resultado.emit(exito)
+        import requests
+        try:
+            url = f"{API_URL}/api/agregar_a_registro"
+            payload = {
+                "productos_seleccionados": self.productos_seleccionados,
+                "s": self.s,
+                "usuario_activo": self.usuario_activo
+            }
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                data = response.json()
+                exito = data.get("exito", False)
+                self.resultado.emit(exito)
+            else:
+                print(f"Error al agregar a registro: {response.text}")
+                self.resultado.emit(False)
+        except Exception as e:
+            print(f"Error en AgregarARegistroThread: {e}")
+            self.resultado.emit(False)
+
 
 class CargarMovimientoVentaThread(QThread):
     resultado = Signal(bool)
@@ -2218,8 +2269,21 @@ class CargarMovimientoVentaThread(QThread):
         self.usuario_activo = usuario_activo
     
     def run(self):
-        exito = cargar_movimiento_venta(self.usuario_activo)
-        self.resultado.emit(exito)
+        import requests
+        try:
+            url = f"{API_URL}/api/cargar_movimiento_venta"
+            payload = {"usuario": self.usuario_activo}
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                data = response.json()
+                exito = data.get("resultado", False)
+                self.resultado.emit(exito)
+            else:
+                print(f"Error al cargar movimiento venta: {response.text}")
+                self.resultado.emit(False)
+        except Exception as e:
+            print(f"Error en CargarMovimientoVentaThread: {e}")
+            self.resultado.emit(False)
 
 class CargarMovimientoCompraThread(QThread):
     resultado = Signal(bool)
@@ -2229,8 +2293,22 @@ class CargarMovimientoCompraThread(QThread):
         self.usuario_activo = usuario_activo
     
     def run(self):
-        exito = cargar_movimiento_compra(self.usuario_activo)
-        self.resultado.emit(exito)
+        import requests
+        try:
+            url = f"{API_URL}/api/cargar_movimiento_compra"
+            payload = {"usuario": self.usuario_activo}
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                data = response.json()
+                exito = data.get("resultado", False)
+                self.resultado.emit(exito)
+            else:
+                print(f"Error al cargar movimiento compra: {response.text}")
+                self.resultado.emit(False)
+        except Exception as e:
+            print(f"Error en CargarMovimientoCompraThread: {e}")
+            self.resultado.emit(False)
+
 
 class MovimientoAgregarMetodoPagoThread(QThread):
     finished = Signal()
@@ -2241,10 +2319,19 @@ class MovimientoAgregarMetodoPagoThread(QThread):
         self.usuario_activo = usuario_activo
 
     def run(self):
+        import requests
         try:
-            # Llamar a la función que registra el movimiento en la base de datos
-            cargar_movimiento_agregar_metodo_pago(self.metodo_pago, self.usuario_activo)
-            self.finished.emit()
+            url = f"{API_URL}/api/cargar_movimiento_agregar_metodo_pago"
+            payload = {
+                "metodo_pago": self.metodo_pago,
+                "usuario": self.usuario_activo
+            }
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                self.finished.emit()
+            else:
+                print(f"Error al cargar movimiento de agregar método de pago: {response.text}")
+                self.finished.emit()
         except Exception as e:
             print(f"Error al cargar movimiento de agregar método de pago: {e}")
             self.finished.emit()
@@ -2259,10 +2346,20 @@ class MovimientoBorrarMetodoPagoThread(QThread):
         self.id = id
 
     def run(self):
+        import requests
         try:
-            # Llamar a la función que registra el movimiento en la base de datos
-            cargar_movimiento_borrar_metodo_pago(self.metodo_pago, self.usuario_activo, self.id)
-            self.finished.emit()
+            url = f"{API_URL}/api/cargar_movimiento_borrar_metodo_pago"
+            payload = {
+                "metodo_pago": self.metodo_pago,
+                "usuario": self.usuario_activo,
+                "id": self.id
+            }
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                self.finished.emit()
+            else:
+                print(f"Error al cargar movimiento de borrar método de pago: {response.text}")
+                self.finished.emit()
         except Exception as e:
             print(f"Error al cargar movimiento de borrar método de pago: {e}")
             self.finished.emit()
@@ -2273,76 +2370,85 @@ class TraerUltimoTextoAnotadorThread(QThread):
     resultado = Signal(str)  # Emite el texto obtenido
     
     def run(self):
+        import requests
         try:
-            ultimo_texto = traer_ultimo_agregado_anotador()
-            if ultimo_texto:
+            url = f"{API_URL}/api/traer_ultimo_texto_anotador"
+            response = requests.get(url)
+            if response.status_code == 200:
+                data = response.json()
+                ultimo_texto = data.get("ultimo_texto", "")
                 self.resultado.emit(ultimo_texto)
             else:
-                self.resultado.emit("")  # Emite cadena vacía si no hay texto
+                print(f"Error al traer último texto del anotador: {response.text}")
+                self.resultado.emit("")
         except Exception as e:
             print(f"Error al traer último texto del anotador: {e}")
-            self.resultado.emit("")  # Emite cadena vacía en caso de error
-
+            self.resultado.emit("")
 
 class SetTextoAnotadorThread(QThread):
     resultado = Signal(bool)  # Emite True si se estableció correctamente
-    
+
     def __init__(self, usuario):
         super().__init__()
         self.usuario = usuario
-    
+
     def run(self):
+        import requests
         try:
-            set_text_principal(self.usuario)
-            self.resultado.emit(True)
+            url = f"{API_URL}/api/set_texto_principal_anotador"
+            payload = {"usuario": self.usuario}
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                data = response.json()
+                exito = data.get("exito", False)
+                self.resultado.emit(exito)
+            else:
+                print(f"Error al establecer texto principal del anotador: {response.text}")
+                self.resultado.emit(False)
         except Exception as e:
             print(f"Error al establecer texto principal del anotador: {e}")
             self.resultado.emit(False)
 
-
-class GuardarTextoAnotadorThread(QThread):
-    resultado = Signal(bool)  # Emite True si se guardó correctamente
-    
-    def __init__(self, texto, usuario):
-        super().__init__()
-        self.texto = texto
-        self.usuario = usuario
-    
-    def run(self):
-        try:
-            # Aquí iría la función para guardar en BD
-            # Ejemplo: guardar_texto_anotador(self.texto, self.usuario)
-            self.resultado.emit(True)
-        except Exception as e:
-            print(f"Error al guardar texto del anotador: {e}")
-            self.resultado.emit(False)
-
 class LimpiarAnotacionesThread(QThread):
     resultado = Signal(bool)  # Emite True si se limpiaron correctamente
-    
+
     def run(self):
+        import requests
         try:
-            exito = limpiar_anotaciones_automatico()
-            self.resultado.emit(exito)
+            url = f"{API_URL}/api/limpiar_anotaciones"
+            response = requests.post(url)
+            if response.status_code == 200:
+                data = response.json()
+                exito = data.get("exito", False)
+                self.resultado.emit(exito)
+            else:
+                print(f"Error al limpiar anotaciones: {response.text}")
+                self.resultado.emit(False)
         except Exception as e:
             print(f"Error en hilo al limpiar anotaciones: {e}")
             self.resultado.emit(False)
 
 class GuardarAlCerrarThread(QThread):
     resultado = Signal(bool)  # Señal para indicar si se guardó correctamente
-    
+
     def __init__(self, texto, usuario):
         super().__init__()
         self.texto = texto
         self.usuario = usuario
-    
+
     def run(self):
+        import requests
         try:
-            # Guardar una última vez al cerrar (por si hay cambios sin guardar)
-            resultado = guardar_texto_anotador_sincrono(self.texto, self.usuario)
-
-            self.resultado.emit(resultado)
-
+            url = f"{API_URL}/api/guardar_texto_anotador"
+            payload = {"texto": self.texto, "usuario": self.usuario}
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                data = response.json()
+                exito = data.get("exito", False)
+                self.resultado.emit(exito)
+            else:
+                print(f"Error al guardar texto del anotador: {response.text}")
+                self.resultado.emit(False)
         except Exception as e:
             print(f"Error al guardar: {e}")
             self.resultado.emit(False)
@@ -2358,10 +2464,18 @@ class MovimientoLoginThread(QThread):
         self.usuario = usuario
     
     def run(self):
+        import requests
         try:
-            # Llamar a la función movimiento_inicio
-            exito = cargar_movimiento_inicio(self.usuario)
-            self.finished.emit(exito)
-
+            url = f"{API_URL}/api/cargar_movimiento_inicio"
+            payload = {"usuario": self.usuario}
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                data = response.json()
+                exito = data.get("exito", False)
+                self.finished.emit(exito)
+            else:
+                print(f"Error al cargar movimiento inicio: {response.text}")
+                self.finished.emit(False)
         except Exception as e:
+            print(f"Error en MovimientoLoginThread: {e}")
             self.finished.emit(False)
