@@ -337,13 +337,11 @@ def api_traer_id_proveedor():
 @app.route('/api/traer_id_usuario', methods=['POST'])
 def api_traer_id_usuario():
     data = request.json
-    usuario = data.get('usuario')
-    uid = data.get('uid')
-    if not usuario or not uid:
-        return jsonify({"error": "Faltan datos"}), 400
-    
+    nombre_usuario = data.get('nombre_usuario')
+    if not nombre_usuario:
+        return jsonify({"error": "Falta el nombre de usuario"}), 400
     try:
-        id_usuario = traer_id_usuario(usuario)
+        id_usuario = traer_id_usuario(nombre_usuario)
         return jsonify({"id_usuario": id_usuario})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -366,8 +364,7 @@ def api_traer_nom_producto():
 def api_traer_id_producto():
     data = request.json
     nombre = data.get('nombre')
-    uid = data.get('uid')
-    if not nombre or not uid:
+    if not nombre:
         return jsonify({"error": "Faltan datos"}), 400
     
     try:
@@ -493,6 +490,20 @@ def api_buscar_categoria():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
+@app.route('/api/agregar_registro_usuario', methods=['POST'])
+def api_agregar_registro_usuario():
+    data = request.json
+    rol = data.get('rol')
+    usuario = data.get('usuario')
+    password = data.get('password')
+    email = data.get('email')
+    if not rol or not usuario or not password or not email:
+        return jsonify({"error": "Faltan datos"}), 400
+    try:
+        exito = agregar_a_registro_usuario(rol, usuario, password, email)
+        return jsonify({"exito": exito})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
     
 @app.route('/api/clear_data', methods=['POST'])
 def api_clear_data():
@@ -515,175 +526,154 @@ def api_clear_data():
         return jsonify({"error": str(e)}), 500
     
 
-@app.route('/api/traer_todos_los_usuarios', methods=['POST'])
+@app.route('/api/traer_todos_los_usuarios', methods=['GET'])
 def api_traer_todos_los_usuarios():
-    data = request.json
-    uid = data.get('uid')
-    if not uid:
-        return jsonify({"error": "Falta UID"}), 400
-    
-    resultado = traer_todos_los_usuarios()
-    return jsonify({"usuarios": resultado})
-
-@app.route('/api/agregar_a_registro_usuario', methods=['POST'])
-def api_agregar_a_registro_usuario():
-    data = request.json
-    tipo_usuario = data.get('tipo_usuario')
-    nombre = data.get('nombre')
-    contrasenia = data.get('contrasenia')
-    mail = data.get('mail')
-    uid = data.get('uid')
-    if not all([tipo_usuario, nombre, contrasenia, mail, uid]):
-        return jsonify({"error": "Faltan datos"}), 400
-    
     try:
-        resultado = agregar_a_registro_usuario(tipo_usuario, nombre, contrasenia, mail)
-        return jsonify({"registrado": resultado})
+        usuarios = traer_todos_los_usuarios()
+        return jsonify({"usuarios": usuarios})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
 
-@app.route('/api/cargar_movimiento_agregar_usuario', methods=['POST'])
-def api_cargar_movimiento_agregar_usuario():
+
+@app.route('/api/movimiento_agregar_usuario', methods=['POST'])
+def api_movimiento_agregar_usuario():
     data = request.json
-    nombre_usuario = data.get('nombre_usuario')
+    usuario = data.get('usuario')
     usuario_activo = data.get('usuario_activo')
-    uid = data.get('uid')
-    if not all([nombre_usuario, usuario_activo, uid]):
+    if not usuario or not usuario_activo:
         return jsonify({"error": "Faltan datos"}), 400
-    
     try:
-        cargar_movimiento_agregar_usuario(nombre_usuario, usuario_activo)
-        return jsonify({"movimiento_agregado": True})
+        cargar_movimiento_agregar_usuario(usuario, usuario_activo)
+        return jsonify({"exito": True})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-
+    
 @app.route('/api/actualizar_usuario', methods=['POST'])
 def api_actualizar_usuario():
     data = request.json
-    id = data.get('id')
-    tipo_usuario = data.get('tipo_usuario')
-    contrasenia = data.get('contrasenia')
+    id_usuario = data.get('id_usuario')
+    rol = data.get('rol')
     mail = data.get('mail')
-    uid = data.get('uid')
-    if not all([id, tipo_usuario, contrasenia, mail, uid]):
+    password = data.get('password')
+    if not id_usuario or not rol or not mail or not password:
         return jsonify({"error": "Faltan datos"}), 400
-    
     try:
-        resultado = actualizar_usuario(id, tipo_usuario, contrasenia, mail)
-        return jsonify({"actualizado": resultado})
+        exito = actualizar_usuario(id_usuario, rol, mail, password)
+        return jsonify({"exito": exito})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
 @app.route('/api/borrar_usuario', methods=['POST'])
 def api_borrar_usuario():
     data = request.json
-    usuario = data.get('usuario')
-    uid = data.get('uid')
-    if not usuario or not uid:
-        return jsonify({"error": "Faltan datos"}), 400
-    
+    nombre_usuario = data.get('nombre_usuario')
+    if not nombre_usuario:
+        return jsonify({"error": "Falta el nombre de usuario"}), 400
     try:
-        resultado = borrar_usuario(usuario)
-        return jsonify({"borrado": resultado})
+        exito = borrar_usuario(nombre_usuario)
+        return jsonify({"exito": exito})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-@app.route('/api/traer_movimientos_por_usuario', methods=['POST'])
-def api_traer_movimientos_por_usuario():
+
+@app.route('/api/movimientos_por_usuario', methods=['POST'])
+def api_movimientos_por_usuario():
     data = request.json
     usuario = data.get('usuario')
-    uid = data.get('uid')
-    if not usuario or not uid:
-        return jsonify({"error": "Faltan datos"}), 400
-    
-    movimientos = traer_movimientos_por_usuario(usuario)
-    return jsonify({"movimientos": movimientos})
+    if not usuario:
+        return jsonify({"error": "Falta el usuario"}), 400
+    try:
+        movimientos = traer_movimientos_por_usuario(usuario)
+        return jsonify({"movimientos": movimientos})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-@app.route('/api/traer_movimientos_por_fecha', methods=['POST'])
-def api_traer_movimientos_por_fecha():
+
+@app.route('/api/movimientos_por_fecha', methods=['POST'])
+def api_movimientos_por_fecha():
     data = request.json
     fecha = data.get('fecha')
-    uid = data.get('uid')
-    if not fecha or not uid:
-        return jsonify({"error": "Faltan datos"}), 400
-    
-    movimientos = traer_movimientos_por_fecha(fecha)
-    return jsonify({"movimientos": movimientos})
-
-@app.route('/api/traer_movimientos_por_accion', methods=['POST'])
-def api_traer_movimientos_por_accion():
+    if not fecha:
+        return jsonify({"error": "Falta la fecha"}), 400
+    try:
+        movimientos = traer_movimientos_por_fecha(fecha)
+        return jsonify({"movimientos": movimientos})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+        
+@app.route('/api/movimientos_por_accion', methods=['POST'])
+def api_movimientos_por_accion():
     data = request.json
     accion = data.get('accion')
-    uid = data.get('uid')
-    if not accion or not uid:
-        return jsonify({"error": "Faltan datos"}), 400
+    if not accion:
+        return jsonify({"error": "Falta la acción"}), 400
+    try:
+        movimientos = traer_movimientos_por_accion(accion)
+        return jsonify({"movimientos": movimientos})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
     
-    movimientos = traer_movimientos_por_accion(accion)
-    return jsonify({"movimientos": movimientos})
-
 @app.route('/api/traer_metodo_pago_id', methods=['POST'])
 def api_traer_metodo_pago_id():
     data = request.json
-    valor = data.get('valor')
-    uid = data.get('uid')
-    if not valor or not uid:
-        return jsonify({"error": "Faltan datos"}), 400
-    
+    nombre_metodo = data.get('nombre_metodo')
+    if not nombre_metodo:
+        return jsonify({"error": "Falta el nombre del método"}), 400
     try:
-        id_mp = traer_metodo_pago_id(valor)
-        return jsonify({"id_mp": id_mp})
+        id_metodo = traer_metodo_pago_id(nombre_metodo)
+        return jsonify({"id_metodo": id_metodo})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-@app.route('/api/traer_todos_metodos_pago', methods=['POST'])
-def api_traer_todos_metodos_pago():
-    data = request.json
-    uid = data.get('uid')
-    if not uid:
-        return jsonify({"error": "Falta UID"}), 400
     
-    metodos = traer_todos_metodos_pago()
-    return jsonify({"metodos_pago": metodos})
+
+@app.route('/api/traer_todos_metodos_pago', methods=['GET'])
+def api_traer_todos_metodos_pago():
+    try:
+        metodos = traer_todos_metodos_pago()
+        return jsonify({"metodos_pago": metodos})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route('/api/traer_datos_ventas_metodo_o_usuario', methods=['POST'])
 def api_traer_datos_ventas_metodo_o_usuario():
     data = request.json
-    id_valor = data.get('id')
+    id_metodo_o_usuario = data.get('id_metodo_o_usuario')
     fecha = data.get('fecha')
-    uid = data.get('uid')
-    if not id_valor or not uid:
+    if not id_metodo_o_usuario or not fecha:
         return jsonify({"error": "Faltan datos"}), 400
-    
-    resultados = traer_datos_ventas_metodo_o_usuario(id_valor, fecha)
-    return jsonify({"ventas": resultados})
+    try:
+        datos = traer_datos_ventas_metodo_o_usuario(id_metodo_o_usuario, fecha)
+        return jsonify({"datos": datos})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route('/api/traer_datos_compras_metodo_o_usuario', methods=['POST'])
 def api_traer_datos_compras_metodo_o_usuario():
     data = request.json
-    id_valor = data.get('id')
+    id_metodo_o_usuario = data.get('id_metodo_o_usuario')
     fecha = data.get('fecha')
-    uid = data.get('uid')
-    if not id_valor or not uid:
+    if not id_metodo_o_usuario or not fecha:
         return jsonify({"error": "Faltan datos"}), 400
-    
-    resultados = traer_datos_compras_metodo_o_usuario(id_valor, fecha)
-    return jsonify({"compras": resultados})
+    try:
+        datos = traer_datos_compras_metodo_o_usuario(id_metodo_o_usuario, fecha)
+        return jsonify({"datos": datos})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route('/api/traer_metodo_pago', methods=['POST'])
 def api_traer_metodo_pago():
     data = request.json
-    metodo = data.get('metodo')
-    uid = data.get('uid')
-    if not metodo or not uid:
-        return jsonify({"error": "Faltan datos"}), 400
-    
+    id_metodo = data.get('id_metodo')
+    if not id_metodo:
+        return jsonify({"error": "Falta el id del método"}), 400
     try:
-        nombre_mp = traer_metodo_pago(metodo)
-        return jsonify({"nombre_mp": nombre_mp})
+        metodo = traer_metodo_pago(id_metodo)
+        return jsonify({"metodo": metodo})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
@@ -691,119 +681,128 @@ def api_traer_metodo_pago():
 def api_traer_datos_arqueo_ventas_fecha():
     data = request.json
     fecha = data.get('fecha')
-    uid = data.get('uid')
-    if not uid:
-        return jsonify({"error": "Falta UID"}), 400
-    
-    resultados = traer_datos_arqueo_ventas_fecha(fecha)
-    return jsonify({"ventas": resultados})
+    if not fecha:
+        return jsonify({"error": "Falta la fecha"}), 400
+    try:
+        datos = traer_datos_arqueo_ventas_fecha(fecha)
+        return jsonify({"datos": datos})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/traer_datos_arqueo_compras_fecha', methods=['POST'])
 def api_traer_datos_arqueo_compras_fecha():
     data = request.json
     fecha = data.get('fecha')
-    uid = data.get('uid')
-    if not uid:
-        return jsonify({"error": "Falta UID"}), 400
-    
-    resultados = traer_datos_arqueo_compras_fecha(fecha)
-    return jsonify({"compras": resultados})
+    if not fecha:
+        return jsonify({"error": "Falta la fecha"}), 400
+    try:
+        datos = traer_datos_arqueo_compras_fecha(fecha)
+        return jsonify({"datos": datos})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-@app.route('/api/traer_metodos_de_pago', methods=['POST'])
+@app.route('/api/traer_metodos_de_pago', methods=['GET'])
 def api_traer_metodos_de_pago():
-    data = request.json
-    uid = data.get('uid')
-    if not uid:
-        return jsonify({"error": "Falta UID"}), 400
+    try:
+        metodos = traer_metodos_de_pago()
+        return jsonify({"metodos_pago": metodos})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
     
-    metodos = traer_metodos_de_pago()
-    return jsonify({"metodos_pago": metodos})
 
 @app.route('/api/traer_ventas_totales_dia', methods=['POST'])
 def api_traer_ventas_totales_dia():
     data = request.json
     fecha = data.get('fecha')
-    uid = data.get('uid')
-    if not fecha or not uid:
-        return jsonify({"error": "Faltan datos"}), 400
+    if not fecha:
+        return jsonify({"error": "Falta la fecha"}), 400
+    try:
+        total = traer_ventas_totales_dia(fecha)
+        return jsonify({"total": total})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
     
-    total = traer_ventas_totales_dia(fecha)
-    return jsonify({"total_ventas": total})
 
 @app.route('/api/traer_ganancias_totales_dia', methods=['POST'])
 def api_traer_ganancias_totales_dia():
     data = request.json
     fecha = data.get('fecha')
-    uid = data.get('uid')
-    if not fecha or not uid:
-        return jsonify({"error": "Faltan datos"}), 400
-    
-    total = traer_ganancias_totales_dia(fecha)
-    return jsonify({"total_ganancias": total})
+    if not fecha:
+        return jsonify({"error": "Falta la fecha"}), 400
+    try:
+        total = traer_ganancias_totales_dia(fecha)
+        return jsonify({"total": total})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/traer_compras_totales_dia', methods=['POST'])
 def api_traer_compras_totales_dia():
     data = request.json
     fecha = data.get('fecha')
-    uid = data.get('uid')
-    if not fecha or not uid:
-        return jsonify({"error": "Faltan datos"}), 400
-    
-    total = traer_compras_totales_dia(fecha)
-    return jsonify({"total_compras": total})
+    if not fecha:
+        return jsonify({"error": "Falta la fecha"}), 400
+    try:
+        total = traer_compras_totales_dia(fecha)
+        return jsonify({"total": total})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/traer_numero_de_compras_dia', methods=['POST'])
 def api_traer_numero_de_compras_dia():
     data = request.json
     fecha = data.get('fecha')
-    uid = data.get('uid')
-    if not fecha or not uid:
-        return jsonify({"error": "Faltan datos"}), 400
-    
-    total = traer_numero_de_compras_dia(fecha)
-    return jsonify({"numero_compras": total})
+    if not fecha:
+        return jsonify({"error": "Falta la fecha"}), 400
+    try:
+        total = traer_numero_de_compras_dia(fecha)
+        return jsonify({"total": total})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 @app.route('/api/traer_compras_totales_mes', methods=['POST'])
 def api_traer_compras_totales_mes():
     data = request.json
     anio = data.get('anio')
     mes = data.get('mes')
-    uid = data.get('uid')
-    if not anio or not mes or not uid:
+    if not anio or not mes:
         return jsonify({"error": "Faltan datos"}), 400
+    try:
+        total = traer_compras_totales_mes(anio, mes)
+        return jsonify({"total": total})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
     
-    total = traer_compras_totales_mes(anio, mes)
-    return jsonify({"total_compras_mes": total})
-
 @app.route('/api/traer_numero_de_compras_mes', methods=['POST'])
 def api_traer_numero_de_compras_mes():
     data = request.json
     anio = data.get('anio')
     mes = data.get('mes')
-    uid = data.get('uid')
-    if not anio or not mes or not uid:
+    if not anio or not mes:
         return jsonify({"error": "Faltan datos"}), 400
-    
-    total = traer_numero_de_compras_mes(anio, mes)
-    return jsonify({"numero_compras_mes": total})
+    try:
+        total = traer_numero_de_compras_mes(anio, mes)
+        return jsonify({"total": total})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-@app.route('/api/traer_compras_totales_ano_actual', methods=['POST'])
-def api_traer_compras_totales_ano_actual():
+@app.route('/api/traer_compras_totales_ano', methods=['POST'])
+def api_traer_compras_totales_ano():
     data = request.json
     anio = data.get('anio')
-    uid = data.get('uid')
-    if not anio or not uid:
-        return jsonify({"error": "Faltan datos"}), 400
-    
-    total = traer_compras_totales_ano_actual(anio)
-    return jsonify({"total_compras_ano": total})
+    if not anio:
+        return jsonify({"error": "Falta el año"}), 400
+    try:
+        total = traer_compras_totales_ano_actual(anio)
+        return jsonify({"total": total})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/traer_numero_de_compras_ano_actual', methods=['POST'])
 def api_traer_numero_de_compras_ano_actual():
     data = request.json
     anio = data.get('anio')
-    uid = data.get('uid')
-    if not anio or not uid:
+    if not anio:
         return jsonify({"error": "Faltan datos"}), 400
     
     total = traer_numero_de_compras_ano_actual(anio)
@@ -813,12 +812,13 @@ def api_traer_numero_de_compras_ano_actual():
 def api_traer_ventas_por_metodo_dia():
     data = request.json
     fecha = data.get('fecha')
-    uid = data.get('uid')
-    if not fecha or not uid:
-        return jsonify({"error": "Faltan datos"}), 400
-    
-    resultados = traer_ventas_por_metodo_dia(fecha)
-    return jsonify({"ventas_por_metodo": resultados})
+    if not fecha:
+        return jsonify({"error": "Falta la fecha"}), 400
+    try:
+        ventas_por_metodo = traer_ventas_por_metodo_dia(fecha)
+        return jsonify({"ventas_por_metodo": ventas_por_metodo})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/traer_compras_por_metodo_dia', methods=['POST'])
 def api_traer_compras_por_metodo_dia():
@@ -837,12 +837,13 @@ def api_traer_ventas_por_metodo_mes():
     data = request.json
     anio = data.get('anio')
     mes = data.get('mes')
-    uid = data.get('uid')
-    if not anio or not mes or not uid:
+    if not anio or not mes:
         return jsonify({"error": "Faltan datos"}), 400
-    
-    resultados = traer_ventas_por_metodo_mes(anio, mes)
-    return jsonify({"ventas_por_metodo_mes": resultados})
+    try:
+        ventas_por_metodo = traer_ventas_por_metodo_mes(anio, mes)
+        return jsonify({"ventas_por_metodo": ventas_por_metodo})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/traer_compras_por_metodo_mes', methods=['POST'])
 def api_traer_compras_por_metodo_mes():
@@ -856,24 +857,24 @@ def api_traer_compras_por_metodo_mes():
     resultados = traer_compras_por_metodo_mes(anio, mes)
     return jsonify({"compras_por_metodo_mes": resultados})
 
-
 @app.route('/api/traer_ventas_por_metodo_ano', methods=['POST'])
 def api_traer_ventas_por_metodo_ano():
     data = request.json
     anio = data.get('anio')
-    uid = data.get('uid')
-    if not anio or not uid:
-        return jsonify({"error": "Faltan datos"}), 400
+    if not anio:
+        return jsonify({"error": "Falta el año"}), 400
+    try:
+        ventas_por_metodo = traer_ventas_por_metodo_ano(anio)
+        return jsonify({"ventas_por_metodo": ventas_por_metodo})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
     
-    resultados = traer_ventas_por_metodo_ano(anio)
-    return jsonify({"ventas_por_metodo_ano": resultados})
 
 @app.route('/api/traer_numero_de_ventas_ano', methods=['POST'])
 def api_traer_numero_de_ventas_ano():
     data = request.json
     anio = data.get('anio')
-    uid = data.get('uid')
-    if not anio or not uid:
+    if not anio:
         return jsonify({"error": "Faltan datos"}), 400
     
     total = traer_numero_de_ventas_ano(anio)
@@ -884,8 +885,7 @@ def api_traer_numero_de_ventas_mes():
     data = request.json
     anio = data.get('anio')
     mes = data.get('mes')
-    uid = data.get('uid')
-    if not anio or not mes or not uid:
+    if not anio or not mes:
         return jsonify({"error": "Faltan datos"}), 400
     
     total = traer_numero_de_ventas_mes(anio, mes)
@@ -896,77 +896,71 @@ def api_traer_numero_de_ventas_mes():
 def api_traer_numero_de_ventas_dia():
     data = request.json
     fecha = data.get('fecha')
-    uid = data.get('uid')
-    if not fecha or not uid:
-        return jsonify({"error": "Faltan datos"}), 400
-    
-    total = traer_numero_de_ventas_dia(fecha)
-    return jsonify({"numero_ventas_dia": total})
+    if not fecha:
+        return jsonify({"error": "Falta la fecha"}), 400
+    try:
+        total = traer_numero_de_ventas_dia(fecha)
+        return jsonify({"total": total})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-@app.route('/api/traer_ventas_totales_ano_actual', methods=['POST'])
-def api_traer_ventas_totales_ano_actual():
+@app.route('/api/traer_ventas_totales_ano', methods=['POST'])
+def api_traer_ventas_totales_ano():
     data = request.json
     anio = data.get('anio')
-    uid = data.get('uid')
-    if not anio or not uid:
-        return jsonify({"error": "Faltan datos"}), 400
-    
-    total = traer_ventas_totales_ano_actual(anio)
-    return jsonify({"total_ventas_ano": total})
+    if not anio:
+        return jsonify({"error": "Falta el año"}), 400
+    try:
+        total = traer_ventas_totales_ano_actual(anio)
+        return jsonify({"total": total})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-@app.route('/api/traer_ganancias_totales_ano_actual', methods=['POST'])
-def api_traer_ganancias_totales_ano_actual():
+
+@app.route('/api/traer_ganancias_totales_ano', methods=['POST'])
+def api_traer_ganancias_totales_ano():
     data = request.json
     anio = data.get('anio')
-    uid = data.get('uid')
-    if not anio or not uid:
-        return jsonify({"error": "Faltan datos"}), 400
-    
-    total = traer_ganancias_totales_ano_actual(anio)
-    return jsonify({"total_ganancias_ano": total})
+    if not anio:
+        return jsonify({"error": "Falta el año"}), 400
+    try:
+        total = traer_ganancias_totales_ano_actual(anio)
+        return jsonify({"total": total})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/traer_ganancias_totales_mes', methods=['POST'])
 def api_traer_ganancias_totales_mes():
     data = request.json
     anio = data.get('anio')
     mes = data.get('mes')
-    uid = data.get('uid')
-    if not anio or not mes or not uid:
+    if not anio or not mes:
         return jsonify({"error": "Faltan datos"}), 400
-    
-    total = traer_ganancias_totales_mes(anio, mes)
-    return jsonify({"total_ganancias_mes": total})
-
+    try:
+        total = traer_ganancias_totales_mes(anio, mes)
+        return jsonify({"total": total})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/traer_ventas_totales_mes', methods=['POST'])
 def api_traer_ventas_totales_mes():
     data = request.json
     anio = data.get('anio')
     mes = data.get('mes')
-    uid = data.get('uid')
-    if not anio or not mes or not uid:
+    if not anio or not mes:
         return jsonify({"error": "Faltan datos"}), 400
+    try:
+        total = traer_ventas_totales_mes(anio, mes)
+        return jsonify({"total": total})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
     
-    total = traer_ventas_totales_mes(anio, mes)
-    return jsonify({"total_ventas_mes": total})
-
-@app.route('/api/traer_numero_de_ventas_ano_actual', methods=['POST'])
-def api_traer_numero_de_ventas_ano_actual():
-    data = request.json
-    anio = data.get('anio')
-    uid = data.get('uid')
-    if not anio or not uid:
-        return jsonify({"error": "Faltan datos"}), 400
-    
-    total = traer_numero_de_ventas_ano_actual(anio)
-    return jsonify({"numero_ventas_ano": total})
 
 @app.route('/api/traer_venta_promedio_ano_actual', methods=['POST'])
 def api_traer_venta_promedio_ano_actual():
     data = request.json
     anio = data.get('anio')
-    uid = data.get('uid')
-    if not anio or not uid:
+    if not anio:
         return jsonify({"error": "Faltan datos"}), 400
     
     promedio = traer_venta_promedio_ano_actual(anio)
@@ -977,8 +971,7 @@ def api_traer_ventas_ano_actual():
     data = request.json
     anio = data.get('anio')
     meses = data.get('meses')  # Debe ser una lista de nombres o números de mes
-    uid = data.get('uid')
-    if not anio or not meses or not uid or not isinstance(meses, list):
+    if not anio or not meses or not isinstance(meses, list):
         return jsonify({"error": "Faltan datos o formato incorrecto"}), 400
     
     ventas = traer_ventas_ano_actual(anio, meses)
@@ -989,21 +982,16 @@ def api_traer_ganancias_ano_actual():
     data = request.json
     anio = data.get('anio')
     meses = data.get('meses')  # Debe ser una lista de nombres o números de mes
-    uid = data.get('uid')
-    if not anio or not meses or not uid or not isinstance(meses, list):
+
+    if not anio or not meses or not isinstance(meses, list):
         return jsonify({"error": "Faltan datos o formato incorrecto"}), 400
     
     ganancias = traer_ganancias_ano_actual(anio, meses)
     return jsonify({"ganancias_por_mes": ganancias})
 
 
-@app.route('/api/traer_metodos_pago_y_su_id', methods=['POST'])
+@app.route('/api/traer_metodos_pago_y_su_id', methods=['GET'])
 def api_traer_metodos_pago_y_su_id():
-    data = request.json
-    uid = data.get('uid')
-    if not uid:
-        return jsonify({"error": "Falta UID"}), 400
-    
     metodos = traer_metodos_pago_y_su_id()
     return jsonify({"metodos_pago": metodos})
 
@@ -1013,8 +1001,8 @@ def api_traer_datos_por_metodo_y_mes():
     anio = data.get('anio')
     metodo = data.get('metodo')
     meses = data.get('meses')  # Debe ser una lista de nombres o números de mes
-    uid = data.get('uid')
-    if not anio or not metodo or not meses or not uid or not isinstance(meses, list):
+ 
+    if not anio or not metodo or not meses or not isinstance(meses, list):
         return jsonify({"error": "Faltan datos o formato incorrecto"}), 400
     
     datos = traer_datos_por_metodo_y_mes(anio, metodo, meses)
@@ -1025,8 +1013,7 @@ def api_traer_venta_promedio_mes():
     data = request.json
     anio = data.get('anio')
     mes = data.get('mes')
-    uid = data.get('uid')
-    if not anio or not mes or not uid:
+    if not anio or not mes:
         return jsonify({"error": "Faltan datos"}), 400
     
     promedio = traer_venta_promedio_mes(anio, mes)
@@ -1037,8 +1024,7 @@ def api_traer_numero_de_ventas_semana():
     data = request.json
     anio = data.get('anio')
     semana = data.get('semana')
-    uid = data.get('uid')
-    if not anio or not semana or not uid:
+    if not anio or not semana:
         return jsonify({"error": "Faltan datos"}), 400
     
     total = traer_numero_de_ventas_semana(anio, semana)
@@ -1049,8 +1035,8 @@ def api_traer_venta_promedio_semana():
     data = request.json
     anio = data.get('anio')
     semana = data.get('semana')
-    uid = data.get('uid')
-    if not anio or not semana or not uid:
+
+    if not anio or not semana:
         return jsonify({"error": "Faltan datos"}), 400
     
     promedio = traer_venta_promedio_semana(anio, semana)
@@ -1061,8 +1047,8 @@ def api_traer_ganancias_totales_semana():
     data = request.json
     anio = data.get('anio')
     semana = data.get('semana')
-    uid = data.get('uid')
-    if not anio or not semana or not uid:
+
+    if not anio or not semana:
         return jsonify({"error": "Faltan datos"}), 400
     
     total = traer_ganancias_totales_semana(anio, semana)
@@ -1074,8 +1060,7 @@ def api_traer_ventas_semana_actual():
     anio = data.get('anio')
     semana = data.get('semana')
     dias = data.get('dias')  # Debe ser una lista de nombres o números de día
-    uid = data.get('uid')
-    if not anio or not semana or not dias or not uid or not isinstance(dias, list):
+    if not anio or not semana or not dias or not isinstance(dias, list):
         return jsonify({"error": "Faltan datos o formato incorrecto"}), 400
     
     ventas = traer_ventas_semana_actual(anio, semana, dias)
@@ -1087,8 +1072,8 @@ def api_traer_ganancias_semana_actual():
     anio = data.get('anio')
     semana = data.get('semana')
     dias = data.get('dias')  # Debe ser una lista de nombres o números de día
-    uid = data.get('uid')
-    if not anio or not semana or not dias or not uid or not isinstance(dias, list):
+
+    if not anio or not semana or not dias or not isinstance(dias, list):
         return jsonify({"error": "Faltan datos o formato incorrecto"}), 400
     
     ganancias = traer_ganancias_semana_actual(anio, semana, dias)
@@ -1101,8 +1086,8 @@ def api_traer_datos_por_metodo_y_dia_semana():
     semana = data.get('semana')
     metodo = data.get('metodo')
     dias = data.get('dias')  # Debe ser una lista de nombres o números de día
-    uid = data.get('uid')
-    if not anio or not semana or not metodo or not dias or not uid or not isinstance(dias, list):
+
+    if not anio or not semana or not metodo or not dias or not isinstance(dias, list):
         return jsonify({"error": "Faltan datos o formato incorrecto"}), 400
     
     datos = traer_datos_por_metodo_y_dia_semana(anio, semana, metodo, dias)
@@ -1113,8 +1098,7 @@ def api_traer_ventas_totales_semana():
     data = request.json
     anio = data.get('anio')
     semana = data.get('semana')
-    uid = data.get('uid')
-    if not anio or not semana or not uid:
+    if not anio or not semana:
         return jsonify({"error": "Faltan datos"}), 400
     
     total = traer_ventas_totales_semana(anio, semana)
@@ -1125,8 +1109,8 @@ def api_traer_ventas_totales_periodo():
     data = request.json
     periodo1 = data.get('periodo1')
     periodo2 = data.get('periodo2')
-    uid = data.get('uid')
-    if not periodo1 or not periodo2 or not uid:
+  
+    if not periodo1 or not periodo2:
         return jsonify({"error": "Faltan datos"}), 400
     
     total = traer_ventas_totales_periodo(periodo1, periodo2)
@@ -1137,8 +1121,8 @@ def api_traer_numero_de_ventas_periodo():
     data = request.json
     periodo1 = data.get('periodo1')
     periodo2 = data.get('periodo2')
-    uid = data.get('uid')
-    if not periodo1 or not periodo2 or not uid:
+    
+    if not periodo1 or not periodo2:
         return jsonify({"error": "Faltan datos"}), 400
     
     total = traer_numero_de_ventas_periodo(periodo1, periodo2)
@@ -1149,8 +1133,8 @@ def api_traer_venta_promedio_periodo():
     data = request.json
     periodo1 = data.get('periodo1')
     periodo2 = data.get('periodo2')
-    uid = data.get('uid')
-    if not periodo1 or not periodo2 or not uid:
+
+    if not periodo1 or not periodo2:
         return jsonify({"error": "Faltan datos"}), 400
     
     promedio = traer_venta_promedio_periodo(periodo1, periodo2)
@@ -1162,8 +1146,8 @@ def api_traer_ganancias_totales_periodo():
     data = request.json
     periodo1 = data.get('periodo1')
     periodo2 = data.get('periodo2')
-    uid = data.get('uid')
-    if not periodo1 or not periodo2 or not uid:
+    
+    if not periodo1 or not periodo2:
         return jsonify({"error": "Faltan datos"}), 400
     
     total = traer_ganancias_totales_periodo(periodo1, periodo2)
@@ -1175,8 +1159,7 @@ def api_traer_ventas_periodo():
     data = request.json
     periodo1 = data.get('periodo1')
     periodo2 = data.get('periodo2')
-    uid = data.get('uid')
-    if not periodo1 or not periodo2 or not uid:
+    if not periodo1 or not periodo2:
         return jsonify({"error": "Faltan datos"}), 400
     
     ventas = traer_ventas_periodo(periodo1, periodo2)
@@ -1188,8 +1171,8 @@ def api_traer_ganancias_periodo():
     data = request.json
     periodo1 = data.get('periodo1')
     periodo2 = data.get('periodo2')
-    uid = data.get('uid')
-    if not periodo1 or not periodo2 or not uid:
+   
+    if not periodo1 or not periodo2:
         return jsonify({"error": "Faltan datos"}), 400
     
     total = traer_ganancias_periodo(periodo1, periodo2)
@@ -1201,22 +1184,17 @@ def api_traer_datos_por_metodo_y_dia_periodo():
     periodo1 = data.get('periodo1')
     periodo2 = data.get('periodo2')
     metodo = data.get('metodo')
-    uid = data.get('uid')
-    if not periodo1 or not periodo2 or not metodo or not uid:
+    
+    if not periodo1 or not periodo2 or not metodo:
         return jsonify({"error": "Faltan datos"}), 400
     
     total = traer_datos_por_metodo_y_dia_periodo(periodo1, periodo2, metodo)
     return jsonify({"total_ventas_metodo_periodo": total})
 
-@app.route('/api/verificar_existencia_de_mp', methods=['POST'])
+@app.route('/api/verificar_existencia_de_mp', methods=['GET'])
 def api_verificar_existencia_de_mp():
-    data = request.json
-    uid = data.get('uid')
-    if not uid:
-        return jsonify({"error": "Falta UID"}), 400
-    
     existe = verificar_existencia_de_mp()
-    return jsonify({"existe_metodo_pago": existe})
+    return jsonify({"existe": existe})
 
 @app.route('/api/agregar_mp_default', methods=['POST'])
 def api_agregar_mp_default():
@@ -1519,32 +1497,34 @@ def api_cargar_movimientos_datos_borrados():
         return jsonify({"error": str(e)}), 500
     
 
-@app.route('/api/cargar_movimiento_editar_usuario', methods=['POST'])
-def api_cargar_movimiento_editar_usuario():
+@app.route('/api/movimiento_editar_usuario', methods=['POST'])
+def api_movimiento_editar_usuario():
     data = request.json
     id_usuario = data.get('id_usuario')
     nombre_usuario = data.get('nombre_usuario')
     usuario_activo = data.get('usuario_activo')
-    uid = data.get('uid')
-    if not id_usuario or not nombre_usuario or not usuario_activo or not uid:
+    if not id_usuario or not nombre_usuario or not usuario_activo:
         return jsonify({"error": "Faltan datos"}), 400
+    try:
+        cargar_movimiento_editar_usuario(id_usuario, nombre_usuario, usuario_activo)
+        return jsonify({"exito": True})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
     
-    cargar_movimiento_editar_usuario(id_usuario, nombre_usuario, usuario_activo)
-    return jsonify({"resultado": "Movimiento de usuario editado registrado"})
 
-@app.route('/api/cargar_movimiento_usuario_borrado', methods=['POST'])
-def api_cargar_movimiento_usuario_borrado():
+@app.route('/api/movimiento_usuario_borrado', methods=['POST'])
+def api_movimiento_usuario_borrado():
     data = request.json
     nombre_usuario = data.get('nombre_usuario')
     id_usuario = data.get('id_usuario')
     usuario_activo = data.get('usuario_activo')
-    uid = data.get('uid')
-    if not nombre_usuario or not id_usuario or not usuario_activo or not uid:
+    if not nombre_usuario or not id_usuario or not usuario_activo:
         return jsonify({"error": "Faltan datos"}), 400
-    global id_usuario_perfil
-    
-    cargar_movimiento_usuario_borrado(nombre_usuario, id_usuario, usuario_activo)
-    return jsonify({"resultado": "Movimiento de usuario borrado registrado"})
+    try:
+        cargar_movimiento_usuario_borrado(nombre_usuario, id_usuario, usuario_activo)
+        return jsonify({"exito": True})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/api/traer_id_venta', methods=['POST'])
 def api_traer_id_venta():
@@ -1605,12 +1585,21 @@ def api_cargar_movimiento_agregar_metodo_pago():
     data = request.json
     metodo_pago = data.get('metodo_pago')
     usuario = data.get('usuario')
-    uid = data.get('uid')
-    if not metodo_pago or not usuario or not uid:
+    if not metodo_pago or not usuario:
         return jsonify({"error": "Faltan datos"}), 400
     
     resultado = cargar_movimiento_agregar_metodo_pago(metodo_pago, usuario)
     return jsonify({"resultado": resultado})
+
+@app.route('/api/agregar_metodo_pago', methods=['POST'])
+def api_agregar_metodo_pago():
+    data = request.json
+    nombre_metodo = data.get('nombre_metodo')
+    if not nombre_metodo:
+        return jsonify({"exito": False, "error": "Falta el nombre del método"}), 400
+
+    exito = agregar_mp_db(nombre_metodo)
+    return jsonify({"exito": exito})
 
 @app.route('/api/cargar_movimiento_borrar_metodo_pago', methods=['POST'])
 def api_cargar_movimiento_borrar_metodo_pago():

@@ -2111,27 +2111,6 @@ def traer_ventas_totales_mes(ano_actual, mes_actual):
         print(f"Error al traer ventas totales del mes en Supabase: {e}")
         return 0
     
-
-def traer_numero_de_ventas_ano_actual(ano_actual):
-    global id_usuario_perfil
-    try:
-        # Obtener todas las ventas del perfil
-        response_ventas = supabase.table("ventas") \
-            .select("id_venta, fecha_hora") \
-            .eq("u_id", id_usuario_perfil) \
-            .execute()
-        ventas = response_ventas.data
-
-        # Filtrar ventas por año en Python
-        ventas_filtradas = [
-            v for v in ventas
-            if v["fecha_hora"].startswith(f"{ano_actual}-")
-        ]
-
-        return len(ventas_filtradas)
-    except Exception as e:
-        print(f"Error al traer número de ventas del año en Supabase: {e}")
-        return 0
     
 def traer_venta_promedio_ano_actual(ano_actual):
     global id_usuario_perfil
