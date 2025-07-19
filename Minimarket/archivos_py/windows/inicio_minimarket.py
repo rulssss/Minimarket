@@ -3200,16 +3200,20 @@ class BuscarDatosTab:
                     table.setItem(row, 0, item)
             
                     # Fecha
-                    fecha_formateada = movimiento[1].strftime("%d-%m-%Y")
+                    fecha_str = movimiento[1]
+                    # Quitar la zona horaria si existe
+                    fecha_str_sin_tz = fecha_str.split('+')[0].strip()
+                    fecha_dt = datetime.strptime(fecha_str_sin_tz, "%Y-%m-%dT%H:%M:%S.%f")
+                    fecha_formateada = fecha_dt.strftime("%d-%m-%Y")
                     item = QTableWidgetItem(fecha_formateada)
                     item.setFont(QFont("Segoe UI", 12))
                     item.setTextAlignment(Qt.AlignCenter)
                     table.setItem(row, 1, item)
             
                     # Hora
-                    timestamp_completo = movimiento[1]  # El timestamp completo está en la posición 1
                     local_tz = pytz.timezone('America/Argentina/Buenos_Aires')
-                    hora_local = timestamp_completo.replace(tzinfo=pytz.UTC).astimezone(local_tz)
+                    fecha_dt_utc = fecha_dt.replace(tzinfo=pytz.UTC)
+                    hora_local = fecha_dt_utc.astimezone(local_tz)
                     hora_formateada = hora_local.strftime("%I:%M %p")
                     item = QTableWidgetItem(hora_formateada)
                     item.setFont(QFont("Segoe UI", 12))
