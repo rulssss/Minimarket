@@ -456,7 +456,7 @@ def api_actualizar_proveedor():
     nombre = data.get('nombre')
     telefono = data.get('telefono')
     direccion = data.get('direccion')
-    if not nombre or not telefono or not direccion:
+    if not nombre or not telefono:
         return jsonify({"error": "Faltan datos"}), 400
     try:
         exito = actualizar_proveedor(nombre, telefono, direccion)
@@ -1458,8 +1458,6 @@ def api_movimiento_proveedor_editado():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-
-
 
 @app.route('/api/agregar_categoria', methods=['POST'])
 def api_agregar_categoria():

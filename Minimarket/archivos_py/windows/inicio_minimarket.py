@@ -944,8 +944,8 @@ class DatosTab:
         self.start_thread(self.actualizar_thread)
 
         # Usar hilo para cargar movimiento editado
-        self.movimiento_editado_thread = MovimientoProductoEditadoThread(id, usuario_activo)
-        self.movimiento_editado_thread.start()
+        self.movimiento_producto_editado_thread = MovimientoProductoEditadoThread(id, usuario_activo)
+        self.movimiento_producto_editado_thread.start()
 
     def on_producto_actualizado(self):
         label_73 = self.ui.frame_7.findChild(QLabel, "label_73")
@@ -1635,7 +1635,7 @@ class DatosTab:
                         if button_34:
                             button_34.setEnabled(True)
                     self.traer_id_thread.resultado.connect(on_id_obtenido)
-                    self.traer_id_thread.start()
+                    self.start_thread(self.traer_id_thread)
 
 
                 else:
@@ -1736,8 +1736,8 @@ class DatosTab:
                     button_37 = self.ui.frame_13.findChild(QPushButton, "pushButton_37")
 
                     if exito:
-                        self.movimiento_editado_thread = MovimientoProveedorEditadoThread(comboBox_value, usuario_activo)
-                        self.movimiento_editado_thread.start()
+                        self.movimiento_proveedor_editado_thread = MovimientoProveedorEditadoThread(comboBox_value, usuario_activo)
+                        self.start_thread(self.movimiento_proveedor_editado_thread)
 
                         if label_78 and label_79:
                             label_78.setText("Proveedor actualizado")
@@ -1772,7 +1772,7 @@ class DatosTab:
                         print("se genero un error al actualizar el proveedor")
                             
                 self.actualizar_prov_thread.resultado.connect(on_actualizado)
-                self.actualizar_prov_thread.start()
+                self.start_thread(self.actualizar_prov_thread)
             else:
 
                 if button_37:
