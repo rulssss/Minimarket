@@ -1428,7 +1428,7 @@ def api_movimiento_agregar_proveedor():
         return jsonify({"exito": True})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    
+
 
 @app.route('/api/movimiento_proveedor_borrado', methods=['POST'])
 def api_movimiento_proveedor_borrado():

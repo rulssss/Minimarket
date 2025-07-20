@@ -528,9 +528,12 @@ class MovimientoProveedorBorradoThread(QThread):
         self.nombre = nombre
         self.id_proveedor = id_proveedor
         self.usuario_activo = usuario_activo
+        print("nombre:", self.nombre)
+        print("id_proveedor:", self.id_proveedor)
+        print("usuario_activo:", self.usuario_activo)
 
     def run(self):
-        
+
         try:
             url = f"{API_URL}/api/movimiento_proveedor_borrado"
             payload = {
