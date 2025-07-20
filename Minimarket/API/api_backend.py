@@ -1408,7 +1408,7 @@ def api_agregar_proveedor():
     nombre = data.get('nombre')
     telefono = data.get('telefono')
     direccion = data.get('direccion')
-    if not nombre or not telefono or not direccion:
+    if not nombre or not telefono:
         return jsonify({"error": "Faltan datos"}), 400
     try:
         exito = cargar_proveedor(nombre, telefono, direccion)

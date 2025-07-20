@@ -1459,7 +1459,7 @@ class DatosTab:
                     label_76.setStyleSheet("color: green; font-weight: bold")
                     self.proveedor_thread = ProveedorThread(lineEdit_14_value, lineEdit_15_value, lineEdit_17_value)
                     self.proveedor_thread.proveedor_cargado.connect(lambda exito: self.on_proveedor_cargado(exito, lineEdit_14_value))
-                    self.proveedor_thread.start()
+                    self.start_thread(self.proveedor_thread)
                 else:
                     if button_25:
                         button_25.setEnabled(True)

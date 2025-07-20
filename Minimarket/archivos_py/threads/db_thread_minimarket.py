@@ -422,7 +422,7 @@ class ProveedorThread(QThread):
         super().__init__()
         self.nombre = nombre
         self.telefono = telefono
-        self.direccion = direccion
+        self.direccion = direccion if direccion else ""  # Manejo de dirección opcional
     def run(self):
         
         try:
