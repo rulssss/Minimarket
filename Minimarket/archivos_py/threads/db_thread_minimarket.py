@@ -528,9 +528,6 @@ class MovimientoProveedorBorradoThread(QThread):
         self.nombre = nombre
         self.id_proveedor = id_proveedor
         self.usuario_activo = usuario_activo
-        print("nombre:", self.nombre)
-        print("id_proveedor:", self.id_proveedor)
-        print("usuario_activo:", self.usuario_activo)
 
     def run(self):
 
@@ -543,7 +540,7 @@ class MovimientoProveedorBorradoThread(QThread):
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
-                print("Movimiento de proveedor borrado registrado correctamente.")
+                pass
             else:
                 print(f"Error al cargar movimiento proveedor borrado: {response.text}")
         except Exception as e:

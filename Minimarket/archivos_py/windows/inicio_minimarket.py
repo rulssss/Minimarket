@@ -41,7 +41,8 @@ class DatosTab:
     def __init__(self, ui):
         self.ui = ui
         self.button19_connected = False
-
+        self.button34_connected = False
+        self.button_agregar = False
 
         global usuario_activo
 
@@ -1385,7 +1386,9 @@ class DatosTab:
         if button_26:
             button_26.setStyleSheet("background-color: rgb(168, 225, 255)")
             button_26.setShortcut(Qt.Key_Return)
-            button_26.clicked.connect(self.validate_and_process_inputs_proveedores)
+            if not self.button_agregar:
+                self.button_agregar = True
+                button_26.clicked.connect(self.validate_and_process_inputs_proveedores)
 
         button_25 = self.ui.frame_10.findChild(QPushButton, "pushButton_25")
         if button_25:
@@ -1516,7 +1519,6 @@ class DatosTab:
                 self.proveedores()
             ))
             
-            
         else:
             print("se genero un error de tipeo al cargar el proveedor")
 
@@ -1531,8 +1533,9 @@ class DatosTab:
         button_34 = self.ui.frame_12.findChild(QPushButton, "pushButton_34")
         if button_34:
             button_34.setStyleSheet("background-color: red; padding: 5px;")
-            button_34.clicked.connect(self.delete_proveedor)
-
+            if not self.button34_connected:
+                self.button34_connected = True
+                button_34.clicked.connect(self.delete_proveedor)
 
         label_77 = self.ui.frame_12.findChild(QLabel, "label_77")
         if label_77:
@@ -1645,10 +1648,6 @@ class DatosTab:
                         input_nombre.setFocus()
     
             self.traer_id_thread = TraerIdProveedorThread(input_nombre_value)
-            try:
-                self.traer_id_thread.resultado.disconnect()
-            except TypeError:
-                pass  # Si no estaba conectado antes, ignora el error
             self.traer_id_thread.resultado.connect(on_id_obtenido)
             self.start_thread(self.traer_id_thread)
         else:
