@@ -1751,6 +1751,9 @@ class DatosTab:
                             QTimer.singleShot(6000, lambda: label_78.setStyleSheet("color: transparent"))
                             QTimer.singleShot(6000, lambda: label_79.setStyleSheet("color: transparent"))
                         
+                        if button_37 and button_38:
+                            button_37.setEnabled(True)
+                            button_38.setEnabled(True)
 
                         #limpiar cache de proveedores
                         global proveedores_cache, proveedores_por_nombre_cache, proveedores_por_telefono_cache
@@ -1763,9 +1766,9 @@ class DatosTab:
                             self.populate_combobox_with_proveedores(self.ui.frame_7.findChild(QComboBox, "comboBox_7")),
                             self.populate_table_with_proveedores(),
                             self.populate_combobox_proveedores(),
-                            self.proveedores()
+                            self.proveedores(),
+                            self.load_proveedor_data()
                         ))
-                        self.clear_inputs_editar_proveedores()
 
                         if button_37:
                             button_37.setEnabled(True)

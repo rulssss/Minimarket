@@ -591,7 +591,7 @@ class MovimientoProveedorEditadoThread(QThread):
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
-                print("Movimiento de proveedor editado registrado correctamente.")
+                pass
             else:
                 print(f"Error al cargar movimiento proveedor editado: {response.text}")
         except Exception as e:
@@ -636,7 +636,7 @@ class MovimientoAgregarCategoriaThread(QThread):
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
-                print("Movimiento de agregar categoría registrado correctamente.")
+                pass
             else:
                 print(f"Error al cargar movimiento agregar categoría: {response.text}")
         except Exception as e:
@@ -683,7 +683,7 @@ class MovimientoCategoriaBorradaThread(QThread):
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
-                print("Movimiento de categoría borrada registrado correctamente.")
+                pass
             else:
                 print(f"Error al cargar movimiento categoría borrada: {response.text}")
         except Exception as e:
