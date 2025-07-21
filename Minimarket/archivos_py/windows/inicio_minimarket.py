@@ -840,6 +840,7 @@ class DatosTab:
                 # Actualizar productos y refrescar la tabla y combobox cuando termine
                 self.actualizar_variables_globales_de_uso(3, lambda: (
                     self.populate_table_with_products(),
+                    
                 ))
                 
                 self.movimiento_thread = MovimientoAumentoPreciosThread(combobox_20_value, usuario_activo, s)
@@ -970,6 +971,8 @@ class DatosTab:
             self.populate_table_with_products(),
             #self.populate_combobox_with_ids(self.ui.frame_7.findChild(QComboBox, "comboBox_3")),
             self.load_product_data(),
+            self.populate_table_with_categorias(),
+            self.populate_table_with_proveedores()
         ))
 
         combobox_id = self.ui.frame_7.findChild(QComboBox, "comboBox_3")
