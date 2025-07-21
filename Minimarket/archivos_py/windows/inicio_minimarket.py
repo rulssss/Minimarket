@@ -946,7 +946,7 @@ class DatosTab:
 
         # Usar hilo para cargar movimiento editado
         self.movimiento_producto_editado_thread = MovimientoProductoEditadoThread(id, usuario_activo)
-        self.movimiento_producto_editado_thread.start()
+        self.start_thread(self.movimiento_producto_editado_thread)
 
     def on_producto_actualizado(self):
         label_73 = self.ui.frame_7.findChild(QLabel, "label_73")
@@ -968,8 +968,8 @@ class DatosTab:
         # Actualizar productos y refrescar la tabla y combobox cuando termine
         self.actualizar_variables_globales_de_uso(3, lambda: (
             self.populate_table_with_products(),
-            self.populate_combobox_with_ids(self.ui.frame_7.findChild(QComboBox, "comboBox_3")),
-            self.load_product_data()
+            #self.populate_combobox_with_ids(self.ui.frame_7.findChild(QComboBox, "comboBox_3")),
+            self.load_product_data(),
         ))
 
         combobox_id = self.ui.frame_7.findChild(QComboBox, "comboBox_3")
