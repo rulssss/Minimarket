@@ -702,7 +702,7 @@ class CargarMovimientosThread(QThread):
             payload = {"usuario_activo": self.usuario_activo}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
-                print("Movimientos de datos borrados cargados correctamente.")
+                pass
             else:
                 print(f"Error al cargar movimientos de datos borrados: {response.text}")
         except Exception as e:
@@ -788,7 +788,7 @@ class CargarMovimientoAgregarUsuarioThread(QThread):
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
-                print("Movimiento de agregar usuario registrado correctamente.")
+                pass
             else:
                 print(f"Error al cargar movimiento agregar usuario: {response.text}")
         except Exception as e:
@@ -863,7 +863,7 @@ class CargarMovimientoEditarUsuarioThread(QThread):
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
-                print("Movimiento de edición de usuario registrado correctamente.")
+                pass
             else:
                 print(f"Error al cargar movimiento editar usuario: {response.text}")
         except Exception as e:

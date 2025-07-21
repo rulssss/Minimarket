@@ -43,6 +43,7 @@ class DatosTab:
         self.button19_connected = False
         self.button34_connected = False
         self.button_agregar = False
+        self.delete_data = False
 
         global usuario_activo
 
@@ -2424,7 +2425,9 @@ class DatosTab:
         if push_button_30:
             push_button_30.setStyleSheet("background-color: red; padding: 5px;")
             push_button_30.setShortcut(Qt.Key_Return)
-            push_button_30.clicked.connect(self.delete_all_data)
+            if not self.delete_data:
+                self.delete_data = True
+                push_button_30.clicked.connect(self.delete_all_data)
         
         push_button_29 = self.ui.frame_25.findChild(QPushButton, "pushButton_29")
         if push_button_29:
@@ -2454,12 +2457,28 @@ class DatosTab:
             if borrar_categorias or borrar_ventas_compras or borrar_proveedores or borrar_usuarios or borrar_movimientos:
                 if self.show_confirmation_dialog():
                     # Ejecutar ambos hilos y mostrar mensaje cuando ambos terminen
-                    self.mov_thread = CargarMovimientosThread(usuario_activo)
                     self.clear_thread = ClearDataThread(borrar_categorias, borrar_ventas_compras, borrar_proveedores, borrar_usuarios, borrar_movimientos)
+                    self._clear_done = False  # bandera interna
                     def on_clear_finished():
-                        if borrar_usuarios or borrar_proveedores:
-                            QMessageBox.information(self.ui.centralwidget, "Datos borrados", "Todos los datos seleccionados han sido borrados\nEl programa se cerrara.")
+                        if self._clear_done:
+                            return
+                        self._clear_done = True  # marcar como hecho
+
+                        
+                        if borrar_usuarios:
                             sys.exit()
+                        if borrar_proveedores:
+                            global proveedores_cache, proveedores_por_nombre_cache, proveedores_por_id_cache
+                            proveedores_cache = None
+                            proveedores_por_nombre_cache = None
+                            proveedores_por_id_cache = None
+                            self.actualizar_variables_globales_de_uso(2, lambda: (
+                                self.populate_combobox_with_proveedores(self.ui.frame_7.findChild(QComboBox, "comboBox_7")),
+                                self.populate_table_with_proveedores(),
+                                self.populate_combobox_proveedores(),
+                                self.proveedores()
+                            ))
+
                         if borrar_categorias:
                             global categorias_cache, categorias_por_nombre_cache, categorias_por_id_cache
                             categorias_cache = None
@@ -2475,8 +2494,10 @@ class DatosTab:
 
                         QMessageBox.information(self.ui.centralwidget, "Datos borrados", "Todos los datos seleccionados han sido borrados.")
                     self.clear_thread.finished.connect(on_clear_finished)
-                    self.mov_thread.start()
-                    self.clear_thread.start()
+                    self.start_thread(self.clear_thread)
+                    self.mov_thread = CargarMovimientosThread(usuario_activo)
+                    self.start_thread(self.mov_thread)
+                    
                 else:
                     self.clear_checks()
             else:
@@ -2511,13 +2532,21 @@ class DatosTab:
 
 
     def show_confirmation_dialog(self):
-        
         dialog = QMessageBox()
         dialog.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
         dialog.setWindowTitle("Confirmación")
         dialog.setText("¿Está seguro de que desea borrar los datos seleccionados?")
         dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
         dialog.setDefaultButton(QMessageBox.No)
+
+        # Cambiar el texto de los botones a español
+        yes_button = dialog.button(QMessageBox.Yes)
+        no_button = dialog.button(QMessageBox.No)
+        if yes_button:
+            yes_button.setText("Sí")
+        if no_button:
+            no_button.setText("No")
+
         return dialog.exec() == QMessageBox.Yes
 
     def clear_checks(self):
@@ -2577,7 +2606,7 @@ class DatosTab:
             push_button_31.clicked.connect(self.validar_agregar_usuario)
 
         if push_button_32:
-            push_button_39.setFocusPolicy(Qt.NoFocus)
+            push_button_32.setFocusPolicy(Qt.NoFocus)
             push_button_32.clicked.connect(self.clear_inputs_agregar_usuario)
 
 
@@ -2640,7 +2669,7 @@ class DatosTab:
                             label_96 = self.ui.frame_29.findChild(QLabel, "label_96")
 
                             self.movimiento_thread = CargarMovimientoAgregarUsuarioThread(value_line_edit_23, usuario_activo)
-                            self.movimiento_thread.start()
+                            self.start_thread(self.movimiento_thread)
                             self.clear_inputs_agregar_usuario()
                             combobox_16 = self.ui.frame_45.findChild(QComboBox, "comboBox_16")
                             self.populate_combobox_with_names(combobox_16)
@@ -2677,7 +2706,7 @@ class DatosTab:
                         else:
                            print("no se pudo cargar el usuario")
                     self.registro_thread.resultado.connect(on_registro_finalizado)
-                    self.registro_thread.start()
+                    self.start_thread(self.registro_thread)
                 else:
                     label_90.setText("Complete correctamente")
                     label_96.setText("el email")
@@ -2710,6 +2739,7 @@ class DatosTab:
             line_edit_23.setFocus()
 
     def setear_lineedit_avisual_agregar(self):
+        
         line_edit_24 = self.ui.frame_29.findChild(QLineEdit, "lineEdit_24")
         if line_edit_24:
             if line_edit_24.echoMode() == QLineEdit.Password:

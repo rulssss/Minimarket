@@ -497,7 +497,7 @@ def api_agregar_registro_usuario():
     usuario = data.get('usuario')
     password = data.get('password')
     email = data.get('email')
-    if not rol or not usuario or not password or not email:
+    if not rol or not usuario or not password:
         return jsonify({"error": "Faltan datos"}), 400
     try:
         exito = agregar_a_registro_usuario(rol, usuario, password, email)
