@@ -4842,7 +4842,9 @@ class BuscarDatosTab:
                         widget_2.setLayout(layout)
                     layout.addWidget(canvas)
                 else:
-                    for i, (id_metodo, nombre_metodo) in enumerate(metodos_pago):
+                    for i, metodo in enumerate(metodos_pago):
+                        id_metodo = metodo[0]
+                        nombre_metodo = metodo[1]
                         thread = TraerDatosPorMetodoYDiaSemanaThread(ano_actual, semana_actual, id_metodo, dias_semana)
                         def make_callback(idx, nombre_metodo):
                             return lambda datos: (
@@ -4870,7 +4872,9 @@ class BuscarDatosTab:
                     ax = fig.add_subplot(111)
                     x = range(len(dias_semana))
                     ancho_barra = 0.8 / len(metodos_pago)
-                    for i, (id_metodo, nombre_metodo) in enumerate(metodos_pago):
+                    for i, metodo in enumerate(metodos_pago):
+                        id_metodo = metodo[0]
+                        nombre_metodo = metodo[1]
                         datos = datos_por_metodo.get(nombre_metodo, [0]*len(dias_semana))
                         posiciones = [pos + i * ancho_barra for pos in x]
                         ax.bar(posiciones, datos, width=ancho_barra, label=nombre_metodo, color=colores[i % len(colores)], align="center")

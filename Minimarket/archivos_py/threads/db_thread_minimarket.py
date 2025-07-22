@@ -1903,12 +1903,12 @@ class TraerVentasSemanaActualThread(QThread):
             payload = {
                 "anio": self.anio,
                 "semana": self.semana,
-                "dias_semana": self.dias_semana
+                "dias": self.dias_semana
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
-                ventas = data.get("ventas", [])
+                ventas = data.get("ventas_por_dia", [])
                 self.resultado.emit(ventas)
             else:
                 print(f"Error al traer ventas de la semana actual: {response.text}")
@@ -1931,12 +1931,12 @@ class TraerGananciasSemanaActualThread(QThread):
             payload = {
                 "anio": self.anio,
                 "semana": self.semana,
-                "dias_semana": self.dias_semana
+                "dias": self.dias_semana
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
-                ganancias = data.get("ganancias", [])
+                ganancias = data.get("ganancias_por_dia", [])
                 self.resultado.emit(ganancias)
             else:
                 print(f"Error al traer ganancias de la semana actual: {response.text}")
@@ -1960,13 +1960,13 @@ class TraerDatosPorMetodoYDiaSemanaThread(QThread):
             payload = {
                 "anio": self.anio,
                 "semana": self.semana,
-                "id_metodo": self.id_metodo,
-                "dias_semana": self.dias_semana
+                "metodo": self.id_metodo,
+                "dias": self.dias_semana
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
-                datos = data.get("datos", [])
+                datos = data.get("ventas_por_dia_metodo", [])
                 self.resultado.emit(datos)
             else:
                 print(f"Error al traer datos por método y día de semana: {response.text}")
