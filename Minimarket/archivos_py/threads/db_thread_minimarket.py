@@ -1,6 +1,6 @@
 from PySide6.QtCore import QThread, Signal
 import requests
-
+from datetime import date, datetime
 # ventana datos 
 API_URL = "https://web-production-aa989.up.railway.app"
 
@@ -1989,11 +1989,14 @@ class TraerVentasTotalesPeriodoThread(QThread):
         import requests
         try:
             url = f"{API_URL}/api/traer_ventas_totales_periodo"
-            payload = {"periodo1": self.periodo1, "periodo2": self.periodo2}
+            payload = {
+                "periodo1": self.periodo1.isoformat() if isinstance(self.periodo1, (date, datetime)) else self.periodo1,
+                "periodo2": self.periodo2.isoformat() if isinstance(self.periodo2, (date, datetime)) else self.periodo2
+            }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
-                total = data.get("total", 0.0)
+                total = data.get("total_ventas_periodo", 0.0)
                 self.resultado.emit(total)
             else:
                 print(f"Error al traer ventas totales del periodo: {response.text}")
@@ -2012,11 +2015,14 @@ class TraerNumeroDeVentasPeriodoThread(QThread):
         import requests
         try:
             url = f"{API_URL}/api/traer_numero_de_ventas_periodo"
-            payload = {"periodo1": self.periodo1, "periodo2": self.periodo2}
+            payload = {
+                "periodo1": self.periodo1.isoformat() if isinstance(self.periodo1, (date, datetime)) else self.periodo1,
+                "periodo2": self.periodo2.isoformat() if isinstance(self.periodo2, (date, datetime)) else self.periodo2
+            }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
-                total = data.get("total", 0)
+                total = data.get("numero_ventas_periodo", 0)
                 self.resultado.emit(total)
             else:
                 print(f"Error al traer número de ventas del periodo: {response.text}")
@@ -2035,7 +2041,10 @@ class TraerVentaPromedioPeriodoThread(QThread):
         import requests
         try:
             url = f"{API_URL}/api/traer_venta_promedio_periodo"
-            payload = {"periodo1": self.periodo1, "periodo2": self.periodo2}
+            payload = {
+                "periodo1": self.periodo1.isoformat() if isinstance(self.periodo1, (date, datetime)) else self.periodo1,
+                "periodo2": self.periodo2.isoformat() if isinstance(self.periodo2, (date, datetime)) else self.periodo2
+            }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -2055,14 +2064,17 @@ class TraerGananciasTotalesPeriodoThread(QThread):
         self.periodo1 = periodo1
         self.periodo2 = periodo2
     def run(self):
-        import requests
+        import requests 
         try:
             url = f"{API_URL}/api/traer_ganancias_totales_periodo"
-            payload = {"periodo1": self.periodo1, "periodo2": self.periodo2}
+            payload = {
+                "periodo1": self.periodo1.isoformat() if isinstance(self.periodo1, (date, datetime)) else self.periodo1,
+                "periodo2": self.periodo2.isoformat() if isinstance(self.periodo2, (date, datetime)) else self.periodo2
+            }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
-                total = data.get("total", 0.0)
+                total = data.get("total_ganancias_periodo", 0.0)
                 self.resultado.emit(total)
             else:
                 print(f"Error al traer ganancias totales del periodo: {response.text}")
@@ -2081,7 +2093,10 @@ class TraerVentasPeriodoThread(QThread):
         import requests
         try:
             url = f"{API_URL}/api/traer_ventas_periodo"
-            payload = {"periodo1": self.periodo1, "periodo2": self.periodo2}
+            payload = {
+                "periodo1": self.periodo1.isoformat() if isinstance(self.periodo1, (date, datetime)) else self.periodo1,
+                "periodo2": self.periodo2.isoformat() if isinstance(self.periodo2, (date, datetime)) else self.periodo2
+            }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -2104,7 +2119,10 @@ class TraerGananciasPeriodoThread(QThread):
         import requests
         try:
             url = f"{API_URL}/api/traer_ganancias_periodo"
-            payload = {"periodo1": self.periodo1, "periodo2": self.periodo2}
+            payload = {
+                "periodo1": self.periodo1.isoformat() if isinstance(self.periodo1, (date, datetime)) else self.periodo1,
+                "periodo2": self.periodo2.isoformat() if isinstance(self.periodo2, (date, datetime)) else self.periodo2
+            }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
