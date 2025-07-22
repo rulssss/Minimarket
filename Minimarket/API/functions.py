@@ -2951,6 +2951,7 @@ def borrar_mp_db(combobox_value):
     except Exception as e:
         print(f"Error al borrar método de pago en Supabase: {e}")
         return False
+    
 
 def actualizar_cantidad_productos(producto_modificado, m, s):
     global id_usuario_perfil

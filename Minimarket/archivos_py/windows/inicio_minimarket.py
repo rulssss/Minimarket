@@ -50,6 +50,16 @@ class DatosTab:
         #crear arreglo con threads abiertos
         self.threads = []
 
+        self.mp_verificados = False
+
+        if not self.mp_verificados:
+            self.verificar_mp_thread = VerificarYAgregarMPThread()
+            def on_mp_verificado():
+                print("Métodos de pago verificados/agregados")
+                self.mp_verificados = True
+            self.verificar_mp_thread.finished.connect(on_mp_verificado)
+            self.start_thread(self.verificar_mp_thread)
+
         # se crean variables globales de uso para actualizar datos
         self.actualizar_variables_globales_de_uso(0, self.inicializar_ui_con_datos) 
 
@@ -176,7 +186,7 @@ class DatosTab:
         global categorias_cache, proveedores_cache, productos_cache
         global productos_por_id_cache, productos_por_nombre_cache
         global proveedores_por_nombre_cache, proveedores_por_telefono_cache
-        global categorias_por_nombre_cache, usuarios_por_nombre_cache
+        global categorias_por_nombre_cache, usuarios_por_nombre_cache, metodos_pago_por_id_cache, metodos_pago_cache
 
             # Si ya hay cache, úsalo y llama al callback
         if r == 1 and categorias_cache is not None:
@@ -202,12 +212,25 @@ class DatosTab:
 
 
         if r == 0:
-            self._datos_cargados = {"categorias": False, "proveedores": False, "productos": False}
+            self._datos_cargados = {"categorias": False, "proveedores": False, "productos": False, "usuarios": False, "metodos_pago": False}
 
             def check_all_loaded():
                 if all(self._datos_cargados.values()):
                     if callback:
                         callback()
+
+            # obetener todos los metodos de pago al iniciar
+            self.metodos_pago_thread = TraerMetodosPagoYSuIdThread()
+            def on_metodos_obtenidos(metodos):
+                global metodos_pago_cache, metodos_pago_por_id_cache
+                print(f"Metodos obtenidos: {metodos}")
+                metodos_pago_cache = metodos
+                metodos_pago_por_id_cache = {str(m[0]): m[1] for m in metodos}
+                self._datos_cargados["metodos_pago"] = True
+                check_all_loaded()
+
+            self.metodos_pago_thread.resultado.connect(on_metodos_obtenidos)
+            self.start_thread(self.metodos_pago_thread)
            
             # Obtener todas las categorías y asignarlas a la variable global 'categorias'
             self.categorias_thread = CategoriasThread()
@@ -2464,8 +2487,8 @@ class DatosTab:
                             return
                         self._clear_done = True  # marcar como hecho
 
-                        
                         if borrar_usuarios:
+                            QMessageBox.information(self.ui.centralwidget, "Datos borrados", "Usuarios borrados,  el programa se cerrará.")
                             sys.exit()
                         if borrar_proveedores:
                             global proveedores_cache, proveedores_por_nombre_cache, proveedores_por_id_cache
@@ -3487,7 +3510,7 @@ class BuscarDatosTab:
     def obtener_datos_compras(self, id_metodo_o_usuario, fecha, callback):
         self.compras_thread = TraerDatosComprasMetodoUsuarioThread(id_metodo_o_usuario, fecha)
         self.compras_thread.resultado.connect(callback)
-        self.compras_thread.start()
+        self.start_thread(self.compras_thread)
     
     def obtener_datos_arqueo_ventas_fecha(self, fecha, callback):
         self.arqueo_ventas_thread = TraerDatosArqueoVentasFechaThread(fecha)
@@ -3712,11 +3735,8 @@ class BuscarDatosTab:
         combobox_13.clear()
 
         if combobox_12.currentText() == "Metodo de Pago":
-            def on_metodos_obtenidos(metodos):
-                combobox_13.addItems([metodo[0] for metodo in metodos])
-            self.metodos_pago_thread = TraerMetodosDePagoThread()
-            self.metodos_pago_thread.resultado.connect(on_metodos_obtenidos)
-            self.metodos_pago_thread.start()
+            global metodos_pago_cache, metodos_pago_por_id_cache
+            combobox_13.addItems(sorted(metodos_pago_por_id_cache.values()))
 
         elif combobox_12.currentText() == "Usuario":
             # Usar el cache global de usuarios
@@ -5136,18 +5156,8 @@ class AdministracionTab:
         #crear arreglo con threads abiertos
         self.threads = []
 
-        self.mp_verificados = False
-
         # Bandera para controlar que solo se abra un facturero a la vez
         self.facturero_activo = None  # None, "ventas" o "compras"
-
-        if not self.mp_verificados:
-            self.verificar_mp_thread = VerificarYAgregarMPThread()
-            def on_mp_verificado():
-                print("Métodos de pago verificados/agregados")
-                self.mp_verificados = True
-            self.verificar_mp_thread.finished.connect(on_mp_verificado)
-            self.start_thread(self.verificar_mp_thread)
 
     def start_thread(self, thread):
         self.threads.append(thread)

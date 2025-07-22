@@ -1191,6 +1191,25 @@ class TraerDatosArqueoComprasFechaThread(QThread):
             print(f"Error en TraerDatosArqueoComprasFechaThread: {e}")
             self.resultado.emit([])
 
+class TraerMetodosDePago_y_sus_idsThread(QThread):
+    resultado = Signal(list)
+    def run(self):
+        
+        try:
+            url = f"{API_URL}/api/traer_metodos_de_pago_y_sus_ids"
+            response = requests.get(url)
+            if response.status_code == 200:
+                data = response.json()
+                metodos = data.get("metodos_pago", [])
+                self.resultado.emit(metodos)
+            else:
+                print(f"Error al obtener métodos de pago: {response.text}")
+                self.resultado.emit([])
+        except Exception as e:
+            print(f"Error en TraerMetodosDePagoThread: {e}")
+            self.resultado.emit([])
+
+
 class TraerMetodosDePagoThread(QThread):
     resultado = Signal(list)
     def run(self):
@@ -1717,7 +1736,7 @@ class TraerMetodosPagoYSuIdThread(QThread):
             response = requests.get(url)
             if response.status_code == 200:
                 data = response.json()
-                metodos = data.get("metodos", [])
+                metodos = data.get("metodos_pago", [])
                 self.resultado.emit(metodos)
             else:
                 print(f"Error al traer métodos de pago y su id: {response.text}")
@@ -2126,6 +2145,8 @@ class TraerDatosPorMetodoYDiaPeriodoThread(QThread):
         except Exception as e:
             print(f"Error en TraerDatosPorMetodoYDiaPeriodoThread: {e}")
             self.resultado.emit([])
+
+
 
 ### facturero ventas
 

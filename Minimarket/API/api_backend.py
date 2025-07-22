@@ -1198,11 +1198,7 @@ def api_verificar_existencia_de_mp():
 
 @app.route('/api/agregar_mp_default', methods=['POST'])
 def api_agregar_mp_default():
-    data = request.json
-    uid = data.get('uid')
-    if not uid:
-        return jsonify({"error": "Falta UID"}), 400
-    
+
     agregar_mp_default()
     return jsonify({"resultado": "Métodos de pago por defecto agregados"})
 
