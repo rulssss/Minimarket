@@ -21,6 +21,7 @@ categorias_cache = None
 proveedores_cache = None
 productos_cache = None
 usuarios_cache = None
+metodos_pago_cache = None
 
 
 productos_cache_temporal = None
@@ -30,7 +31,6 @@ proveedores_por_nombre_cache = None
 proveedores_por_telefono_cache = None
 categorias_por_nombre_cache = None
 usuarios_por_nombre_cache = None
-metodos_pago_cache = None
 metodos_pago_por_id_cache = None
 
 
@@ -181,7 +181,7 @@ class DatosTab:
             
             
     def actualizar_variables_globales_de_uso(self, r, callback=None):
-        global categorias , proveedores, productos, usuarios
+        global categorias , proveedores, productos, usuarios, metodos_pago
      
         global categorias_cache, proveedores_cache, productos_cache
         global productos_por_id_cache, productos_por_nombre_cache
@@ -210,6 +210,12 @@ class DatosTab:
                 callback()
             return
 
+        if r == 5 and metodos_pago_cache is not None:
+            metodos_pago = metodos_pago_cache
+            if callback:
+                callback()  
+            return
+
 
         if r == 0:
             self._datos_cargados = {"categorias": False, "proveedores": False, "productos": False, "usuarios": False, "metodos_pago": False}
@@ -223,7 +229,7 @@ class DatosTab:
             self.metodos_pago_thread = TraerMetodosPagoYSuIdThread()
             def on_metodos_obtenidos(metodos):
                 global metodos_pago_cache, metodos_pago_por_id_cache
-                print(f"Metodos obtenidos: {metodos}")
+                
                 metodos_pago_cache = metodos
                 metodos_pago_por_id_cache = {str(m[0]): m[1] for m in metodos}
                 self._datos_cargados["metodos_pago"] = True
@@ -337,6 +343,19 @@ class DatosTab:
                 self.usuarios_thread.resultado.connect(on_usuarios_obtenidos)
                 self.start_thread(self.usuarios_thread)
 
+            elif r == 5:
+                # Obtener todos los métodos de pago y asignarlos a la variable global 'metodos_pago'
+                self.metodos_pago_thread = TraerTodosLosMetodosPagoThread()
+                def on_metodos_pago_obtenidos(metodos_obtenidos):
+                    global metodos_pago, metodos_pago_cache, metodos_pago_por_id_cache
+                    metodos_pago = metodos_obtenidos
+                    metodos_pago_cache = metodos_obtenidos
+                    metodos_pago_por_id_cache = {str(m[0]): m for m in metodos_pago}
+
+                    if callback:
+                        callback()
+                self.metodos_pago_thread.resultado.connect(on_metodos_pago_obtenidos)
+                self.start_thread(self.metodos_pago_thread)
 
         #################
         #################
