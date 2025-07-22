@@ -1695,7 +1695,7 @@ class TraerVentasAnoActualThread(QThread):
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
-                ventas = data.get("ventas", [])
+                ventas = data.get("ventas_por_mes", [])
                 self.resultado.emit(ventas)
             else:
                 print(f"Error al traer ventas del año actual: {response.text}")
@@ -1718,7 +1718,7 @@ class TraerGananciasAnoActualThread(QThread):
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
-                ganancias = data.get("ganancias", [])
+                ganancias = data.get("ganancias_por_mes", [])
                 self.resultado.emit(ganancias)
             else:
                 print(f"Error al traer ganancias del año actual: {response.text}")
@@ -1758,13 +1758,13 @@ class TraerDatosPorMetodoYMesThread(QThread):
             url = f"{API_URL}/api/traer_datos_por_metodo_y_mes"
             payload = {
                 "anio": self.anio,
-                "id_metodo": self.id_metodo,
+                "metodo": self.id_metodo,
                 "meses": self.meses
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
-                datos = data.get("datos", [])
+                datos = data.get("ventas_por_mes_metodo", [])
                 self.resultado.emit(datos)
             else:
                 print(f"Error al traer datos por método y mes: {response.text}")

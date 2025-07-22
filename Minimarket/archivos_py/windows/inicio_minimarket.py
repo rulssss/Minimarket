@@ -4310,7 +4310,9 @@ class BuscarDatosTab:
                     layout.addWidget(canvas)
                 else:
                     # Lanzar un hilo por cada método de pago
-                    for i, (id_metodo, nombre_metodo) in enumerate(metodos_pago):
+                    for i, metodo in enumerate(metodos_pago):
+                        id_metodo = metodo[0]
+                        nombre_metodo = metodo[1]
                         thread = TraerDatosPorMetodoYMesThread(ano_actual, id_metodo, meses)
                         def make_callback(idx, nombre_metodo):
                             return lambda datos: (
@@ -4338,7 +4340,9 @@ class BuscarDatosTab:
                     ax = fig.add_subplot(111)
                     x = range(len(meses))
                     ancho_barra = 0.8 / len(metodos_pago)
-                    for i, (id_metodo, nombre_metodo) in enumerate(metodos_pago):
+                    for i, metodo in enumerate(metodos_pago):
+                        id_metodo = metodo[0]
+                        nombre_metodo = metodo[1]
                         datos = datos_por_metodo.get(nombre_metodo, [0]*len(meses))
                         posiciones = [pos + i * ancho_barra for pos in x]
                         ax.bar(posiciones, datos, width=ancho_barra, label=nombre_metodo, color=colores[i % len(colores)], align="center")
@@ -4486,7 +4490,9 @@ class BuscarDatosTab:
                     layout.addWidget(canvas)
                 else:
                     # Lanzar un hilo por cada método de pago
-                    for i, (id_metodo, nombre_metodo) in enumerate(metodos_pago):
+                    for i, metodo in enumerate(metodos_pago):
+                        id_metodo = metodo[0]
+                        nombre_metodo = metodo[1]
                         thread = TraerDatosPorMetodoYMesThread(ano_actual, id_metodo, [mes_actual])
                         def make_callback(idx, nombre_metodo):
                             return lambda datos: (
@@ -4514,7 +4520,9 @@ class BuscarDatosTab:
                     ax = fig.add_subplot(111)
                     x = [mes_actual]
                     ancho_barra = 0.8 / len(metodos_pago)
-                    for i, (id_metodo, nombre_metodo) in enumerate(metodos_pago):
+                    for i, metodo in enumerate(metodos_pago):
+                        id_metodo = metodo[0]
+                        nombre_metodo = metodo[1]
                         datos = datos_por_metodo.get(nombre_metodo, [0])
                         posiciones = [pos + i * ancho_barra for pos in x]
                         ax.bar(posiciones, datos, width=ancho_barra, label=nombre_metodo, color=colores[i % len(colores)], align="center")
@@ -4622,7 +4630,9 @@ class BuscarDatosTab:
                     layout.addWidget(canvas)
                 else:
                     # Lanzar un hilo por cada método de pago
-                    for i, (id_metodo, nombre_metodo) in enumerate(metodos_pago):
+                    for i, metodo in enumerate(metodos_pago):
+                        id_metodo = metodo[0]
+                        nombre_metodo = metodo[1]
                         thread = TraerDatosPorMetodoYMesThread(ano_actual, id_metodo, [mes_anterior])
                         def make_callback(idx, nombre_metodo):
                             return lambda datos: (
@@ -4650,7 +4660,9 @@ class BuscarDatosTab:
                     ax = fig.add_subplot(111)
                     x = [mes_anterior]
                     ancho_barra = 0.8 / len(metodos_pago)
-                    for i, (id_metodo, nombre_metodo) in enumerate(metodos_pago):
+                    for i, metodo in enumerate(metodos_pago):
+                        id_metodo = metodo[0]
+                        nombre_metodo = metodo[1]
                         datos = datos_por_metodo.get(nombre_metodo, [0])
                         posiciones = [pos + i * ancho_barra for pos in x]
                         ax.bar(posiciones, datos, width=ancho_barra, label=nombre_metodo, color=colores[i % len(colores)], align="center")
@@ -5115,7 +5127,9 @@ class BuscarDatosTab:
 
         def check_and_draw():
             if len(datos_por_metodo) == len(metodos_pago):
-                for i, (id_metodo, nombre_metodo) in enumerate(metodos_pago):
+                for i, metodo in enumerate(metodos_pago):
+                    id_metodo = metodo[0]
+                    nombre_metodo = metodo[1]
                     datos = datos_por_metodo.get(nombre_metodo, [0]*len(x))
                     posiciones = [pos + i * ancho_barra for pos in x]
                     ax.bar(posiciones, datos, width=ancho_barra, label=nombre_metodo, color=colores[i % len(colores)], align="center")
@@ -5131,7 +5145,9 @@ class BuscarDatosTab:
                     widget.setLayout(layout)
                 layout.addWidget(canvas)
 
-        for i, (id_metodo, nombre_metodo) in enumerate(metodos_pago):
+        for i, metodo in enumerate(metodos_pago):
+            id_metodo = metodo[0]
+            nombre_metodo = metodo[1]
             thread = TraerDatosPorMetodoYDiaPeriodoThread(periodo1, periodo2, id_metodo)
             threads.append(thread)
             def make_callback(nombre_metodo):
