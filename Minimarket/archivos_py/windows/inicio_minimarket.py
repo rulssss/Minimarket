@@ -7647,6 +7647,9 @@ class MainWindow(QMainWindow):
             QHeaderView::section {
                 background-color: rgb(226, 245, 255);
                 color: black;
+                font-family: 'Segoe UI';
+                font-size: 16pt;
+                font-weight: bold;
             }
             """)
 
@@ -7676,6 +7679,9 @@ class MainWindow(QMainWindow):
             QHeaderView::section {
                 background-color: rgb(226, 245, 255);
                 color: black;
+                font-family: 'Segoe UI';
+                font-size: 16pt;
+                font-weight: bold;
             }
             """)
 
@@ -7686,6 +7692,9 @@ class MainWindow(QMainWindow):
             QHeaderView::section {
                 background-color: rgb(226, 245, 255);
                 color: black;
+                font-family: 'Segoe UI';
+                font-size: 16pt;
+                font-weight: bold;
             }
             """)
         
@@ -7697,6 +7706,9 @@ class MainWindow(QMainWindow):
             QHeaderView::section {
                 background-color: rgb(198, 255, 202);
                 color: black;
+                font-family: 'Segoe UI';
+                font-size: 16pt;
+                font-weight: bold;
             }
             """)
 
@@ -7707,6 +7719,10 @@ class MainWindow(QMainWindow):
             QHeaderView::section {
                 background-color: rgb(255, 230, 107);
                 color: black;
+                font-family: 'Segoe UI';
+                font-size: 16pt;
+                font-weight: bold;
+                                       
             }
             """)
 
