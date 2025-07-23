@@ -3112,13 +3112,12 @@ class BuscarDatosTab:
     def __init__(self, ui, datos_tab):
         self.ui = ui
         self.datos_tab = datos_tab
-
         #crear arreglo con threads abiertos
         self.threads = []
 
         self.check_open = False
 
-        # se crean variables globales de uso para actualizar datos
+        # se crean variables globales de uso para actualizar datos, 
         self.datos_tab.actualizar_variables_globales_de_uso(0, self.inicializar_ui_con_datos)
 
     def inicializar_ui_con_datos(self):
@@ -3170,6 +3169,9 @@ class BuscarDatosTab:
             table_widget.verticalHeader().sectionDoubleClicked.connect(self.copy_row_to_clipboard)
             corner_button.clicked.connect(self.copy_entire_table_to_clipboard)
 
+        # Bandera para evitar ejecución en la primera inicialización
+        self._combobox_17_initialized = getattr(self, "_combobox_17_initialized", False)
+
         if combobox_17:
             if combobox_17.count() == 0:
                 combobox_17.addItem("Fecha")
@@ -3179,8 +3181,10 @@ class BuscarDatosTab:
                 combobox_17.setCurrentIndex(0)  # Reiniciar a "Fecha" si ya tiene elementos
 
             # Conectar el evento de cambio de texto al método
-            combobox_17.currentTextChanged.connect(self.setear_combobox_18)
-
+            if not self._combobox_17_initialized:
+                combobox_17.currentTextChanged.connect(self.setear_combobox_18)
+                self._combobox_17_initialized = True  # Marcar como inicializado
+                
         # Inicializar la tabla con todos los movimientos
         self.setear_combobox_18()
 
@@ -3234,9 +3238,10 @@ class BuscarDatosTab:
 
         if filtro == "Usuario" and combobox_18:
             usuario_seleccionado = combobox_18.currentText()
-            self.mov_thread = MovimientosPorUsuarioThread(usuario_seleccionado)
-            self.mov_thread.resultado.connect(self._on_movimientos_obtenidos)
-            self.start_thread(self.mov_thread)
+            if usuario_seleccionado:
+                self.mov_thread = MovimientosPorUsuarioThread(usuario_seleccionado)
+                self.mov_thread.resultado.connect(self._on_movimientos_obtenidos)
+                self.start_thread(self.mov_thread)
 
         elif filtro == "Fecha" and date_edit:
             fecha_qdate = date_edit.date()
@@ -3246,10 +3251,13 @@ class BuscarDatosTab:
             self.start_thread(self.mov_thread)
 
         elif filtro == "Acción" and combobox_18:
+            
             accion_seleccionada = combobox_18.currentText()
-            self.mov_thread = MovimientosPorAccionThread(accion_seleccionada)
-            self.mov_thread.resultado.connect(self._on_movimientos_obtenidos)
-            self.start_thread(self.mov_thread)
+
+            if accion_seleccionada:
+                self.mov_thread = MovimientosPorAccionThread(accion_seleccionada)
+                self.mov_thread.resultado.connect(self._on_movimientos_obtenidos)
+                self.start_thread(self.mov_thread)
 
     def _on_movimientos_obtenidos(self, movimientos_obtenidos):
         global movimientos
