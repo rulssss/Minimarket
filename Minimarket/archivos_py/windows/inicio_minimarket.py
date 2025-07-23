@@ -3809,17 +3809,21 @@ class BuscarDatosTab:
         from reportlab.pdfgen import canvas
         import webbrowser
 
-    
+        combobox_12 = self.ui.frame_31.findChild(QComboBox, "comboBox_12")
+        combobox_13 = self.ui.frame_31.findChild(QComboBox, "comboBox_13")
+        filtro_tipo = combobox_12.currentText() if combobox_12 else ""
+        filtro_valor = combobox_13.currentText() if combobox_13 else ""
+
         combobox_10_dia = self.ui.frame_32.findChild(QComboBox, "comboBox_10")
         combobox_9_mes = self.ui.frame_32.findChild(QComboBox, "comboBox_9")
         combobox_8_anio = self.ui.frame_32.findChild(QComboBox, "comboBox_8")
-    
+
         dia = combobox_10_dia.currentText()
         mes = combobox_9_mes.currentIndex()
         if mes == 0:
             mes = None
         anio = combobox_8_anio.currentText()
-    
+
         resultados = {}
         def check_and_generate_pdf():
             if (dia and mes and anio and len(resultados) == 6) or \
@@ -3831,20 +3835,27 @@ class BuscarDatosTab:
                 numero_de_compras = resultados['numero_de_compras']
                 ventas_por_metodo = resultados['ventas_por_metodo']
                 numero_de_ventas = resultados['numero_de_ventas']
-    
+        
+                # --- NUEVO: Agregar info de filtro ---
+                filtro_texto = ""
+                if filtro_tipo == "Metodo de Pago" and filtro_valor:
+                    filtro_texto = f"Filtrado por Método de Pago: {filtro_valor}"
+                elif filtro_tipo == "Usuario" and filtro_valor:
+                    filtro_texto = f"Filtrado por Usuario: {filtro_valor}"
+        
                 if dia and mes and anio:
                     titulo_corte = f"Corte del Día {dia}/{int(mes):02d}/{anio}"
                 elif mes and anio:
                     titulo_corte = f"Corte del Mes {int(mes):02d}/{anio}"
                 else:
                     titulo_corte = f"Corte del Año {anio}"
-    
+        
                 fecha_actual = datetime.now().strftime("%d/%m/%Y")
                 hora_actual = datetime.now().strftime("%I:%M %p")
-    
+        
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_pdf:
                     ruta_pdf = temp_pdf.name
-    
+        
                 c = canvas.Canvas(ruta_pdf, pagesize=letter)
                 c.setFont("Helvetica", 12)
                 c.setFont("Helvetica-Bold", 16)
@@ -3852,29 +3863,38 @@ class BuscarDatosTab:
                 c.setFont("Helvetica-Bold", 10)
                 c.drawString(50, 730, f"Fecha de corte realizado: {fecha_actual}")
                 c.drawString(50, 715, f"Hora de corte realizado: {hora_actual}")
-    
+        
+                # --- Mostrar filtro si existe, mismo tamaño y justo debajo ---
+                if filtro_texto:
+                    c.setFont("Helvetica-Bold", 10)
+                    c.drawString(50, 700, filtro_texto)
+                    y_base = 685  # Mover todo lo de abajo más abajo
+                else:
+                    y_base = 700  # Si no hay filtro, usar el mismo espacio
+        
+                # Mueve todo lo de abajo
                 c.setFont("Helvetica-Bold", 14)
-                c.drawString(50, 690, f"Ventas Totales: ${ventas_totales:.2f}")
-                c.drawString(300, 690, f"Ganancias: ${ganancias_totales:.2f}")
-    
+                c.drawString(50, y_base, f"Ventas Totales: ${ventas_totales:.2f}")
+                c.drawString(300, y_base, f"Ganancias: ${ganancias_totales:.2f}")
+        
                 c.setFont("Helvetica-Bold", 12)
-                c.drawString(50, 660, "Ventas:")
+                c.drawString(50, y_base - 30, "Ventas:")
                 c.setFont("Helvetica", 10)
-                y_pos = 645
+                y_pos = y_base - 45
                 c.drawString(70, y_pos, f"Número de Ventas: {numero_de_ventas}")
                 y_pos -= 15
                 for metodo, total in ventas_por_metodo.items():
                     metodo_pago_nombre = self.traer_metodo_pago(metodo) if hasattr(self, "traer_metodo_pago") else str(metodo)
                     c.drawString(70, y_pos, f"{metodo_pago_nombre}: ${total:.2f}")
                     y_pos -= 15
-    
+        
                 c.setFont("Helvetica-Bold", 12)
                 c.drawString(50, y_pos - 20, "Compras:")
                 c.setFont("Helvetica", 10)
                 y_pos -= 35
                 c.drawString(70, y_pos, f"Total Compras: ${compras_totales:.2f}")
                 c.drawString(70, y_pos - 15, f"Número de Compras: {numero_de_compras}")
-    
+        
                 c.setFont("Helvetica-Oblique", 8)
                 c.drawString(50, 50, "Generado automáticamente por el sistema rls.")
                 c.save()
@@ -3954,7 +3974,8 @@ class BuscarDatosTab:
             self.start_thread(self.ventas_por_metodo_thread)
             self.start_thread(self.numero_de_ventas_thread)
 
-    
+
+        
         else:
             raise ValueError("Debe seleccionar al menos un año para realizar el corte.")  
         
