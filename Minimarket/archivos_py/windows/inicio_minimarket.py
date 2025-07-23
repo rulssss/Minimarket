@@ -188,7 +188,7 @@ class DatosTab:
         global proveedores_por_nombre_cache, proveedores_por_telefono_cache
         global categorias_por_nombre_cache, usuarios_por_nombre_cache, metodos_pago_por_id_cache, metodos_pago_cache
         global anios_obtenidos
-        
+
         self.anios_thread = TraerAnios()
         def on_anios_obtenidos(anios):
             global anios_obtenidos
@@ -3464,6 +3464,7 @@ class BuscarDatosTab:
     
         # Inicializar ComboBox de meses
         if combobox_9_mes:
+            combobox_9_mes.clear()  # Limpiar el combobox antes de agregar elementos
             combobox_9_mes.setStyleSheet("background-color: rgb(226, 245, 255);")
             combobox_9_mes.addItems(["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
                                      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"])
@@ -3473,22 +3474,30 @@ class BuscarDatosTab:
         # Inicializar ComboBox de años
         if combobox_8_anio:
             global anios_obtenidos
+            
             combobox_8_anio.setStyleSheet("background-color: rgb(226, 245, 255);")
             combobox_8_anio.clear()
             combobox_8_anio.addItems([str(anio) for anio in anios_obtenidos])
             combobox_8_anio.setCurrentText(str(anio_actual))
             combobox_8_anio.currentTextChanged.connect(lambda : self.enviar_a_setear_tables())
-            
 
+        if combobox_8_anio != "":
+            if combobox_9_mes and combobox_8_anio and combobox_10_dia:
+                combobox_9_mes.currentIndexChanged.connect(
+                    lambda: self.actualizar_dias_combobox(
+                        combobox_10_dia,
+                        combobox_9_mes.currentIndex() + 1,
+                        int(combobox_8_anio.currentText()) if combobox_8_anio.currentText().isdigit() else 0
+                    )
+                )
+                combobox_8_anio.currentTextChanged.connect(
+                    lambda: self.actualizar_dias_combobox(
+                        combobox_10_dia,
+                        combobox_9_mes.currentIndex() + 1,
+                        int(combobox_8_anio.currentText()) if combobox_8_anio.currentText().isdigit() else 0
+                    )
+                )
 
-        # Conectar el evento de cambio de mes o año para actualizar los días
-        if combobox_9_mes and combobox_8_anio and combobox_10_dia:
-            combobox_9_mes.currentIndexChanged.connect(
-                lambda: self.actualizar_dias_combobox(combobox_10_dia, combobox_9_mes.currentIndex() + 1, int(combobox_8_anio.currentText()))
-            )
-            combobox_8_anio.currentTextChanged.connect(
-                lambda: self.actualizar_dias_combobox(combobox_10_dia, combobox_9_mes.currentIndex() + 1, int(combobox_8_anio.currentText()))
-            )
 
         # Inicializar ComboBox de métodos de pago o usuarios solo si esta vacio
         if combobox_12:
@@ -3807,19 +3816,6 @@ class BuscarDatosTab:
         combobox_10_dia.addItem("")  # Agregar un elemento vacío como primera opción
         combobox_10_dia.addItems([str(dia) for dia in range(1, dias + 1)])
 
-    def actualizar_anios_combobox(self, combobox_8_anio, anio_inicial):
-        # Obtener el año actual desde la hora del sistema
-        anio_actual = datetime.now().year
-
-        # Verificar si el año actual ha cambiado con respecto al año inicial
-        if anio_actual > anio_inicial:
-            # Si el año actual ha aumentado, agregar un nuevo año al combobox
-            if str(anio_actual) not in [combobox_8_anio.itemText(i) for i in range(combobox_8_anio.count())]:
-                combobox_8_anio.addItem(str(anio_actual + 1))
-
-        # Mantener los años iniciales (uno anterior, actual y uno posterior)
-        if combobox_8_anio.count() > 3:  # Asegurarse de que no haya más de 3 años en el combobox
-            combobox_8_anio.removeItem(0)
 
     def hacer_corte(self):
         import tempfile
