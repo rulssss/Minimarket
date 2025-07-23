@@ -2538,3 +2538,21 @@ class MovimientoLoginThread(QThread):
         except Exception as e:
             print(f"Error en MovimientoLoginThread: {e}")
             self.finished.emit(False)
+
+
+class TraerAnios(QThread):
+    resultado = Signal(list)
+    def run(self):
+        import requests
+        try:
+            url = f"{API_URL}/api/traer_anios_con_datos"
+            response = requests.get(url)
+            if response.status_code == 200:
+                data = response.json()
+                anios = data.get("anios", [])
+                self.resultado.emit(anios)
+            else:
+                self.resultado.emit([])
+        except Exception as e:
+            print(f"Error al traer años con datos: {e}")
+            self.resultado.emit([])

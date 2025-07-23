@@ -1738,7 +1738,11 @@ def api_traer_producto_por_id():
         return jsonify({"producto": producto})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    
+
+@app.route('/api/traer_anios_con_datos', methods=['GET'])
+def api_traer_anios_con_datos():
+    anios = traer_anios()  # Debe devolver una lista de años con datos
+    return jsonify({"anios": anios})
 
     
 

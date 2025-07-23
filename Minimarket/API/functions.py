@@ -3775,3 +3775,27 @@ def cargar_movimiento_inicio(usuario):
         print(f"Error al registrar movimiento de inicio en Supabase: {e}")
         return False
     
+
+def traer_anios():
+    global id_usuario_perfil
+    try:
+        # Selecciona solo la columna fecha_hora de la tabla ventas
+        response = supabase.table("ventas") \
+            .select("fecha_hora") \
+            .eq("u_id", id_usuario_perfil) \
+            .execute()
+        data = response.data
+        if not data:
+            return []
+        # Extrae el año de cada fecha_hora y elimina duplicados
+        anios = set()
+        for row in data:
+            fecha = row["fecha_hora"]
+            # Asume formato ISO: 'YYYY-MM-DD...'
+            anio = fecha[:4]
+            if anio.isdigit():
+                anios.add(int(anio))
+        return sorted(anios)
+    except Exception as e:
+        print(f"Error al traer años desde ventas en Supabase: {e}")
+        return []

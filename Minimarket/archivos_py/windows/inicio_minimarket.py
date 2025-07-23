@@ -3103,6 +3103,19 @@ class BuscarDatosTab:
 
         self.check_open = False
 
+        self.anios_thread = TraerAnios()
+        def on_anios_obtenidos(anios):
+            global anios_obtenidos
+            anio_actual = datetime.now().year
+            # Asegurarse de que el año actual esté presente
+            if anio_actual not in anios:
+                anios.append(anio_actual)
+            anios = sorted(set(anios))  # Opcional: ordena y elimina duplicados
+            anios_obtenidos = anios
+
+        self.anios_thread.resultado.connect(on_anios_obtenidos)
+        self.start_thread(self.anios_thread)
+
         # se crean variables globales de uso para actualizar datos
         self.datos_tab.actualizar_variables_globales_de_uso(0, self.inicializar_ui_con_datos)
 
@@ -3400,7 +3413,7 @@ class BuscarDatosTab:
 ################
 ################
 
-    # cortes
+    # cortes y arqueo
 
     def boton_arqueo(self):
         push_button_15 = self.ui.tab_3.findChild(QPushButton, "pushButton_15")
@@ -3422,7 +3435,6 @@ class BuscarDatosTab:
             table_widget_7.horizontalHeader().sectionDoubleClicked.connect(self.copy_column_to_clipboard_compras)
             table_widget_7.verticalHeader().sectionDoubleClicked.connect(self.copy_row_to_clipboard_compras)
             corner_button_7.clicked.connect(self.copy_entire_table_to_clipboard_compras)
-
     
 
     def inicializar_comboboxes_y_boton(self):
@@ -3458,13 +3470,13 @@ class BuscarDatosTab:
     
         # Inicializar ComboBox de años
         if combobox_8_anio:
+            global anios_obtenidos
             combobox_8_anio.setStyleSheet("background-color: rgb(226, 245, 255);")
-            combobox_8_anio.addItems([str(anio_actual - 1), str(anio_actual), str(anio_actual + 1)])
+            combobox_8_anio.clear()
+            combobox_8_anio.addItems([str(anio) for anio in anios_obtenidos])
             combobox_8_anio.setCurrentText(str(anio_actual))
             combobox_8_anio.currentTextChanged.connect(lambda : self.enviar_a_setear_tables())
             
-            # Conectar el evento de cambio de año para agregar dinámicamente un año posterior
-            combobox_8_anio.currentTextChanged.connect(lambda: self.actualizar_anios_combobox(combobox_8_anio, anio_actual))
 
 
         # Conectar el evento de cambio de mes o año para actualizar los días
