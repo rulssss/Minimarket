@@ -187,6 +187,21 @@ class DatosTab:
         global productos_por_id_cache, productos_por_nombre_cache
         global proveedores_por_nombre_cache, proveedores_por_telefono_cache
         global categorias_por_nombre_cache, usuarios_por_nombre_cache, metodos_pago_por_id_cache, metodos_pago_cache
+        global anios_obtenidos
+        
+        self.anios_thread = TraerAnios()
+        def on_anios_obtenidos(anios):
+            global anios_obtenidos
+            anio_actual = datetime.now().year
+            # Asegurarse de que el año actual esté presente
+            if anio_actual not in anios:
+                anios.append(anio_actual)
+            anios = sorted(set(anios))  # Opcional: ordena y elimina duplicados
+            anios_obtenidos = anios
+
+        self.anios_thread.resultado.connect(on_anios_obtenidos)
+        self.start_thread(self.anios_thread)
+
 
             # Si ya hay cache, úsalo y llama al callback
         if r == 1 and categorias_cache is not None:
@@ -3102,19 +3117,6 @@ class BuscarDatosTab:
         self.threads = []
 
         self.check_open = False
-
-        self.anios_thread = TraerAnios()
-        def on_anios_obtenidos(anios):
-            global anios_obtenidos
-            anio_actual = datetime.now().year
-            # Asegurarse de que el año actual esté presente
-            if anio_actual not in anios:
-                anios.append(anio_actual)
-            anios = sorted(set(anios))  # Opcional: ordena y elimina duplicados
-            anios_obtenidos = anios
-
-        self.anios_thread.resultado.connect(on_anios_obtenidos)
-        self.start_thread(self.anios_thread)
 
         # se crean variables globales de uso para actualizar datos
         self.datos_tab.actualizar_variables_globales_de_uso(0, self.inicializar_ui_con_datos)
