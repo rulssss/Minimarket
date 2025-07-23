@@ -14,7 +14,7 @@ from datetime import datetime, timedelta
 import copy
 import pytz 
 from archivos_py.db.sesiones import SessionManager
-
+from uuid import uuid4
 
 # ------------ VARIABLES DE CACHE GLOBALES ------------
 categorias_cache = None
@@ -3101,6 +3101,8 @@ class BuscarDatosTab:
         #crear arreglo con threads abiertos
         self.threads = []
 
+        self.check_open = False
+
         # se crean variables globales de uso para actualizar datos
         self.datos_tab.actualizar_variables_globales_de_uso(0, self.inicializar_ui_con_datos)
 
@@ -3490,7 +3492,9 @@ class BuscarDatosTab:
             combobox_13.currentTextChanged.connect(lambda: self.enviar_a_setear_tables())   
 
         if push_button_47:
-            push_button_47.clicked.connect(self.hacer_corte)
+            if not self.check_open:
+                self.check_open = True
+                push_button_47.clicked.connect(self.hacer_corte)
 
           # *** CARGAR DATOS DE HOY AUTOMÁTICAMENTE ***
         # Usar QTimer para asegurar que todos los comboboxes estén configurados
@@ -3809,6 +3813,8 @@ class BuscarDatosTab:
         from reportlab.pdfgen import canvas
         import webbrowser
 
+        self.corte_id = uuid4() # Generar un ID único para el corte actual
+
         combobox_12 = self.ui.frame_31.findChild(QComboBox, "comboBox_12")
         combobox_13 = self.ui.frame_31.findChild(QComboBox, "comboBox_13")
         filtro_tipo = combobox_12.currentText() if combobox_12 else ""
@@ -3825,7 +3831,13 @@ class BuscarDatosTab:
         anio = combobox_8_anio.currentText()
 
         resultados = {}
+        corte_id_actual = self.corte_id  # Captura el id actual
         def check_and_generate_pdf():
+
+            # Solo genera el PDF si el corte es el actual
+            if getattr(self, "corte_id", None) != corte_id_actual:
+                return
+        
             if (dia and mes and anio and len(resultados) == 6) or \
                (mes and anio and not dia and len(resultados) == 6) or \
                (anio and not mes and not dia and len(resultados) == 6):
@@ -3835,27 +3847,27 @@ class BuscarDatosTab:
                 numero_de_compras = resultados['numero_de_compras']
                 ventas_por_metodo = resultados['ventas_por_metodo']
                 numero_de_ventas = resultados['numero_de_ventas']
-        
+
                 # --- NUEVO: Agregar info de filtro ---
                 filtro_texto = ""
                 if filtro_tipo == "Metodo de Pago" and filtro_valor:
                     filtro_texto = f"Filtrado por Método de Pago: {filtro_valor}"
                 elif filtro_tipo == "Usuario" and filtro_valor:
                     filtro_texto = f"Filtrado por Usuario: {filtro_valor}"
-        
+
                 if dia and mes and anio:
                     titulo_corte = f"Corte del Día {dia}/{int(mes):02d}/{anio}"
                 elif mes and anio:
                     titulo_corte = f"Corte del Mes {int(mes):02d}/{anio}"
                 else:
                     titulo_corte = f"Corte del Año {anio}"
-        
+
                 fecha_actual = datetime.now().strftime("%d/%m/%Y")
                 hora_actual = datetime.now().strftime("%I:%M %p")
-        
+
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_pdf:
                     ruta_pdf = temp_pdf.name
-        
+
                 c = canvas.Canvas(ruta_pdf, pagesize=letter)
                 c.setFont("Helvetica", 12)
                 c.setFont("Helvetica-Bold", 16)
@@ -3863,7 +3875,7 @@ class BuscarDatosTab:
                 c.setFont("Helvetica-Bold", 10)
                 c.drawString(50, 730, f"Fecha de corte realizado: {fecha_actual}")
                 c.drawString(50, 715, f"Hora de corte realizado: {hora_actual}")
-        
+
                 # --- Mostrar filtro si existe, mismo tamaño y justo debajo ---
                 if filtro_texto:
                     c.setFont("Helvetica-Bold", 10)
@@ -3871,12 +3883,12 @@ class BuscarDatosTab:
                     y_base = 685  # Mover todo lo de abajo más abajo
                 else:
                     y_base = 700  # Si no hay filtro, usar el mismo espacio
-        
+
                 # Mueve todo lo de abajo
                 c.setFont("Helvetica-Bold", 14)
                 c.drawString(50, y_base, f"Ventas Totales: ${ventas_totales:.2f}")
                 c.drawString(300, y_base, f"Ganancias: ${ganancias_totales:.2f}")
-        
+
                 c.setFont("Helvetica-Bold", 12)
                 c.drawString(50, y_base - 30, "Ventas:")
                 c.setFont("Helvetica", 10)
@@ -3887,14 +3899,14 @@ class BuscarDatosTab:
                     metodo_pago_nombre = self.traer_metodo_pago(metodo) if hasattr(self, "traer_metodo_pago") else str(metodo)
                     c.drawString(70, y_pos, f"{metodo_pago_nombre}: ${total:.2f}")
                     y_pos -= 15
-        
+
                 c.setFont("Helvetica-Bold", 12)
                 c.drawString(50, y_pos - 20, "Compras:")
                 c.setFont("Helvetica", 10)
                 y_pos -= 35
                 c.drawString(70, y_pos, f"Total Compras: ${compras_totales:.2f}")
                 c.drawString(70, y_pos - 15, f"Número de Compras: {numero_de_compras}")
-        
+
                 c.setFont("Helvetica-Oblique", 8)
                 c.drawString(50, 50, "Generado automáticamente por el sistema rls.")
                 c.save()
@@ -3977,7 +3989,7 @@ class BuscarDatosTab:
 
         
         else:
-            raise ValueError("Debe seleccionar al menos un año para realizar el corte.")  
+            print("seleccione una fecha") 
         
 
 
