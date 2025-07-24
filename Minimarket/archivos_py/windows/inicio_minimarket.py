@@ -5316,8 +5316,6 @@ class AdministracionTab:
                 combobox_metodo_pago.clear()
                 combobox_metodo_pago.addItems([metodo for metodo in self.traer_metodos_de_pago()])
                 
-                
-            
              # Configuración del botón "Agregar"
             boton_agregar = self.facturero_ventas_window.findChild(QPushButton, "pushButton_2")
             if boton_agregar:
@@ -5744,7 +5742,7 @@ class AdministracionTab:
         global productos_seleccionados_facturero_ventas, productos_cache_temporal
         
         # volver a productos cache la variable de productos cache temporal(ya que no va a hacerse ningun cambio)
-        productos_cache_temporal = productos_cache
+        productos_cache_temporal = copy.deepcopy(productos_cache)
 
         # Se actualiza la tabla de productos
         self.borrar_lineedit_18()
@@ -5986,6 +5984,14 @@ class AdministracionTab:
         s = True
         global productos_seleccionados_facturero_ventas, total_facturero_ventas, usuario_activo, productos_cache_temporal, productos_cache
 
+        boton_agregar = self.facturero_ventas_window.findChild(QPushButton, "pushButton_2")
+        if boton_agregar:
+            boton_agregar.setEnabled(False)
+
+        push_button = self.facturero_ventas_window.findChild(QPushButton, "pushButton")
+        if push_button:
+            push_button.setEnabled(False)
+
         pushbutton_3 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_3")
         if pushbutton_3:
             pushbutton_3.setEnabled(False)
@@ -6030,6 +6036,14 @@ class AdministracionTab:
                     push_button_4 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_4")
                     if push_button_4:
                         push_button_4.setEnabled(True)
+
+                    boton_agregar = self.facturero_ventas_window.findChild(QPushButton, "pushButton_2")
+                    if boton_agregar:
+                        boton_agregar.setEnabled(True)
+
+                    push_button = self.facturero_ventas_window.findChild(QPushButton, "pushButton")
+                    if push_button:
+                        push_button.setEnabled(True)
                     # Llamar a inicializar_comboboxes_y_boton de la clase buscar datos
                     self.buscar_datos_tab.enviar_a_setear_tables()
 
@@ -6046,6 +6060,12 @@ class AdministracionTab:
                 label_9.setText("No hay productos agregados")
                 label_9.setStyleSheet("color: red; font-weight: bold")
                 QTimer.singleShot(6000, lambda: label_9.setStyleSheet("color: transparent"))
+
+            if push_button_4 and pushbutton_3 and push_button and boton_agregar:
+                push_button_4.setEnabled(True)
+                pushbutton_3.setEnabled(True)
+                push_button.setEnabled(True)
+                boton_agregar.setEnabled(True)
 
         qtablewidget = self.facturero_ventas_window.findChild(QTableWidget, "tableWidget")
         if qtablewidget:
@@ -6785,7 +6805,7 @@ class AdministracionTab:
     def cerrar_facturero_compras(self):
         global productos_seleccionados_facturero_compras, productos_cache_temporal
 
-        productos_cache_temporal = productos_cache  # Actualizar el cache temporal con el cache global
+        productos_cache_temporal = copy.deepcopy(productos_cache)  # Actualizar el cache temporal con el cache global
 
         # Se actualiza la tabla de productos
         self.borrar_lineedit_18()
@@ -6951,6 +6971,15 @@ class AdministracionTab:
         global productos_seleccionados_facturero_compras, total_facturero_compras, usuario_activo, productos_cache_temporal
         
         s = False
+
+        boton_agregar = self.facturero_compras_window.findChild(QPushButton, "pushButton_2")
+        if boton_agregar:
+            boton_agregar.setEnabled(False)
+
+        push_button = self.facturero_compras_window.findChild(QPushButton, "pushButton")
+        if push_button:
+            push_button.setEnabled(False)
+
         pushbutton_3 = self.facturero_compras_window.findChild(QPushButton, "pushButton_3")
         if pushbutton_3:
             pushbutton_3.setEnabled(False)
@@ -7001,6 +7030,14 @@ class AdministracionTab:
                     if push_button_4:
                         push_button_4.setEnabled(True)
 
+                    boton_agregar = self.facturero_compras_window.findChild(QPushButton, "pushButton_2")
+                    if boton_agregar:
+                        boton_agregar.setEnabled(True)
+
+                    push_button = self.facturero_compras_window.findChild(QPushButton, "pushButton")
+                    if push_button:
+                        push_button.setEnabled(True)
+
                     # Llamar a inicializar_comboboxes_y_boton de la clase buscar datos
                     self.buscar_datos_tab.enviar_a_setear_tables()
                    
@@ -7017,6 +7054,12 @@ class AdministracionTab:
                 label_9.setText("No hay productos agregados")
                 label_9.setStyleSheet("color: red; font-weight: bold")
                 QTimer.singleShot(6000, lambda: label_9.setStyleSheet("color: transparent"))
+
+            if pushbutton_3 and push_button_4 and boton_agregar and push_button:
+                pushbutton_3.setEnabled(True)
+                push_button_4.setEnabled(True)
+                boton_agregar.setEnabled(True)
+                push_button.setEnabled(True)
 
         qtablewidget = self.facturero_compras_window.findChild(QTableWidget, "tableWidget")
         if qtablewidget:
