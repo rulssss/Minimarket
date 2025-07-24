@@ -3931,7 +3931,8 @@ class BuscarDatosTab:
                 c.drawString(70, y_pos, f"Número de Ventas: {numero_de_ventas}")
                 y_pos -= 15
                 for metodo, total in ventas_por_metodo.items():
-                    metodo_pago_nombre = self.traer_metodo_pago(metodo) if hasattr(self, "traer_metodo_pago") else str(metodo)
+                    global metodos_pago_por_id_cache
+                    metodo_pago_nombre = metodos_pago_por_id_cache.get(str(metodo), str(metodo))
                     c.drawString(70, y_pos, f"{metodo_pago_nombre}: ${total:.2f}")
                     y_pos -= 15
 
@@ -4021,8 +4022,6 @@ class BuscarDatosTab:
             self.start_thread(self.ventas_por_metodo_thread)
             self.start_thread(self.numero_de_ventas_thread)
 
-
-        
         else:
             print("seleccione una fecha") 
         
