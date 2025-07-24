@@ -5294,6 +5294,9 @@ class AdministracionTab:
             if line_edit_18:
                 line_edit_18.clear()  # Limpiar el QLineEdit al abrir la ventana
 
+             # Inicializar los QLineEdit en blanco y no editables
+            self.initialize_lineedits_ventas()
+
             # Configuración del QComboBox de IDs
             combobox_id = self.facturero_ventas_window.findChild(QComboBox, "comboBox")
             if combobox_id:
@@ -5307,7 +5310,7 @@ class AdministracionTab:
                 combobox_id.lineEdit().textEdited.connect(lambda text: self.filter_combobox_ids(combobox_id, text))
                 combobox_id.currentIndexChanged.connect(self.load_facturero_data_ventas)
                 self.populate_combobox_with_ids(combobox_id)
-                combobox_id.setCurrentText("")  # Setear el combobox en vacío al abrir la ventana
+                
 
             
             # Configuración del QComboBox de método de pago
@@ -5387,9 +5390,6 @@ class AdministracionTab:
             # Desactivar la cruz de cierre de la ventana
             self.facturero_ventas_window.setWindowFlags(self.facturero_ventas_window.windowFlags() & ~Qt.WindowCloseButtonHint)
 
-        
-            # Inicializar los QLineEdit en blanco y no editables
-            self.initialize_lineedits_ventas()
             #visualizar productos del facturero
             self.visualizar_productos_facturero()
             
@@ -6384,6 +6384,9 @@ class AdministracionTab:
             if line_edit_18:
                 line_edit_18.clear()  # Limpiar el QLineEdit al abrir la ventana
 
+            # Inicializar los QLineEdit en blanco y no editables
+            self.initialize_lineedits_compras()
+
             # Configuración del QComboBox de IDs
             combobox_id = self.facturero_compras_window.findChild(QComboBox, "comboBox")
             if combobox_id:
@@ -6398,7 +6401,7 @@ class AdministracionTab:
                 combobox_id.lineEdit().textEdited.connect(lambda text: self.filter_combobox_ids(combobox_id, text))
                 combobox_id.currentIndexChanged.connect(self.load_facturero_data_compras)
                 self.populate_combobox_with_ids(combobox_id)
-                combobox_id.setCurrentText("")  # Setear el combobox en vacío al abrir la ventana
+                
 
             
             # Configuración del QComboBox de método de pago
@@ -6481,9 +6484,8 @@ class AdministracionTab:
             # Desactivar la cruz de cierre de la ventana
             self.facturero_compras_window.setWindowFlags(self.facturero_compras_window.windowFlags() & ~Qt.WindowCloseButtonHint)
 
-        
-            # Inicializar los QLineEdit en blanco y no editables
-            self.initialize_lineedits_compras()
+            # visualizar productos
+            self.visualizar_productos_facturero()
 
         self.facturero_compras_window.show()
 
