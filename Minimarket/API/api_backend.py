@@ -1637,7 +1637,7 @@ def api_cargar_movimiento_borrar_metodo_pago():
     data = request.json
     metodo_pago = data.get('metodo_pago')
     usuario = data.get('usuario')
-    id_metodo = data.get('id_metodo')
+    id_metodo = data.get('id')
     
     if not metodo_pago or not usuario or id_metodo is None:
         return jsonify({"error": "Faltan datos"}), 400
