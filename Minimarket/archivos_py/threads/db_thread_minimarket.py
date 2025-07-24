@@ -2468,25 +2468,6 @@ class SetTextoAnotadorThread(QThread):
             print(f"Error al establecer texto principal del anotador: {e}")
             self.resultado.emit(False)
 
-class LimpiarAnotacionesThread(QThread):
-    resultado = Signal(bool)  # Emite True si se limpiaron correctamente
-
-    def run(self):
-        import requests
-        try:
-            url = f"{API_URL}/api/limpiar_anotaciones"
-            response = requests.post(url)
-            if response.status_code == 200:
-                data = response.json()
-                exito = data.get("exito", False)
-                self.resultado.emit(exito)
-            else:
-                print(f"Error al limpiar anotaciones: {response.text}")
-                self.resultado.emit(False)
-        except Exception as e:
-            print(f"Error en hilo al limpiar anotaciones: {e}")
-            self.resultado.emit(False)
-
 class GuardarAlCerrarThread(QThread):
     resultado = Signal(bool)  # Señal para indicar si se guardó correctamente
 

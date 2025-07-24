@@ -7287,10 +7287,9 @@ class MainWindow(QMainWindow):
         # Edicion de anotador
         self.inicializar_anotador(self.usuario)
         self.anotador(self.usuario)
-        self.controlar_anotador()
 
-        # Ocultar el overlay después de 5 segundos
-        QTimer.singleShot(8000, self.ocultar_overlay_inicial)
+        # Ocultar el overlay después de 9 segundos
+        QTimer.singleShot(9000, self.ocultar_overlay_inicial)
 
 
     def ocultar_overlay_inicial(self):
@@ -7298,16 +7297,6 @@ class MainWindow(QMainWindow):
         if hasattr(self, 'overlay'):
             self.overlay.hide()
 
-    def controlar_anotador(self):
-        #  Inicializar y ejecutar el hilo de limpieza automática de anotaciones
-        self.limpiar_anotaciones_thread = LimpiarAnotacionesThread()
-
-        def on_limpieza_completada(exito):
-            if exito:
-                pass
-
-        self.limpiar_anotaciones_thread.resultado.connect(on_limpieza_completada)
-        self.start_thread(self.limpiar_anotaciones_thread)
 
 
     def start_thread(self, thread):

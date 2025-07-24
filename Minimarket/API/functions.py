@@ -3185,24 +3185,30 @@ def guardar_texto_anotador_sincrono(texto, usuario):
     global id_usuario_perfil
 
     """
-    Función síncrona para guardar texto del anotador en la base de datos Supabase.
+    Actualiza la nota del anotador que contiene el u_id de id_usuario_perfil.
+    Si existe, la edita; si no existe, la crea.
     Retorna True si se guardó exitosamente, False en caso contrario.
     """
     try:
         id_usuario = traer_id_usuario(usuario)
         fecha_hora_actual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        supabase.table("anotador").insert({
-            "id_nota": 1,
-            "contenido": texto,
-            "tipo_cambio": "editado",
-            "usuario_id": id_usuario,
-            "fecha_modificacion": fecha_hora_actual,
-            "u_id": id_usuario_perfil
-        }).execute()
+        # Intentar actualizar la nota existente
+        response = supabase.table("anotador") \
+            .update({
+                "contenido": texto,
+                "tipo_cambio": "editado",
+                "usuario_id": id_usuario,
+                "fecha_modificacion": fecha_hora_actual
+            }) \
+            .eq("u_id", id_usuario_perfil) \
+            .eq("id_nota", 1) \
+            .execute()
+        
         return True
     except Exception as e:
         print(f"Error al guardar texto del anotador en Supabase: {e}")
         return False
+    
     
 def limpiar_anotaciones_automatico():
     global id_usuario_perfil
