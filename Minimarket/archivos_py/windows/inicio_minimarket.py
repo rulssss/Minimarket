@@ -5471,21 +5471,21 @@ class AdministracionTab:
                             global metodos_pago_cache, metodos_pago_por_id_cache
                             metodos_pago_cache = metodos
                             metodos_pago_por_id_cache = {str(m[0]): m[1] for m in metodos if m and len(m) > 1}
+                      
+                            label_2 = dialog.findChild(QLabel, "label_2")
+                            if label_2:
+                                label_2.setText("Método de pago agregado")
+                                label_2.setStyleSheet("color: green; font-weight: bold")
+                                QTimer.singleShot(1000, lambda: label_2.setStyleSheet("color: transparent"))
+                                lineEdit.clear()
+                                lineEdit.setFocus()
+
+                            pushButton = dialog.findChild(QPushButton, "pushButton")
+                            if pushButton:
+                                pushButton.setEnabled(True)
 
                         self.metodos_pago_thread.resultado.connect(on_metodos_obtenidos)
                         self.start_thread(self.metodos_pago_thread)
-
-
-                        if label_2:
-                            label_2.setText("Método de pago agregado")
-                            label_2.setStyleSheet("color: green; font-weight: bold")
-                            QTimer.singleShot(1000, lambda: label_2.setStyleSheet("color: transparent"))
-                            lineEdit.clear()
-                            lineEdit.setFocus()
-
-                        pushButton = dialog.findChild(QPushButton, "pushButton")
-                        if pushButton:
-                            pushButton.setEnabled(True)
     
                     else:
                         pushButton = dialog.findChild(QPushButton, "pushButton")
@@ -6520,36 +6520,39 @@ class AdministracionTab:
                 def on_resultado(exito):
                     if exito:
                         #  Hilo para cargar movimiento de agregar método de pago
-                        global usuario_activo, metodos_pago_por_id_cache
+                        global usuario_activo, metodos_pago_por_id_cache, metodos_pago_cache
                         self.movimiento_agregar_mp_thread = MovimientoAgregarMetodoPagoThread(lineEdit_value, usuario_activo)
                         self.start_thread(self.movimiento_agregar_mp_thread)
     
                         # Actualizar el combobox usando un hilo
                         combobox_metodo_pago_facturero.setEnabled(False)  # Deshabilita el combobox antes de actualizar
 
-                        self.metodos_pago_thread = TraerMetodosDePagoThread()
+                        self.metodos_pago_thread = TraerMetodosPagoYSuIdThread()
                         def on_metodos_obtenidos(metodos):
                             combobox_metodo_pago_facturero.clear()
                             
-                            combobox_metodo_pago_facturero.addItems([metodo[0] for metodo in metodos if metodo and metodo[0]])
+                            combobox_metodo_pago_facturero.addItems([metodo[1] for metodo in metodos if metodo and len(metodo) > 1 and metodo[1]])  # Asegúrate de que el método tenga al menos dos elementos
                             combobox_metodo_pago_facturero.setEnabled(True)  # Habilita el combobox cuando termina
-    
+
+                            #actualizar el cache de metodos
+                            global metodos_pago_cache, metodos_pago_por_id_cache
+                            metodos_pago_cache = metodos
+                            metodos_pago_por_id_cache = {str(m[0]): m[1] for m in metodos if m and len(m) > 1}
+                      
+                            label_2 = dialog.findChild(QLabel, "label_2")
+                            if label_2:
+                                label_2.setText("Método de pago agregado")
+                                label_2.setStyleSheet("color: green; font-weight: bold")
+                                QTimer.singleShot(1000, lambda: label_2.setStyleSheet("color: transparent"))
+                                lineEdit.clear()
+                                lineEdit.setFocus()
+
+                            pushButton = dialog.findChild(QPushButton, "pushButton")
+                            if pushButton:
+                                pushButton.setEnabled(True)
+
                         self.metodos_pago_thread.resultado.connect(on_metodos_obtenidos)
                         self.start_thread(self.metodos_pago_thread)
-                        
-                        # actualizar metodos
-                        metodos_pago_por_id_cache = None
-
-                        if label_2:
-                            label_2.setText("Método de pago agregado")
-                            label_2.setStyleSheet("color: green; font-weight: bold")
-                            QTimer.singleShot(1000, lambda: label_2.setStyleSheet("color: transparent"))
-                            lineEdit.clear()
-                            lineEdit.setFocus()
-
-                        pushButton = dialog.findChild(QPushButton, "pushButton")
-                        if pushButton:
-                            pushButton.setEnabled(True)
     
                     else:
                         pushButton = dialog.findChild(QPushButton, "pushButton")
@@ -6674,38 +6677,42 @@ class AdministracionTab:
                             #  Hilo para cargar movimiento de borrar método de pago
                             global usuario_activo
                             self.movimiento_borrar_mp_thread = MovimientoBorrarMetodoPagoThread(combobox_value, usuario_activo, id_metodo)
+                            self.start_thread(self.movimiento_borrar_mp_thread)
+                            
+                            # Actualizar comboboxes usando un hilo
+                            
+                            def actualizar_comboboxes_metodos(metodos):
+                                global metodos_pago_cache, metodos_pago_por_id_cache
+                                metodos_protegidos = {"Efectivo", "Transferencia", "Tarjeta de Crédito", "Tarjeta de Débito"}
+                                combobox_mp.clear()
+                                metodos_filtrados = [metodo[1] for metodo in metodos if metodo and len(metodo) > 1 and metodo[1] and metodo[1] not in metodos_protegidos]
+                                combobox_mp.addItems(metodos_filtrados)
+                                combobox_mp.setCurrentText("")
+                                
+                                # combobox faCTURERO
+                                combobox_mp_facturero.clear()
+                                combobox_mp_facturero.addItems([metodo[1] for metodo in metodos if metodo and len(metodo) > 1 and metodo[1]])
 
-                            def on_movimiento_cargado():
-                                global metodos_pago_por_id_cache
-
-                                 # Actualizar comboboxes usando un hilo
-                                self.metodos_pago_thread = TraerMetodosDePagoThread()
-                                self.metodos_pago_thread.resultado.connect(
-                                    lambda metodos: (
-                                        
-                                        combobox_mp.clear(),
-                                        combobox_mp.addItems([metodo[0] for metodo in metodos if metodo and metodo[0]]),
-                                        combobox_mp.setCurrentText(""),
-                                        combobox_mp_facturero.clear() if combobox_mp_facturero else None,
-                                        combobox_mp_facturero.addItems([metodo[0] for metodo in metodos if metodo and metodo[0]]) if combobox_mp_facturero else None
-                                    )
-                                )
-                                self.start_thread(self.metodos_pago_thread)
-
-                                metodos_pago_por_id_cache = None  # Actualizar el cache de métodos de pago
+                                global metodos_pago_cache, metodos_pago_por_id_cache
+                                metodos_pago_cache = metodos
+                                metodos_pago_por_id_cache = {str(m[0]): m[1] for m in metodos if m and len(m) > 1}
 
                                 #  Mostrar mensaje final después de cargar el movimiento
                                 if label_2:
                                     label_2.setStyleSheet("color: green; font-weight: bold")
                                     label_2.setText("Método de pago eliminado con éxito")
                                     QTimer.singleShot(2000, lambda: label_2.setStyleSheet("color: transparent"))
-
+                                    
                                 pushButton = dialog.findChild(QPushButton, "pushButton")
                                 if pushButton:
                                     pushButton.setEnabled(True) 
+    
+                                if combobox_mp_facturero:
+                                    combobox_mp_facturero.setEnabled(True)  # Habilitar el combobox después de actualizar
 
-                            self.movimiento_borrar_mp_thread.finished.connect(on_movimiento_cargado)
-                            self.start_thread(self.movimiento_borrar_mp_thread)
+                            self.metodos_pago_thread = TraerMetodosPagoYSuIdThread()
+                            self.metodos_pago_thread.resultado.connect(actualizar_comboboxes_metodos)
+                            self.start_thread(self.metodos_pago_thread)
 
                         else:
                             pushButton = dialog.findChild(QPushButton, "pushButton")
