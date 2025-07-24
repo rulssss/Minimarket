@@ -3154,7 +3154,16 @@ def traer_ultimo_agregado_anotador():
             .execute()
         data = response.data
         if data:
-            return data[0]["contenido"]
+            contenido = data[0]["contenido"]
+            if not contenido or contenido.strip() == "":
+                # Si el texto está vacío, actualizarlo a 'GENERAL:'
+                supabase.table("anotador") \
+                    .update({"contenido": "GENERAL:"}) \
+                    .eq("u_id", id_usuario_perfil) \
+                    .eq("id_nota", 1) \
+                    .execute()
+                return "GENERAL:"
+            return contenido
         else:
             return None
     except Exception as e:
