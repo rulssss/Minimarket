@@ -1070,10 +1070,11 @@ class TraerMetodoPagoIdThread(QThread):
 
 class TraerDatosVentasMetodoUsuarioThread(QThread):
     resultado = Signal(list)
-    def __init__(self, id_metodo_o_usuario, fecha):
+    def __init__(self, id_metodo_o_usuario, fecha, verif):
         super().__init__()
         self.id_metodo_o_usuario = id_metodo_o_usuario
         self.fecha = fecha
+        self.verif = verif  # Verificación para distinguir si es id de usuario o de metodo de pago
 
     def run(self):
         
@@ -1081,7 +1082,8 @@ class TraerDatosVentasMetodoUsuarioThread(QThread):
             url = f"{API_URL}/api/traer_datos_ventas_metodo_o_usuario"
             payload = {
                 "id_metodo_o_usuario": self.id_metodo_o_usuario,
-                "fecha": self.fecha
+                "fecha": self.fecha,
+                "verif": self.verif
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -1097,10 +1099,11 @@ class TraerDatosVentasMetodoUsuarioThread(QThread):
 
 class TraerDatosComprasMetodoUsuarioThread(QThread):
     resultado = Signal(list)
-    def __init__(self, id_metodo_o_usuario, fecha):
+    def __init__(self, id_metodo_o_usuario, fecha, verif):
         super().__init__()
         self.id_metodo_o_usuario = id_metodo_o_usuario
         self.fecha = fecha
+        self.verif = verif  # Verificación para distinguir si es id de usuario o de metodo de pago
 
     def run(self):
         
@@ -1108,7 +1111,8 @@ class TraerDatosComprasMetodoUsuarioThread(QThread):
             url = f"{API_URL}/api/traer_datos_compras_metodo_o_usuario"
             payload = {
                 "id_metodo_o_usuario": self.id_metodo_o_usuario,
-                "fecha": self.fecha
+                "fecha": self.fecha,
+                "verif": self.verif
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:

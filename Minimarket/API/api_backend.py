@@ -642,10 +642,12 @@ def api_traer_datos_ventas_metodo_o_usuario():
     data = request.json
     id_metodo_o_usuario = data.get('id_metodo_o_usuario')
     fecha = data.get('fecha')
-    if not id_metodo_o_usuario or not fecha:
+    verif = data.get('verif')
+    
+    if not id_metodo_o_usuario or not fecha or verif is None:
         return jsonify({"error": "Faltan datos"}), 400
     try:
-        datos = traer_datos_ventas_metodo_o_usuario(id_metodo_o_usuario, fecha)
+        datos = traer_datos_ventas_metodo_o_usuario(id_metodo_o_usuario, fecha, verif)
         return jsonify({"datos": datos})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -656,10 +658,12 @@ def api_traer_datos_compras_metodo_o_usuario():
     data = request.json
     id_metodo_o_usuario = data.get('id_metodo_o_usuario')
     fecha = data.get('fecha')
-    if not id_metodo_o_usuario or not fecha:
+    verif = data.get('verif')
+
+    if not id_metodo_o_usuario or not fecha or verif is None:
         return jsonify({"error": "Faltan datos"}), 400
     try:
-        datos = traer_datos_compras_metodo_o_usuario(id_metodo_o_usuario, fecha)
+        datos = traer_datos_compras_metodo_o_usuario(id_metodo_o_usuario, fecha, verif)
         return jsonify({"datos": datos})
     except Exception as e:
         return jsonify({"error": str(e)}), 500

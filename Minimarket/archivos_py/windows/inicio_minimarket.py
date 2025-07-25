@@ -1549,7 +1549,7 @@ class DatosTab:
         global usuario_activo
         if exito:
             self.movimiento_proveedor_thread = MovimientoProveedorThread(nombre_proveedor, usuario_activo)
-            self.movimiento_proveedor_thread.start()
+            self.start_thread(self.movimiento_proveedor_thread)
             #limpia inputs
             self.clear_inputs_agregar_proveedores()
 
@@ -2105,6 +2105,10 @@ class DatosTab:
             label_80.setStyleSheet("color: transparent")
 
     def validate_and_process_inputs_categorias(self):
+        if getattr(self, "_categoria_en_proceso", False):
+            return  # Ya está en proceso, no ejecutar de nuevo
+        self._categoria_en_proceso = True
+
         global usuario_activo
 
         lineEdit_16 = self.ui.frame_17.findChild(QLineEdit, "lineEdit_16")
@@ -2131,6 +2135,8 @@ class DatosTab:
 
             self.cargar_categoria_thread = CargarCategoriaThread(lineEdit_16_value)
             def on_categoria_cargada(exito):
+                self._categoria_en_proceso = False
+
                 if exito:
                     self.clear_inputs_agregar_categorias()
                     if label_80:
@@ -2140,7 +2146,7 @@ class DatosTab:
 
                     # Hilo para cargar movimiento
                     self.movimiento_categoria_thread = MovimientoAgregarCategoriaThread(lineEdit_16_value, usuario_activo)
-                    self.movimiento_categoria_thread.start()
+                    self.start_thread(self.movimiento_categoria_thread)
 
                     # actualziar variables globales de uso
                     global categorias_cache, categorias_por_nombre_cache
@@ -2179,7 +2185,7 @@ class DatosTab:
                         lineEdit_16.setFocus()
                         
             self.cargar_categoria_thread.resultado.connect(on_categoria_cargada)
-            self.cargar_categoria_thread.start()
+            self.start_thread(self.cargar_categoria_thread)
         else:
             if label_80:
                 label_80.setText("Por favor, complete el campo")
@@ -3118,6 +3124,11 @@ class BuscarDatosTab:
 
         self.check_open = False
 
+        # Al principio de tu clase BuscarDatosTab (o donde corresponda)
+        self.timer_dia = QTimer()
+        self.timer_dia.setSingleShot(True)
+        self.timer_dia.timeout.connect(self.enviar_a_setear_tables)
+
         # se crean variables globales de uso para actualizar datos, 
         self.datos_tab.actualizar_variables_globales_de_uso(0, self.inicializar_ui_con_datos)
 
@@ -3469,7 +3480,9 @@ class BuscarDatosTab:
             combobox_10_dia.setMaxVisibleItems(5)  # Mostrar un máximo de 5 elementos visibles
             self.actualizar_dias_combobox(combobox_10_dia, mes_actual, anio_actual)
             combobox_10_dia.setCurrentText(str(dia_actual))
-            combobox_10_dia.currentTextChanged.connect(lambda : self.enviar_a_setear_tables())
+            
+            # En la inicialización del combobox de días:
+            combobox_10_dia.currentTextChanged.connect(lambda: self.timer_dia.start(2000))
     
         # Inicializar ComboBox de meses
         if combobox_9_mes:
@@ -3478,7 +3491,9 @@ class BuscarDatosTab:
             combobox_9_mes.addItems(["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
                                      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"])
             combobox_9_mes.setCurrentIndex(mes_actual)  # Los índices comienzan en 0
-            combobox_9_mes.currentTextChanged.connect(lambda : self.enviar_a_setear_tables())
+            
+            # En la inicialización del combobox:
+            combobox_9_mes.currentTextChanged.connect(lambda: self.timer_dia.start(2000))
     
         # Inicializar ComboBox de años
         if combobox_8_anio:
@@ -3488,7 +3503,9 @@ class BuscarDatosTab:
             combobox_8_anio.clear()
             combobox_8_anio.addItems([str(anio) for anio in anios_obtenidos])
             combobox_8_anio.setCurrentText(str(anio_actual))
-            combobox_8_anio.currentTextChanged.connect(lambda : self.enviar_a_setear_tables())
+            
+            # En la inicialización del combobox :
+            combobox_8_anio.currentTextChanged.connect(lambda: self.timer_dia.start(2000))
 
         if combobox_8_anio != "":
             if combobox_9_mes and combobox_8_anio and combobox_10_dia:
@@ -3510,10 +3527,12 @@ class BuscarDatosTab:
 
         # Inicializar ComboBox de métodos de pago o usuarios solo si esta vacio
         if combobox_12:
+            combobox_12.clear()
             if combobox_12.count() == 0:
                 combobox_12.addItem("")
                 combobox_12.addItem("Metodo de Pago")
                 combobox_12.addItem("Usuario")
+                combobox_12.addItem("Categoría")
 
             # Conectar el evento de cambio de texto para actualizar el combobox_13
             combobox_12.currentTextChanged.connect(lambda: self.actualizar_combobox_13(combobox_12, combobox_13))
@@ -3521,7 +3540,8 @@ class BuscarDatosTab:
         
         if combobox_13:
             # Conectar el evento de cambio de texto para actualizar los datos
-            combobox_13.currentTextChanged.connect(lambda: self.enviar_a_setear_tables())   
+            # En la inicialización del combobox:
+            combobox_13.currentTextChanged.connect(lambda: self.timer_dia.start(2000))  
 
         if push_button_47:
             if not self.check_open:
@@ -3548,22 +3568,29 @@ class BuscarDatosTab:
         return ""
     
     def obtener_metodo_pago_id(self, nombre_metodo, callback):
-        self.metodo_pago_id_thread = TraerMetodoPagoIdThread(nombre_metodo)
-        self.metodo_pago_id_thread.resultado.connect(callback)
-        self.start_thread(self.metodo_pago_id_thread)
+        # Usar el cache global si está disponible
+        global metodos_pago_por_id_cache
+        print(metodos_pago_por_id_cache)
+        if metodos_pago_por_id_cache:
+            # Buscar el ID por el nombre en el cache
+            for id_metodo, nombre in metodos_pago_por_id_cache.items():
+                if nombre == nombre_metodo:
+                    print(id_metodo)
+                    callback(int(id_metodo))
+                    return
 
     def obtener_metodo_pago(self, id_metodo, callback):
         self.metodo_pago_thread = TraerMetodoPagoThread(id_metodo)
         self.metodo_pago_thread.resultado.connect(callback)
         self.start_thread(self.metodo_pago_thread)
 
-    def obtener_datos_ventas(self, id_metodo_o_usuario, fecha, callback):
-        self.ventas_thread = TraerDatosVentasMetodoUsuarioThread(id_metodo_o_usuario, fecha)
+    def obtener_datos_ventas(self, id_metodo_o_usuario, fecha, verif, callback):
+        self.ventas_thread = TraerDatosVentasMetodoUsuarioThread(id_metodo_o_usuario, fecha, verif)
         self.ventas_thread.resultado.connect(callback)
         self.start_thread(self.ventas_thread)
 
-    def obtener_datos_compras(self, id_metodo_o_usuario, fecha, callback):
-        self.compras_thread = TraerDatosComprasMetodoUsuarioThread(id_metodo_o_usuario, fecha)
+    def obtener_datos_compras(self, id_metodo_o_usuario, fecha, verif, callback):
+        self.compras_thread = TraerDatosComprasMetodoUsuarioThread(id_metodo_o_usuario, fecha, verif)
         self.compras_thread.resultado.connect(callback)
         self.start_thread(self.compras_thread)
     
@@ -3624,6 +3651,8 @@ class BuscarDatosTab:
             self._procesar_por_metodo_pago(valor_combobox_13, fecha, tablewidget_ventas, tablewidget_compras, label_58, label_47)
         elif valor_combobox_12 == "Usuario" and valor_combobox_13:
             self._procesar_por_usuario(valor_combobox_13, fecha, tablewidget_ventas, tablewidget_compras, label_58, label_47)
+        elif valor_combobox_12 == "Categoría" and valor_combobox_13:
+            self._procesar_por_categoria(valor_combobox_13, fecha, tablewidget_ventas, tablewidget_compras, label_58, label_47)
         else:
             self._procesar_arqueo(fecha, tablewidget_ventas, tablewidget_compras, label_58, label_47)
 
@@ -3669,8 +3698,6 @@ class BuscarDatosTab:
 
         return True
     
-    
-
     def _procesar_datos_optimizado(self, datos, es_ventas, tablewidget, label_total):
         """Procesar datos de ventas o compras usando cache de métodos de pago"""
         if not tablewidget:
@@ -3751,15 +3778,17 @@ class BuscarDatosTab:
 
     def _procesar_por_metodo_pago(self, metodo_pago_nombre, fecha, tablewidget_ventas, tablewidget_compras, label_58, label_47):
         """Procesar datos filtrados por método de pago"""
+        resultados = {}
         def on_metodo_pago_id_obtenido(metodo_pago_id):
+            resultados.clear()  # Limpiar resultados previos
             def on_ventas_obtenidas(datos_ventas):
                 self._procesar_datos_optimizado(datos_ventas, True, tablewidget_ventas, label_58)
 
             def on_compras_obtenidas(datos_compras):
                 self._procesar_datos_optimizado(datos_compras, False, tablewidget_compras, label_47)
 
-            self.obtener_datos_ventas(metodo_pago_id, fecha, on_ventas_obtenidas)
-            self.obtener_datos_compras(metodo_pago_id, fecha, on_compras_obtenidas)
+            self.obtener_datos_ventas(metodo_pago_id, fecha, "id_metodo", on_ventas_obtenidas)
+            self.obtener_datos_compras(metodo_pago_id, fecha, "id_metodo", on_compras_obtenidas)
 
         self.obtener_metodo_pago_id(metodo_pago_nombre, on_metodo_pago_id_obtenido)
 
@@ -3780,8 +3809,28 @@ class BuscarDatosTab:
         def on_compras_obtenidas(datos_compras):
             self._procesar_datos_optimizado(datos_compras, False, tablewidget_compras, label_47)
 
-        self.obtener_datos_ventas(usuario_id, fecha, on_ventas_obtenidas)
-        self.obtener_datos_compras(usuario_id, fecha, on_compras_obtenidas)
+        self.obtener_datos_ventas(usuario_id, fecha, "id_usuario", on_ventas_obtenidas)
+        self.obtener_datos_compras(usuario_id, fecha, "id_usuario", on_compras_obtenidas)
+
+    def _procesar_por_categoria(self, nombre_categoria, fecha, tablewidget_ventas, tablewidget_compras, label_58, label_47):
+        """Procesar datos filtrados por categoría"""
+        global categorias_por_nombre_cache
+
+        categoria_id = None
+        if categorias_por_nombre_cache and nombre_categoria in categorias_por_nombre_cache:
+            categoria_id = categorias_por_nombre_cache[nombre_categoria][0]
+
+        if not categoria_id:
+            return
+
+        def on_ventas_obtenidas(datos_ventas):
+            self._procesar_datos_optimizado(datos_ventas, True, tablewidget_ventas, label_58)
+
+        def on_compras_obtenidas(datos_compras):
+            self._procesar_datos_optimizado(datos_compras, False, tablewidget_compras, label_47)
+
+        self.obtener_datos_ventas(categoria_id, fecha, "id_categoria", on_ventas_obtenidas)
+        self.obtener_datos_compras(categoria_id, fecha, "id_categoria", on_compras_obtenidas)
 
     def _procesar_arqueo(self, fecha, tablewidget_ventas, tablewidget_compras, label_58, label_47):
         """Procesar datos de arqueo (sin filtros específicos)"""
@@ -3866,6 +3915,8 @@ class BuscarDatosTab:
         anio = combobox_8_anio.currentText()
 
         resultados = {}
+        resultados.clear()  # Limpiar resultados previos
+        
         corte_id_actual = self.corte_id  # Captura el id actual
         def check_and_generate_pdf():
 

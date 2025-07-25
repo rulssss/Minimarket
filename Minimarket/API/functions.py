@@ -1128,10 +1128,8 @@ def traer_todos_metodos_pago():
         print(f"Error al obtener métodos de pago en Supabase: {e}")
         return []
     
-    
 
-
-def traer_datos_ventas_metodo_o_usuario(id, fecha):
+def traer_datos_ventas_metodo_o_usuario(id, fecha, verif):
     global id_usuario_perfil
 
     try:
@@ -1166,13 +1164,41 @@ def traer_datos_ventas_metodo_o_usuario(id, fecha):
         else:
             ventas_filtradas = ventas
 
-        # Filtrar por usuario o método de pago
-        ventas_filtradas = [
-            v for v in ventas_filtradas
-            if v["id_usuario"] == id or v["id_metodo_pago"] == id
-        ]
+        # Filtrar por usuario, método de pago o categoría según 'verif'
+        if verif == "id_metodo":
+            ventas_filtradas = [v for v in ventas_filtradas if v["id_metodo_pago"] == id]
+        elif verif == "id_usuario":
+            ventas_filtradas = [v for v in ventas_filtradas if v["id_usuario"] == id]
+        elif verif == "id_categoria":
+            # Obtener todos los detalles de ventas del perfil
+            response_detalles = supabase.table("detalle_ventas") \
+                .select("id_venta, id_producto, cantidad, precio_unitario_venta") \
+                .eq("u_id", id_usuario_perfil) \
+                .execute()
+            detalles = response_detalles.data
 
-        # Obtener todos los detalles de ventas del perfil
+            # Obtener el id_categoria de cada producto
+            response_productos = supabase.table("productos") \
+                .select("id_producto, id_categoria") \
+                .eq("u_id", id_usuario_perfil) \
+                .execute()
+            productos = {p["id_producto"]: p["id_categoria"] for p in response_productos.data} if response_productos.data else {}
+
+            resultados = []
+            for v in ventas_filtradas:
+                for d in detalles:
+                    if d["id_venta"] == v["id_venta"] and productos.get(d["id_producto"]) == id:
+                        resultados.append((
+                            v["id_usuario"],
+                            v["fecha_hora"],
+                            v["id_metodo_pago"],
+                            d["id_producto"],
+                            d["cantidad"],
+                            d["precio_unitario_venta"]
+                        ))
+            return resultados
+
+        # Obtener todos los detalles de ventas del perfil (si no es por categoría)
         response_detalles = supabase.table("detalle_ventas") \
             .select("id_venta, id_producto, cantidad, precio_unitario_venta") \
             .eq("u_id", id_usuario_perfil) \
@@ -1195,11 +1221,10 @@ def traer_datos_ventas_metodo_o_usuario(id, fecha):
 
         return resultados
     except Exception as e:
-        print(f"Error al traer datos de ventas por método o usuario en Supabase: {e}")
+        print(f"Error al traer datos de ventas por método, usuario o categoría en Supabase: {e}")
         return []
-    
 
-def traer_datos_compras_metodo_o_usuario(id, fecha):
+def traer_datos_compras_metodo_o_usuario(id, fecha, verif):
     global id_usuario_perfil
 
     try:
@@ -1234,13 +1259,41 @@ def traer_datos_compras_metodo_o_usuario(id, fecha):
         else:
             compras_filtradas = compras
 
-        # Filtrar por usuario o método de pago
-        compras_filtradas = [
-            c for c in compras_filtradas
-            if c["id_usuario"] == id or c["id_metodo_pago"] == id
-        ]
+        # Filtrar por usuario, método de pago o categoría según 'verif'
+        if verif == "id_metodo":
+            compras_filtradas = [c for c in compras_filtradas if c["id_metodo_pago"] == id]
+        elif verif == "id_usuario":
+            compras_filtradas = [c for c in compras_filtradas if c["id_usuario"] == id]
+        elif verif == "id_categoria":
+            # Obtener todos los detalles de compras del perfil
+            response_detalles = supabase.table("detalle_compras") \
+                .select("id_compra, id_producto, cantidad, precio_unitario") \
+                .eq("u_id", id_usuario_perfil) \
+                .execute()
+            detalles = response_detalles.data
 
-        # Obtener todos los detalles de compras del perfil
+            # Obtener el id_categoria de cada producto
+            response_productos = supabase.table("productos") \
+                .select("id_producto, id_categoria") \
+                .eq("u_id", id_usuario_perfil) \
+                .execute()
+            productos = {p["id_producto"]: p["id_categoria"] for p in response_productos.data} if response_productos.data else {}
+
+            resultados = []
+            for c in compras_filtradas:
+                for d in detalles:
+                    if d["id_compra"] == c["id_compra"] and productos.get(d["id_producto"]) == id:
+                        resultados.append((
+                            c["id_usuario"],
+                            c["fecha_hora"],
+                            c["id_metodo_pago"],
+                            d["id_producto"],
+                            d["cantidad"],
+                            d["precio_unitario"]
+                        ))
+            return resultados
+
+        # Obtener todos los detalles de compras del perfil (si no es por categoría)
         response_detalles = supabase.table("detalle_compras") \
             .select("id_compra, id_producto, cantidad, precio_unitario") \
             .eq("u_id", id_usuario_perfil) \
@@ -1263,9 +1316,8 @@ def traer_datos_compras_metodo_o_usuario(id, fecha):
 
         return resultados
     except Exception as e:
-        print(f"Error al traer datos de compras por método o usuario en Supabase: {e}")
+        print(f"Error al traer datos de compras por método, usuario o categoría en Supabase: {e}")
         return []
-    
 
 
 def traer_metodo_pago(metodo):  # traer el nombre del método de pago a través del id
