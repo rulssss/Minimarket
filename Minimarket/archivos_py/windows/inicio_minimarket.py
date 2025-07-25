@@ -700,6 +700,10 @@ class DatosTab:
         self._on_nombre_obtenido(self._borrar_nombre)
 
     def _on_nombre_obtenido(self, nombre_producto):
+        if getattr(self, "_borrar_producto", False):
+            return  # Ya está en proceso, no ejecutar de nuevo
+        self._borrar_producto = True
+
         label_72 = self.ui.frame_6.findChild(QLabel, "label_72")
         if label_72:
             label_72.setText("Borrando producto...")
@@ -713,6 +717,7 @@ class DatosTab:
 
     def _on_borrado_result(self, exito):
         if exito:
+            self._borrar_producto = False
             # Lanzar hilo de movimiento
             self.movimiento_thread = MovimientoProductoBorrarThread(self._borrar_id, self._borrar_nombre, usuario_activo)
             self.movimiento_thread.movimiento_borrado.connect(self.on_producto_borrado)
@@ -2222,6 +2227,10 @@ class DatosTab:
             label_81.setStyleSheet("color: transparent")
 
     def delete_categoria(self):
+        if getattr(self, "_borrar_categoria_en_proceso", False):
+            return  # Ya está en proceso, no ejecutar de nuevo
+        self._borrar_categoria_en_proceso = True
+
         global usuario_activo, categorias_por_nombre_cache
     
         lineEdit_21 = self.ui.frame_20.findChild(QLineEdit, "lineEdit_21")
@@ -2272,6 +2281,9 @@ class DatosTab:
             self.buscar_categoria_thread = BuscarCategoriaThread(lineEdit_21_value)
             def on_busqueda_finalizada(existe):
                 if existe:
+
+                    self._categoria_en_proceso = False  # Liberar bandera al terminar
+
                     # Cargar movimiento en hilo
                     self.movimiento_categoria_thread = MovimientoCategoriaBorradaThread(lineEdit_21_value, id_categoria, usuario_activo)
                     self.movimiento_categoria_thread.start()
@@ -3702,45 +3714,60 @@ class BuscarDatosTab:
         """Procesar datos de ventas o compras usando cache de métodos de pago"""
         if not tablewidget:
             return
-
-        # Si no hay datos, mostrar mensaje
+    
+        print(datos)
+    
+        # Inicializa resultados_arqueo si no existe
+        if not hasattr(self, "resultados_arqueo") or not isinstance(self.resultados_arqueo, dict):
+            self.resultados_arqueo = {
+                "ventas_totales": 0,
+                "numero_de_ventas": 0,
+                "ventas_por_metodo": {},
+                "ganancias_por_metodo": {},
+                "ganancias_totales": 0,
+                "compras_totales": 0,
+                "numero_de_compras": 0
+            }
+    
+        # Si no hay datos, mostrar mensaje y resetear solo la parte correspondiente
         if not datos:
             tablewidget.setRowCount(1)
             tablewidget.setColumnCount(1)
             tablewidget.setHorizontalHeaderLabels(["Mensaje"])
-
-            # Configurar header del mensaje
             header = tablewidget.horizontalHeader()
             header.setFont(QFont("Segoe UI", 12, QFont.Bold))
-
             item = QTableWidgetItem("No se encontraron registros")
             item.setFont(QFont("Segoe UI", 12))
             item.setTextAlignment(Qt.AlignCenter)
             tablewidget.setItem(0, 0, item)
-
-            # Resetear total a $0.00
             if label_total:
                 label_total.setText("$0.00")
+            if es_ventas:
+                self.resultados_arqueo["ventas_totales"] = 0
+                self.resultados_arqueo["numero_de_ventas"] = 0
+                self.resultados_arqueo["ventas_por_metodo"] = {}
+                self.resultados_arqueo["ganancias_por_metodo"] = {}
+                self.resultados_arqueo["ganancias_totales"] = 0
+            else:
+                self.resultados_arqueo["compras_totales"] = 0
+                self.resultados_arqueo["numero_de_compras"] = 0
             return
-
-        # Si hay datos, procesar normalmente
+    
         tablewidget.setRowCount(len(datos))
         tablewidget.setColumnCount(7)
         headers = ["Usuario", "Fecha", "Hora", "Método de Pago", "Producto", "Cantidad", "Precio Unitario"]
         tablewidget.setHorizontalHeaderLabels(headers)
-
-        # Configurar header normal
         header = tablewidget.horizontalHeader()
         header.setFont(QFont("Segoe UI", 12, QFont.Bold))
-
+    
         total = 0
-
+        ventas_por_metodo = {}
+        ganancias_por_metodo = {}
+    
         for row, dato in enumerate(datos):
             usuario = self.traer_usuario(dato[0])
-            
             fecha_dt = dato[1]
             if isinstance(fecha_dt, str):
-                # Quitar zona horaria si existe
                 fecha_dt = fecha_dt.split('+')[0].strip()
                 try:
                     fecha_dt = datetime.strptime(fecha_dt, "%Y-%m-%dT%H:%M:%S.%f")
@@ -3755,26 +3782,45 @@ class BuscarDatosTab:
             else:
                 fecha_separada = ""
                 hora_separada = ""
-
-            # Usar cache para obtener método de pago (SÍNCRONO)
+    
             metodo_pago = self.traer_metodo_pago_cache(dato[2])
-
             producto = self.traer_nom_producto(dato[3])
             cantidad = dato[4]
             precio_unitario = dato[5]
             total += precio_unitario * cantidad
-
-            # Llenar la fila directamente
+    
+            # Calcular ganancia solo para ventas (precio_venta - precio_compra)
+            if es_ventas:
+                costo_unitario = dato[6] if len(dato) > 6 else 0
+                ganancia = (precio_unitario - costo_unitario) * cantidad
+                ventas_por_metodo.setdefault(metodo_pago, 0)
+                ventas_por_metodo[metodo_pago] += precio_unitario * cantidad
+                ganancias_por_metodo.setdefault(metodo_pago, 0)
+                ganancias_por_metodo[metodo_pago] += ganancia
+            else:
+                ventas_por_metodo.setdefault(metodo_pago, 0)
+                ventas_por_metodo[metodo_pago] += precio_unitario * cantidad
+    
             items = [usuario, fecha_separada, hora_separada, metodo_pago, producto, str(cantidad), f"${precio_unitario}"]
             for col, item_text in enumerate(items):
                 item = QTableWidgetItem(str(item_text))
                 item.setFont(QFont("Segoe UI", 10))
                 item.setTextAlignment(Qt.AlignCenter)
                 tablewidget.setItem(row, col, item)
-
-        # Actualizar total
+    
         if label_total:
             label_total.setText(f"${total:.2f}")
+    
+        # Guardar resultados globales para el corte (solo la parte correspondiente)
+        if es_ventas:
+            self.resultados_arqueo["ventas_totales"] = total
+            self.resultados_arqueo["numero_de_ventas"] = len(datos)
+            self.resultados_arqueo["ventas_por_metodo"] = ventas_por_metodo
+            self.resultados_arqueo["ganancias_por_metodo"] = ganancias_por_metodo
+            self.resultados_arqueo["ganancias_totales"] = sum(ganancias_por_metodo.values())
+        else:
+            self.resultados_arqueo["compras_totales"] = total
+            self.resultados_arqueo["numero_de_compras"] = len(datos)
 
     def _procesar_por_metodo_pago(self, metodo_pago_nombre, fecha, tablewidget_ventas, tablewidget_compras, label_58, label_47):
         """Procesar datos filtrados por método de pago"""
@@ -3897,7 +3943,7 @@ class BuscarDatosTab:
         from reportlab.pdfgen import canvas
         import webbrowser
 
-        self.corte_id = uuid4() # Generar un ID único para el corte actual
+        self.corte_id = uuid4()  # Generar un ID único para el corte actual
 
         combobox_12 = self.ui.frame_31.findChild(QComboBox, "comboBox_12")
         combobox_13 = self.ui.frame_31.findChild(QComboBox, "comboBox_13")
@@ -3914,167 +3960,91 @@ class BuscarDatosTab:
             mes = None
         anio = combobox_8_anio.currentText()
 
-        resultados = {}
-        resultados.clear()  # Limpiar resultados previos
-        
-        corte_id_actual = self.corte_id  # Captura el id actual
-        def check_and_generate_pdf():
+        # Usar los datos ya procesados en la pantalla
+        resultados = getattr(self, "resultados_arqueo", {})
 
-            # Solo genera el PDF si el corte es el actual
-            if getattr(self, "corte_id", None) != corte_id_actual:
-                return
-        
-            if (dia and mes and anio and len(resultados) == 6) or \
-               (mes and anio and not dia and len(resultados) == 6) or \
-               (anio and not mes and not dia and len(resultados) == 6):
-                ventas_totales = resultados['ventas_totales']
-                ganancias_totales = resultados['ganancias_totales']
-                compras_totales = resultados['compras_totales']
-                numero_de_compras = resultados['numero_de_compras']
-                ventas_por_metodo = resultados['ventas_por_metodo']
-                numero_de_ventas = resultados['numero_de_ventas']
+        # Validar que hay datos suficientes
+        if not resultados or "ventas_totales" not in resultados or "compras_totales" not in resultados:
+            print("No hay datos suficientes para el corte. Realiza el arqueo primero.")
+            return
 
-                # --- NUEVO: Agregar info de filtro ---
-                filtro_texto = ""
-                if filtro_tipo == "Metodo de Pago" and filtro_valor:
-                    filtro_texto = f"Filtrado por Método de Pago: {filtro_valor}"
-                elif filtro_tipo == "Usuario" and filtro_valor:
-                    filtro_texto = f"Filtrado por Usuario: {filtro_valor}"
+        ventas_totales = resultados.get('ventas_totales', 0)
+        ganancias_totales = resultados.get('ganancias_totales', 0)
+        compras_totales = resultados.get('compras_totales', 0)
+        numero_de_compras = resultados.get('numero_de_compras', 0)
+        ventas_por_metodo = resultados.get('ventas_por_metodo', {})
+        numero_de_ventas = resultados.get('numero_de_ventas', 0)
 
-                if dia and mes and anio:
-                    titulo_corte = f"Corte del Día {dia}/{int(mes):02d}/{anio}"
-                elif mes and anio:
-                    titulo_corte = f"Corte del Mes {int(mes):02d}/{anio}"
-                else:
-                    titulo_corte = f"Corte del Año {anio}"
+        filtro_texto = ""
+        if filtro_tipo == "Metodo de Pago" and filtro_valor:
+            filtro_texto = f"Filtrado por Método de Pago: {filtro_valor}"
+        elif filtro_tipo == "Usuario" and filtro_valor:
+            filtro_texto = f"Filtrado por Usuario: {filtro_valor}"
+        elif filtro_tipo == "Categoría" and filtro_valor:
+            filtro_texto = f"Filtrado por Categoría: {filtro_valor}"
 
-                fecha_actual = datetime.now().strftime("%d/%m/%Y")
-                hora_actual = datetime.now().strftime("%I:%M %p")
-
-                with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_pdf:
-                    ruta_pdf = temp_pdf.name
-
-                c = canvas.Canvas(ruta_pdf, pagesize=letter)
-                c.setFont("Helvetica", 12)
-                c.setFont("Helvetica-Bold", 16)
-                c.drawString(200, 750, titulo_corte)
-                c.setFont("Helvetica-Bold", 10)
-                c.drawString(50, 730, f"Fecha de corte realizado: {fecha_actual}")
-                c.drawString(50, 715, f"Hora de corte realizado: {hora_actual}")
-
-                # --- Mostrar filtro si existe, mismo tamaño y justo debajo ---
-                if filtro_texto:
-                    c.setFont("Helvetica-Bold", 10)
-                    c.drawString(50, 700, filtro_texto)
-                    y_base = 685  # Mover todo lo de abajo más abajo
-                else:
-                    y_base = 700  # Si no hay filtro, usar el mismo espacio
-
-                # Mueve todo lo de abajo
-                c.setFont("Helvetica-Bold", 14)
-                c.drawString(50, y_base, f"Ventas Totales: ${ventas_totales:.2f}")
-                c.drawString(300, y_base, f"Ganancias: ${ganancias_totales:.2f}")
-
-                c.setFont("Helvetica-Bold", 12)
-                c.drawString(50, y_base - 30, "Ventas:")
-                c.setFont("Helvetica", 10)
-                y_pos = y_base - 45
-                c.drawString(70, y_pos, f"Número de Ventas: {numero_de_ventas}")
-                y_pos -= 15
-                for metodo, total in ventas_por_metodo.items():
-                    global metodos_pago_por_id_cache
-                    metodo_pago_nombre = metodos_pago_por_id_cache.get(str(metodo), str(metodo))
-                    c.drawString(70, y_pos, f"{metodo_pago_nombre}: ${total:.2f}")
-                    y_pos -= 15
-
-                c.setFont("Helvetica-Bold", 12)
-                c.drawString(50, y_pos - 20, "Compras:")
-                c.setFont("Helvetica", 10)
-                y_pos -= 35
-                c.drawString(70, y_pos, f"Total Compras: ${compras_totales:.2f}")
-                c.drawString(70, y_pos - 15, f"Número de Compras: {numero_de_compras}")
-
-                c.setFont("Helvetica-Oblique", 8)
-                c.drawString(50, 50, "Generado automáticamente por el sistema rls.")
-                c.save()
-                webbrowser.open(f"file://{ruta_pdf}")
-    
-        # Día seleccionado
         if dia and mes and anio:
-            fecha_selecc = f"{anio}-{int(mes):02d}-{int(dia):02d}"
-            self.ventas_totales_thread = TraerVentasTotalesDiaThread(fecha_selecc)
-            self.ganancias_totales_thread = TraerGananciasTotalesDiaThread(fecha_selecc)
-            self.compras_totales_thread = TraerComprasTotalesDiaThread(fecha_selecc)
-            self.numero_de_compras_thread = TraerNumeroDeComprasDiaThread(fecha_selecc)
-            self.ventas_por_metodo_thread = TraerVentasPorMetodoDiaThread(fecha_selecc)
-            self.numero_de_ventas_thread = TraerNumeroDeVentasDiaThread(fecha_selecc)
-    
-            self.ventas_totales_thread.resultado.connect(lambda x: (resultados.update({'ventas_totales': x}), check_and_generate_pdf()))
-            self.ganancias_totales_thread.resultado.connect(lambda x: (resultados.update({'ganancias_totales': x}), check_and_generate_pdf()))
-            self.compras_totales_thread.resultado.connect(lambda x: (resultados.update({'compras_totales': x}), check_and_generate_pdf()))
-            self.numero_de_compras_thread.resultado.connect(lambda x: (resultados.update({'numero_de_compras': x}), check_and_generate_pdf()))
-            self.ventas_por_metodo_thread.resultado.connect(lambda x: (resultados.update({'ventas_por_metodo': x}), check_and_generate_pdf()))
-            self.numero_de_ventas_thread.resultado.connect(lambda x: (resultados.update({'numero_de_ventas': x}), check_and_generate_pdf()))
-    
-            self.start_thread(self.ventas_totales_thread)
-            self.start_thread(self.ganancias_totales_thread)
-            self.start_thread(self.compras_totales_thread)
-            self.start_thread(self.numero_de_compras_thread)
-            self.start_thread(self.ventas_por_metodo_thread)
-            self.start_thread(self.numero_de_ventas_thread)
-            
-    
-        # Mes seleccionado
+            titulo_corte = f"Corte del Día {dia}/{int(mes):02d}/{anio}"
         elif mes and anio:
-            fecha_selecc = f"{anio}-{int(mes):02d}"
-            self.ventas_totales_thread = TraerVentasTotalesMesThread(anio, mes)
-            self.ganancias_totales_thread = TraerGananciasTotalesMesThread(anio, mes)
-            self.compras_totales_thread = TraerComprasTotalesMesThread(anio, mes)
-            self.numero_de_compras_thread = TraerNumeroDeComprasMesThread(anio, mes)
-            self.ventas_por_metodo_thread = TraerVentasPorMetodoMesThread(anio, mes)
-            self.numero_de_ventas_thread = TraerNumeroDeVentasMesThread(anio, mes)
-    
-            self.ventas_totales_thread.resultado.connect(lambda x: (resultados.update({'ventas_totales': x}), check_and_generate_pdf()))
-            self.ganancias_totales_thread.resultado.connect(lambda x: (resultados.update({'ganancias_totales': x}), check_and_generate_pdf()))
-            self.compras_totales_thread.resultado.connect(lambda x: (resultados.update({'compras_totales': x}), check_and_generate_pdf()))
-            self.numero_de_compras_thread.resultado.connect(lambda x: (resultados.update({'numero_de_compras': x}), check_and_generate_pdf()))
-            self.ventas_por_metodo_thread.resultado.connect(lambda x: (resultados.update({'ventas_por_metodo': x}), check_and_generate_pdf()))
-            self.numero_de_ventas_thread.resultado.connect(lambda x: (resultados.update({'numero_de_ventas': x}), check_and_generate_pdf()))
-    
-            self.start_thread(self.ventas_totales_thread)
-            self.start_thread(self.ganancias_totales_thread)
-            self.start_thread(self.compras_totales_thread)
-            self.start_thread(self.numero_de_compras_thread)
-            self.start_thread(self.ventas_por_metodo_thread)
-            self.start_thread(self.numero_de_ventas_thread)
-
-    
-        # Solo año seleccionado
-        elif anio:
-            fecha_selecc = f"{anio}"
-            self.ventas_totales_thread = TraerVentasTotalesAnoThread(anio)
-            self.ganancias_totales_thread = TraerGananciasTotalesAnoThread(anio)
-            self.compras_totales_thread = TraerComprasTotalesAnoThread(anio)
-            self.numero_de_compras_thread = TraerNumeroDeComprasAnoThread(anio)
-            self.ventas_por_metodo_thread = TraerVentasPorMetodoAnoThread(anio)
-            self.numero_de_ventas_thread = TraerNumeroDeVentasAnoThread(anio)
-    
-            self.ventas_totales_thread.resultado.connect(lambda x: (resultados.update({'ventas_totales': x}), check_and_generate_pdf()))
-            self.ganancias_totales_thread.resultado.connect(lambda x: (resultados.update({'ganancias_totales': x}), check_and_generate_pdf()))
-            self.compras_totales_thread.resultado.connect(lambda x: (resultados.update({'compras_totales': x}), check_and_generate_pdf()))
-            self.numero_de_compras_thread.resultado.connect(lambda x: (resultados.update({'numero_de_compras': x}), check_and_generate_pdf()))
-            self.ventas_por_metodo_thread.resultado.connect(lambda x: (resultados.update({'ventas_por_metodo': x}), check_and_generate_pdf()))
-            self.numero_de_ventas_thread.resultado.connect(lambda x: (resultados.update({'numero_de_ventas': x}), check_and_generate_pdf()))
-    
-            self.start_thread(self.ventas_totales_thread)
-            self.start_thread(self.ganancias_totales_thread)
-            self.start_thread(self.compras_totales_thread)
-            self.start_thread(self.numero_de_compras_thread)
-            self.start_thread(self.ventas_por_metodo_thread)
-            self.start_thread(self.numero_de_ventas_thread)
-
+            titulo_corte = f"Corte del Mes {int(mes):02d}/{anio}"
         else:
-            print("seleccione una fecha") 
+            titulo_corte = f"Corte del Año {anio}"
+
+        fecha_actual = datetime.now().strftime("%d/%m/%Y")
+        hora_actual = datetime.now().strftime("%I:%M %p")
+
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_pdf:
+            ruta_pdf = temp_pdf.name
+
+        c = canvas.Canvas(ruta_pdf, pagesize=letter)
+        c.setFont("Helvetica", 12)
+        c.setFont("Helvetica-Bold", 16)
+        c.drawString(200, 750, titulo_corte)
+        c.setFont("Helvetica-Bold", 10)
+        c.drawString(50, 730, f"Fecha de corte realizado: {fecha_actual}")
+        c.drawString(50, 715, f"Hora de corte realizado: {hora_actual}")
+
+        if filtro_texto:
+            c.setFont("Helvetica-Bold", 10)
+            c.drawString(50, 700, filtro_texto)
+            y_base = 685
+        else:
+            y_base = 700
+
+        c.setFont("Helvetica-Bold", 14)
+        c.drawString(50, y_base, f"Ventas Totales: ${ventas_totales:.2f}")
+        c.drawString(300, y_base, f"Ganancias: ${ganancias_totales:.2f}")
+
+        c.setFont("Helvetica-Bold", 12)
+        c.drawString(50, y_base - 30, "Ventas:")
+        c.setFont("Helvetica", 10)
+        y_pos = y_base - 45
+        c.drawString(70, y_pos, f"Número de Ventas: {numero_de_ventas}")
+        y_pos -= 15
+
+        # Mostrar ventas por método de pago (sin ganancia)
+        for metodo, total in ventas_por_metodo.items():
+            metodo_pago_nombre = str(metodo)
+            global metodos_pago_por_id_cache
+            if metodos_pago_por_id_cache and str(metodo) in metodos_pago_por_id_cache:
+                metodo_pago_nombre = metodos_pago_por_id_cache[str(metodo)]
+            c.drawString(70, y_pos, f"{metodo_pago_nombre}: ${total:.2f}")
+            y_pos -= 15
+
+        c.setFont("Helvetica-Bold", 12)
+        c.drawString(50, y_pos - 20, "Compras:")
+        c.setFont("Helvetica", 10)
+        y_pos -= 35
+        c.drawString(70, y_pos, f"Total Compras: ${compras_totales:.2f}")
+        c.drawString(70, y_pos - 15, f"Número de Compras: {numero_de_compras}")
+
+        c.setFont("Helvetica-Oblique", 8)
+        c.drawString(50, 50, "Generado automáticamente por el sistema rls.")
+
+        c.setTitle(f"Corte - {fecha_actual}")  # Título del PDF
+
+        c.save()
+        webbrowser.open(f"file://{ruta_pdf}")
         
 
 

@@ -1172,7 +1172,7 @@ def traer_datos_ventas_metodo_o_usuario(id, fecha, verif):
         elif verif == "id_categoria":
             # Obtener todos los detalles de ventas del perfil
             response_detalles = supabase.table("detalle_ventas") \
-                .select("id_venta, id_producto, cantidad, precio_unitario_venta") \
+                .select("id_venta, id_producto, cantidad, precio_unitario_venta, precio_unitario_compra") \
                 .eq("u_id", id_usuario_perfil) \
                 .execute()
             detalles = response_detalles.data
@@ -1194,13 +1194,14 @@ def traer_datos_ventas_metodo_o_usuario(id, fecha, verif):
                             v["id_metodo_pago"],
                             d["id_producto"],
                             d["cantidad"],
-                            d["precio_unitario_venta"]
+                            d["precio_unitario_venta"],
+                            d["precio_unitario_compra"]
                         ))
             return resultados
 
         # Obtener todos los detalles de ventas del perfil (si no es por categoría)
         response_detalles = supabase.table("detalle_ventas") \
-            .select("id_venta, id_producto, cantidad, precio_unitario_venta") \
+            .select("id_venta, id_producto, cantidad, precio_unitario_venta, precio_unitario_compra") \
             .eq("u_id", id_usuario_perfil) \
             .execute()
         detalles = response_detalles.data
@@ -1216,7 +1217,8 @@ def traer_datos_ventas_metodo_o_usuario(id, fecha, verif):
                         v["id_metodo_pago"],
                         d["id_producto"],
                         d["cantidad"],
-                        d["precio_unitario_venta"]
+                        d["precio_unitario_venta"],
+                        d["precio_unitario_compra"]
                     ))
 
         return resultados
@@ -1374,7 +1376,7 @@ def traer_datos_arqueo_ventas_fecha(fecha):
 
         # Obtener todos los detalles de ventas del perfil
         response_detalles = supabase.table("detalle_ventas") \
-            .select("id_venta, id_producto, cantidad, precio_unitario_venta") \
+            .select("id_venta, id_producto, cantidad, precio_unitario_venta, precio_unitario_compra") \
             .eq("u_id", id_usuario_perfil) \
             .execute()
         detalles = response_detalles.data
@@ -1390,7 +1392,8 @@ def traer_datos_arqueo_ventas_fecha(fecha):
                         v["id_metodo_pago"],
                         d["id_producto"],
                         d["cantidad"],
-                        d["precio_unitario_venta"]
+                        d["precio_unitario_venta"],
+                        d["precio_unitario_compra"]
                     ))
 
         return resultados
