@@ -3109,7 +3109,7 @@ class DatosTab:
 
             
 
-
+ 
 ################
 ################
 
@@ -3715,8 +3715,6 @@ class BuscarDatosTab:
         if not tablewidget:
             return
     
-        print(datos)
-    
         # Inicializa resultados_arqueo si no existe
         if not hasattr(self, "resultados_arqueo") or not isinstance(self.resultados_arqueo, dict):
             self.resultados_arqueo = {
@@ -4203,23 +4201,15 @@ class BuscarDatosTab:
         mes_anteriror = self.ui.stackedWidget.findChild(QPushButton, "pushButton_45")
         mes_actual = self.ui.stackedWidget.findChild(QPushButton, "pushButton_44")
         ano_actual = self.ui.stackedWidget.findChild(QPushButton, "pushButton_43")
-        periodo = self.ui.stackedWidget.findChild(QPushButton, "pushButton_42")
 
         if label_101:
             label_101.setText(f"Ventas")
 
-        if label_102:
-            label_102.setStyleSheet("color: transparent")
-        if label_103:
-            label_103.setStyleSheet("color: transparent")
-        if date_edit1:
-            date_edit1.setDisplayFormat("dd MM yyyy")
-            date_edit1.setVisible(False)
-        if date_edit2:
-            date_edit2.setDisplayFormat("dd MM yyyy")
-            date_edit2.setVisible(False)
+        #if label_102:
+        #    label_102.setStyleSheet("color: transparent")
+        #if label_103:
+        #    label_103.setStyleSheet("color: transparent")
 
-        
         if label_108:
             label_108.setText("$0.00")
 
@@ -4246,9 +4236,6 @@ class BuscarDatosTab:
 
         if semana_actual:
             semana_actual.clicked.connect(self.mostrar_estadisticas_semana_actual)
-
-        if periodo:
-            periodo.clicked.connect(self.mostrar_estadisticas_periodo)
 
         # Limpiar el gráfico en el widget
         parent_widget = self.ui.stackedWidget.findChild(QWidget, "widget")
@@ -4993,281 +4980,9 @@ class BuscarDatosTab:
             self.metodos_pago_y_id_thread = TraerMetodosPagoYSuIdThread()
             self.metodos_pago_y_id_thread.resultado.connect(on_metodos_pago_obtenidos)
             self.start_thread(self.metodos_pago_y_id_thread)
-
-    def mostrar_estadisticas_periodo(self):
-        label_102 = self.ui.stackedWidget.findChild(QLabel, "label_102")
-        label_103 = self.ui.stackedWidget.findChild(QLabel, "label_103")
-        date_edit1 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit")
-        date_edit2 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit_2")
-        label_108 = self.ui.stackedWidget.findChild(QLabel, "label_108")
-        label_109 = self.ui.stackedWidget.findChild(QLabel, "label_109")
-        label_110 = self.ui.stackedWidget.findChild(QLabel, "label_110")
-        label_111 = self.ui.stackedWidget.findChild(QLabel, "label_111")
-
-        # Limpiar el gráfico en el widget
-        parent_widget = self.ui.stackedWidget.findChild(QWidget, "widget")
-        if parent_widget:
-            layout = parent_widget.layout()
-            if layout:
-                while layout.count():
-                    child = layout.takeAt(0)
-                    if child.widget():
-                        child.widget().deleteLater()
-
-        # Limpiar el gráfico en el widget_2
-        widget_2 = self.ui.stackedWidget.findChild(QWidget, "widget_2")
-        if widget_2:
-            layout = widget_2.layout()
-            if layout:
-                while layout.count():
-                    child = layout.takeAt(0)
-                    if child.widget():
-                        child.widget().deleteLater()
-
-        if label_108:
-            label_108.setText("$0.00")
-
-        if label_109:
-            label_109.setText("0")
-
-        if label_110:
-            label_110.setText("$0.00")
-
-        if label_111:
-            label_111.setText("$0.00")
-
-        if label_102:
-            label_102.setStyleSheet("color: black; font-weight: bold")
-
-        if label_103:
-            label_103.setStyleSheet("color: black; font-weight: bold")
-
-        if date_edit1:
-            date_edit1.setVisible(True)
-            date_timenow = datetime.now()
-            date_edit1.setDate(date_timenow.date())  # Asegúrate de usar `.date()` para QDate
-
-        if date_edit2:
-            date_edit2.setVisible(True)
-            date_time_tomorrow = datetime.now() + timedelta(days=1)
-            date_edit2.setDate(date_time_tomorrow.date())  # Asegúrate de usar `.date()` para QDate
-
-        # Conectar las señales después de inicializar los QDateEdit
-        self.funcion_ver_cuando_cambie_la_fecha()
     
-    def funcion_ver_cuando_cambie_la_fecha(self):
-        date_edit1 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit")
-        date_edit2 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit_2")
 
-        if date_edit1:
-            date_edit1.dateChanged.connect(self.mostrar_estadisticas_periodo_actualizado)
-        if date_edit2:
-            date_edit2.dateChanged.connect(self.mostrar_estadisticas_periodo_actualizado)
-
-    def mostrar_estadisticas_periodo_actualizado(self):
-        date_edit1 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit")
-        date_edit2 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit_2")
-        label_108 = self.ui.stackedWidget.findChild(QLabel, "label_108")
-        label_109 = self.ui.stackedWidget.findChild(QLabel, "label_109")
-        label_110 = self.ui.stackedWidget.findChild(QLabel, "label_110")
-        label_111 = self.ui.stackedWidget.findChild(QLabel, "label_111")
-        widget_2 = self.ui.stackedWidget.findChild(QWidget, "widget_2")
-        widget = self.ui.stackedWidget.findChild(QWidget, "widget")
-        label_101 = self.ui.stackedWidget.findChild(QLabel, "label_101")
-
-        if label_101:
-            label_101.setText("Ventas del Periodo: " + date_edit1.text() + " - " + date_edit2.text())
-
-        periodo1 = date_edit1.date().toPython()
-        periodo2 = date_edit2.date().toPython()
-
-        if periodo2 < periodo1:
-            if widget:
-                self.mostrar_mensaje_en_widget(widget, "No hay datos en este periodo")
-            if widget_2:
-                self.mostrar_mensaje_en_widget(widget_2, "No hay datos en este periodo")
-            return
-
-        # --- Hilos para los labels ---
-        resultados = {}
-        def check_and_update_labels():
-            if len(resultados) == 4:
-                if label_108:
-                    label_108.setText(f"${resultados['ventas_totales']:.2f}")
-                if label_109:
-                    label_109.setText(f"{resultados['numero_de_ventas']}")
-                if label_110:
-                    label_110.setText(f"${resultados['venta_promedio']:.2f}")
-                if label_111:
-                    label_111.setText(f"${resultados['ganancias_totales']:.2f}")
-
-        self.ventas_totales_periodo_thread = TraerVentasTotalesPeriodoThread(periodo1, periodo2)
-        self.numero_de_ventas_periodo_thread = TraerNumeroDeVentasPeriodoThread(periodo1, periodo2)
-        self.venta_promedio_periodo_thread = TraerVentaPromedioPeriodoThread(periodo1, periodo2)
-        self.ganancias_totales_periodo_thread = TraerGananciasTotalesPeriodoThread(periodo1, periodo2)
-
-        self.ventas_totales_periodo_thread.resultado.connect(lambda x: (resultados.update({'ventas_totales': x}), check_and_update_labels()))
-        self.numero_de_ventas_periodo_thread.resultado.connect(lambda x: (resultados.update({'numero_de_ventas': x}), check_and_update_labels()))
-        self.venta_promedio_periodo_thread.resultado.connect(lambda x: (resultados.update({'venta_promedio': x}), check_and_update_labels()))
-        self.ganancias_totales_periodo_thread.resultado.connect(lambda x: (resultados.update({'ganancias_totales': x}), check_and_update_labels()))
-
-        self.start_thread(self.ventas_totales_periodo_thread)
-        self.start_thread(self.numero_de_ventas_periodo_thread)
-        self.start_thread(self.venta_promedio_periodo_thread)
-        self.start_thread(self.ganancias_totales_periodo_thread)
-
-        # --- Hilos para ventas, ganancias y métodos de pago ---
-        self.ventas_periodo_thread = TraerVentasPeriodoThread(periodo1, periodo2)
-        self.ganancias_periodo_thread = TraerGananciasPeriodoThread(periodo1, periodo2)
-        self.metodos_pago_y_id_thread = TraerMetodosPagoYSuIdThread()
-
-        datos_periodo = {}
-
-        def check_and_graficar():
-            ventas = datos_periodo.get('ventas')
-            ganancias = datos_periodo.get('ganancias')
-            metodos_pago = datos_periodo.get('metodos_pago')
-
-            # Graficar ventas y ganancias en widget
-            if widget:
-                if ventas and ganancias:
-                    self.graficar_ventas_y_ganancias(widget, ventas, ganancias)
-                else:
-                    self.mostrar_mensaje_en_widget(widget, "No hay datos en este periodo")
-
-            # Graficar ventas por método de pago en widget_2
-            if widget_2:
-                if ventas and ganancias:
-                    self.graficar_ventas_por_metodo(widget_2, periodo1, periodo2, metodos_pago)
-                else:
-                    self.mostrar_mensaje_en_widget(widget_2, "No hay datos en este periodo")
-
-        self.ventas_periodo_thread.resultado.connect(lambda x: (datos_periodo.update({'ventas': x}), check_and_graficar()))
-        self.ganancias_periodo_thread.resultado.connect(lambda x: (datos_periodo.update({'ganancias': x}), check_and_graficar()))
-        self.metodos_pago_y_id_thread.resultado.connect(lambda x: (datos_periodo.update({'metodos_pago': x}), check_and_graficar()))
-
-        self.start_thread(self.ventas_periodo_thread)
-        self.start_thread(self.ganancias_periodo_thread)
-        self.start_thread(self.metodos_pago_y_id_thread)
-
-    def graficar_ventas_y_ganancias(self, widget, ventas, ganancias):
-        # Limpiar el layout si ya tiene un gráfico
-        layout = widget.layout()
-        if layout:
-            while layout.count():
-                child = layout.takeAt(0)
-                if child.widget():
-                    old_canvas = child.widget()
-                    if isinstance(old_canvas, FigureCanvas):
-                        old_canvas.figure.clear()
-                        old_canvas.close()
-                    old_canvas.deleteLater()
     
-        # Crear la figura y el eje
-        fig = Figure(figsize=(6, 4))
-        ax = fig.add_subplot(111)
-    
-        # Crear las barras
-        x = range(len(ventas))
-        ax.bar(x, ventas, width=0.4, label="Ventas", color="#2986CC", align="center")
-        ax.bar([i + 0.4 for i in x], ganancias, width=0.4, label="Ganancias", color="lightgreen", align="center")
-    
-        # Configurar etiquetas y título
-        ax.set_xticks([i + 0.2 for i in x])
-        ax.set_xticklabels([f"Día {i+1}" for i in x], fontname="Segoe UI", fontsize=8, rotation=0)
-        ax.set_ylabel("Monto ($)", fontname="Segoe UI", fontsize=10)
-        ax.set_title("Ventas y Ganancias del Periodo", fontname="Segoe UI", fontsize=12)
-        
-        # Configurar la leyenda con transparencia y colores consistentes
-        legend = ax.legend(prop={"family": "Segoe UI", "size": 8}, frameon=True, facecolor="white", edgecolor="gray",loc="upper right")
-        legend.get_frame().set_alpha(0.8)  # Transparencia de la leyenda
-    
-        # Incrustar el gráfico en el widget
-        canvas = FigureCanvas(fig)
-        if not layout:
-            layout = QVBoxLayout(widget)
-            widget.setLayout(layout)
-        layout.addWidget(canvas)
-
-    def graficar_ventas_por_metodo(self, widget, periodo1, periodo2, metodos_pago):
-        # Limpiar el layout si ya tiene un gráfico
-        layout = widget.layout()
-        if layout:
-            while layout.count():
-                child = layout.takeAt(0)
-                if child.widget():
-                    old_canvas = child.widget()
-                    if isinstance(old_canvas, FigureCanvas):
-                        old_canvas.figure.clear()
-                        old_canvas.close()
-                    old_canvas.deleteLater()
-
-        # Crear la figura y el eje
-        fig = Figure(figsize=(6, 4))
-        ax = fig.add_subplot(111)
-
-        colores = ["#FF5733", "#33FF57", "#3357FF", "#FF33A1", "#A133FF", "#33FFF5", "#FFC300", "#DAF7A6", "#C70039"]
-        x = range(len(metodos_pago))
-        ancho_barra = 0.8 / len(metodos_pago)
-
-        datos_por_metodo = {}
-        threads = []
-
-        def check_and_draw():
-            if len(datos_por_metodo) == len(metodos_pago):
-                for i, metodo in enumerate(metodos_pago):
-                    id_metodo = metodo[0]
-                    nombre_metodo = metodo[1]
-                    datos = datos_por_metodo.get(nombre_metodo, [0]*len(x))
-                    posiciones = [pos + i * ancho_barra for pos in x]
-                    ax.bar(posiciones, datos, width=ancho_barra, label=nombre_metodo, color=colores[i % len(colores)], align="center")
-                ax.set_xticks([pos + (ancho_barra * (len(metodos_pago) - 1)) / 2 for pos in x])
-                ax.set_xticklabels([f"Día {i+1}" for i in x], fontname="Segoe UI", fontsize=8, rotation=0)
-                ax.set_ylabel("Monto ($)", fontname="Segoe UI", fontsize=10)
-                ax.set_title("Ventas por Método de Pago del Periodo", fontname="Segoe UI", fontsize=12)
-                legend = ax.legend(prop={"family": "Segoe UI", "size": 8}, frameon=True, facecolor="white", edgecolor="gray",loc="upper right")
-                legend.get_frame().set_alpha(0.8)
-                canvas = FigureCanvas(fig)
-                if not layout:
-                    layout = QVBoxLayout(widget)
-                    widget.setLayout(layout)
-                layout.addWidget(canvas)
-
-        for i, metodo in enumerate(metodos_pago):
-            id_metodo = metodo[0]
-            nombre_metodo = metodo[1]
-            thread = TraerDatosPorMetodoYDiaPeriodoThread(periodo1, periodo2, id_metodo)
-            threads.append(thread)
-            def make_callback(nombre_metodo):
-                return lambda datos: (datos_por_metodo.update({nombre_metodo: datos}), check_and_draw())
-            thread.resultado.connect(make_callback(nombre_metodo))
-            self.start_thread(thread)
-
-    def mostrar_mensaje_en_widget(self, widget, mensaje):
-        # Limpiar el layout si ya tiene un gráfico
-        layout = widget.layout()
-        if layout:
-            while layout.count():
-                child = layout.takeAt(0)
-                if child.widget():
-                    old_canvas = child.widget()
-                    if isinstance(old_canvas, FigureCanvas):
-                        old_canvas.figure.clear()
-                        old_canvas.close()
-                    old_canvas.deleteLater()
-    
-        # Crear la figura y el eje
-        fig = Figure(figsize=(6, 4))
-        ax = fig.add_subplot(111)
-        ax.text(0.5, 0.5, mensaje, fontsize=12, ha='center', va='center', transform=ax.transAxes)
-        ax.axis("off")
-    
-        # Incrustar el mensaje en el widget
-        canvas = FigureCanvas(fig)
-        if not layout:
-            layout = QVBoxLayout(widget)
-            widget.setLayout(layout)
-        layout.addWidget(canvas)
 
 ################
 ################

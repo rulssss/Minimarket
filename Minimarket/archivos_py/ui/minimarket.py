@@ -2626,19 +2626,6 @@ class Ui_MainWindow(object):
         self.frame_48.setFrameShadow(QFrame.Shadow.Raised)
         self.gridLayout_26 = QGridLayout(self.frame_48)
         self.gridLayout_26.setObjectName(u"gridLayout_26")
-        self.label_102 = QLabel(self.frame_48)
-        self.label_102.setObjectName(u"label_102")
-        self.label_102.setFont(font8)
-
-        self.gridLayout_26.addWidget(self.label_102, 0, 2, 1, 1, Qt.AlignmentFlag.AlignRight)
-
-        self.dateEdit = QDateEdit(self.frame_48)
-        self.dateEdit.setObjectName(u"dateEdit")
-        self.dateEdit.setMaximumSize(QSize(100, 16777215))
-        self.dateEdit.setFont(font6)
-
-        self.gridLayout_26.addWidget(self.dateEdit, 0, 3, 1, 1)
-
         self.label_101 = QLabel(self.frame_48)
         self.label_101.setObjectName(u"label_101")
         font17 = QFont()
@@ -2648,19 +2635,6 @@ class Ui_MainWindow(object):
         self.label_101.setFont(font17)
 
         self.gridLayout_26.addWidget(self.label_101, 0, 0, 1, 1, Qt.AlignmentFlag.AlignLeft)
-
-        self.dateEdit_2 = QDateEdit(self.frame_48)
-        self.dateEdit_2.setObjectName(u"dateEdit_2")
-        self.dateEdit_2.setMaximumSize(QSize(100, 16777215))
-        self.dateEdit_2.setFont(font6)
-
-        self.gridLayout_26.addWidget(self.dateEdit_2, 0, 6, 1, 1)
-
-        self.label_103 = QLabel(self.frame_48)
-        self.label_103.setObjectName(u"label_103")
-        self.label_103.setFont(font8)
-
-        self.gridLayout_26.addWidget(self.label_103, 0, 5, 1, 1, Qt.AlignmentFlag.AlignRight)
 
         self.horizontalSpacer_147 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
@@ -2675,17 +2649,17 @@ class Ui_MainWindow(object):
         self.frame_46.setFrameShadow(QFrame.Shadow.Raised)
         self.gridLayout_23 = QGridLayout(self.frame_46)
         self.gridLayout_23.setObjectName(u"gridLayout_23")
-        self.pushButton_42 = QPushButton(self.frame_46)
-        self.pushButton_42.setObjectName(u"pushButton_42")
+        self.pushButton_46 = QPushButton(self.frame_46)
+        self.pushButton_46.setObjectName(u"pushButton_46")
         font18 = QFont()
         font18.setPointSize(11)
         font18.setBold(False)
         font18.setUnderline(True)
         font18.setStrikeOut(False)
-        self.pushButton_42.setFont(font18)
-        self.pushButton_42.setFlat(True)
+        self.pushButton_46.setFont(font18)
+        self.pushButton_46.setFlat(True)
 
-        self.gridLayout_23.addWidget(self.pushButton_42, 0, 4, 1, 1)
+        self.gridLayout_23.addWidget(self.pushButton_46, 0, 0, 1, 1)
 
         self.pushButton_44 = QPushButton(self.frame_46)
         self.pushButton_44.setObjectName(u"pushButton_44")
@@ -2694,13 +2668,6 @@ class Ui_MainWindow(object):
 
         self.gridLayout_23.addWidget(self.pushButton_44, 0, 2, 1, 1)
 
-        self.pushButton_45 = QPushButton(self.frame_46)
-        self.pushButton_45.setObjectName(u"pushButton_45")
-        self.pushButton_45.setFont(font18)
-        self.pushButton_45.setFlat(True)
-
-        self.gridLayout_23.addWidget(self.pushButton_45, 0, 1, 1, 1)
-
         self.pushButton_43 = QPushButton(self.frame_46)
         self.pushButton_43.setObjectName(u"pushButton_43")
         self.pushButton_43.setFont(font18)
@@ -2708,12 +2675,12 @@ class Ui_MainWindow(object):
 
         self.gridLayout_23.addWidget(self.pushButton_43, 0, 3, 1, 1)
 
-        self.pushButton_46 = QPushButton(self.frame_46)
-        self.pushButton_46.setObjectName(u"pushButton_46")
-        self.pushButton_46.setFont(font18)
-        self.pushButton_46.setFlat(True)
+        self.pushButton_45 = QPushButton(self.frame_46)
+        self.pushButton_45.setObjectName(u"pushButton_45")
+        self.pushButton_45.setFont(font18)
+        self.pushButton_45.setFlat(True)
 
-        self.gridLayout_23.addWidget(self.pushButton_46, 0, 0, 1, 1)
+        self.gridLayout_23.addWidget(self.pushButton_45, 0, 1, 1, 1)
 
 
         self.verticalLayout_35.addWidget(self.frame_46)
@@ -3857,14 +3824,11 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem27 = self.tableWidget_6.horizontalHeaderItem(6)
         ___qtablewidgetitem27.setText(QCoreApplication.translate("MainWindow", u"Precio Unitario", None));
         self.label_35.setText(QCoreApplication.translate("MainWindow", u"Arqueo/Mes/A\u00f1o", None))
-        self.label_102.setText(QCoreApplication.translate("MainWindow", u"Desde ", None))
         self.label_101.setText(QCoreApplication.translate("MainWindow", u"Ventas del A\u00f1o 2025", None))
-        self.label_103.setText(QCoreApplication.translate("MainWindow", u"Hasta ", None))
-        self.pushButton_42.setText(QCoreApplication.translate("MainWindow", u"Periodo", None))
-        self.pushButton_44.setText(QCoreApplication.translate("MainWindow", u"Mes Actual", None))
-        self.pushButton_45.setText(QCoreApplication.translate("MainWindow", u"Mes Anterior", None))
-        self.pushButton_43.setText(QCoreApplication.translate("MainWindow", u"A\u00f1o Actual", None))
         self.pushButton_46.setText(QCoreApplication.translate("MainWindow", u"Semana Actual ", None))
+        self.pushButton_44.setText(QCoreApplication.translate("MainWindow", u"Mes Actual", None))
+        self.pushButton_43.setText(QCoreApplication.translate("MainWindow", u"A\u00f1o Actual", None))
+        self.pushButton_45.setText(QCoreApplication.translate("MainWindow", u"Mes Anterior", None))
         self.label_105.setText(QCoreApplication.translate("MainWindow", u"N\u00famero de Ventas  ", None))
         self.label_106.setText(QCoreApplication.translate("MainWindow", u"Venta Promedio  ", None))
         self.label_104.setText(QCoreApplication.translate("MainWindow", u"Ventas Totales  ", None))

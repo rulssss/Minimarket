@@ -2723,9 +2723,15 @@ def traer_ventas_totales_periodo(periodo1, periodo2):
         print(f"Error al traer ventas totales del periodo en Supabase: {e}")
         return 0
     
+from datetime import datetime
+
 def traer_numero_de_ventas_periodo(periodo1, periodo2):
     global id_usuario_perfil
     try:
+        # Convertir periodo1 y periodo2 a datetime
+        periodo1_dt = datetime.fromisoformat(str(periodo1))
+        periodo2_dt = datetime.fromisoformat(str(periodo2))
+
         # Obtener todas las ventas del perfil en el rango de fechas
         response_ventas = supabase.table("ventas") \
             .select("id_venta, fecha_hora") \
@@ -2734,10 +2740,15 @@ def traer_numero_de_ventas_periodo(periodo1, periodo2):
         ventas = response_ventas.data
 
         # Filtrar ventas por rango de fechas
-        ventas_filtradas = [
-            v for v in ventas
-            if periodo1 <= v["fecha_hora"] <= periodo2
-        ]
+        ventas_filtradas = []
+        for v in ventas:
+            fecha_v = v["fecha_hora"].split('+')[0]  # Quita zona horaria si existe
+            try:
+                fecha_v_dt = datetime.fromisoformat(fecha_v)
+                if periodo1_dt <= fecha_v_dt <= periodo2_dt:
+                    ventas_filtradas.append(v)
+            except Exception:
+                continue
 
         return len(ventas_filtradas)
     except Exception as e:
@@ -2747,6 +2758,10 @@ def traer_numero_de_ventas_periodo(periodo1, periodo2):
 def traer_venta_promedio_periodo(periodo1, periodo2):
     global id_usuario_perfil
     try:
+        # Convertir periodo1 y periodo2 a datetime
+        periodo1_dt = datetime.fromisoformat(str(periodo1))
+        periodo2_dt = datetime.fromisoformat(str(periodo2))
+
         # Obtener todas las ventas del perfil en el rango de fechas
         response_ventas = supabase.table("ventas") \
             .select("id_venta, fecha_hora") \
@@ -2755,10 +2770,15 @@ def traer_venta_promedio_periodo(periodo1, periodo2):
         ventas = response_ventas.data
 
         # Filtrar ventas por rango de fechas
-        ventas_filtradas = [
-            v for v in ventas
-            if periodo1 <= v["fecha_hora"] <= periodo2
-        ]
+        ventas_filtradas = []
+        for v in ventas:
+            fecha_v = v["fecha_hora"].split('+')[0]  # Quita zona horaria si existe
+            try:
+                fecha_v_dt = datetime.fromisoformat(fecha_v)
+                if periodo1_dt <= fecha_v_dt <= periodo2_dt:
+                    ventas_filtradas.append(v)
+            except Exception:
+                continue
 
         if not ventas_filtradas:
             return 0
@@ -2788,10 +2808,13 @@ def traer_venta_promedio_periodo(periodo1, periodo2):
         print(f"Error al traer el promedio de ventas del periodo en Supabase: {e}")
         return 0
     
-
 def traer_ganancias_totales_periodo(periodo1, periodo2):
     global id_usuario_perfil
     try:
+        # Convertir periodo1 y periodo2 a datetime
+        periodo1_dt = datetime.fromisoformat(str(periodo1))
+        periodo2_dt = datetime.fromisoformat(str(periodo2))
+
         # Obtener todas las ventas del perfil en el rango de fechas
         response_ventas = supabase.table("ventas") \
             .select("id_venta, fecha_hora") \
@@ -2800,10 +2823,15 @@ def traer_ganancias_totales_periodo(periodo1, periodo2):
         ventas = response_ventas.data
 
         # Filtrar ventas por rango de fechas
-        ventas_filtradas = [
-            v for v in ventas
-            if periodo1 <= v["fecha_hora"] <= periodo2
-        ]
+        ventas_filtradas = []
+        for v in ventas:
+            fecha_v = v["fecha_hora"].split('+')[0]  # Quita zona horaria si existe
+            try:
+                fecha_v_dt = datetime.fromisoformat(fecha_v)
+                if periodo1_dt <= fecha_v_dt <= periodo2_dt:
+                    ventas_filtradas.append(v)
+            except Exception:
+                continue
 
         if not ventas_filtradas:
             return 0
@@ -2826,125 +2854,7 @@ def traer_ganancias_totales_periodo(periodo1, periodo2):
     except Exception as e:
         print(f"Error al traer ganancias totales del periodo en Supabase: {e}")
         return 0
-    
-def traer_ventas_periodo(periodo1, periodo2):
-    global id_usuario_perfil
-    try:
-        # Obtener todas las ventas del perfil en el rango de fechas
-        response_ventas = supabase.table("ventas") \
-            .select("id_venta, fecha_hora") \
-            .eq("u_id", id_usuario_perfil) \
-            .execute()
-        ventas = response_ventas.data
 
-        # Filtrar ventas por rango de fechas
-        ventas_filtradas = [
-            v for v in ventas
-            if periodo1 <= v["fecha_hora"] <= periodo2
-        ]
-
-        if not ventas_filtradas:
-            return []
-
-        # Obtener todos los detalles de ventas del perfil
-        response_detalles = supabase.table("detalle_ventas") \
-            .select("id_venta, cantidad, precio_unitario_venta") \
-            .eq("u_id", id_usuario_perfil) \
-            .execute()
-        detalles = response_detalles.data
-
-        # Agrupar y sumar ventas por día
-        from collections import defaultdict
-        ventas_por_dia = defaultdict(float)
-        for v in ventas_filtradas:
-            dia = v["fecha_hora"][:10]  # YYYY-MM-DD
-            for d in detalles:
-                if d["id_venta"] == v["id_venta"]:
-                    ventas_por_dia[dia] += d["precio_unitario_venta"] * d["cantidad"]
-
-        # Ordenar por fecha y devolver solo los totales
-        return [ventas_por_dia[dia] for dia in sorted(ventas_por_dia.keys())]
-    except Exception as e:
-        print(f"Error al traer ventas por periodo en Supabase: {e}")
-        return []
-    
-def traer_ganancias_periodo(periodo1, periodo2):
-    global id_usuario_perfil
-    try:
-        # Obtener todas las ventas del perfil en el rango de fechas
-        response_ventas = supabase.table("ventas") \
-            .select("id_venta, fecha_hora") \
-            .eq("u_id", id_usuario_perfil) \
-            .execute()
-        ventas = response_ventas.data
-
-        # Filtrar ventas por rango de fechas
-        ventas_filtradas = [
-            v for v in ventas
-            if periodo1 <= v["fecha_hora"] <= periodo2
-        ]
-
-        if not ventas_filtradas:
-            return 0
-
-        # Obtener todos los detalles de ventas del perfil
-        response_detalles = supabase.table("detalle_ventas") \
-            .select("id_venta, cantidad, precio_unitario_venta, precio_unitario_compra") \
-            .eq("u_id", id_usuario_perfil) \
-            .execute()
-        detalles = response_detalles.data
-
-        # Sumar el total de ganancias del periodo
-        total = 0
-        for v in ventas_filtradas:
-            for d in detalles:
-                if d["id_venta"] == v["id_venta"]:
-                    total += (d["precio_unitario_venta"] - d["precio_unitario_compra"]) * d["cantidad"]
-
-        return total
-    except Exception as e:
-        print(f"Error al traer ganancias del periodo en Supabase: {e}")
-        return 0
-    
-def traer_datos_por_metodo_y_dia_periodo(periodo1, periodo2, id_metodo):
-    global id_usuario_perfil
-    try:
-        # Obtener todas las ventas del perfil con el método de pago seleccionado
-        response_ventas = supabase.table("ventas") \
-            .select("id_venta, fecha_hora, id_metodo_pago") \
-            .eq("u_id", id_usuario_perfil) \
-            .eq("id_metodo_pago", id_metodo) \
-            .execute()
-        ventas = response_ventas.data
-
-        # Filtrar ventas por rango de fechas
-        ventas_filtradas = [
-            v for v in ventas
-            if periodo1 <= v["fecha_hora"] <= periodo2
-        ]
-
-        if not ventas_filtradas:
-            return 0
-
-        # Obtener todos los detalles de ventas del perfil
-        response_detalles = supabase.table("detalle_ventas") \
-            .select("id_venta, cantidad, precio_unitario_venta") \
-            .eq("u_id", id_usuario_perfil) \
-            .execute()
-        detalles = response_detalles.data
-
-        # Sumar el total de ventas del periodo para ese método
-        total = 0
-        for v in ventas_filtradas:
-            for d in detalles:
-                if d["id_venta"] == v["id_venta"]:
-                    total += d["precio_unitario_venta"] * d["cantidad"]
-
-        return total
-    except Exception as e:
-        print(f"Error al traer datos por método y día del periodo en Supabase: {e}")
-        return 0
-    
 
 def verificar_existencia_de_mp():
     global id_usuario_perfil
