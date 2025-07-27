@@ -3619,6 +3619,10 @@ class BuscarDatosTab:
     
     def enviar_a_setear_tables(self):
         # Obtener elementos UI una sola vez
+        push_button_47 = self.ui.frame_31.findChild(QPushButton, "pushButton_47")
+        if push_button_47:
+            push_button_47.setEnabled(False)
+
         combobox_10_dia = self.ui.frame_32.findChild(QComboBox, "comboBox_10")
         combobox_9_mes = self.ui.frame_32.findChild(QComboBox, "comboBox_9")
         combobox_8_anio = self.ui.frame_32.findChild(QComboBox, "comboBox_8")
@@ -3819,6 +3823,10 @@ class BuscarDatosTab:
         else:
             self.resultados_arqueo["compras_totales"] = total
             self.resultados_arqueo["numero_de_compras"] = len(datos)
+
+        push_button_47 = self.ui.frame_31.findChild(QPushButton, "pushButton_47")
+        if push_button_47:
+            push_button_47.setEnabled(True)
 
     def _procesar_por_metodo_pago(self, metodo_pago_nombre, fecha, tablewidget_ventas, tablewidget_compras, label_58, label_47):
         """Procesar datos filtrados por método de pago"""
@@ -4189,14 +4197,10 @@ class BuscarDatosTab:
 
     def mostrar_estadisticas(self):
         label_101  = self.ui.stackedWidget.findChild(QLabel, "label_101")
-        label_102 = self.ui.stackedWidget.findChild(QLabel, "label_102")
-        label_103 = self.ui.stackedWidget.findChild(QLabel, "label_103")
         label_108 = self.ui.stackedWidget.findChild(QLabel, "label_108")
         label_109 = self.ui.stackedWidget.findChild(QLabel, "label_109")
         label_110 = self.ui.stackedWidget.findChild(QLabel, "label_110")
         label_111 = self.ui.stackedWidget.findChild(QLabel, "label_111")
-        date_edit1 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit")
-        date_edit2 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit_2")
         semana_actual = self.ui.stackedWidget.findChild(QPushButton, "pushButton_46")
         mes_anteriror = self.ui.stackedWidget.findChild(QPushButton, "pushButton_45")
         mes_actual = self.ui.stackedWidget.findChild(QPushButton, "pushButton_44")
@@ -4204,11 +4208,6 @@ class BuscarDatosTab:
 
         if label_101:
             label_101.setText(f"Ventas")
-
-        #if label_102:
-        #    label_102.setStyleSheet("color: transparent")
-        #if label_103:
-        #    label_103.setStyleSheet("color: transparent")
 
         if label_108:
             label_108.setText("$0.00")
@@ -4801,10 +4800,6 @@ class BuscarDatosTab:
 
 
     def mostrar_estadisticas_semana_actual(self):
-        label_102 = self.ui.stackedWidget.findChild(QLabel, "label_102")
-        label_103 = self.ui.stackedWidget.findChild(QLabel, "label_103")
-        date_edit1 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit")
-        date_edit2 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit_2")
         label_101 = self.ui.stackedWidget.findChild(QLabel, "label_101")
         label_108 = self.ui.stackedWidget.findChild(QLabel, "label_108")
         label_109 = self.ui.stackedWidget.findChild(QLabel, "label_109")
@@ -4816,14 +4811,6 @@ class BuscarDatosTab:
         semana_actual = datetime.now().isocalendar()[1]
         ano_actual = datetime.now().year
 
-        if label_102:
-            label_102.setStyleSheet("color: transparent")
-        if label_103:
-            label_103.setStyleSheet("color: transparent")
-        if date_edit1:
-            date_edit1.setVisible(False)
-        if date_edit2:
-            date_edit2.setVisible(False)
         if label_101:
             label_101.setText(f"Ventas de la Semana {semana_actual}")
 
@@ -4869,7 +4856,7 @@ class BuscarDatosTab:
                     if layout:
                         while layout.count():
                             child = layout.takeAt(0)
-                            if child.widget():
+                            if child.widget(): 
                                 old_canvas = child.widget()
                                 if isinstance(old_canvas, FigureCanvas):
                                     old_canvas.figure.clear()
