@@ -565,7 +565,6 @@ class DatosTab:
                     input_stock_ideal.setFocus()
 
 
-    # En tu clase DatosTab:
     def on_producto_agregado(self, exito, input_id_value, usuario_activo, input_id):
         label_70 = self.ui.frame_5.findChild(QLabel, "label_70")
         label_71 = self.ui.frame_5.findChild(QLabel, "label_71")
@@ -573,19 +572,6 @@ class DatosTab:
         button20 = self.ui.frame_5.findChild(QPushButton, "pushButton_20")
 
         if exito:
-            if button19:
-                button19.setEnabled(True)
-            if button20:
-                button20.setEnabled(True)
-
-            self.clear_inputs_agregar_productos()
-            if label_70 and label_71:
-                label_70.setText("Producto cargado")
-                label_71.setText("con éxito!")
-                label_70.setStyleSheet("color: green; font-weight: bold")
-                label_71.setStyleSheet("color: green; font-weight: bold")
-                QTimer.singleShot(6000, lambda: label_70.setStyleSheet("color: transparent"))
-                QTimer.singleShot(6000, lambda: label_71.setStyleSheet("color: transparent"))
             
             # Usar hilo para cargar el movimiento
             self.movimiento_thread = MovimientoProductoThread(input_id_value, usuario_activo)
@@ -596,13 +582,32 @@ class DatosTab:
             productos_cache = None
             productos_por_id_cache = None
     
-            self.actualizar_variables_globales_de_uso(3, self.populate_table_with_products)
-            combobox_id = self.ui.frame_7.findChild(QComboBox, "comboBox_3")
-            if combobox_id:
-                self.populate_combobox_with_ids(combobox_id)
+            self.actualizar_variables_globales_de_uso(3, lambda: (
+                self.populate_table_with_products(),
+                self.populate_combobox_with_ids(self.ui.frame_7.findChild(QComboBox, "comboBox_3"))
+            ))
+
             if input_id:
                 input_id.setFocus()
                 QTimer.singleShot(2000, lambda: input_id.setFocus())
+
+            #actualizar combobox id de editar productos
+
+            self.clear_inputs_agregar_productos()
+                
+            if label_70 and label_71:
+                label_70.setText("Producto cargado")
+                label_71.setText("con éxito!")
+                label_70.setStyleSheet("color: green; font-weight: bold")
+                label_71.setStyleSheet("color: green; font-weight: bold")
+                QTimer.singleShot(6000, lambda: label_70.setStyleSheet("color: transparent"))
+                QTimer.singleShot(6000, lambda: label_71.setStyleSheet("color: transparent"))
+
+            if button19:
+                button19.setEnabled(True)
+            if button20:
+                button20.setEnabled(True)
+
         else:
 
             self.clear_inputs_agregar_productos()
@@ -1169,6 +1174,7 @@ class DatosTab:
 
     def filter_combobox_ids(self, combobox, text):
         global productos
+        print(productos)
         ids = [str(producto[0]) for producto in productos if text in str(producto[0])]
         combobox.clear()
         for item in ids:
@@ -7018,7 +7024,7 @@ class MainWindow(QMainWindow):
                     if self.administracion_tab.facturero_compras_window:
                         self.administracion_tab.cerrar_facturero_compras()
             tab_widget.currentChanged.connect(on_tab_changed)
-            
+
         # Establece inicio rls
         stacked_widget = self.ui.stackedWidget
         if stacked_widget:
