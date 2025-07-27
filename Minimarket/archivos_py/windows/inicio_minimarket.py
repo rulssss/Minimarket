@@ -7007,6 +7007,18 @@ class MainWindow(QMainWindow):
         self.buscar_datos_tab = BuscarDatosTab(self.ui, self.datos_tab)
         self.administracion_tab = AdministracionTab(self.ui, self.buscar_datos_tab, self.datos_tab)
 
+        # Cerrar factureros al cambiar a la pestaña "Datos"
+        tab_widget = self.ui.tabWidget
+        if tab_widget:
+            def on_tab_changed(index):
+                # Cambia el número 0 por el índice real de la pestaña "Datos" si es diferente
+                if tab_widget.tabText(index) == "Datos":
+                    if self.administracion_tab.facturero_ventas_window:
+                        self.administracion_tab.cerrar_facturero_venta()
+                    if self.administracion_tab.facturero_compras_window:
+                        self.administracion_tab.cerrar_facturero_compras()
+            tab_widget.currentChanged.connect(on_tab_changed)
+            
         # Establece inicio rls
         stacked_widget = self.ui.stackedWidget
         if stacked_widget:
