@@ -909,11 +909,11 @@ class DatosTab:
                 # Actualizar productos y refrescar la tabla y combobox cuando termine
                 self.actualizar_variables_globales_de_uso(3, lambda: (
                     self.populate_table_with_products(),
-                    
+            
                 ))
                 
                 self.movimiento_thread = MovimientoAumentoPreciosThread(combobox_20_value, usuario_activo, s)
-                self.movimiento_thread.finished.connect(lambda: (self.clear_doublespinbox_values(), self.load_product_data(), pushbutton_49.setEnabled(True), boton_editar.setEnabled(True), boton_cancelar.setEnabled(True)))
+                self.movimiento_thread.finished.connect(lambda: (self.load_product_data(), self.clear_doublespinbox_values(), pushbutton_49.setEnabled(True), boton_editar.setEnabled(True), boton_cancelar.setEnabled(True)))
                 self.start_thread(self.movimiento_thread)
 
             else:
@@ -926,7 +926,7 @@ class DatosTab:
                 
 
         self.aumentar_thread.finished.connect(on_aumento_finalizado)
-        self.aumentar_thread.start()
+        self.start_thread(self.aumentar_thread)
 
     def load_product_data(self):
         global productos, productos_cache, productos_por_id_cache, producto_selecc
