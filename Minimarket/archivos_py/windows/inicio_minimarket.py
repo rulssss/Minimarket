@@ -1176,7 +1176,6 @@ class DatosTab:
 
     def filter_combobox_ids(self, combobox, text):
         global productos
-        print(productos)
         ids = [str(producto[0]) for producto in productos if text in str(producto[0])]
         combobox.clear()
         for item in ids:
@@ -2663,6 +2662,10 @@ class DatosTab:
     # agregar usuario 
 
     def agregar_usuario(self):
+        if getattr(self, "_usuario_en_proceso", False):
+            return
+        self._usuario_en_proceso = True
+
         combobox_14 = self.ui.frame_29.findChild(QComboBox, "comboBox_14")
         line_edit_24 = self.ui.frame_29.findChild(QLineEdit, "lineEdit_24")
         push_button_39 = self.ui.frame_29.findChild(QPushButton, "pushButton_39")
@@ -2672,14 +2675,15 @@ class DatosTab:
         push_button_32 = self.ui.frame_29.findChild(QPushButton, "pushButton_32")
 
 
+        print(" cargando usuarios ")
         if combobox_14:
+            combobox_14.clear()
             combobox_14.addItem("Administrador")
             combobox_14.addItem("Usuario")
 
         if line_edit_24:
             line_edit_24.setEchoMode(QLineEdit.Password)
         
-
         if push_button_39:
             push_button_39.setFocusPolicy(Qt.NoFocus)
             push_button_39.setIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\eye_visible_hide_hidden_show_icon_145988.png"))
@@ -2757,6 +2761,9 @@ class DatosTab:
                     self.registro_thread = AgregarRegistroUsuarioThread(value_combobox_14, value_line_edit_23, value_line_edit_24, value_line_edit)
                     def on_registro_finalizado(exito):
                         if exito:
+                            #controla para que no s eejecute dos veces
+                            self._usuario_en_proceso = False
+
                             label_90 = self.ui.frame_29.findChild(QLabel, "label_90")
                             label_96 = self.ui.frame_29.findChild(QLabel, "label_96")
 
@@ -2773,12 +2780,7 @@ class DatosTab:
                                 self.populate_combobox_with_names(self.ui.frame_45.findChild(QComboBox, "comboBox_16"))
                             ))
 
-                            label_90.setText("Usuario agregado")
-                            label_96.setText("con éxito")
-                            label_96.setStyleSheet("color: green; font-weight: bold")
-                            label_90.setStyleSheet("color: green; font-weight: bold")
-                            QTimer.singleShot(6000, lambda: label_96.setStyleSheet("color: transparent"))
-                            QTimer.singleShot(6000, lambda: label_90.setStyleSheet("color: transparent"))
+                            
                             # Actualizar cache de usuarios
                             global usuarios
                             usuarios = None
@@ -2786,6 +2788,13 @@ class DatosTab:
                             self.actualizar_variables_globales_de_uso(1, lambda: (
                                 self.populate_combobox_with_names(self.ui.frame_45.findChild(QComboBox, "comboBox_16")),
                             ))
+
+                            label_90.setText("Usuario agregado")
+                            label_96.setText("con éxito")
+                            label_96.setStyleSheet("color: green; font-weight: bold")
+                            label_90.setStyleSheet("color: green; font-weight: bold")
+                            QTimer.singleShot(6000, lambda: label_96.setStyleSheet("color: transparent"))
+                            QTimer.singleShot(6000, lambda: label_90.setStyleSheet("color: transparent"))
 
                             push_button_31 = self.ui.frame_29.findChild(QPushButton, "pushButton_31")
                             push_button_32 = self.ui.frame_29.findChild(QPushButton, "pushButton_32")
@@ -2796,10 +2805,13 @@ class DatosTab:
 
 
                         else:
+                           self._usuario_en_proceso = False
                            print("no se pudo cargar el usuario")
                     self.registro_thread.resultado.connect(on_registro_finalizado)
                     self.start_thread(self.registro_thread)
                 else:
+                    self._usuario_en_proceso = False
+
                     label_90.setText("Complete correctamente")
                     label_96.setText("el email")
                     label_96.setStyleSheet("color: red; font-weight: bold")
@@ -2808,11 +2820,14 @@ class DatosTab:
                     line_edit.selectAll()
 
             else :
+                self._usuario_en_proceso = False
+
                 label_90.setText("La contraseña debe tener")
                 label_96.setText("al menos 8 caracteres")
                 label_96.setStyleSheet("color: red; font-weight: bold")
                 label_90.setStyleSheet("color: red; font-weight: bold")
         else:
+            self._usuario_en_proceso = False
             label_90.setText("Por favor, complete todos")
             label_96.setText("los campos correctamente")
             label_96.setStyleSheet("color: red; font-weight: bold")
@@ -2864,6 +2879,7 @@ class DatosTab:
         line_edit_25 = self.ui.frame_45.findChild(QLineEdit, "lineEdit_25")
 
         if combobox_15:
+            combobox_15.clear()
             combobox_15.addItem("Administrador")
             combobox_15.addItem("Usuario")
         
@@ -2929,6 +2945,14 @@ class DatosTab:
         self.load_user_data()
 
     def validar_datos_iguales_usuario(self, usuario_selecc):
+        push_button_33 = self.ui.frame_45.findChild(QPushButton, "pushButton_33")
+        push_button_35 = self.ui.frame_45.findChild(QPushButton, "pushButton_35")
+
+        if push_button_33:
+            push_button_33.setEnabled(False)
+        if push_button_35:
+            push_button_35.setEnabled(False)
+
         label_93 = self.ui.frame_45.findChild(QLabel, "label_93")
         label_98 = self.ui.frame_45.findChild(QLabel, "label_98")
 
@@ -2952,6 +2976,9 @@ class DatosTab:
 
     def validar_editar_usuario(self):
         global usuario_selecc, usuario_activo, usuarios
+
+        push_button_33 = self.ui.frame_45.findChild(QPushButton, "pushButton_33")
+        push_button_35 = self.ui.frame_45.findChild(QPushButton, "pushButton_35")
 
         combobox_15 = self.ui.frame_45.findChild(QComboBox, "comboBox_15")
         line_edit_25 = self.ui.frame_45.findChild(QLineEdit, "lineEdit_25")  # mail
@@ -2998,8 +3025,16 @@ class DatosTab:
                 self.movimiento_thread = CargarMovimientoEditarUsuarioThread(
                     usuario_selecc[0][0], value_combobox_16, usuario_activo
                 )
-                self.movimiento_thread.start()
+                self.start_thread(self.movimiento_thread)
                 QTimer.singleShot(0, lambda: QTimer().stop())
+        
+                global usuarios_cache
+                usuarios_cache = None
+                combobox_16 = self.ui.frame_45.findChild(QComboBox, "comboBox_16")
+                self.actualizar_variables_globales_de_uso(4, lambda: (
+                    self.populate_combobox_with_names(combobox_16)
+                ))
+
                 label_93.setText("Usuario")
                 label_98.setText("actualizado")
                 label_98.setStyleSheet("color: green; font-weight: bold")
@@ -3007,17 +3042,21 @@ class DatosTab:
                 QTimer.singleShot(6000, lambda: label_93.setStyleSheet("color: transparent"))
                 QTimer.singleShot(6000, lambda: label_98.setStyleSheet("color: transparent"))
 
-                global usuarios_cache
-                usuarios_cache = None
-                combobox_16 = self.ui.frame_45.findChild(QComboBox, "comboBox_16")
-                self.actualizar_variables_globales_de_uso(4, lambda: (
-                    self.populate_combobox_with_names(combobox_16)
-                ))
+                if push_button_33:
+                    push_button_33.setEnabled(True)
+                if push_button_35:
+                    push_button_35.setEnabled(True)
+
             else:
+                if push_button_33:
+                    push_button_33.setEnabled(True)
+                if push_button_35:
+                    push_button_35.setEnabled(True)
+                    
                 print("no se pudo actualizar el usuario")
                 
         self.actualizar_usuario_thread.resultado.connect(on_actualizado)
-        self.actualizar_usuario_thread.start()
+        self.start_thread(self.actualizar_usuario_thread)
 
 
 
@@ -3087,7 +3126,7 @@ class DatosTab:
                 if exito:
                     # Hilo para cargar el movimiento de usuario borrado
                     self.movimiento_usuario_borrado_thread = MovimientoUsuarioBorradoThread(value_line_edit_29, id_usuario, usuario_activo)
-                    self.movimiento_usuario_borrado_thread.start()
+                    self.start_thread(self.movimiento_usuario_borrado_thread)
 
                     global usuarios_cache, usuarios_por_nombre_cache
                     usuarios_cache = None
@@ -3109,7 +3148,7 @@ class DatosTab:
                     print("Error al borrar el usuario")
 
             self.borrar_usuario_thread.resultado.connect(on_usuario_borrado)
-            self.borrar_usuario_thread.start()
+            self.start_thread(self.borrar_usuario_thread)
         else:
             label_95.setText("Usuario no encontrado")
             label_95.setStyleSheet("color: red; font-weight: bold")
