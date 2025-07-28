@@ -1075,11 +1075,41 @@ class Ui_MainWindow(object):
         self.frame_55.setFrameShadow(QFrame.Shadow.Raised)
         self.gridLayout_31 = QGridLayout(self.frame_55)
         self.gridLayout_31.setObjectName(u"gridLayout_31")
-        self.label_115 = QLabel(self.frame_55)
-        self.label_115.setObjectName(u"label_115")
-        self.label_115.setFont(font3)
+        self.label_114 = QLabel(self.frame_55)
+        self.label_114.setObjectName(u"label_114")
+        self.label_114.setFont(font6)
 
-        self.gridLayout_31.addWidget(self.label_115, 0, 1, 1, 1, Qt.AlignmentFlag.AlignRight)
+        self.gridLayout_31.addWidget(self.label_114, 0, 0, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+
+        self.comboBox_19 = QComboBox(self.frame_55)
+        self.comboBox_19.setObjectName(u"comboBox_19")
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Fixed)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.comboBox_19.sizePolicy().hasHeightForWidth())
+        self.comboBox_19.setSizePolicy(sizePolicy3)
+        self.comboBox_19.setMinimumSize(QSize(150, 0))
+        self.comboBox_19.setMaximumSize(QSize(200, 16777215))
+        self.comboBox_19.setFont(font7)
+
+        self.gridLayout_31.addWidget(self.comboBox_19, 0, 3, 1, 1)
+
+        self.pushButton_49 = QPushButton(self.frame_55)
+        self.pushButton_49.setObjectName(u"pushButton_49")
+        self.pushButton_49.setMaximumSize(QSize(16777215, 50))
+        self.pushButton_49.setFont(font8)
+
+        self.gridLayout_31.addWidget(self.pushButton_49, 2, 3, 1, 1)
+
+        self.comboBox_20 = QComboBox(self.frame_55)
+        self.comboBox_20.setObjectName(u"comboBox_20")
+        sizePolicy3.setHeightForWidth(self.comboBox_20.sizePolicy().hasHeightForWidth())
+        self.comboBox_20.setSizePolicy(sizePolicy3)
+        self.comboBox_20.setMinimumSize(QSize(150, 0))
+        self.comboBox_20.setMaximumSize(QSize(200, 16777215))
+        self.comboBox_20.setFont(font7)
+
+        self.gridLayout_31.addWidget(self.comboBox_20, 1, 3, 1, 1)
 
         self.frame_56 = QFrame(self.frame_55)
         self.frame_56.setObjectName(u"frame_56")
@@ -1146,48 +1176,22 @@ class Ui_MainWindow(object):
 
         self.gridLayout_31.addWidget(self.frame_56, 2, 0, 1, 1)
 
-        self.comboBox_19 = QComboBox(self.frame_55)
-        self.comboBox_19.setObjectName(u"comboBox_19")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Fixed)
-        sizePolicy3.setHorizontalStretch(0)
-        sizePolicy3.setVerticalStretch(0)
-        sizePolicy3.setHeightForWidth(self.comboBox_19.sizePolicy().hasHeightForWidth())
-        self.comboBox_19.setSizePolicy(sizePolicy3)
-        self.comboBox_19.setMinimumSize(QSize(150, 0))
-        self.comboBox_19.setMaximumSize(QSize(200, 16777215))
-        self.comboBox_19.setFont(font7)
+        self.label_115 = QLabel(self.frame_55)
+        self.label_115.setObjectName(u"label_115")
+        self.label_115.setFont(font3)
 
-        self.gridLayout_31.addWidget(self.comboBox_19, 0, 2, 1, 1)
+        self.gridLayout_31.addWidget(self.label_115, 0, 2, 1, 1, Qt.AlignmentFlag.AlignRight)
 
-        self.label_114 = QLabel(self.frame_55)
-        self.label_114.setObjectName(u"label_114")
-        self.label_114.setFont(font6)
+        self.horizontalSpacer_168 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout_31.addWidget(self.label_114, 0, 0, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+        self.gridLayout_31.addItem(self.horizontalSpacer_168, 0, 1, 1, 1)
 
         self.horizontalSpacer_14 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_31.addItem(self.horizontalSpacer_14, 1, 0, 1, 1)
 
-        self.pushButton_49 = QPushButton(self.frame_55)
-        self.pushButton_49.setObjectName(u"pushButton_49")
-        self.pushButton_49.setMaximumSize(QSize(16777215, 50))
-        self.pushButton_49.setFont(font8)
 
-        self.gridLayout_31.addWidget(self.pushButton_49, 2, 2, 1, 1)
-
-        self.comboBox_20 = QComboBox(self.frame_55)
-        self.comboBox_20.setObjectName(u"comboBox_20")
-        sizePolicy3.setHeightForWidth(self.comboBox_20.sizePolicy().hasHeightForWidth())
-        self.comboBox_20.setSizePolicy(sizePolicy3)
-        self.comboBox_20.setMinimumSize(QSize(150, 0))
-        self.comboBox_20.setMaximumSize(QSize(200, 16777215))
-        self.comboBox_20.setFont(font7)
-
-        self.gridLayout_31.addWidget(self.comboBox_20, 1, 2, 1, 1)
-
-
-        self.verticalLayout_9.addWidget(self.frame_55)
+        self.verticalLayout_9.addWidget(self.frame_55, 0, Qt.AlignmentFlag.AlignHCenter)
 
         self.verticalSpacer_12 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
@@ -3709,13 +3713,13 @@ class Ui_MainWindow(object):
         self.label_25.setText(QCoreApplication.translate("MainWindow", u"Precio de Venta", None))
         self.pushButton_24.setText(QCoreApplication.translate("MainWindow", u"Cancelar", None))
         self.label_10.setText(QCoreApplication.translate("MainWindow", u"Stock IDEAL", None))
-        self.label_115.setText(QCoreApplication.translate("MainWindow", u"Aumentar por", None))
+        self.label_114.setText(QCoreApplication.translate("MainWindow", u"Aumentar Precios por Categor\u00eda o Proveedor", None))
+        self.pushButton_49.setText(QCoreApplication.translate("MainWindow", u"Aumentar", None))
         self.label_116.setText(QCoreApplication.translate("MainWindow", u"Precio Compra", None))
         self.label_117.setText(QCoreApplication.translate("MainWindow", u"Precio Venta", None))
         self.label_118.setText(QCoreApplication.translate("MainWindow", u"%", None))
         self.label_119.setText(QCoreApplication.translate("MainWindow", u"%", None))
-        self.label_114.setText(QCoreApplication.translate("MainWindow", u"Aumentar Precios por Categor\u00eda o Proveedor", None))
-        self.pushButton_49.setText(QCoreApplication.translate("MainWindow", u"Aumentar", None))
+        self.label_115.setText(QCoreApplication.translate("MainWindow", u"Aumentar por", None))
         self.label_22.setText(QCoreApplication.translate("MainWindow", u"Stock IDEAL", None))
         self.label_20.setText(QCoreApplication.translate("MainWindow", u"Ingrese los Datos", None))
         self.label_19.setText(QCoreApplication.translate("MainWindow", u"Proveedor", None))
