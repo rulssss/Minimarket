@@ -2151,9 +2151,10 @@ class DatosTab:
 
             self.cargar_categoria_thread = CargarCategoriaThread(lineEdit_16_value)
             def on_categoria_cargada(exito):
-                self._categoria_en_proceso = False
 
                 if exito:
+                    self._categoria_en_proceso = False
+
                     self.clear_inputs_agregar_categorias()
                     if label_80:
                         label_80.setText("Categoría cargada con exito")
@@ -2184,6 +2185,8 @@ class DatosTab:
                     if push_button_28:
                         push_button_28.setEnabled(True)
                 else:
+                    self._categoria_en_proceso = False
+
                     push_button_27 = self.ui.frame_17.findChild(QPushButton, "pushButton_27")
                     push_button_28 = self.ui.frame_17.findChild(QPushButton, "pushButton_28")
 
