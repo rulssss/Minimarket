@@ -731,20 +731,7 @@ class DatosTab:
             print("algo ocurrio que no se pudo borrar el producto")
             
     def on_producto_borrado(self):
-        label_72 = self.ui.frame_6.findChild(QLabel, "label_72")
-        self.clear_inputs_borrar_productos()
-        if label_72:
-            label_72.setText("Producto borrado con éxito")
-            label_72.setStyleSheet("color: green; font-weight: bold")
-            QTimer.singleShot(6000, lambda: label_72.setStyleSheet("color: transparent"))
-
-        input_nombre_o_id = self.ui.frame_6.findChild(QLineEdit, "lineEdit_2")
-        if input_nombre_o_id:
-            QTimer.singleShot(2000, lambda: input_nombre_o_id.setFocus())
-
-        button21 = self.ui.frame_6.findChild(QPushButton, "pushButton_21")
-        if button21:
-            button21.setEnabled(True)   
+          
 
         #se actualizan otras aprtes del programa
         # Limpiar solo el cache de productos antes de actualizar
@@ -761,6 +748,21 @@ class DatosTab:
         combobox_id = self.ui.frame_7.findChild(QComboBox, "comboBox_3")
         if combobox_id:
             self.populate_combobox_with_ids(combobox_id)
+
+        label_72 = self.ui.frame_6.findChild(QLabel, "label_72")
+        self.clear_inputs_borrar_productos()
+        if label_72:
+            label_72.setText("Producto borrado con éxito")
+            label_72.setStyleSheet("color: green; font-weight: bold")
+            QTimer.singleShot(6000, lambda: label_72.setStyleSheet("color: transparent"))
+
+        input_nombre_o_id = self.ui.frame_6.findChild(QLineEdit, "lineEdit_2")
+        if input_nombre_o_id:
+            QTimer.singleShot(2000, lambda: input_nombre_o_id.setFocus())
+
+        button21 = self.ui.frame_6.findChild(QPushButton, "pushButton_21")
+        if button21:
+            button21.setEnabled(True) 
 
         # funcion para limpiar despues de borrar  
     def clear_inputs_borrar_productos(self):
@@ -1564,6 +1566,20 @@ class DatosTab:
             #limpia inputs
             self.clear_inputs_agregar_proveedores()
 
+            # actualiza proveedores
+            global proveedores_cache, proveedores_por_nombre_cache, proveedores_por_telefono_cache
+            proveedores_cache = None
+            proveedores_por_nombre_cache = None
+            proveedores_por_telefono_cache = None
+            self.actualizar_variables_globales_de_uso(2, lambda: (self.populate_combobox_with_proveedores(self.ui.frame_13.findChild(QComboBox, "comboBox_11")),
+                self.populate_combobox_with_proveedores(self.ui.frame_7.findChild(QComboBox, "comboBox_7")),
+                self.populate_table_with_proveedores(),
+                self.proveedores()
+            ))
+
+         
+    
+
             button_26 = self.ui.frame_10.findChild(QPushButton, "pushButton_26")
             button_25 = self.ui.frame_10.findChild(QPushButton, "pushButton_25")
             if button_26:
@@ -1581,16 +1597,6 @@ class DatosTab:
                 label_75.setStyleSheet("color: green; font-weight: bold")
                 QTimer.singleShot(6000, lambda: label_75.setStyleSheet("color: transparent"))
 
-            # actualiza proveedores
-            global proveedores_cache, proveedores_por_nombre_cache, proveedores_por_telefono_cache
-            proveedores_cache = None
-            proveedores_por_nombre_cache = None
-            proveedores_por_telefono_cache = None
-            self.actualizar_variables_globales_de_uso(2, lambda: (
-                self.populate_combobox_with_proveedores(self.ui.frame_7.findChild(QComboBox, "comboBox_7")),
-                self.populate_table_with_proveedores(),
-                self.proveedores()
-            ))
             
         else:
             print("se genero un error de tipeo al cargar el proveedor")
@@ -1668,7 +1674,6 @@ class DatosTab:
     
             # 1. Traer el ID primero
             def on_id_obtenido(id_proveedor):
-                print("El id obtenido es:", id_proveedor)
                 if id_proveedor:
                     # 2. Buscar en la base (puede tener lógica extra)
                     self.buscar_prov_thread = BuscarProveedorThread(input_nombre_value)
@@ -1684,7 +1689,7 @@ class DatosTab:
                             proveedores_por_nombre_cache = None
                             proveedores_por_telefono_cache = None
     
-                            self.actualizar_variables_globales_de_uso(2, lambda: (
+                            self.actualizar_variables_globales_de_uso(2, lambda: (self.populate_combobox_with_proveedores(self.ui.frame_13.findChild(QComboBox, "comboBox_11")),
                                 self.populate_combobox_with_proveedores(self.ui.frame_7.findChild(QComboBox, "comboBox_7")),
                                 self.populate_table_with_proveedores(),
                                 self.populate_combobox_proveedores(),

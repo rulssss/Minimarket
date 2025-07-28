@@ -724,6 +724,7 @@ def traer_proveedor():
         response = supabase.table("proveedores") \
             .select("nombre_proveedor, telefono, mail") \
             .eq("u_id", id_usuario_perfil) \
+            .order("id_proveedor") \
             .execute()
         data = response.data
         # Devuelve una lista de tuplas como hacía fetchall()
