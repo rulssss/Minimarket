@@ -2292,19 +2292,12 @@ class DatosTab:
             self.buscar_categoria_thread = BuscarCategoriaThread(lineEdit_21_value)
             def on_busqueda_finalizada(existe):
                 if existe:
-
-                    self._categoria_en_proceso = False  # Liberar bandera al terminar
-
+                    self._borrar_categoria_en_proceso = False
+                
                     # Cargar movimiento en hilo
                     self.movimiento_categoria_thread = MovimientoCategoriaBorradaThread(lineEdit_21_value, id_categoria, usuario_activo)
-                    self.movimiento_categoria_thread.start()
+                    self.start_thread(self.movimiento_categoria_thread)
     
-                    lineEdit_21.clear()
-                    if label_81:
-                        label_81.setText("Categoría borrada con éxito")
-                        label_81.setStyleSheet("color: green; font-weight: bold")
-                        QTimer.singleShot(6000, lambda: label_81.setStyleSheet("color: transparent"))
-
                     # Limpiar cache de categorías
                     global categorias_cache, categorias_por_nombre_cache, categorias_por_id_cache
                     categorias_cache = None
@@ -2317,15 +2310,24 @@ class DatosTab:
                         self.populate_combobox_categorias(),
                         self.categorias()
                     ))
+
+                    lineEdit_21.clear()
+                    if label_81:
+                        label_81.setText("Categoría borrada con éxito")
+                        label_81.setStyleSheet("color: green; font-weight: bold")
+                        QTimer.singleShot(6000, lambda: label_81.setStyleSheet("color: transparent"))
+
+
                     push_button_36 = self.ui.frame_20.findChild(QPushButton, "pushButton_36")
                     if push_button_36:
                         push_button_36.setEnabled(True)
 
                 else: 
+                    self._borrar_categoria_en_proceso = False
                     print("No se encontró la categoría en la base de datos")
 
             self.buscar_categoria_thread.resultado.connect(on_busqueda_finalizada)
-            self.buscar_categoria_thread.start()
+            self.start_thread(self.buscar_categoria_thread)
 
             lineEdit_21 = self.ui.frame_20.findChild(QLineEdit, "lineEdit_21")
             if lineEdit_21:
