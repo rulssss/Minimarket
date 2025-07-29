@@ -133,12 +133,6 @@ class DatosTab:
             table_widget3.verticalHeader().sectionDoubleClicked.connect(self.copy_row_to_clipboard_categorias)
             table_widget3.setEditTriggers(QTableWidget.NoEditTriggers)
 
-        #-----------------------
-
-        # borrar datos
-
-        self.borrar_datos()
-
         # ----------------------
 
         # funcion de admin de usuarios
@@ -2504,163 +2498,6 @@ class DatosTab:
         clipboard = QApplication.clipboard()
         clipboard.setText('\n'.join(data))
         self.show_copied_message("Tabla copiada al portapapeles")
-
-
-
-################
-################
-    # borrar datos
-    def borrar_datos(self):
-
-        push_button_30 = self.ui.frame_25.findChild(QPushButton, "pushButton_30")
-        if push_button_30:
-            push_button_30.setStyleSheet("background-color: red; padding: 5px;")
-            push_button_30.setShortcut(Qt.Key_Return)
-            if not self.delete_data:
-                self.delete_data = True
-                push_button_30.clicked.connect(self.delete_all_data)
-        
-        push_button_29 = self.ui.frame_25.findChild(QPushButton, "pushButton_29")
-        if push_button_29:
-            push_button_29.clicked.connect(self.clear_checks)
-
-
-        label_83 = self.ui.frame_25.findChild(QLabel, "label_83")
-        if label_83:
-            label_83.setStyleSheet("color: transparent")
-
-    def delete_all_data(self):
-        global usuario_activo
-
-        checkbox_categorias = self.ui.frame_25.findChild(QCheckBox, "checkBox_2")
-        checkbox_ventas_compras = self.ui.frame_25.findChild(QCheckBox, "checkBox")
-        checkbox_proveedores = self.ui.frame_25.findChild(QCheckBox, "checkBox_3")
-        checkbox_usuarios = self.ui.frame_25.findChild(QCheckBox, "checkBox_4")
-        checkbox_movimientos = self.ui.frame_25.findChild(QCheckBox, "checkBox_5")
-
-        if checkbox_categorias and checkbox_ventas_compras and checkbox_proveedores and checkbox_usuarios and checkbox_movimientos:
-            borrar_categorias = checkbox_categorias.isChecked()
-            borrar_ventas_compras = checkbox_ventas_compras.isChecked()
-            borrar_proveedores = checkbox_proveedores.isChecked()
-            borrar_usuarios = checkbox_usuarios.isChecked()
-            borrar_movimientos = checkbox_movimientos.isChecked()
-
-            if borrar_categorias or borrar_ventas_compras or borrar_proveedores or borrar_usuarios or borrar_movimientos:
-                if self.show_confirmation_dialog():
-                    # Ejecutar ambos hilos y mostrar mensaje cuando ambos terminen
-                    self.clear_thread = ClearDataThread(borrar_categorias, borrar_ventas_compras, borrar_proveedores, borrar_usuarios, borrar_movimientos)
-                    self._clear_done = False  # bandera interna
-                    def on_clear_finished():
-                        if self._clear_done:
-                            return
-                        self._clear_done = True  # marcar como hecho
-
-                        if borrar_usuarios:
-                            QMessageBox.information(self.ui.centralwidget, "Datos borrados", "Usuarios borrados,  el programa se cerrará.")
-                            sys.exit()
-                        if borrar_proveedores:
-                            global proveedores_cache, proveedores_por_nombre_cache, proveedores_por_id_cache
-                            proveedores_cache = None
-                            proveedores_por_nombre_cache = None
-                            proveedores_por_id_cache = None
-                            self.actualizar_variables_globales_de_uso(2, lambda: (
-                                self.populate_combobox_with_proveedores(self.ui.frame_7.findChild(QComboBox, "comboBox_7")),
-                                self.populate_table_with_proveedores(),
-                                self.populate_combobox_proveedores(),
-                                self.proveedores()
-                            ))
-                            
-                            global productos_cache, productos_por_nombre_cache, productos_por_id_cache
-                            productos_cache = None
-                            productos_por_nombre_cache = None
-                            productos_por_id_cache = None
-                            self.actualizar_variables_globales_de_uso(3, lambda: (
-                                self.visualizar_datos(),
-                                self.populate_combobox_with_ids(self.ui.frame_7.findChild(QComboBox, "comboBox_3")),
-
-                            ))
-
-                        if borrar_categorias:
-                            global categorias_cache, categorias_por_nombre_cache, categorias_por_id_cache
-                            categorias_cache = None
-                            categorias_por_nombre_cache = None
-                            categorias_por_id_cache = None
-
-                            self.actualizar_variables_globales_de_uso(1, lambda: (
-                                self.populate_combobox_with_categorias(self.ui.frame_7.findChild(QComboBox, "comboBox_4")),
-                                self.populate_table_with_categorias(),
-                                self.populate_combobox_categorias(),
-                                self.categorias()
-                            ))
-
-                        QMessageBox.information(self.ui.centralwidget, "Datos borrados", "Todos los datos seleccionados han sido borrados.")
-                    self.clear_thread.finished.connect(on_clear_finished)
-                    self.start_thread(self.clear_thread)
-                    self.mov_thread = CargarMovimientosThread(usuario_activo)
-                    self.start_thread(self.mov_thread)
-                    
-                else:
-                    self.clear_checks()
-            else:
-                label_83 = self.ui.frame_25.findChild(QLabel, "label_83")
-                if label_83:
-                    label_83.setText("Por favor, seleccione al menos una opción")
-                    label_83.setStyleSheet("color: red; font-weight: bold")
-                    QTimer.singleShot(6000, lambda: label_83.setStyleSheet("color: transparent"))
-
-            # se acutualiza el resto del programa
-            if borrar_categorias:
-                combobox_categorias = self.ui.frame_7.findChild(QComboBox, "comboBox_4")
-                if combobox_categorias:
-                    self.populate_combobox_with_categorias(combobox_categorias)
-                self.populate_combobox_categorias()
-                self.populate_table_with_categorias()
-                self.categorias()
-
-            if borrar_proveedores:
-                combobox_proveedores = self.ui.frame_7.findChild(QComboBox, "comboBox_7")
-                if combobox_proveedores:
-                    self.populate_combobox_with_proveedores(combobox_proveedores)
-                self.populate_combobox_proveedores()
-                self.populate_table_with_proveedores()
-                self.proveedores()
-                self.populate_table_with_products()
-                combobox_id = self.ui.frame_7.findChild(QComboBox, "comboBox_3")
-                if combobox_id:
-                    self.populate_combobox_with_ids(combobox_id)
-
-            self.clear_checks()
-
-
-    def show_confirmation_dialog(self):
-        dialog = QMessageBox()
-        dialog.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
-        dialog.setWindowTitle("Confirmación")
-        dialog.setText("¿Está seguro de que desea borrar los datos seleccionados?")
-        dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        dialog.setDefaultButton(QMessageBox.No)
-
-        # Cambiar el texto de los botones a español
-        yes_button = dialog.button(QMessageBox.Yes)
-        no_button = dialog.button(QMessageBox.No)
-        if yes_button:
-            yes_button.setText("Sí")
-        if no_button:
-            no_button.setText("No")
-
-        return dialog.exec() == QMessageBox.Yes
-
-    def clear_checks(self):
-        checkbox_categorias = self.ui.frame_25.findChild(QCheckBox, "checkBox_2")
-        checkbox_ventas_compras = self.ui.frame_25.findChild(QCheckBox, "checkBox")
-        checkbox_proveedores = self.ui.frame_25.findChild(QCheckBox, "checkBox_3")
-        checkbox_usuarios = self.ui.frame_25.findChild(QCheckBox, "checkBox_4")
-        checkbox_movimientos = self.ui.frame_25.findChild(QCheckBox, "checkBox_5")
-        checkbox_categorias.setChecked(False)
-        checkbox_ventas_compras.setChecked(False)
-        checkbox_proveedores.setChecked(False)
-        checkbox_usuarios.setChecked(False)
-        checkbox_movimientos.setChecked(False)
 
 
 
@@ -7369,7 +7206,7 @@ class MainWindow(QMainWindow):
         button12 = self.findChild(QPushButton, "pushButton_12")
         if button12:
             button12.setStyleSheet("background-color: red")
-            self.connect_button("pushButton_12", stacked_widget, 12)
+            button12.clicked.connect(self.delete_all_data)
 
         #agregar usuario
         button_14 = self.findChild(QPushButton, "pushButton_14")
@@ -7416,6 +7253,54 @@ class MainWindow(QMainWindow):
             button17.clicked.connect(self.administracion_tab.visualizar_productos_facturero)
             self.connect_button("pushButton_17", stacked_widget, 15, self.administracion_tab.open_facturero_compras)
             button17.clicked.connect(self.change_table_headers_color_compras)
+
+
+    # borrar datos:
+    def delete_all_data(self):
+        global usuario_activo
+
+        borrar_categorias = True
+        borrar_ventas_compras = True
+        borrar_proveedores = True
+        borrar_usuarios = True
+        borrar_movimientos = True
+
+        if borrar_categorias and borrar_ventas_compras and borrar_proveedores and borrar_usuarios and borrar_movimientos:
+            if self.show_confirmation_dialog():
+                # Ejecutar ambos hilos y mostrar mensaje cuando ambos terminen
+                self.clear_thread = ClearDataThread(borrar_categorias, borrar_ventas_compras, borrar_proveedores, borrar_usuarios, borrar_movimientos)
+                self._clear_done = False  # bandera interna
+                def on_clear_finished():
+                    if self._clear_done:
+                        return
+                    self._clear_done = True  # marcar como hecho
+                    QMessageBox.information(self.ui.centralwidget, "Datos borrados", "El programa se cerrará.")
+                    sys.exit()
+                    
+                self.clear_thread.finished.connect(on_clear_finished)
+                self.start_thread(self.clear_thread)
+                self.mov_thread = CargarMovimientosThread(usuario_activo)
+                self.start_thread(self.mov_thread)
+
+
+    def show_confirmation_dialog(self):
+        dialog = QMessageBox()
+        dialog.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
+        dialog.setWindowTitle("Confirmación")
+        dialog.setText("¿Está seguro de que desea borrar TODOS los datos?")
+        dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        dialog.setDefaultButton(QMessageBox.No)
+
+        # Cambiar el texto de los botones a español
+        yes_button = dialog.button(QMessageBox.Yes)
+        no_button = dialog.button(QMessageBox.No)
+        if yes_button:
+            yes_button.setText("Sí")
+        if no_button:
+            no_button.setText("No")
+
+        return dialog.exec() == QMessageBox.Yes
+    
 
     def setear_fechayhora(self):
         

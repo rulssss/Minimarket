@@ -2223,65 +2223,19 @@ class Ui_MainWindow(object):
         self.frame_25.setFrameShadow(QFrame.Shadow.Raised)
         self.gridLayout_16 = QGridLayout(self.frame_25)
         self.gridLayout_16.setObjectName(u"gridLayout_16")
-        self.checkBox_2 = QCheckBox(self.frame_25)
-        self.checkBox_2.setObjectName(u"checkBox_2")
-        self.checkBox_2.setFont(font3)
+        self.horizontalSpacer_119 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout_16.addWidget(self.checkBox_2, 5, 1, 1, 1)
-
-        self.horizontalSpacer_121 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_16.addItem(self.horizontalSpacer_121, 8, 1, 1, 1)
-
-        self.checkBox_3 = QCheckBox(self.frame_25)
-        self.checkBox_3.setObjectName(u"checkBox_3")
-        self.checkBox_3.setFont(font3)
-
-        self.gridLayout_16.addWidget(self.checkBox_3, 3, 1, 1, 1)
-
-        self.horizontalSpacer_123 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_16.addItem(self.horizontalSpacer_123, 4, 2, 1, 1)
-
-        self.horizontalSpacer_122 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_16.addItem(self.horizontalSpacer_122, 4, 0, 1, 1)
-
-        self.pushButton_30 = QPushButton(self.frame_25)
-        self.pushButton_30.setObjectName(u"pushButton_30")
-        self.pushButton_30.setMinimumSize(QSize(130, 0))
-        self.pushButton_30.setMaximumSize(QSize(150, 16777215))
-        self.pushButton_30.setFont(font8)
-
-        self.gridLayout_16.addWidget(self.pushButton_30, 10, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
-
-        self.label_83 = QLabel(self.frame_25)
-        self.label_83.setObjectName(u"label_83")
-        self.label_83.setFont(font15)
-
-        self.gridLayout_16.addWidget(self.label_83, 9, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+        self.gridLayout_16.addItem(self.horizontalSpacer_119, 14, 1, 1, 1)
 
         self.horizontalSpacer_118 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_16.addItem(self.horizontalSpacer_118, 0, 1, 1, 1)
 
-        self.pushButton_29 = QPushButton(self.frame_25)
-        self.pushButton_29.setObjectName(u"pushButton_29")
-        self.pushButton_29.setMinimumSize(QSize(100, 0))
-        self.pushButton_29.setMaximumSize(QSize(90, 16777215))
-        self.pushButton_29.setFont(font7)
+        self.checkBox_2 = QCheckBox(self.frame_25)
+        self.checkBox_2.setObjectName(u"checkBox_2")
+        self.checkBox_2.setFont(font3)
 
-        self.gridLayout_16.addWidget(self.pushButton_29, 11, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
-
-        self.checkBox_4 = QCheckBox(self.frame_25)
-        self.checkBox_4.setObjectName(u"checkBox_4")
-        self.checkBox_4.setFont(font3)
-
-        self.gridLayout_16.addWidget(self.checkBox_4, 7, 1, 1, 1)
-
-        self.horizontalSpacer_120 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_16.addItem(self.horizontalSpacer_120, 2, 1, 1, 1)
+        self.gridLayout_16.addWidget(self.checkBox_2, 7, 1, 1, 1)
 
         self.label_44 = QLabel(self.frame_25)
         self.label_44.setObjectName(u"label_44")
@@ -2289,21 +2243,73 @@ class Ui_MainWindow(object):
 
         self.gridLayout_16.addWidget(self.label_44, 1, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
-        self.checkBox = QCheckBox(self.frame_25)
-        self.checkBox.setObjectName(u"checkBox")
-        self.checkBox.setFont(font3)
+        self.horizontalSpacer_122 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout_16.addWidget(self.checkBox, 4, 1, 1, 1)
+        self.gridLayout_16.addItem(self.horizontalSpacer_122, 6, 0, 1, 1)
 
-        self.horizontalSpacer_119 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_120 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout_16.addItem(self.horizontalSpacer_119, 12, 1, 1, 1)
+        self.gridLayout_16.addItem(self.horizontalSpacer_120, 2, 1, 1, 1)
+
+        self.horizontalSpacer_123 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_16.addItem(self.horizontalSpacer_123, 6, 2, 1, 1)
+
+        self.checkBox_3 = QCheckBox(self.frame_25)
+        self.checkBox_3.setObjectName(u"checkBox_3")
+        self.checkBox_3.setFont(font3)
+
+        self.gridLayout_16.addWidget(self.checkBox_3, 6, 1, 1, 1)
 
         self.checkBox_5 = QCheckBox(self.frame_25)
         self.checkBox_5.setObjectName(u"checkBox_5")
         self.checkBox_5.setFont(font3)
 
-        self.gridLayout_16.addWidget(self.checkBox_5, 6, 1, 1, 1)
+        self.gridLayout_16.addWidget(self.checkBox_5, 8, 1, 1, 1)
+
+        self.checkBox_4 = QCheckBox(self.frame_25)
+        self.checkBox_4.setObjectName(u"checkBox_4")
+        self.checkBox_4.setFont(font3)
+
+        self.gridLayout_16.addWidget(self.checkBox_4, 9, 1, 1, 1)
+
+        self.pushButton_29 = QPushButton(self.frame_25)
+        self.pushButton_29.setObjectName(u"pushButton_29")
+        self.pushButton_29.setMinimumSize(QSize(100, 0))
+        self.pushButton_29.setMaximumSize(QSize(90, 16777215))
+        self.pushButton_29.setFont(font7)
+
+        self.gridLayout_16.addWidget(self.pushButton_29, 13, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+
+        self.pushButton_30 = QPushButton(self.frame_25)
+        self.pushButton_30.setObjectName(u"pushButton_30")
+        self.pushButton_30.setMinimumSize(QSize(130, 0))
+        self.pushButton_30.setMaximumSize(QSize(150, 16777215))
+        self.pushButton_30.setFont(font8)
+
+        self.gridLayout_16.addWidget(self.pushButton_30, 12, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+
+        self.checkBox = QCheckBox(self.frame_25)
+        self.checkBox.setObjectName(u"checkBox")
+        self.checkBox.setFont(font3)
+
+        self.gridLayout_16.addWidget(self.checkBox, 3, 1, 1, 1)
+
+        self.horizontalSpacer_121 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_16.addItem(self.horizontalSpacer_121, 10, 1, 1, 1)
+
+        self.label_83 = QLabel(self.frame_25)
+        self.label_83.setObjectName(u"label_83")
+        self.label_83.setFont(font15)
+
+        self.gridLayout_16.addWidget(self.label_83, 11, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+
+        self.checkBox_6 = QCheckBox(self.frame_25)
+        self.checkBox_6.setObjectName(u"checkBox_6")
+        self.checkBox_6.setFont(font3)
+
+        self.gridLayout_16.addWidget(self.checkBox_6, 4, 1, 1, 1)
 
 
         self.verticalLayout_24.addWidget(self.frame_25, 0, Qt.AlignmentFlag.AlignHCenter)
@@ -3577,9 +3583,7 @@ class Ui_MainWindow(object):
         QWidget.setTabOrder(self.lineEdit_21, self.pushButton_36)
         QWidget.setTabOrder(self.pushButton_36, self.lineEdit_19)
         QWidget.setTabOrder(self.lineEdit_19, self.tableWidget_3)
-        QWidget.setTabOrder(self.tableWidget_3, self.checkBox_3)
-        QWidget.setTabOrder(self.checkBox_3, self.checkBox)
-        QWidget.setTabOrder(self.checkBox, self.checkBox_2)
+        QWidget.setTabOrder(self.tableWidget_3, self.checkBox_2)
         QWidget.setTabOrder(self.checkBox_2, self.pushButton_30)
         QWidget.setTabOrder(self.pushButton_30, self.pushButton_29)
         QWidget.setTabOrder(self.pushButton_29, self.comboBox_10)
@@ -3779,15 +3783,16 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem12.setText(QCoreApplication.translate("MainWindow", u"Nombre", None));
         ___qtablewidgetitem13 = self.tableWidget_3.horizontalHeaderItem(1)
         ___qtablewidgetitem13.setText(QCoreApplication.translate("MainWindow", u"Productos", None));
-        self.checkBox_2.setText(QCoreApplication.translate("MainWindow", u"Categor\u00edas (excepto \"sin categor\u00eda\")", None))
-        self.checkBox_3.setText(QCoreApplication.translate("MainWindow", u"Proveedores (ligado a sus productos)", None))
-        self.pushButton_30.setText(QCoreApplication.translate("MainWindow", u"Borrar Datos", None))
-        self.label_83.setText(QCoreApplication.translate("MainWindow", u"label error", None))
-        self.pushButton_29.setText(QCoreApplication.translate("MainWindow", u"Cancelar", None))
-        self.checkBox_4.setText(QCoreApplication.translate("MainWindow", u"Usuarios (ligado a sus ventas y compras)", None))
+        self.checkBox_2.setText(QCoreApplication.translate("MainWindow", u"Categor\u00edas ", None))
         self.label_44.setText(QCoreApplication.translate("MainWindow", u"\u00bfQu\u00e9 datos desea borrar?", None))
-        self.checkBox.setText(QCoreApplication.translate("MainWindow", u"Ventas, compras y sus detalles", None))
+        self.checkBox_3.setText(QCoreApplication.translate("MainWindow", u"Proveedores (ligado a sus productos)", None))
         self.checkBox_5.setText(QCoreApplication.translate("MainWindow", u"Movimientos", None))
+        self.checkBox_4.setText(QCoreApplication.translate("MainWindow", u"Usuarios (ligado a sus datos)", None))
+        self.pushButton_29.setText(QCoreApplication.translate("MainWindow", u"Cancelar", None))
+        self.pushButton_30.setText(QCoreApplication.translate("MainWindow", u"Borrar Datos", None))
+        self.checkBox.setText(QCoreApplication.translate("MainWindow", u"Ventas, compras y sus detalles", None))
+        self.label_83.setText(QCoreApplication.translate("MainWindow", u"label error", None))
+        self.checkBox_6.setText(QCoreApplication.translate("MainWindow", u"Productos(ligado a sus ventas y compras)", None))
         self.label_48.setText(QCoreApplication.translate("MainWindow", u"Compras Total :", None))
         self.label_47.setText(QCoreApplication.translate("MainWindow", u"$0.00", None))
         ___qtablewidgetitem14 = self.tableWidget_7.horizontalHeaderItem(0)
