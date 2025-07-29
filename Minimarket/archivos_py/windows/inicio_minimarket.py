@@ -2145,7 +2145,7 @@ class DatosTab:
                 push_button_28.setEnabled(False)
 
             if label_80:
-                label_80.setText("Cargando categoría...")
+            
                 label_80.setStyleSheet("color: green; font-weight: bold")
 
             self.cargar_categoria_thread = CargarCategoriaThread(lineEdit_16_value)
@@ -2569,6 +2569,16 @@ class DatosTab:
                                 self.populate_combobox_proveedores(),
                                 self.proveedores()
                             ))
+                            
+                            global productos_cache, productos_por_nombre_cache, productos_por_id_cache
+                            productos_cache = None
+                            productos_por_nombre_cache = None
+                            productos_por_id_cache = None
+                            self.actualizar_variables_globales_de_uso(3, lambda: (
+                                self.visualizar_datos(),
+                                self.populate_combobox_with_ids(self.ui.frame_7.findChild(QComboBox, "comboBox_3")),
+
+                            ))
 
                         if borrar_categorias:
                             global categorias_cache, categorias_por_nombre_cache, categorias_por_id_cache
@@ -2675,7 +2685,6 @@ class DatosTab:
         push_button_32 = self.ui.frame_29.findChild(QPushButton, "pushButton_32")
 
 
-        print(" cargando usuarios ")
         if combobox_14:
             combobox_14.clear()
             combobox_14.addItem("Administrador")

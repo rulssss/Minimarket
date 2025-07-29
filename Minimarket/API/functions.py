@@ -821,7 +821,11 @@ def clear_data(borrar_categorias, borrar_ventas_compras, borrar_proveedores, bor
 
         # Borrar proveedores
         if borrar_proveedores:
-            supabase.table("proveedores").delete().eq("u_id", id_usuario_perfil).execute()
+            supabase.table("proveedores") \
+                .delete() \
+                .neq("id_proveedor", 1) \
+                .eq("u_id", id_usuario_perfil) \
+                .execute()
 
         # Borrar usuarios y contraseñas y métodos de pago
         if borrar_usuarios:
