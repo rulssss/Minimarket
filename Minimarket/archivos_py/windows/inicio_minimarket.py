@@ -668,7 +668,17 @@ class DatosTab:
             if producto:
                 self._borrar_id = int(input_nombre_o_id_value)
                 self._borrar_nombre = producto[1]
-                self._on_nombre_obtenido(self._borrar_nombre)
+
+                if self.show_delete_product_warning(self._borrar_nombre):
+                    self._on_nombre_obtenido(self._borrar_nombre)
+                else:
+                    if button21:
+                        button21.setEnabled(True)
+                    if label_72:
+                        label_72.setText("Operación cancelada")
+                        label_72.setStyleSheet("color: blue; font-weight: bold")
+                    input_nombre_o_id.setFocus()
+                return
             else:
                 if button21:
                     button21.setEnabled(True)
@@ -682,7 +692,17 @@ class DatosTab:
             if producto:
                 self._borrar_id = producto[0]
                 self._borrar_nombre = producto[1]
-                self._on_nombre_obtenido(self._borrar_nombre)
+                if self.show_delete_product_warning(self._borrar_nombre):
+                    self._on_nombre_obtenido(self._borrar_nombre)
+                else:
+                    if button21:
+                        button21.setEnabled(True)
+                    if label_72:
+                        label_72.setText("Operación cancelada")
+                        label_72.setStyleSheet("color: blue; font-weight: bold")
+                    input_nombre_o_id.setFocus()
+                return
+            
             else:
                 if button21:
                     button21.setEnabled(True)
@@ -690,8 +710,38 @@ class DatosTab:
                     label_72.setText("Producto no encontrado")
                     label_72.setStyleSheet("color: red; font-weight: bold")
                 input_nombre_o_id.setFocus()
-        
-            
+
+
+    def show_delete_product_warning(self, nombre_producto):
+        msg = QMessageBox(self.ui.frame_6)
+        msg.setWindowTitle("ADVERTENCIA!")
+        msg.setIcon(QMessageBox.Warning)
+        msg.setText(
+            f"ADVERTENCIA!\n\n"
+            f"Recomendación:\nUsted está a punto de borrar \"{nombre_producto}\".\n\n"
+            "Si su petición de borrado es porque no va a usar más este producto, se recomienda NO borrarlo y simplemente setearlo sin categoría y sin proveedor/Proveedor1.\n\n"
+            "Cada producto está ligado a su venta y compra, por lo que se verá afectado el historial de compras y ventas si usted lo quita."
+        )
+        msg.setStyleSheet("""
+            QMessageBox {
+                font-size: 18pt;
+            }
+            QLabel {
+                font-size: 18pt;
+                
+            }
+        """)
+        msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        msg.setDefaultButton(QMessageBox.No)
+        # Personalizar los textos de los botones
+        yes_button = msg.button(QMessageBox.Yes)
+        no_button = msg.button(QMessageBox.No)
+        if yes_button:
+            yes_button.setText("Sí")
+        if no_button:
+            no_button.setText("No")
+        respuesta = msg.exec()
+        return respuesta == QMessageBox.Yes
 
     def _on_id_obtenido_nombre_ya_disponible(self, id_producto):
         self._borrar_id = id_producto
