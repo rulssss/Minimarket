@@ -1665,10 +1665,6 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_13.addItem(self.horizontalSpacer_116)
 
-        self.horizontalSpacer_114 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.verticalLayout_13.addItem(self.horizontalSpacer_114)
-
         self.frame_13 = QFrame(self.page_5)
         self.frame_13.setObjectName(u"frame_13")
         self.frame_13.setMinimumSize(QSize(500, 0))
@@ -1682,37 +1678,15 @@ class Ui_MainWindow(object):
         self.frame_13.setFrameShadow(QFrame.Shadow.Raised)
         self.gridLayout_13 = QGridLayout(self.frame_13)
         self.gridLayout_13.setObjectName(u"gridLayout_13")
-        self.frame_41 = QFrame(self.frame_13)
-        self.frame_41.setObjectName(u"frame_41")
-        self.frame_41.setMaximumSize(QSize(16777215, 30))
-        self.frame_41.setFrameShape(QFrame.Shape.NoFrame)
-        self.frame_41.setFrameShadow(QFrame.Shadow.Raised)
-        self.horizontalLayout_12 = QHBoxLayout(self.frame_41)
-        self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
-        self.label_78 = QLabel(self.frame_41)
-        self.label_78.setObjectName(u"label_78")
-        self.label_78.setFont(font13)
-
-        self.horizontalLayout_12.addWidget(self.label_78, 0, Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignVCenter)
-
-        self.label_79 = QLabel(self.frame_41)
-        self.label_79.setObjectName(u"label_79")
-        self.label_79.setFont(font13)
-
-        self.horizontalLayout_12.addWidget(self.label_79, 0, Qt.AlignmentFlag.AlignVCenter)
-
-
-        self.gridLayout_13.addWidget(self.frame_41, 5, 3, 1, 1)
-
         self.lineEdit_28 = QLineEdit(self.frame_13)
         self.lineEdit_28.setObjectName(u"lineEdit_28")
         sizePolicy1.setHeightForWidth(self.lineEdit_28.sizePolicy().hasHeightForWidth())
         self.lineEdit_28.setSizePolicy(sizePolicy1)
-        self.lineEdit_28.setMinimumSize(QSize(100, 0))
+        self.lineEdit_28.setMinimumSize(QSize(250, 0))
         self.lineEdit_28.setMaximumSize(QSize(250, 16777215))
         self.lineEdit_28.setFont(font3)
 
-        self.gridLayout_13.addWidget(self.lineEdit_28, 4, 3, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+        self.gridLayout_13.addWidget(self.lineEdit_28, 4, 2, 1, 1, Qt.AlignmentFlag.AlignHCenter|Qt.AlignmentFlag.AlignVCenter)
 
         self.label_51 = QLabel(self.frame_13)
         self.label_51.setObjectName(u"label_51")
@@ -1722,39 +1696,44 @@ class Ui_MainWindow(object):
 
         self.horizontalSpacer_106 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout_13.addItem(self.horizontalSpacer_106, 2, 3, 1, 1)
-
-        self.verticalSpacer_31 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.gridLayout_13.addItem(self.verticalSpacer_31, 4, 2, 1, 1)
+        self.gridLayout_13.addItem(self.horizontalSpacer_106, 2, 2, 1, 1)
 
         self.comboBox_11 = QComboBox(self.frame_13)
         self.comboBox_11.setObjectName(u"comboBox_11")
         sizePolicy1.setHeightForWidth(self.comboBox_11.sizePolicy().hasHeightForWidth())
         self.comboBox_11.setSizePolicy(sizePolicy1)
-        self.comboBox_11.setMinimumSize(QSize(100, 0))
+        self.comboBox_11.setMinimumSize(QSize(0, 0))
         self.comboBox_11.setMaximumSize(QSize(250, 16777215))
         self.comboBox_11.setFont(font3)
 
         self.gridLayout_13.addWidget(self.comboBox_11, 4, 1, 1, 1)
 
+        self.horizontalSpacer_107 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_13.addItem(self.horizontalSpacer_107, 7, 2, 1, 1)
+
         self.label_53 = QLabel(self.frame_13)
         self.label_53.setObjectName(u"label_53")
         self.label_53.setFont(font8)
 
-        self.gridLayout_13.addWidget(self.label_53, 3, 5, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+        self.gridLayout_13.addWidget(self.label_53, 3, 3, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+
+        self.label_76 = QLabel(self.frame_13)
+        self.label_76.setObjectName(u"label_76")
+
+        self.gridLayout_13.addWidget(self.label_76, 5, 2, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.label_50 = QLabel(self.frame_13)
         self.label_50.setObjectName(u"label_50")
         self.label_50.setFont(font6)
 
-        self.gridLayout_13.addWidget(self.label_50, 1, 3, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+        self.gridLayout_13.addWidget(self.label_50, 1, 2, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.label_52 = QLabel(self.frame_13)
         self.label_52.setObjectName(u"label_52")
         self.label_52.setFont(font8)
 
-        self.gridLayout_13.addWidget(self.label_52, 3, 3, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+        self.gridLayout_13.addWidget(self.label_52, 3, 2, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.frame_14 = QFrame(self.frame_13)
         self.frame_14.setObjectName(u"frame_14")
@@ -1772,10 +1751,6 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_5.addWidget(self.pushButton_37)
 
-        self.verticalSpacer_32 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.horizontalLayout_5.addItem(self.verticalSpacer_32)
-
         self.pushButton_38 = QPushButton(self.frame_14)
         self.pushButton_38.setObjectName(u"pushButton_38")
         sizePolicy3.setHeightForWidth(self.pushButton_38.sizePolicy().hasHeightForWidth())
@@ -1787,15 +1762,11 @@ class Ui_MainWindow(object):
         self.horizontalLayout_5.addWidget(self.pushButton_38)
 
 
-        self.gridLayout_13.addWidget(self.frame_14, 6, 3, 1, 1)
+        self.gridLayout_13.addWidget(self.frame_14, 6, 2, 1, 1)
 
         self.horizontalSpacer_105 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout_13.addItem(self.horizontalSpacer_105, 0, 3, 1, 1)
-
-        self.verticalSpacer_30 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.gridLayout_13.addItem(self.verticalSpacer_30, 4, 4, 1, 1)
+        self.gridLayout_13.addItem(self.horizontalSpacer_105, 0, 2, 1, 1)
 
         self.horizontalSpacer_108 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
@@ -1803,7 +1774,7 @@ class Ui_MainWindow(object):
 
         self.horizontalSpacer_111 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout_13.addItem(self.horizontalSpacer_111, 4, 6, 1, 1)
+        self.gridLayout_13.addItem(self.horizontalSpacer_111, 4, 4, 1, 1)
 
         self.lineEdit_26 = QLineEdit(self.frame_13)
         self.lineEdit_26.setObjectName(u"lineEdit_26")
@@ -1811,11 +1782,7 @@ class Ui_MainWindow(object):
         self.lineEdit_26.setMaximumSize(QSize(250, 16777215))
         self.lineEdit_26.setFont(font3)
 
-        self.gridLayout_13.addWidget(self.lineEdit_26, 4, 5, 1, 1)
-
-        self.horizontalSpacer_107 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_13.addItem(self.horizontalSpacer_107, 7, 3, 1, 1)
+        self.gridLayout_13.addWidget(self.lineEdit_26, 4, 3, 1, 1)
 
 
         self.verticalLayout_13.addWidget(self.frame_13)
@@ -3741,10 +3708,9 @@ class Ui_MainWindow(object):
         self.pushButton_34.setText(QCoreApplication.translate("MainWindow", u"Borrar Proveedor", None))
         self.label_38.setText(QCoreApplication.translate("MainWindow", u"Nombre del Proveedor :", None))
         self.label_77.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
-        self.label_78.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
-        self.label_79.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
         self.label_51.setText(QCoreApplication.translate("MainWindow", u"Nombre del Proveedor", None))
         self.label_53.setText(QCoreApplication.translate("MainWindow", u"Mail(opcional)", None))
+        self.label_76.setText(QCoreApplication.translate("MainWindow", u"label error", None))
         self.label_50.setText(QCoreApplication.translate("MainWindow", u"Editar Proveedor :", None))
         self.label_52.setText(QCoreApplication.translate("MainWindow", u"N\u00famero de Telefono", None))
         self.pushButton_37.setText(QCoreApplication.translate("MainWindow", u"Editar", None))

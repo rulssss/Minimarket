@@ -1804,13 +1804,9 @@ class DatosTab:
         if button_38:
             button_38.clicked.connect(self.cancel_edit_proveedor)
             
-
-        label_78 = self.ui.frame_13.findChild(QLabel, "label_78")
-        if label_78:
-            label_78.setStyleSheet("color: transparent")
-        label_79 = self.ui.frame_13.findChild(QLabel, "label_79")
-        if label_79:
-            label_79.setStyleSheet("color: transparent")
+        label_76 = self.ui.frame_13.findChild(QLabel, "label_76")
+        if label_76:
+            label_76.setStyleSheet("color: transparent")
 
     def cancel_edit_proveedor(self):
         combobox_nombre = self.ui.frame_13.findChild(QComboBox, "comboBox_11")
@@ -1835,21 +1831,16 @@ class DatosTab:
         lineEdit_28_value = lineEdit_28.text().strip()
         lineEdit_26_value = lineEdit_26.text().strip()
 
-        label_78 = self.ui.frame_13.findChild(QLabel, "label_78")
-        label_79 = self.ui.frame_13.findChild(QLabel, "label_79")
+        label_76 = self.ui.frame_13.findChild(QLabel, "label_76")
 
         if comboBox_value and lineEdit_28_value.isdigit():
             if (lineEdit_28_value != str(proveedor_selecc[0][1]) or lineEdit_26_value != str(proveedor_selecc[0][2])) and comboBox_value == proveedor_selecc[0][0]:
-                if label_78 and label_79:
-                            label_78.setText("Actualizando")
-                            label_78.setStyleSheet("color: green; font-weight: bold")
-                            label_79.setText("proveedor...")
-                            label_79.setStyleSheet("color: green; font-weight: bold")
+                if label_76:
+                    label_76.setStyleSheet("color: green; font-weight: bold")
+                    label_76.setText("Actualizando")
 
                 self.actualizar_prov_thread = ActualizarProveedorThread(comboBox_value, lineEdit_28_value, lineEdit_26_value)
                 def on_actualizado(exito):
-                    label_78 = self.ui.frame_13.findChild(QLabel, "label_78")
-                    label_79 = self.ui.frame_13.findChild(QLabel, "label_79")
                     button_38 = self.ui.frame_13.findChild(QPushButton, "pushButton_38")
                     button_37 = self.ui.frame_13.findChild(QPushButton, "pushButton_37")
 
@@ -1857,13 +1848,10 @@ class DatosTab:
                         self.movimiento_proveedor_editado_thread = MovimientoProveedorEditadoThread(comboBox_value, usuario_activo)
                         self.start_thread(self.movimiento_proveedor_editado_thread)
 
-                        if label_78 and label_79:
-                            label_78.setText("Proveedor actualizado")
-                            label_78.setStyleSheet("color: green; font-weight: bold")
-                            label_79.setText("con éxito")
-                            label_79.setStyleSheet("color: green; font-weight: bold")
-                            QTimer.singleShot(6000, lambda: label_78.setStyleSheet("color: transparent"))
-                            QTimer.singleShot(6000, lambda: label_79.setStyleSheet("color: transparent"))
+                        if label_76:
+                            label_76.setStyleSheet("color: green; font-weight: bold")
+                            label_76.setText("Proveedor actualizado con éxito")
+                            QTimer.singleShot(6000, lambda: label_76.setStyleSheet("color: transparent"))
                         
                         if button_37 and button_38:
                             button_37.setEnabled(True)
@@ -1901,22 +1889,20 @@ class DatosTab:
                 if button_38:
                     button_38.setEnabled(True)
 
-                if label_78 and label_79:
-                    label_78.setText("Por favor, edite")
-                    label_78.setStyleSheet("color: red; font-weight: bold")
-                    label_79.setText("los campos")
-                    label_79.setStyleSheet("color: red; font-weight: bold")
+                if label_76:
+                    label_76.setText("No se realizaron cambios")
+                    label_76.setStyleSheet("color: red; font-weight: bold")
+                    QTimer.singleShot(6000, lambda: label_76.setStyleSheet("color: transparent"))
         else:
             if button_37:
                 button_37.setEnabled(True)
             if button_38:
                 button_38.setEnabled(True)
 
-            if label_78 and label_79:
-                label_78.setText("Por favor, complete todos")
-                label_78.setStyleSheet("color: red; font-weight: bold")
-                label_79.setText("los campos correctamente")
-                label_79.setStyleSheet("color: red; font-weight: bold")
+            if label_76:
+                label_76.setStyleSheet("color: red; font-weight: bold")
+                label_76.setText("Por favor, complete todos los campos correctamente")
+                
                 
             if not comboBox_value:
                 combobox_nombre.setFocus()
@@ -1944,18 +1930,16 @@ class DatosTab:
     def load_proveedor_data(self):
         global proveedores_por_nombre_cache, proveedor_selecc
 
-        label_78 = self.ui.frame_13.findChild(QLabel, "label_78")
-        label_79 = self.ui.frame_13.findChild(QLabel, "label_79")
+        label_76 = self.ui.frame_13.findChild(QLabel, "label_76")
+        
         combobox_nombre = self.ui.frame_13.findChild(QComboBox, "comboBox_11")
         if combobox_nombre and (combobox_nombre.currentText() != ""):
             selected_nombre = combobox_nombre.lineEdit().text().strip()
             if selected_nombre and proveedores_por_nombre_cache and selected_nombre.lower() in proveedores_por_nombre_cache:
                 proveedor_selecc = [proveedores_por_nombre_cache[selected_nombre.lower()]]
-                if label_78 and label_79:
-                    label_78.setText("Proveedor")
-                    label_78.setStyleSheet("color: green; font-weight: bold")
-                    label_79.setText("existente")
-                    label_79.setStyleSheet("color: green; font-weight: bold")
+                if label_76:
+                    label_76.setStyleSheet("color: transparent")
+                    label_76.setText("Proveedor existente")
                     
                 self.ui.frame_13.findChild(QComboBox, "comboBox_11").setCurrentText(proveedor_selecc[0][0])
                 self.ui.frame_13.findChild(QLineEdit, "lineEdit_28").setText(str(proveedor_selecc[0][1]))
@@ -1966,11 +1950,10 @@ class DatosTab:
                     self.ui.frame_13.findChild(QLineEdit, "lineEdit_28").clear()
                     self.ui.frame_13.findChild(QLineEdit, "lineEdit_26").clear()
                 except:
-                    if label_78 and label_79:
-                        label_78.setText("Seleccione o escriba")
-                        label_78.setStyleSheet("color: red; font-weight: bold")
-                        label_79.setText("un proveedor válido")
-                        label_79.setStyleSheet("color: red; font-weight: bold")
+                    if label_76:
+                        label_76.setStyleSheet("color: red; font-weight: bold")
+                        label_76.setText("Seleccione o escriba un proveedor existente")
+                        
 
 
 ################
