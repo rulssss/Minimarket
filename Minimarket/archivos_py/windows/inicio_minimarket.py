@@ -3552,12 +3552,12 @@ class BuscarDatosTab:
     def obtener_metodo_pago_id(self, nombre_metodo, callback):
         # Usar el cache global si está disponible
         global metodos_pago_por_id_cache
-        print(metodos_pago_por_id_cache)
+       
         if metodos_pago_por_id_cache:
             # Buscar el ID por el nombre en el cache
             for id_metodo, nombre in metodos_pago_por_id_cache.items():
                 if nombre == nombre_metodo:
-                    print(id_metodo)
+                    
                     callback(int(id_metodo))
                     return
 
@@ -3738,22 +3738,18 @@ class BuscarDatosTab:
     
         for row, dato in enumerate(datos):
             usuario = self.traer_usuario(dato[0])
-            fecha_dt = dato[1]
-            if isinstance(fecha_dt, str):
-                fecha_dt = fecha_dt.split('+')[0].strip()
-                try:
-                    fecha_dt = datetime.strptime(fecha_dt, "%Y-%m-%dT%H:%M:%S.%f")
-                except ValueError:
-                    try:
-                        fecha_dt = datetime.strptime(fecha_dt, "%Y-%m-%dT%H:%M:%S")
-                    except Exception:
-                        fecha_dt = None
-            if fecha_dt:
-                fecha_separada = fecha_dt.strftime("%d-%m-%Y")
-                hora_separada = fecha_dt.strftime("%I:%M %p")
-            else:
-                fecha_separada = ""
-                hora_separada = ""
+            fecha_str = dato[1]
+            
+        
+            # Quitar la zona horaria si existe
+            fecha_str_sin_tz = fecha_str.split('+')[0].strip()
+            fecha_dt = datetime.strptime(fecha_str_sin_tz, "%Y-%m-%dT%H:%M:%S.%f")
+            fecha_separada = fecha_dt.strftime("%d-%m-%Y")
+
+            local_tz = pytz.timezone('America/Argentina/Buenos_Aires')
+            fecha_dt_utc = fecha_dt.replace(tzinfo=pytz.UTC)
+            hora_local = fecha_dt_utc.astimezone(local_tz)
+            hora_separada = hora_local.strftime("%I:%M %p")
     
             metodo_pago = self.traer_metodo_pago_cache(dato[2])
             producto = self.traer_nom_producto(dato[3])
