@@ -641,6 +641,11 @@ class Ui_MainWindow(object):
         self.frame_17.setObjectName(u"frame_17")
         self.frame_17.setMaximumSize(QSize(800, 250))
         self.frame_17.setAutoFillBackground(True)
+        self.frame_17.setStyleSheet(u"#frame_17 {\n"
+"    border-radius: 10px;\n"
+" 	border: 1px solid palette(mid);\n"
+"}\n"
+"")
         self.frame_17.setFrameShape(QFrame.Shape.StyledPanel)
         self.frame_17.setFrameShadow(QFrame.Shadow.Raised)
         self.gridLayout_8 = QGridLayout(self.frame_17)
@@ -774,6 +779,11 @@ class Ui_MainWindow(object):
         self.frame_6.setObjectName(u"frame_6")
         self.frame_6.setMaximumSize(QSize(800, 250))
         self.frame_6.setAutoFillBackground(True)
+        self.frame_6.setStyleSheet(u"#frame_6 {\n"
+"    border-radius: 10px;\n"
+" 	border: 1px solid palette(mid);\n"
+"}\n"
+"")
         self.frame_6.setFrameShape(QFrame.Shape.StyledPanel)
         self.frame_6.setFrameShadow(QFrame.Shadow.Raised)
         self.gridLayout_3 = QGridLayout(self.frame_6)
@@ -866,40 +876,15 @@ class Ui_MainWindow(object):
         self.frame_7.setObjectName(u"frame_7")
         self.frame_7.setMaximumSize(QSize(16777215, 250))
         self.frame_7.setAutoFillBackground(True)
+        self.frame_7.setStyleSheet(u"#frame_7 {\n"
+"    border-radius: 8px;\n"
+" 	border: 1px solid palette(mid);\n"
+"}\n"
+"")
         self.frame_7.setFrameShape(QFrame.Shape.StyledPanel)
         self.frame_7.setFrameShadow(QFrame.Shadow.Raised)
         self.gridLayout_4 = QGridLayout(self.frame_7)
         self.gridLayout_4.setObjectName(u"gridLayout_4")
-        self.lineEdit_10 = QLineEdit(self.frame_7)
-        self.lineEdit_10.setObjectName(u"lineEdit_10")
-        self.lineEdit_10.setFont(font3)
-
-        self.gridLayout_4.addWidget(self.lineEdit_10, 4, 3, 1, 1)
-
-        self.verticalSpacer_14 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.gridLayout_4.addItem(self.verticalSpacer_14, 7, 2, 1, 1)
-
-        self.label_74 = QLabel(self.frame_7)
-        self.label_74.setObjectName(u"label_74")
-        self.label_74.setFont(font15)
-
-        self.gridLayout_4.addWidget(self.label_74, 5, 5, 1, 1)
-
-        self.horizontalSpacer_49 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_4.addItem(self.horizontalSpacer_49, 0, 5, 1, 1)
-
-        self.label_12 = QLabel(self.frame_7)
-        self.label_12.setObjectName(u"label_12")
-        self.label_12.setFont(font8)
-
-        self.gridLayout_4.addWidget(self.label_12, 3, 3, 1, 1, Qt.AlignmentFlag.AlignHCenter)
-
-        self.verticalSpacer_13 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.gridLayout_4.addItem(self.verticalSpacer_13, 7, 3, 1, 1)
-
         self.comboBox_7 = QComboBox(self.frame_7)
         self.comboBox_7.setObjectName(u"comboBox_7")
         sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
@@ -913,6 +898,46 @@ class Ui_MainWindow(object):
 
         self.gridLayout_4.addWidget(self.comboBox_7, 4, 8, 1, 1)
 
+        self.label_12 = QLabel(self.frame_7)
+        self.label_12.setObjectName(u"label_12")
+        self.label_12.setFont(font8)
+
+        self.gridLayout_4.addWidget(self.label_12, 3, 3, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+
+        self.lineEdit_10 = QLineEdit(self.frame_7)
+        self.lineEdit_10.setObjectName(u"lineEdit_10")
+        self.lineEdit_10.setFont(font3)
+
+        self.gridLayout_4.addWidget(self.lineEdit_10, 4, 3, 1, 1)
+
+        self.horizontalSpacer_49 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_4.addItem(self.horizontalSpacer_49, 0, 5, 1, 1)
+
+        self.label_23 = QLabel(self.frame_7)
+        self.label_23.setObjectName(u"label_23")
+        self.label_23.setFont(font8)
+
+        self.gridLayout_4.addWidget(self.label_23, 3, 2, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+
+        self.label_74 = QLabel(self.frame_7)
+        self.label_74.setObjectName(u"label_74")
+        self.label_74.setFont(font15)
+
+        self.gridLayout_4.addWidget(self.label_74, 5, 5, 1, 1)
+
+        self.lineEdit_13 = QLineEdit(self.frame_7)
+        self.lineEdit_13.setObjectName(u"lineEdit_13")
+        self.lineEdit_13.setFont(font3)
+
+        self.gridLayout_4.addWidget(self.lineEdit_13, 4, 6, 1, 1)
+
+        self.pushButton_24 = QPushButton(self.frame_7)
+        self.pushButton_24.setObjectName(u"pushButton_24")
+        self.pushButton_24.setFont(font3)
+
+        self.gridLayout_4.addWidget(self.pushButton_24, 6, 5, 1, 1)
+
         self.comboBox_3 = QComboBox(self.frame_7)
         self.comboBox_3.setObjectName(u"comboBox_3")
         sizePolicy2.setHeightForWidth(self.comboBox_3.sizePolicy().hasHeightForWidth())
@@ -923,21 +948,37 @@ class Ui_MainWindow(object):
 
         self.gridLayout_4.addWidget(self.comboBox_3, 4, 1, 1, 1)
 
-        self.horizontalSpacer_51 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.label_10 = QLabel(self.frame_7)
+        self.label_10.setObjectName(u"label_10")
+        self.label_10.setFont(font8)
 
-        self.gridLayout_4.addItem(self.horizontalSpacer_51, 2, 5, 1, 1)
+        self.gridLayout_4.addWidget(self.label_10, 3, 6, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
-        self.label_26 = QLabel(self.frame_7)
-        self.label_26.setObjectName(u"label_26")
-        self.label_26.setFont(font8)
+        self.lineEdit_11 = QLineEdit(self.frame_7)
+        self.lineEdit_11.setObjectName(u"lineEdit_11")
+        self.lineEdit_11.setFont(font3)
 
-        self.gridLayout_4.addWidget(self.label_26, 3, 5, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+        self.gridLayout_4.addWidget(self.lineEdit_11, 4, 4, 1, 1)
 
-        self.label_24 = QLabel(self.frame_7)
-        self.label_24.setObjectName(u"label_24")
-        self.label_24.setFont(font8)
+        self.horizontalSpacer_50 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout_4.addWidget(self.label_24, 3, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+        self.gridLayout_4.addItem(self.horizontalSpacer_50, 2, 4, 1, 1)
+
+        self.label_28 = QLabel(self.frame_7)
+        self.label_28.setObjectName(u"label_28")
+        self.label_28.setFont(font8)
+
+        self.gridLayout_4.addWidget(self.label_28, 3, 8, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+
+        self.label_11 = QLabel(self.frame_7)
+        self.label_11.setObjectName(u"label_11")
+        self.label_11.setFont(font6)
+
+        self.gridLayout_4.addWidget(self.label_11, 1, 4, 1, 1, Qt.AlignmentFlag.AlignRight)
+
+        self.horizontalSpacer_46 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_4.addItem(self.horizontalSpacer_46, 0, 4, 1, 1)
 
         self.comboBox_4 = QComboBox(self.frame_7)
         self.comboBox_4.setObjectName(u"comboBox_4")
@@ -949,23 +990,27 @@ class Ui_MainWindow(object):
 
         self.gridLayout_4.addWidget(self.comboBox_4, 4, 7, 1, 1)
 
-        self.verticalSpacer_18 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.label_25 = QLabel(self.frame_7)
+        self.label_25.setObjectName(u"label_25")
+        self.label_25.setFont(font8)
 
-        self.gridLayout_4.addItem(self.verticalSpacer_18, 7, 1, 1, 1)
+        self.gridLayout_4.addWidget(self.label_25, 3, 4, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
-        self.verticalSpacer_17 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.label_24 = QLabel(self.frame_7)
+        self.label_24.setObjectName(u"label_24")
+        self.label_24.setFont(font8)
 
-        self.gridLayout_4.addItem(self.verticalSpacer_17, 7, 8, 1, 1)
+        self.gridLayout_4.addWidget(self.label_24, 3, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
-        self.label_73 = QLabel(self.frame_7)
-        self.label_73.setObjectName(u"label_73")
-        self.label_73.setFont(font15)
+        self.horizontalSpacer_51 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout_4.addWidget(self.label_73, 5, 4, 1, 1, Qt.AlignmentFlag.AlignRight)
+        self.gridLayout_4.addItem(self.horizontalSpacer_51, 2, 5, 1, 1)
 
-        self.horizontalSpacer_44 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.label_26 = QLabel(self.frame_7)
+        self.label_26.setObjectName(u"label_26")
+        self.label_26.setFont(font8)
 
-        self.gridLayout_4.addItem(self.horizontalSpacer_44, 7, 4, 1, 1)
+        self.gridLayout_4.addWidget(self.label_26, 3, 5, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.label_27 = QLabel(self.frame_7)
         self.label_27.setObjectName(u"label_27")
@@ -973,57 +1018,17 @@ class Ui_MainWindow(object):
 
         self.gridLayout_4.addWidget(self.label_27, 3, 7, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
-        self.horizontalSpacer_46 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_4.addItem(self.horizontalSpacer_46, 0, 4, 1, 1)
-
-        self.label_23 = QLabel(self.frame_7)
-        self.label_23.setObjectName(u"label_23")
-        self.label_23.setFont(font8)
-
-        self.gridLayout_4.addWidget(self.label_23, 3, 2, 1, 1, Qt.AlignmentFlag.AlignHCenter)
-
-        self.label_28 = QLabel(self.frame_7)
-        self.label_28.setObjectName(u"label_28")
-        self.label_28.setFont(font8)
-
-        self.gridLayout_4.addWidget(self.label_28, 3, 8, 1, 1, Qt.AlignmentFlag.AlignHCenter)
-
-        self.lineEdit_13 = QLineEdit(self.frame_7)
-        self.lineEdit_13.setObjectName(u"lineEdit_13")
-        self.lineEdit_13.setFont(font3)
-
-        self.gridLayout_4.addWidget(self.lineEdit_13, 4, 6, 1, 1)
-
-        self.verticalSpacer_15 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.gridLayout_4.addItem(self.verticalSpacer_15, 7, 6, 1, 1)
-
-        self.horizontalSpacer_50 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_4.addItem(self.horizontalSpacer_50, 2, 4, 1, 1)
-
-        self.label_29 = QLabel(self.frame_7)
-        self.label_29.setObjectName(u"label_29")
-        self.label_29.setFont(font6)
-
-        self.gridLayout_4.addWidget(self.label_29, 1, 5, 1, 1)
-
         self.lineEdit_12 = QLineEdit(self.frame_7)
         self.lineEdit_12.setObjectName(u"lineEdit_12")
         self.lineEdit_12.setFont(font3)
 
         self.gridLayout_4.addWidget(self.lineEdit_12, 4, 5, 1, 1)
 
-        self.label_11 = QLabel(self.frame_7)
-        self.label_11.setObjectName(u"label_11")
-        self.label_11.setFont(font6)
+        self.label_73 = QLabel(self.frame_7)
+        self.label_73.setObjectName(u"label_73")
+        self.label_73.setFont(font15)
 
-        self.gridLayout_4.addWidget(self.label_11, 1, 4, 1, 1, Qt.AlignmentFlag.AlignRight)
-
-        self.horizontalSpacer_45 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_4.addItem(self.horizontalSpacer_45, 7, 5, 1, 1)
+        self.gridLayout_4.addWidget(self.label_73, 5, 4, 1, 1, Qt.AlignmentFlag.AlignRight)
 
         self.pushButton_23 = QPushButton(self.frame_7)
         self.pushButton_23.setObjectName(u"pushButton_23")
@@ -1037,33 +1042,19 @@ class Ui_MainWindow(object):
 
         self.gridLayout_4.addWidget(self.lineEdit_9, 4, 2, 1, 1)
 
-        self.label_25 = QLabel(self.frame_7)
-        self.label_25.setObjectName(u"label_25")
-        self.label_25.setFont(font8)
+        self.label_29 = QLabel(self.frame_7)
+        self.label_29.setObjectName(u"label_29")
+        self.label_29.setFont(font6)
 
-        self.gridLayout_4.addWidget(self.label_25, 3, 4, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+        self.gridLayout_4.addWidget(self.label_29, 1, 5, 1, 1)
 
-        self.pushButton_24 = QPushButton(self.frame_7)
-        self.pushButton_24.setObjectName(u"pushButton_24")
-        self.pushButton_24.setFont(font3)
+        self.horizontalSpacer_23 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout_4.addWidget(self.pushButton_24, 6, 5, 1, 1)
+        self.gridLayout_4.addItem(self.horizontalSpacer_23, 7, 4, 1, 1)
 
-        self.lineEdit_11 = QLineEdit(self.frame_7)
-        self.lineEdit_11.setObjectName(u"lineEdit_11")
-        self.lineEdit_11.setFont(font3)
+        self.horizontalSpacer_24 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout_4.addWidget(self.lineEdit_11, 4, 4, 1, 1)
-
-        self.label_10 = QLabel(self.frame_7)
-        self.label_10.setObjectName(u"label_10")
-        self.label_10.setFont(font8)
-
-        self.gridLayout_4.addWidget(self.label_10, 3, 6, 1, 1, Qt.AlignmentFlag.AlignHCenter)
-
-        self.verticalSpacer_16 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.gridLayout_4.addItem(self.verticalSpacer_16, 7, 7, 1, 1)
+        self.gridLayout_4.addItem(self.horizontalSpacer_24, 7, 5, 1, 1)
 
 
         self.verticalLayout_9.addWidget(self.frame_7)
@@ -1071,6 +1062,11 @@ class Ui_MainWindow(object):
         self.frame_55 = QFrame(self.page_2)
         self.frame_55.setObjectName(u"frame_55")
         self.frame_55.setMaximumSize(QSize(800, 16777215))
+        self.frame_55.setAutoFillBackground(True)
+        self.frame_55.setStyleSheet(u"#frame_55 {\n"
+"    border-radius: 8px;\n"
+" 	border: 1px solid palette(mid);\n"
+"}")
         self.frame_55.setFrameShape(QFrame.Shape.StyledPanel)
         self.frame_55.setFrameShadow(QFrame.Shadow.Raised)
         self.gridLayout_31 = QGridLayout(self.frame_55)
@@ -1226,29 +1222,23 @@ class Ui_MainWindow(object):
         self.frame_5.setObjectName(u"frame_5")
         self.frame_5.setMaximumSize(QSize(16777215, 250))
         self.frame_5.setAutoFillBackground(True)
+        self.frame_5.setStyleSheet(u"#frame_5 {\n"
+"    border-radius: 8px;\n"
+" 	border: 1px solid palette(mid);\n"
+"}")
         self.frame_5.setFrameShape(QFrame.Shape.StyledPanel)
         self.frame_5.setFrameShadow(QFrame.Shadow.Raised)
         self.gridLayout_5 = QGridLayout(self.frame_5)
         self.gridLayout_5.setObjectName(u"gridLayout_5")
-        self.label_22 = QLabel(self.frame_5)
-        self.label_22.setObjectName(u"label_22")
-        self.label_22.setFont(font8)
+        self.comboBox_6 = QComboBox(self.frame_5)
+        self.comboBox_6.setObjectName(u"comboBox_6")
+        sizePolicy2.setHeightForWidth(self.comboBox_6.sizePolicy().hasHeightForWidth())
+        self.comboBox_6.setSizePolicy(sizePolicy2)
+        self.comboBox_6.setMinimumSize(QSize(100, 0))
+        self.comboBox_6.setMaximumSize(QSize(200, 16777215))
+        self.comboBox_6.setFont(font3)
 
-        self.gridLayout_5.addWidget(self.label_22, 3, 5, 1, 1, Qt.AlignmentFlag.AlignHCenter)
-
-        self.verticalSpacer_7 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.gridLayout_5.addItem(self.verticalSpacer_7, 7, 6, 1, 1)
-
-        self.label_20 = QLabel(self.frame_5)
-        self.label_20.setObjectName(u"label_20")
-        self.label_20.setFont(font6)
-
-        self.gridLayout_5.addWidget(self.label_20, 1, 3, 1, 1, Qt.AlignmentFlag.AlignRight)
-
-        self.horizontalSpacer_23 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_5.addItem(self.horizontalSpacer_23, 7, 3, 1, 1)
+        self.gridLayout_5.addWidget(self.comboBox_6, 4, 7, 1, 1)
 
         self.label_19 = QLabel(self.frame_5)
         self.label_19.setObjectName(u"label_19")
@@ -1256,11 +1246,121 @@ class Ui_MainWindow(object):
 
         self.gridLayout_5.addWidget(self.label_19, 3, 7, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
+        self.pushButton_20 = QPushButton(self.frame_5)
+        self.pushButton_20.setObjectName(u"pushButton_20")
+        self.pushButton_20.setFont(font3)
+
+        self.gridLayout_5.addWidget(self.pushButton_20, 6, 4, 1, 1)
+
+        self.lineEdit_8 = QLineEdit(self.frame_5)
+        self.lineEdit_8.setObjectName(u"lineEdit_8")
+        self.lineEdit_8.setFont(font3)
+
+        self.gridLayout_5.addWidget(self.lineEdit_8, 4, 5, 1, 1)
+
+        self.label_22 = QLabel(self.frame_5)
+        self.label_22.setObjectName(u"label_22")
+        self.label_22.setFont(font8)
+
+        self.gridLayout_5.addWidget(self.label_22, 3, 5, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+
+        self.label_16 = QLabel(self.frame_5)
+        self.label_16.setObjectName(u"label_16")
+        self.label_16.setFont(font8)
+
+        self.gridLayout_5.addWidget(self.label_16, 3, 3, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+
+        self.lineEdit_3 = QLineEdit(self.frame_5)
+        self.lineEdit_3.setObjectName(u"lineEdit_3")
+        self.lineEdit_3.setFont(font3)
+
+        self.gridLayout_5.addWidget(self.lineEdit_3, 4, 4, 1, 1)
+
+        self.label_17 = QLabel(self.frame_5)
+        self.label_17.setObjectName(u"label_17")
+        self.label_17.setFont(font8)
+
+        self.gridLayout_5.addWidget(self.label_17, 3, 4, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+
+        self.lineEdit_7 = QLineEdit(self.frame_5)
+        self.lineEdit_7.setObjectName(u"lineEdit_7")
+        self.lineEdit_7.setFont(font3)
+
+        self.gridLayout_5.addWidget(self.lineEdit_7, 4, 0, 1, 1)
+
+        self.horizontalSpacer_21 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_5.addItem(self.horizontalSpacer_21, 0, 3, 1, 1)
+
+        self.lineEdit_6 = QLineEdit(self.frame_5)
+        self.lineEdit_6.setObjectName(u"lineEdit_6")
+        self.lineEdit_6.setFont(font3)
+
+        self.gridLayout_5.addWidget(self.lineEdit_6, 4, 1, 1, 1)
+
+        self.label_15 = QLabel(self.frame_5)
+        self.label_15.setObjectName(u"label_15")
+        self.label_15.setFont(font8)
+
+        self.gridLayout_5.addWidget(self.label_15, 3, 2, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+
+        self.horizontalSpacer_19 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_5.addItem(self.horizontalSpacer_19, 2, 3, 1, 1)
+
+        self.lineEdit_4 = QLineEdit(self.frame_5)
+        self.lineEdit_4.setObjectName(u"lineEdit_4")
+        self.lineEdit_4.setFont(font3)
+
+        self.gridLayout_5.addWidget(self.lineEdit_4, 4, 3, 1, 1)
+
         self.label_13 = QLabel(self.frame_5)
         self.label_13.setObjectName(u"label_13")
         self.label_13.setFont(font8)
 
         self.gridLayout_5.addWidget(self.label_13, 3, 0, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+
+        self.label_14 = QLabel(self.frame_5)
+        self.label_14.setObjectName(u"label_14")
+        self.label_14.setFont(font8)
+
+        self.gridLayout_5.addWidget(self.label_14, 3, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+
+        self.label_71 = QLabel(self.frame_5)
+        self.label_71.setObjectName(u"label_71")
+        self.label_71.setFont(font15)
+
+        self.gridLayout_5.addWidget(self.label_71, 5, 4, 1, 1)
+
+        self.lineEdit_5 = QLineEdit(self.frame_5)
+        self.lineEdit_5.setObjectName(u"lineEdit_5")
+        self.lineEdit_5.setFont(font3)
+
+        self.gridLayout_5.addWidget(self.lineEdit_5, 4, 2, 1, 1)
+
+        self.label_21 = QLabel(self.frame_5)
+        self.label_21.setObjectName(u"label_21")
+        self.label_21.setFont(font6)
+
+        self.gridLayout_5.addWidget(self.label_21, 1, 4, 1, 1)
+
+        self.horizontalSpacer_20 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_5.addItem(self.horizontalSpacer_20, 2, 4, 1, 1)
+
+        self.comboBox_5 = QComboBox(self.frame_5)
+        self.comboBox_5.setObjectName(u"comboBox_5")
+        sizePolicy2.setHeightForWidth(self.comboBox_5.sizePolicy().hasHeightForWidth())
+        self.comboBox_5.setSizePolicy(sizePolicy2)
+        self.comboBox_5.setMinimumSize(QSize(100, 0))
+        self.comboBox_5.setMaximumSize(QSize(200, 16777215))
+        self.comboBox_5.setFont(font3)
+
+        self.gridLayout_5.addWidget(self.comboBox_5, 4, 6, 1, 1)
+
+        self.horizontalSpacer_22 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_5.addItem(self.horizontalSpacer_22, 0, 4, 1, 1)
 
         self.pushButton_19 = QPushButton(self.frame_5)
         self.pushButton_19.setObjectName(u"pushButton_19")
@@ -1274,149 +1374,25 @@ class Ui_MainWindow(object):
 
         self.gridLayout_5.addWidget(self.label_18, 3, 6, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
-        self.horizontalSpacer_22 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_5.addItem(self.horizontalSpacer_22, 0, 4, 1, 1)
-
-        self.label_16 = QLabel(self.frame_5)
-        self.label_16.setObjectName(u"label_16")
-        self.label_16.setFont(font8)
-
-        self.gridLayout_5.addWidget(self.label_16, 3, 3, 1, 1, Qt.AlignmentFlag.AlignHCenter)
-
-        self.lineEdit_7 = QLineEdit(self.frame_5)
-        self.lineEdit_7.setObjectName(u"lineEdit_7")
-        self.lineEdit_7.setFont(font3)
-
-        self.gridLayout_5.addWidget(self.lineEdit_7, 4, 0, 1, 1)
-
-        self.lineEdit_6 = QLineEdit(self.frame_5)
-        self.lineEdit_6.setObjectName(u"lineEdit_6")
-        self.lineEdit_6.setFont(font3)
-
-        self.gridLayout_5.addWidget(self.lineEdit_6, 4, 1, 1, 1)
-
-        self.lineEdit_4 = QLineEdit(self.frame_5)
-        self.lineEdit_4.setObjectName(u"lineEdit_4")
-        self.lineEdit_4.setFont(font3)
-
-        self.gridLayout_5.addWidget(self.lineEdit_4, 4, 3, 1, 1)
-
-        self.verticalSpacer_10 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.gridLayout_5.addItem(self.verticalSpacer_10, 7, 5, 1, 1)
-
-        self.verticalSpacer_6 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.gridLayout_5.addItem(self.verticalSpacer_6, 7, 2, 1, 1)
-
-        self.label_21 = QLabel(self.frame_5)
-        self.label_21.setObjectName(u"label_21")
-        self.label_21.setFont(font6)
-
-        self.gridLayout_5.addWidget(self.label_21, 1, 4, 1, 1)
-
-        self.lineEdit_8 = QLineEdit(self.frame_5)
-        self.lineEdit_8.setObjectName(u"lineEdit_8")
-        self.lineEdit_8.setFont(font3)
-
-        self.gridLayout_5.addWidget(self.lineEdit_8, 4, 5, 1, 1)
-
-        self.horizontalSpacer_21 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_5.addItem(self.horizontalSpacer_21, 0, 3, 1, 1)
-
-        self.comboBox_5 = QComboBox(self.frame_5)
-        self.comboBox_5.setObjectName(u"comboBox_5")
-        sizePolicy2.setHeightForWidth(self.comboBox_5.sizePolicy().hasHeightForWidth())
-        self.comboBox_5.setSizePolicy(sizePolicy2)
-        self.comboBox_5.setMinimumSize(QSize(100, 0))
-        self.comboBox_5.setMaximumSize(QSize(200, 16777215))
-        self.comboBox_5.setFont(font3)
-
-        self.gridLayout_5.addWidget(self.comboBox_5, 4, 6, 1, 1)
-
-        self.verticalSpacer_8 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.gridLayout_5.addItem(self.verticalSpacer_8, 7, 7, 1, 1)
-
-        self.comboBox_6 = QComboBox(self.frame_5)
-        self.comboBox_6.setObjectName(u"comboBox_6")
-        sizePolicy2.setHeightForWidth(self.comboBox_6.sizePolicy().hasHeightForWidth())
-        self.comboBox_6.setSizePolicy(sizePolicy2)
-        self.comboBox_6.setMinimumSize(QSize(100, 0))
-        self.comboBox_6.setMaximumSize(QSize(200, 16777215))
-        self.comboBox_6.setFont(font3)
-
-        self.gridLayout_5.addWidget(self.comboBox_6, 4, 7, 1, 1)
-
-        self.verticalSpacer_4 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.gridLayout_5.addItem(self.verticalSpacer_4, 7, 0, 1, 1)
-
-        self.label_17 = QLabel(self.frame_5)
-        self.label_17.setObjectName(u"label_17")
-        self.label_17.setFont(font8)
-
-        self.gridLayout_5.addWidget(self.label_17, 3, 4, 1, 1, Qt.AlignmentFlag.AlignHCenter)
-
-        self.label_15 = QLabel(self.frame_5)
-        self.label_15.setObjectName(u"label_15")
-        self.label_15.setFont(font8)
-
-        self.gridLayout_5.addWidget(self.label_15, 3, 2, 1, 1, Qt.AlignmentFlag.AlignHCenter)
-
-        self.verticalSpacer_5 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.gridLayout_5.addItem(self.verticalSpacer_5, 7, 1, 1, 1)
-
-        self.label_14 = QLabel(self.frame_5)
-        self.label_14.setObjectName(u"label_14")
-        self.label_14.setFont(font8)
-
-        self.gridLayout_5.addWidget(self.label_14, 3, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
-
-        self.horizontalSpacer_19 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_5.addItem(self.horizontalSpacer_19, 2, 3, 1, 1)
-
-        self.horizontalSpacer_20 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_5.addItem(self.horizontalSpacer_20, 2, 4, 1, 1)
-
-        self.lineEdit_5 = QLineEdit(self.frame_5)
-        self.lineEdit_5.setObjectName(u"lineEdit_5")
-        self.lineEdit_5.setFont(font3)
-
-        self.gridLayout_5.addWidget(self.lineEdit_5, 4, 2, 1, 1)
-
-        self.pushButton_20 = QPushButton(self.frame_5)
-        self.pushButton_20.setObjectName(u"pushButton_20")
-        self.pushButton_20.setFont(font3)
-
-        self.gridLayout_5.addWidget(self.pushButton_20, 6, 4, 1, 1)
-
-        self.horizontalSpacer_24 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_5.addItem(self.horizontalSpacer_24, 7, 4, 1, 1)
-
-        self.lineEdit_3 = QLineEdit(self.frame_5)
-        self.lineEdit_3.setObjectName(u"lineEdit_3")
-        self.lineEdit_3.setFont(font3)
-
-        self.gridLayout_5.addWidget(self.lineEdit_3, 4, 4, 1, 1)
-
         self.label_70 = QLabel(self.frame_5)
         self.label_70.setObjectName(u"label_70")
         self.label_70.setFont(font15)
 
         self.gridLayout_5.addWidget(self.label_70, 5, 3, 1, 1, Qt.AlignmentFlag.AlignRight)
 
-        self.label_71 = QLabel(self.frame_5)
-        self.label_71.setObjectName(u"label_71")
-        self.label_71.setFont(font15)
+        self.label_20 = QLabel(self.frame_5)
+        self.label_20.setObjectName(u"label_20")
+        self.label_20.setFont(font6)
 
-        self.gridLayout_5.addWidget(self.label_71, 5, 4, 1, 1)
+        self.gridLayout_5.addWidget(self.label_20, 1, 3, 1, 1, Qt.AlignmentFlag.AlignRight)
+
+        self.horizontalSpacer_44 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_5.addItem(self.horizontalSpacer_44, 7, 3, 1, 1)
+
+        self.horizontalSpacer_45 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_5.addItem(self.horizontalSpacer_45, 7, 4, 1, 1)
 
 
         self.verticalLayout.addWidget(self.frame_5)
@@ -1455,18 +1431,27 @@ class Ui_MainWindow(object):
         self.frame_10.setMinimumSize(QSize(500, 0))
         self.frame_10.setMaximumSize(QSize(16777215, 270))
         self.frame_10.setAutoFillBackground(True)
+        self.frame_10.setStyleSheet(u"#frame_10 {\n"
+"    border-radius: 8px;\n"
+" 	border: 1px solid palette(mid);\n"
+"}")
         self.frame_10.setFrameShape(QFrame.Shape.StyledPanel)
         self.frame_10.setFrameShadow(QFrame.Shadow.Raised)
         self.gridLayout_7 = QGridLayout(self.frame_10)
         self.gridLayout_7.setObjectName(u"gridLayout_7")
-        self.label_37 = QLabel(self.frame_10)
-        self.label_37.setObjectName(u"label_37")
-        self.label_37.setFont(font6)
+        self.lineEdit_14 = QLineEdit(self.frame_10)
+        self.lineEdit_14.setObjectName(u"lineEdit_14")
+        self.lineEdit_14.setFont(font3)
 
-        self.gridLayout_7.addWidget(self.label_37, 1, 3, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+        self.gridLayout_7.addWidget(self.lineEdit_14, 4, 1, 1, 1)
+
+        self.horizontalSpacer_55 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_7.addItem(self.horizontalSpacer_55, 4, 0, 1, 1)
 
         self.frame_11 = QFrame(self.frame_10)
         self.frame_11.setObjectName(u"frame_11")
+        self.frame_11.setMinimumSize(QSize(0, 0))
         self.frame_11.setFrameShape(QFrame.Shape.NoFrame)
         self.frame_11.setFrameShadow(QFrame.Shadow.Raised)
         self.horizontalLayout_4 = QHBoxLayout(self.frame_11)
@@ -1478,10 +1463,6 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_4.addWidget(self.pushButton_26)
 
-        self.verticalSpacer_20 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.horizontalLayout_4.addItem(self.verticalSpacer_20)
-
         self.pushButton_25 = QPushButton(self.frame_11)
         self.pushButton_25.setObjectName(u"pushButton_25")
         self.pushButton_25.setMinimumSize(QSize(150, 0))
@@ -1490,83 +1471,39 @@ class Ui_MainWindow(object):
         self.horizontalLayout_4.addWidget(self.pushButton_25)
 
 
-        self.gridLayout_7.addWidget(self.frame_11, 6, 3, 1, 1)
+        self.gridLayout_7.addWidget(self.frame_11, 6, 2, 1, 1)
+
+        self.label_37 = QLabel(self.frame_10)
+        self.label_37.setObjectName(u"label_37")
+        self.label_37.setFont(font6)
+
+        self.gridLayout_7.addWidget(self.label_37, 1, 2, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+
+        self.horizontalSpacer_58 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_7.addItem(self.horizontalSpacer_58, 0, 2, 1, 1)
 
         self.horizontalSpacer_59 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout_7.addItem(self.horizontalSpacer_59, 2, 3, 1, 1)
+        self.gridLayout_7.addItem(self.horizontalSpacer_59, 2, 2, 1, 1)
 
         self.lineEdit_17 = QLineEdit(self.frame_10)
         self.lineEdit_17.setObjectName(u"lineEdit_17")
         self.lineEdit_17.setFont(font3)
 
-        self.gridLayout_7.addWidget(self.lineEdit_17, 4, 5, 1, 1)
-
-        self.lineEdit_14 = QLineEdit(self.frame_10)
-        self.lineEdit_14.setObjectName(u"lineEdit_14")
-        self.lineEdit_14.setFont(font3)
-
-        self.gridLayout_7.addWidget(self.lineEdit_14, 4, 1, 1, 1)
-
-        self.horizontalSpacer_56 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_7.addItem(self.horizontalSpacer_56, 4, 6, 1, 1)
-
-        self.verticalSpacer_22 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.gridLayout_7.addItem(self.verticalSpacer_22, 4, 4, 1, 1)
-
-        self.frame_40 = QFrame(self.frame_10)
-        self.frame_40.setObjectName(u"frame_40")
-        self.frame_40.setMinimumSize(QSize(0, 35))
-        self.frame_40.setMaximumSize(QSize(16777215, 35))
-        self.frame_40.setSizeIncrement(QSize(0, 30))
-        self.frame_40.setFrameShape(QFrame.Shape.NoFrame)
-        self.frame_40.setFrameShadow(QFrame.Shadow.Raised)
-        self.horizontalLayout_11 = QHBoxLayout(self.frame_40)
-        self.horizontalLayout_11.setObjectName(u"horizontalLayout_11")
-        self.label_76 = QLabel(self.frame_40)
-        self.label_76.setObjectName(u"label_76")
-        self.label_76.setFont(font13)
-
-        self.horizontalLayout_11.addWidget(self.label_76, 0, Qt.AlignmentFlag.AlignRight)
-
-        self.label_75 = QLabel(self.frame_40)
-        self.label_75.setObjectName(u"label_75")
-        self.label_75.setFont(font13)
-
-        self.horizontalLayout_11.addWidget(self.label_75)
-
-
-        self.gridLayout_7.addWidget(self.frame_40, 5, 3, 1, 1)
-
-        self.horizontalSpacer_57 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_7.addItem(self.horizontalSpacer_57, 7, 3, 1, 1)
-
-        self.horizontalSpacer_55 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_7.addItem(self.horizontalSpacer_55, 4, 0, 1, 1)
-
-        self.horizontalSpacer_58 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_7.addItem(self.horizontalSpacer_58, 0, 3, 1, 1)
-
-        self.verticalSpacer_21 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.gridLayout_7.addItem(self.verticalSpacer_21, 4, 2, 1, 1)
-
-        self.label_32 = QLabel(self.frame_10)
-        self.label_32.setObjectName(u"label_32")
-        self.label_32.setFont(font8)
-
-        self.gridLayout_7.addWidget(self.label_32, 3, 3, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+        self.gridLayout_7.addWidget(self.lineEdit_17, 4, 3, 1, 1)
 
         self.label_41 = QLabel(self.frame_10)
         self.label_41.setObjectName(u"label_41")
         self.label_41.setFont(font8)
 
-        self.gridLayout_7.addWidget(self.label_41, 3, 5, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+        self.gridLayout_7.addWidget(self.label_41, 3, 3, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+
+        self.lineEdit_15 = QLineEdit(self.frame_10)
+        self.lineEdit_15.setObjectName(u"lineEdit_15")
+        self.lineEdit_15.setFont(font3)
+
+        self.gridLayout_7.addWidget(self.lineEdit_15, 4, 2, 1, 1)
 
         self.label_33 = QLabel(self.frame_10)
         self.label_33.setObjectName(u"label_33")
@@ -1574,11 +1511,24 @@ class Ui_MainWindow(object):
 
         self.gridLayout_7.addWidget(self.label_33, 3, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
-        self.lineEdit_15 = QLineEdit(self.frame_10)
-        self.lineEdit_15.setObjectName(u"lineEdit_15")
-        self.lineEdit_15.setFont(font3)
+        self.label_75 = QLabel(self.frame_10)
+        self.label_75.setObjectName(u"label_75")
 
-        self.gridLayout_7.addWidget(self.lineEdit_15, 4, 3, 1, 1)
+        self.gridLayout_7.addWidget(self.label_75, 5, 2, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+
+        self.label_32 = QLabel(self.frame_10)
+        self.label_32.setObjectName(u"label_32")
+        self.label_32.setFont(font8)
+
+        self.gridLayout_7.addWidget(self.label_32, 3, 2, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+
+        self.horizontalSpacer_56 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_7.addItem(self.horizontalSpacer_56, 4, 4, 1, 1)
+
+        self.horizontalSpacer_57 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_7.addItem(self.horizontalSpacer_57, 7, 2, 1, 1)
 
 
         self.verticalLayout_11.addWidget(self.frame_10)
@@ -1616,6 +1566,12 @@ class Ui_MainWindow(object):
         self.frame_12.setObjectName(u"frame_12")
         self.frame_12.setMaximumSize(QSize(800, 250))
         self.frame_12.setAutoFillBackground(True)
+        self.frame_12.setStyleSheet(u"#frame_12 {\n"
+"    border-radius: 10px;\n"
+" 	border: 1px solid palette(mid);\n"
+"}\n"
+"\n"
+"")
         self.frame_12.setFrameShape(QFrame.Shape.StyledPanel)
         self.frame_12.setFrameShadow(QFrame.Shadow.Raised)
         self.gridLayout_11 = QGridLayout(self.frame_12)
@@ -1718,10 +1674,36 @@ class Ui_MainWindow(object):
         self.frame_13.setMinimumSize(QSize(500, 0))
         self.frame_13.setMaximumSize(QSize(16777215, 270))
         self.frame_13.setAutoFillBackground(True)
+        self.frame_13.setStyleSheet(u"#frame_13 {\n"
+"    border-radius: 8px;\n"
+" 	border: 1px solid palette(mid);\n"
+"}")
         self.frame_13.setFrameShape(QFrame.Shape.StyledPanel)
         self.frame_13.setFrameShadow(QFrame.Shadow.Raised)
         self.gridLayout_13 = QGridLayout(self.frame_13)
         self.gridLayout_13.setObjectName(u"gridLayout_13")
+        self.frame_41 = QFrame(self.frame_13)
+        self.frame_41.setObjectName(u"frame_41")
+        self.frame_41.setMaximumSize(QSize(16777215, 30))
+        self.frame_41.setFrameShape(QFrame.Shape.NoFrame)
+        self.frame_41.setFrameShadow(QFrame.Shadow.Raised)
+        self.horizontalLayout_12 = QHBoxLayout(self.frame_41)
+        self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
+        self.label_78 = QLabel(self.frame_41)
+        self.label_78.setObjectName(u"label_78")
+        self.label_78.setFont(font13)
+
+        self.horizontalLayout_12.addWidget(self.label_78, 0, Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignVCenter)
+
+        self.label_79 = QLabel(self.frame_41)
+        self.label_79.setObjectName(u"label_79")
+        self.label_79.setFont(font13)
+
+        self.horizontalLayout_12.addWidget(self.label_79, 0, Qt.AlignmentFlag.AlignVCenter)
+
+
+        self.gridLayout_13.addWidget(self.frame_41, 5, 3, 1, 1)
+
         self.lineEdit_28 = QLineEdit(self.frame_13)
         self.lineEdit_28.setObjectName(u"lineEdit_28")
         sizePolicy1.setHeightForWidth(self.lineEdit_28.sizePolicy().hasHeightForWidth())
@@ -1732,13 +1714,41 @@ class Ui_MainWindow(object):
 
         self.gridLayout_13.addWidget(self.lineEdit_28, 4, 3, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
-        self.horizontalSpacer_107 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.label_51 = QLabel(self.frame_13)
+        self.label_51.setObjectName(u"label_51")
+        self.label_51.setFont(font8)
 
-        self.gridLayout_13.addItem(self.horizontalSpacer_107, 7, 3, 1, 1)
+        self.gridLayout_13.addWidget(self.label_51, 3, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
-        self.horizontalSpacer_111 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_106 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout_13.addItem(self.horizontalSpacer_111, 4, 6, 1, 1)
+        self.gridLayout_13.addItem(self.horizontalSpacer_106, 2, 3, 1, 1)
+
+        self.verticalSpacer_31 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.gridLayout_13.addItem(self.verticalSpacer_31, 4, 2, 1, 1)
+
+        self.comboBox_11 = QComboBox(self.frame_13)
+        self.comboBox_11.setObjectName(u"comboBox_11")
+        sizePolicy1.setHeightForWidth(self.comboBox_11.sizePolicy().hasHeightForWidth())
+        self.comboBox_11.setSizePolicy(sizePolicy1)
+        self.comboBox_11.setMinimumSize(QSize(100, 0))
+        self.comboBox_11.setMaximumSize(QSize(250, 16777215))
+        self.comboBox_11.setFont(font3)
+
+        self.gridLayout_13.addWidget(self.comboBox_11, 4, 1, 1, 1)
+
+        self.label_53 = QLabel(self.frame_13)
+        self.label_53.setObjectName(u"label_53")
+        self.label_53.setFont(font8)
+
+        self.gridLayout_13.addWidget(self.label_53, 3, 5, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+
+        self.label_50 = QLabel(self.frame_13)
+        self.label_50.setObjectName(u"label_50")
+        self.label_50.setFont(font6)
+
+        self.gridLayout_13.addWidget(self.label_50, 1, 3, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.label_52 = QLabel(self.frame_13)
         self.label_52.setObjectName(u"label_52")
@@ -1779,29 +1789,21 @@ class Ui_MainWindow(object):
 
         self.gridLayout_13.addWidget(self.frame_14, 6, 3, 1, 1)
 
+        self.horizontalSpacer_105 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_13.addItem(self.horizontalSpacer_105, 0, 3, 1, 1)
+
+        self.verticalSpacer_30 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.gridLayout_13.addItem(self.verticalSpacer_30, 4, 4, 1, 1)
+
         self.horizontalSpacer_108 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_13.addItem(self.horizontalSpacer_108, 4, 0, 1, 1)
 
-        self.comboBox_11 = QComboBox(self.frame_13)
-        self.comboBox_11.setObjectName(u"comboBox_11")
-        sizePolicy1.setHeightForWidth(self.comboBox_11.sizePolicy().hasHeightForWidth())
-        self.comboBox_11.setSizePolicy(sizePolicy1)
-        self.comboBox_11.setMinimumSize(QSize(100, 0))
-        self.comboBox_11.setMaximumSize(QSize(250, 16777215))
-        self.comboBox_11.setFont(font3)
+        self.horizontalSpacer_111 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout_13.addWidget(self.comboBox_11, 4, 1, 1, 1)
-
-        self.label_50 = QLabel(self.frame_13)
-        self.label_50.setObjectName(u"label_50")
-        self.label_50.setFont(font6)
-
-        self.gridLayout_13.addWidget(self.label_50, 1, 3, 1, 1, Qt.AlignmentFlag.AlignHCenter)
-
-        self.horizontalSpacer_105 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_13.addItem(self.horizontalSpacer_105, 0, 3, 1, 1)
+        self.gridLayout_13.addItem(self.horizontalSpacer_111, 4, 6, 1, 1)
 
         self.lineEdit_26 = QLineEdit(self.frame_13)
         self.lineEdit_26.setObjectName(u"lineEdit_26")
@@ -1811,51 +1813,9 @@ class Ui_MainWindow(object):
 
         self.gridLayout_13.addWidget(self.lineEdit_26, 4, 5, 1, 1)
 
-        self.verticalSpacer_31 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.horizontalSpacer_107 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout_13.addItem(self.verticalSpacer_31, 4, 2, 1, 1)
-
-        self.label_53 = QLabel(self.frame_13)
-        self.label_53.setObjectName(u"label_53")
-        self.label_53.setFont(font8)
-
-        self.gridLayout_13.addWidget(self.label_53, 3, 5, 1, 1, Qt.AlignmentFlag.AlignHCenter)
-
-        self.horizontalSpacer_106 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_13.addItem(self.horizontalSpacer_106, 2, 3, 1, 1)
-
-        self.verticalSpacer_30 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.gridLayout_13.addItem(self.verticalSpacer_30, 4, 4, 1, 1)
-
-        self.label_51 = QLabel(self.frame_13)
-        self.label_51.setObjectName(u"label_51")
-        self.label_51.setFont(font8)
-
-        self.gridLayout_13.addWidget(self.label_51, 3, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
-
-        self.frame_41 = QFrame(self.frame_13)
-        self.frame_41.setObjectName(u"frame_41")
-        self.frame_41.setMaximumSize(QSize(16777215, 30))
-        self.frame_41.setFrameShape(QFrame.Shape.NoFrame)
-        self.frame_41.setFrameShadow(QFrame.Shadow.Raised)
-        self.horizontalLayout_12 = QHBoxLayout(self.frame_41)
-        self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
-        self.label_78 = QLabel(self.frame_41)
-        self.label_78.setObjectName(u"label_78")
-        self.label_78.setFont(font13)
-
-        self.horizontalLayout_12.addWidget(self.label_78, 0, Qt.AlignmentFlag.AlignRight|Qt.AlignmentFlag.AlignVCenter)
-
-        self.label_79 = QLabel(self.frame_41)
-        self.label_79.setObjectName(u"label_79")
-        self.label_79.setFont(font13)
-
-        self.horizontalLayout_12.addWidget(self.label_79, 0, Qt.AlignmentFlag.AlignVCenter)
-
-
-        self.gridLayout_13.addWidget(self.frame_41, 5, 3, 1, 1)
+        self.gridLayout_13.addItem(self.horizontalSpacer_107, 7, 3, 1, 1)
 
 
         self.verticalLayout_13.addWidget(self.frame_13)
@@ -2011,6 +1971,11 @@ class Ui_MainWindow(object):
         self.frame_20.setObjectName(u"frame_20")
         self.frame_20.setMaximumSize(QSize(800, 250))
         self.frame_20.setAutoFillBackground(True)
+        self.frame_20.setStyleSheet(u"#frame_20 {\n"
+"    border-radius: 10px;\n"
+" 	border: 1px solid palette(mid);\n"
+"}\n"
+"")
         self.frame_20.setFrameShape(QFrame.Shape.StyledPanel)
         self.frame_20.setFrameShadow(QFrame.Shadow.Raised)
         self.gridLayout_12 = QGridLayout(self.frame_20)
@@ -2213,6 +2178,11 @@ class Ui_MainWindow(object):
         self.frame_25.setObjectName(u"frame_25")
         self.frame_25.setMaximumSize(QSize(800, 386))
         self.frame_25.setAutoFillBackground(True)
+        self.frame_25.setStyleSheet(u"#frame_25 {\n"
+"    border-radius: 10px;\n"
+" 	border: 1px solid palette(mid);\n"
+"}\n"
+"")
         self.frame_25.setFrameShape(QFrame.Shape.StyledPanel)
         self.frame_25.setFrameShadow(QFrame.Shadow.Raised)
         self.gridLayout_16 = QGridLayout(self.frame_25)
@@ -2961,13 +2931,23 @@ class Ui_MainWindow(object):
         self.frame_29.setObjectName(u"frame_29")
         self.frame_29.setMaximumSize(QSize(16777215, 250))
         self.frame_29.setAutoFillBackground(True)
+        self.frame_29.setStyleSheet(u"#frame_29 {\n"
+"    border-radius: 8px;\n"
+" 	border: 1px solid palette(mid);\n"
+"}")
         self.frame_29.setFrameShape(QFrame.Shape.StyledPanel)
         self.frame_29.setFrameShadow(QFrame.Shadow.Raised)
         self.gridLayout_19 = QGridLayout(self.frame_29)
         self.gridLayout_19.setObjectName(u"gridLayout_19")
-        self.horizontalSpacer_30 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.label_42 = QLabel(self.frame_29)
+        self.label_42.setObjectName(u"label_42")
+        self.label_42.setFont(font8)
 
-        self.gridLayout_19.addItem(self.horizontalSpacer_30, 4, 7, 1, 1)
+        self.gridLayout_19.addWidget(self.label_42, 3, 6, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+
+        self.horizontalSpacer_29 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_19.addItem(self.horizontalSpacer_29, 4, 0, 1, 1)
 
         self.pushButton_39 = QPushButton(self.frame_29)
         self.pushButton_39.setObjectName(u"pushButton_39")
@@ -2976,6 +2956,70 @@ class Ui_MainWindow(object):
         self.pushButton_39.setIcon(icon7)
 
         self.gridLayout_19.addWidget(self.pushButton_39, 4, 5, 1, 1)
+
+        self.horizontalSpacer_144 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_19.addItem(self.horizontalSpacer_144, 2, 4, 1, 1)
+
+        self.horizontalSpacer_171 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_19.addItem(self.horizontalSpacer_171, 7, 2, 1, 1)
+
+        self.label_89 = QLabel(self.frame_29)
+        self.label_89.setObjectName(u"label_89")
+        self.label_89.setFont(font8)
+
+        self.gridLayout_19.addWidget(self.label_89, 3, 2, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+
+        self.label_45 = QLabel(self.frame_29)
+        self.label_45.setObjectName(u"label_45")
+        self.label_45.setFont(font6)
+
+        self.gridLayout_19.addWidget(self.label_45, 1, 2, 1, 1, Qt.AlignmentFlag.AlignRight)
+
+        self.pushButton_31 = QPushButton(self.frame_29)
+        self.pushButton_31.setObjectName(u"pushButton_31")
+        self.pushButton_31.setMinimumSize(QSize(150, 0))
+        self.pushButton_31.setMaximumSize(QSize(100, 16777215))
+        self.pushButton_31.setFont(font3)
+
+        self.gridLayout_19.addWidget(self.pushButton_31, 6, 2, 1, 1, Qt.AlignmentFlag.AlignRight)
+
+        self.horizontalSpacer_36 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_19.addItem(self.horizontalSpacer_36, 0, 2, 1, 1)
+
+        self.lineEdit_24 = QLineEdit(self.frame_29)
+        self.lineEdit_24.setObjectName(u"lineEdit_24")
+        sizePolicy1.setHeightForWidth(self.lineEdit_24.sizePolicy().hasHeightForWidth())
+        self.lineEdit_24.setSizePolicy(sizePolicy1)
+        self.lineEdit_24.setMinimumSize(QSize(250, 0))
+        self.lineEdit_24.setMaximumSize(QSize(100, 100))
+        self.lineEdit_24.setFont(font3)
+
+        self.gridLayout_19.addWidget(self.lineEdit_24, 4, 4, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+
+        self.pushButton_32 = QPushButton(self.frame_29)
+        self.pushButton_32.setObjectName(u"pushButton_32")
+        self.pushButton_32.setMinimumSize(QSize(150, 0))
+        self.pushButton_32.setMaximumSize(QSize(100, 16777215))
+        self.pushButton_32.setFont(font3)
+
+        self.gridLayout_19.addWidget(self.pushButton_32, 6, 4, 1, 1, Qt.AlignmentFlag.AlignLeft)
+
+        self.horizontalSpacer_47 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_19.addItem(self.horizontalSpacer_47, 2, 2, 1, 1)
+
+        self.horizontalSpacer_143 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_19.addItem(self.horizontalSpacer_143, 0, 4, 1, 1)
+
+        self.label_85 = QLabel(self.frame_29)
+        self.label_85.setObjectName(u"label_85")
+        self.label_85.setFont(font8)
+
+        self.gridLayout_19.addWidget(self.label_85, 3, 4, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.lineEdit_23 = QLineEdit(self.frame_29)
         self.lineEdit_23.setObjectName(u"lineEdit_23")
@@ -2989,87 +3033,17 @@ class Ui_MainWindow(object):
 
         self.gridLayout_19.addWidget(self.lineEdit_23, 4, 2, 1, 2, Qt.AlignmentFlag.AlignHCenter)
 
-        self.horizontalSpacer_29 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_19.addItem(self.horizontalSpacer_29, 4, 0, 1, 1)
-
-        self.horizontalSpacer_36 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_19.addItem(self.horizontalSpacer_36, 0, 2, 1, 1)
-
         self.label_87 = QLabel(self.frame_29)
         self.label_87.setObjectName(u"label_87")
         self.label_87.setFont(font6)
 
         self.gridLayout_19.addWidget(self.label_87, 1, 4, 1, 1)
 
-        self.label_89 = QLabel(self.frame_29)
-        self.label_89.setObjectName(u"label_89")
-        self.label_89.setFont(font8)
-
-        self.gridLayout_19.addWidget(self.label_89, 3, 2, 1, 1, Qt.AlignmentFlag.AlignHCenter)
-
-        self.lineEdit_24 = QLineEdit(self.frame_29)
-        self.lineEdit_24.setObjectName(u"lineEdit_24")
-        sizePolicy1.setHeightForWidth(self.lineEdit_24.sizePolicy().hasHeightForWidth())
-        self.lineEdit_24.setSizePolicy(sizePolicy1)
-        self.lineEdit_24.setMinimumSize(QSize(250, 0))
-        self.lineEdit_24.setMaximumSize(QSize(100, 100))
-        self.lineEdit_24.setFont(font3)
-
-        self.gridLayout_19.addWidget(self.lineEdit_24, 4, 4, 1, 1, Qt.AlignmentFlag.AlignHCenter)
-
-        self.label_85 = QLabel(self.frame_29)
-        self.label_85.setObjectName(u"label_85")
-        self.label_85.setFont(font8)
-
-        self.gridLayout_19.addWidget(self.label_85, 3, 4, 1, 1, Qt.AlignmentFlag.AlignHCenter)
-
         self.label_88 = QLabel(self.frame_29)
         self.label_88.setObjectName(u"label_88")
         self.label_88.setFont(font8)
 
         self.gridLayout_19.addWidget(self.label_88, 3, 3, 1, 1, Qt.AlignmentFlag.AlignHCenter)
-
-        self.pushButton_31 = QPushButton(self.frame_29)
-        self.pushButton_31.setObjectName(u"pushButton_31")
-        self.pushButton_31.setMinimumSize(QSize(150, 0))
-        self.pushButton_31.setMaximumSize(QSize(100, 16777215))
-        self.pushButton_31.setFont(font3)
-
-        self.gridLayout_19.addWidget(self.pushButton_31, 6, 2, 1, 1, Qt.AlignmentFlag.AlignRight)
-
-        self.label_45 = QLabel(self.frame_29)
-        self.label_45.setObjectName(u"label_45")
-        self.label_45.setFont(font6)
-
-        self.gridLayout_19.addWidget(self.label_45, 1, 2, 1, 1, Qt.AlignmentFlag.AlignRight)
-
-        self.label_42 = QLabel(self.frame_29)
-        self.label_42.setObjectName(u"label_42")
-        self.label_42.setFont(font8)
-
-        self.gridLayout_19.addWidget(self.label_42, 3, 6, 1, 1, Qt.AlignmentFlag.AlignHCenter)
-
-        self.pushButton_32 = QPushButton(self.frame_29)
-        self.pushButton_32.setObjectName(u"pushButton_32")
-        self.pushButton_32.setMinimumSize(QSize(150, 0))
-        self.pushButton_32.setMaximumSize(QSize(100, 16777215))
-        self.pushButton_32.setFont(font3)
-
-        self.gridLayout_19.addWidget(self.pushButton_32, 6, 4, 1, 1, Qt.AlignmentFlag.AlignLeft)
-
-        self.label_55 = QLabel(self.frame_29)
-        self.label_55.setObjectName(u"label_55")
-        self.label_55.setFont(font8)
-
-        self.gridLayout_19.addWidget(self.label_55, 3, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
-
-        self.label_90 = QLabel(self.frame_29)
-        self.label_90.setObjectName(u"label_90")
-        self.label_90.setFont(font15)
-
-        self.gridLayout_19.addWidget(self.label_90, 5, 2, 1, 1, Qt.AlignmentFlag.AlignRight)
 
         self.lineEdit = QLineEdit(self.frame_29)
         self.lineEdit.setObjectName(u"lineEdit")
@@ -3078,6 +3052,12 @@ class Ui_MainWindow(object):
         self.lineEdit.setFont(font3)
 
         self.gridLayout_19.addWidget(self.lineEdit, 4, 6, 1, 1)
+
+        self.label_55 = QLabel(self.frame_29)
+        self.label_55.setObjectName(u"label_55")
+        self.label_55.setFont(font8)
+
+        self.gridLayout_19.addWidget(self.label_55, 3, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.comboBox_14 = QComboBox(self.frame_29)
         self.comboBox_14.setObjectName(u"comboBox_14")
@@ -3089,23 +3069,25 @@ class Ui_MainWindow(object):
 
         self.gridLayout_19.addWidget(self.comboBox_14, 4, 1, 1, 1)
 
-        self.horizontalSpacer_47 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.label_90 = QLabel(self.frame_29)
+        self.label_90.setObjectName(u"label_90")
+        self.label_90.setFont(font15)
 
-        self.gridLayout_19.addItem(self.horizontalSpacer_47, 2, 2, 1, 1)
-
-        self.horizontalSpacer_143 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_19.addItem(self.horizontalSpacer_143, 0, 4, 1, 1)
-
-        self.horizontalSpacer_144 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_19.addItem(self.horizontalSpacer_144, 2, 4, 1, 1)
+        self.gridLayout_19.addWidget(self.label_90, 5, 2, 1, 1, Qt.AlignmentFlag.AlignRight)
 
         self.label_96 = QLabel(self.frame_29)
         self.label_96.setObjectName(u"label_96")
         self.label_96.setFont(font15)
 
         self.gridLayout_19.addWidget(self.label_96, 5, 4, 1, 1)
+
+        self.horizontalSpacer_30 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_19.addItem(self.horizontalSpacer_30, 4, 7, 1, 1)
+
+        self.horizontalSpacer_172 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_19.addItem(self.horizontalSpacer_172, 7, 4, 1, 1)
 
 
         self.gridLayout_20.addWidget(self.frame_29, 5, 0, 1, 1)
@@ -3115,9 +3097,9 @@ class Ui_MainWindow(object):
         self.page_16.setObjectName(u"page_16")
         self.gridLayout_22 = QGridLayout(self.page_16)
         self.gridLayout_22.setObjectName(u"gridLayout_22")
-        self.horizontalSpacer_141 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.verticalSpacer_35 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.gridLayout_22.addItem(self.horizontalSpacer_141, 4, 0, 1, 1)
+        self.gridLayout_22.addItem(self.verticalSpacer_35, 6, 0, 1, 1)
 
         self.horizontalSpacer_140 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
@@ -3127,21 +3109,56 @@ class Ui_MainWindow(object):
         self.frame_45.setObjectName(u"frame_45")
         self.frame_45.setMaximumSize(QSize(16777215, 250))
         self.frame_45.setAutoFillBackground(True)
+        self.frame_45.setStyleSheet(u"#frame_45 {\n"
+"    border-radius: 8px;\n"
+" 	border: 1px solid palette(mid);\n"
+"}")
         self.frame_45.setFrameShape(QFrame.Shape.StyledPanel)
         self.frame_45.setFrameShadow(QFrame.Shadow.Raised)
         self.gridLayout_21 = QGridLayout(self.frame_45)
         self.gridLayout_21.setObjectName(u"gridLayout_21")
-        self.label_86 = QLabel(self.frame_45)
-        self.label_86.setObjectName(u"label_86")
-        self.label_86.setFont(font8)
+        self.pushButton_33 = QPushButton(self.frame_45)
+        self.pushButton_33.setObjectName(u"pushButton_33")
+        self.pushButton_33.setMinimumSize(QSize(150, 0))
+        self.pushButton_33.setFont(font3)
 
-        self.gridLayout_21.addWidget(self.label_86, 3, 4, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+        self.gridLayout_21.addWidget(self.pushButton_33, 6, 2, 1, 1, Qt.AlignmentFlag.AlignRight)
+
+        self.label_49 = QLabel(self.frame_45)
+        self.label_49.setObjectName(u"label_49")
+        self.label_49.setFont(font6)
+
+        self.gridLayout_21.addWidget(self.label_49, 1, 2, 1, 1, Qt.AlignmentFlag.AlignRight)
+
+        self.horizontalSpacer_146 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_21.addItem(self.horizontalSpacer_146, 0, 4, 1, 1)
+
+        self.horizontalSpacer_145 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_21.addItem(self.horizontalSpacer_145, 2, 4, 1, 1)
+
+        self.label_99 = QLabel(self.frame_45)
+        self.label_99.setObjectName(u"label_99")
+        self.label_99.setFont(font6)
+
+        self.gridLayout_21.addWidget(self.label_99, 1, 4, 1, 1)
+
+        self.label_97 = QLabel(self.frame_45)
+        self.label_97.setObjectName(u"label_97")
+        self.label_97.setFont(font8)
+
+        self.gridLayout_21.addWidget(self.label_97, 3, 6, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.label_84 = QLabel(self.frame_45)
         self.label_84.setObjectName(u"label_84")
         self.label_84.setFont(font8)
 
         self.gridLayout_21.addWidget(self.label_84, 3, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+
+        self.horizontalSpacer_110 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_21.addItem(self.horizontalSpacer_110, 0, 2, 1, 1)
 
         self.label_92 = QLabel(self.frame_45)
         self.label_92.setObjectName(u"label_92")
@@ -3155,41 +3172,23 @@ class Ui_MainWindow(object):
 
         self.gridLayout_21.addWidget(self.label_91, 3, 3, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
-        self.horizontalSpacer_145 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.lineEdit_25 = QLineEdit(self.frame_45)
+        self.lineEdit_25.setObjectName(u"lineEdit_25")
+        self.lineEdit_25.setMinimumSize(QSize(250, 0))
+        self.lineEdit_25.setMaximumSize(QSize(250, 16777215))
+        self.lineEdit_25.setFont(font3)
 
-        self.gridLayout_21.addItem(self.horizontalSpacer_145, 2, 4, 1, 1)
-
-        self.label_98 = QLabel(self.frame_45)
-        self.label_98.setObjectName(u"label_98")
-
-        self.gridLayout_21.addWidget(self.label_98, 5, 4, 1, 1)
-
-        self.label_49 = QLabel(self.frame_45)
-        self.label_49.setObjectName(u"label_49")
-        self.label_49.setFont(font6)
-
-        self.gridLayout_21.addWidget(self.label_49, 1, 2, 1, 1, Qt.AlignmentFlag.AlignRight)
+        self.gridLayout_21.addWidget(self.lineEdit_25, 4, 4, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.horizontalSpacer_88 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_21.addItem(self.horizontalSpacer_88, 4, 0, 1, 1)
 
-        self.horizontalSpacer_146 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.label_86 = QLabel(self.frame_45)
+        self.label_86.setObjectName(u"label_86")
+        self.label_86.setFont(font8)
 
-        self.gridLayout_21.addItem(self.horizontalSpacer_146, 0, 4, 1, 1)
-
-        self.label_93 = QLabel(self.frame_45)
-        self.label_93.setObjectName(u"label_93")
-        self.label_93.setFont(font15)
-
-        self.gridLayout_21.addWidget(self.label_93, 5, 2, 1, 1, Qt.AlignmentFlag.AlignRight)
-
-        self.pushButton_35 = QPushButton(self.frame_45)
-        self.pushButton_35.setObjectName(u"pushButton_35")
-        self.pushButton_35.setMinimumSize(QSize(150, 0))
-        self.pushButton_35.setFont(font3)
-
-        self.gridLayout_21.addWidget(self.pushButton_35, 6, 4, 1, 1, Qt.AlignmentFlag.AlignLeft)
+        self.gridLayout_21.addWidget(self.label_86, 3, 4, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.lineEdit_22 = QLineEdit(self.frame_45)
         self.lineEdit_22.setObjectName(u"lineEdit_22")
@@ -3199,44 +3198,22 @@ class Ui_MainWindow(object):
 
         self.gridLayout_21.addWidget(self.lineEdit_22, 4, 6, 1, 1)
 
-        self.comboBox_16 = QComboBox(self.frame_45)
-        self.comboBox_16.setObjectName(u"comboBox_16")
-        sizePolicy3.setHeightForWidth(self.comboBox_16.sizePolicy().hasHeightForWidth())
-        self.comboBox_16.setSizePolicy(sizePolicy3)
-        self.comboBox_16.setMinimumSize(QSize(250, 0))
-        self.comboBox_16.setMaximumSize(QSize(300, 16777215))
-        self.comboBox_16.setFont(font3)
-
-        self.gridLayout_21.addWidget(self.comboBox_16, 4, 2, 1, 1, Qt.AlignmentFlag.AlignHCenter)
-
-        self.horizontalSpacer_137 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_21.addItem(self.horizontalSpacer_137, 2, 2, 1, 1)
-
-        self.label_99 = QLabel(self.frame_45)
-        self.label_99.setObjectName(u"label_99")
-        self.label_99.setFont(font6)
-
-        self.gridLayout_21.addWidget(self.label_99, 1, 4, 1, 1)
-
-        self.lineEdit_25 = QLineEdit(self.frame_45)
-        self.lineEdit_25.setObjectName(u"lineEdit_25")
-        self.lineEdit_25.setMinimumSize(QSize(250, 0))
-        self.lineEdit_25.setMaximumSize(QSize(250, 16777215))
-        self.lineEdit_25.setFont(font3)
-
-        self.gridLayout_21.addWidget(self.lineEdit_25, 4, 4, 1, 1, Qt.AlignmentFlag.AlignHCenter)
-
-        self.pushButton_33 = QPushButton(self.frame_45)
-        self.pushButton_33.setObjectName(u"pushButton_33")
-        self.pushButton_33.setMinimumSize(QSize(150, 0))
-        self.pushButton_33.setFont(font3)
-
-        self.gridLayout_21.addWidget(self.pushButton_33, 6, 2, 1, 1, Qt.AlignmentFlag.AlignRight)
-
         self.horizontalSpacer_99 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_21.addItem(self.horizontalSpacer_99, 4, 7, 1, 1)
+
+        self.pushButton_41 = QPushButton(self.frame_45)
+        self.pushButton_41.setObjectName(u"pushButton_41")
+        self.pushButton_41.setIcon(icon7)
+
+        self.gridLayout_21.addWidget(self.pushButton_41, 4, 5, 1, 1)
+
+        self.pushButton_35 = QPushButton(self.frame_45)
+        self.pushButton_35.setObjectName(u"pushButton_35")
+        self.pushButton_35.setMinimumSize(QSize(150, 0))
+        self.pushButton_35.setFont(font3)
+
+        self.gridLayout_21.addWidget(self.pushButton_35, 6, 4, 1, 1, Qt.AlignmentFlag.AlignLeft)
 
         self.comboBox_15 = QComboBox(self.frame_45)
         self.comboBox_15.setObjectName(u"comboBox_15")
@@ -3248,21 +3225,38 @@ class Ui_MainWindow(object):
 
         self.gridLayout_21.addWidget(self.comboBox_15, 4, 1, 1, 1)
 
-        self.horizontalSpacer_110 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.comboBox_16 = QComboBox(self.frame_45)
+        self.comboBox_16.setObjectName(u"comboBox_16")
+        sizePolicy3.setHeightForWidth(self.comboBox_16.sizePolicy().hasHeightForWidth())
+        self.comboBox_16.setSizePolicy(sizePolicy3)
+        self.comboBox_16.setMinimumSize(QSize(250, 0))
+        self.comboBox_16.setMaximumSize(QSize(300, 16777215))
+        self.comboBox_16.setFont(font3)
 
-        self.gridLayout_21.addItem(self.horizontalSpacer_110, 0, 2, 1, 1)
+        self.gridLayout_21.addWidget(self.comboBox_16, 4, 2, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
-        self.label_97 = QLabel(self.frame_45)
-        self.label_97.setObjectName(u"label_97")
-        self.label_97.setFont(font8)
+        self.label_98 = QLabel(self.frame_45)
+        self.label_98.setObjectName(u"label_98")
 
-        self.gridLayout_21.addWidget(self.label_97, 3, 6, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+        self.gridLayout_21.addWidget(self.label_98, 5, 4, 1, 1)
 
-        self.pushButton_41 = QPushButton(self.frame_45)
-        self.pushButton_41.setObjectName(u"pushButton_41")
-        self.pushButton_41.setIcon(icon7)
+        self.label_93 = QLabel(self.frame_45)
+        self.label_93.setObjectName(u"label_93")
+        self.label_93.setFont(font15)
 
-        self.gridLayout_21.addWidget(self.pushButton_41, 4, 5, 1, 1)
+        self.gridLayout_21.addWidget(self.label_93, 5, 2, 1, 1, Qt.AlignmentFlag.AlignRight)
+
+        self.horizontalSpacer_137 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_21.addItem(self.horizontalSpacer_137, 2, 2, 1, 1)
+
+        self.horizontalSpacer_169 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_21.addItem(self.horizontalSpacer_169, 7, 2, 1, 1)
+
+        self.horizontalSpacer_170 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_21.addItem(self.horizontalSpacer_170, 7, 4, 1, 1)
 
 
         self.gridLayout_22.addWidget(self.frame_45, 5, 0, 1, 1)
@@ -3271,17 +3265,17 @@ class Ui_MainWindow(object):
 
         self.gridLayout_22.addItem(self.horizontalSpacer_138, 0, 0, 1, 1)
 
-        self.horizontalSpacer_142 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_141 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout_22.addItem(self.horizontalSpacer_142, 3, 0, 1, 1)
+        self.gridLayout_22.addItem(self.horizontalSpacer_141, 4, 0, 1, 1)
 
         self.horizontalSpacer_139 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_22.addItem(self.horizontalSpacer_139, 1, 0, 1, 1)
 
-        self.verticalSpacer_35 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.horizontalSpacer_142 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout_22.addItem(self.verticalSpacer_35, 6, 0, 1, 1)
+        self.gridLayout_22.addItem(self.horizontalSpacer_142, 3, 0, 1, 1)
 
         self.stackedWidget.addWidget(self.page_16)
         self.page_17 = QWidget()
@@ -3300,6 +3294,11 @@ class Ui_MainWindow(object):
         self.frame_47.setObjectName(u"frame_47")
         self.frame_47.setMaximumSize(QSize(773, 250))
         self.frame_47.setAutoFillBackground(True)
+        self.frame_47.setStyleSheet(u"#frame_47 {\n"
+"    border-radius: 10px;\n"
+" 	border: 1px solid palette(mid);\n"
+"}\n"
+"")
         self.frame_47.setFrameShape(QFrame.Shape.StyledPanel)
         self.frame_47.setFrameShadow(QFrame.Shadow.Raised)
         self.gridLayout_24 = QGridLayout(self.frame_47)
@@ -3697,20 +3696,20 @@ class Ui_MainWindow(object):
         self.label_9.setText(QCoreApplication.translate("MainWindow", u"ID o Nombre del Prducto :", None))
         self.pushButton_21.setText(QCoreApplication.translate("MainWindow", u"Borrar Producto", None))
         self.label_72.setText(QCoreApplication.translate("MainWindow", u"label error", None))
-        self.label_74.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
         self.label_12.setText(QCoreApplication.translate("MainWindow", u"Precio de Compra", None))
-        self.label_26.setText(QCoreApplication.translate("MainWindow", u"Stock", None))
-        self.label_24.setText(QCoreApplication.translate("MainWindow", u"ID del Producto", None))
-        self.label_73.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
-        self.label_27.setText(QCoreApplication.translate("MainWindow", u"Categor\u00eda", None))
         self.label_23.setText(QCoreApplication.translate("MainWindow", u"Nombre del Producto", None))
-        self.label_28.setText(QCoreApplication.translate("MainWindow", u"Proveedor", None))
-        self.label_29.setText(QCoreApplication.translate("MainWindow", u"Producto :", None))
-        self.label_11.setText(QCoreApplication.translate("MainWindow", u"Editar", None))
-        self.pushButton_23.setText(QCoreApplication.translate("MainWindow", u"Editar", None))
-        self.label_25.setText(QCoreApplication.translate("MainWindow", u"Precio de Venta", None))
+        self.label_74.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
         self.pushButton_24.setText(QCoreApplication.translate("MainWindow", u"Cancelar", None))
         self.label_10.setText(QCoreApplication.translate("MainWindow", u"Stock IDEAL", None))
+        self.label_28.setText(QCoreApplication.translate("MainWindow", u"Proveedor", None))
+        self.label_11.setText(QCoreApplication.translate("MainWindow", u"Editar", None))
+        self.label_25.setText(QCoreApplication.translate("MainWindow", u"Precio de Venta", None))
+        self.label_24.setText(QCoreApplication.translate("MainWindow", u"ID del Producto", None))
+        self.label_26.setText(QCoreApplication.translate("MainWindow", u"Stock", None))
+        self.label_27.setText(QCoreApplication.translate("MainWindow", u"Categor\u00eda", None))
+        self.label_73.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
+        self.pushButton_23.setText(QCoreApplication.translate("MainWindow", u"Editar", None))
+        self.label_29.setText(QCoreApplication.translate("MainWindow", u"Producto :", None))
         self.label_114.setText(QCoreApplication.translate("MainWindow", u"Aumentar Precios por Categor\u00eda o Proveedor", None))
         self.pushButton_49.setText(QCoreApplication.translate("MainWindow", u"Aumentar", None))
         self.label_116.setText(QCoreApplication.translate("MainWindow", u"Precio Compra", None))
@@ -3718,39 +3717,38 @@ class Ui_MainWindow(object):
         self.label_118.setText(QCoreApplication.translate("MainWindow", u"%", None))
         self.label_119.setText(QCoreApplication.translate("MainWindow", u"%", None))
         self.label_115.setText(QCoreApplication.translate("MainWindow", u"Aumentar por", None))
-        self.label_22.setText(QCoreApplication.translate("MainWindow", u"Stock IDEAL", None))
-        self.label_20.setText(QCoreApplication.translate("MainWindow", u"Ingrese los Datos", None))
         self.label_19.setText(QCoreApplication.translate("MainWindow", u"Proveedor", None))
-        self.label_13.setText(QCoreApplication.translate("MainWindow", u"ID del Producto", None))
-        self.pushButton_19.setText(QCoreApplication.translate("MainWindow", u"Agregar", None))
-        self.label_18.setText(QCoreApplication.translate("MainWindow", u"Categor\u00eda", None))
+        self.pushButton_20.setText(QCoreApplication.translate("MainWindow", u"Cancelar", None))
+        self.label_22.setText(QCoreApplication.translate("MainWindow", u"Stock IDEAL", None))
         self.label_16.setText(QCoreApplication.translate("MainWindow", u"Precio de Venta", None))
-        self.label_21.setText(QCoreApplication.translate("MainWindow", u"del Producto :", None))
         self.label_17.setText(QCoreApplication.translate("MainWindow", u"Stock", None))
         self.label_15.setText(QCoreApplication.translate("MainWindow", u"Precio de Compra", None))
+        self.label_13.setText(QCoreApplication.translate("MainWindow", u"ID del Producto", None))
         self.label_14.setText(QCoreApplication.translate("MainWindow", u"Nombre del Producto", None))
-        self.pushButton_20.setText(QCoreApplication.translate("MainWindow", u"Cancelar", None))
-        self.label_70.setText(QCoreApplication.translate("MainWindow", u"label error", None))
         self.label_71.setText(QCoreApplication.translate("MainWindow", u"label error", None))
-        self.label_37.setText(QCoreApplication.translate("MainWindow", u"Ingrese los Datos del Proveedor :", None))
+        self.label_21.setText(QCoreApplication.translate("MainWindow", u"del Producto :", None))
+        self.pushButton_19.setText(QCoreApplication.translate("MainWindow", u"Agregar", None))
+        self.label_18.setText(QCoreApplication.translate("MainWindow", u"Categor\u00eda", None))
+        self.label_70.setText(QCoreApplication.translate("MainWindow", u"label error", None))
+        self.label_20.setText(QCoreApplication.translate("MainWindow", u"Ingrese los Datos", None))
         self.pushButton_26.setText(QCoreApplication.translate("MainWindow", u"Agregar", None))
         self.pushButton_25.setText(QCoreApplication.translate("MainWindow", u"Cancelar", None))
-        self.label_76.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
-        self.label_75.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
-        self.label_32.setText(QCoreApplication.translate("MainWindow", u"N\u00famero de Telefono", None))
+        self.label_37.setText(QCoreApplication.translate("MainWindow", u"Ingrese los Datos del Proveedor :", None))
         self.label_41.setText(QCoreApplication.translate("MainWindow", u"Mail(opcional)", None))
         self.label_33.setText(QCoreApplication.translate("MainWindow", u"Nombre del Proveedor", None))
+        self.label_75.setText(QCoreApplication.translate("MainWindow", u"label error", None))
+        self.label_32.setText(QCoreApplication.translate("MainWindow", u"N\u00famero de Telefono", None))
         self.pushButton_34.setText(QCoreApplication.translate("MainWindow", u"Borrar Proveedor", None))
         self.label_38.setText(QCoreApplication.translate("MainWindow", u"Nombre del Proveedor :", None))
         self.label_77.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
+        self.label_78.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
+        self.label_79.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
+        self.label_51.setText(QCoreApplication.translate("MainWindow", u"Nombre del Proveedor", None))
+        self.label_53.setText(QCoreApplication.translate("MainWindow", u"Mail(opcional)", None))
+        self.label_50.setText(QCoreApplication.translate("MainWindow", u"Editar Proveedor :", None))
         self.label_52.setText(QCoreApplication.translate("MainWindow", u"N\u00famero de Telefono", None))
         self.pushButton_37.setText(QCoreApplication.translate("MainWindow", u"Editar", None))
         self.pushButton_38.setText(QCoreApplication.translate("MainWindow", u"Cancelar", None))
-        self.label_50.setText(QCoreApplication.translate("MainWindow", u"Editar Proveedor :", None))
-        self.label_53.setText(QCoreApplication.translate("MainWindow", u"Mail(opcional)", None))
-        self.label_51.setText(QCoreApplication.translate("MainWindow", u"Nombre del Proveedor", None))
-        self.label_78.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
-        self.label_79.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
         self.label_57.setText(QCoreApplication.translate("MainWindow", u"Buscador:", None))
         self.lineEdit_27.setText("")
         self.label_54.setText(QCoreApplication.translate("MainWindow", u"Proveedores", None))
@@ -3860,30 +3858,30 @@ class Ui_MainWindow(object):
         ___qtablewidgetitem34.setText(QCoreApplication.translate("MainWindow", u"Categor\u00eda", None));
         ___qtablewidgetitem35 = self.tableWidget_4.horizontalHeaderItem(7)
         ___qtablewidgetitem35.setText(QCoreApplication.translate("MainWindow", u"Proveedor", None));
-        self.pushButton_39.setText("")
-        self.label_87.setText(QCoreApplication.translate("MainWindow", u"Datos del Usuario :", None))
-        self.label_89.setText(QCoreApplication.translate("MainWindow", u"Nombre del Usuario", None))
-        self.label_85.setText(QCoreApplication.translate("MainWindow", u"Contrase\u00f1a", None))
-        self.label_88.setText("")
-        self.pushButton_31.setText(QCoreApplication.translate("MainWindow", u"Agregar", None))
-        self.label_45.setText(QCoreApplication.translate("MainWindow", u"Ingrese los", None))
         self.label_42.setText(QCoreApplication.translate("MainWindow", u"Mail", None))
+        self.pushButton_39.setText("")
+        self.label_89.setText(QCoreApplication.translate("MainWindow", u"Nombre del Usuario", None))
+        self.label_45.setText(QCoreApplication.translate("MainWindow", u"Ingrese los", None))
+        self.pushButton_31.setText(QCoreApplication.translate("MainWindow", u"Agregar", None))
         self.pushButton_32.setText(QCoreApplication.translate("MainWindow", u"Cancelar", None))
+        self.label_85.setText(QCoreApplication.translate("MainWindow", u"Contrase\u00f1a", None))
+        self.label_87.setText(QCoreApplication.translate("MainWindow", u"Datos del Usuario :", None))
+        self.label_88.setText("")
         self.label_55.setText(QCoreApplication.translate("MainWindow", u"Tipo de Usuario", None))
         self.label_90.setText(QCoreApplication.translate("MainWindow", u"label error", None))
         self.label_96.setText(QCoreApplication.translate("MainWindow", u"Label", None))
-        self.label_86.setText(QCoreApplication.translate("MainWindow", u"Contrase\u00f1a", None))
+        self.pushButton_33.setText(QCoreApplication.translate("MainWindow", u"Editar", None))
+        self.label_49.setText(QCoreApplication.translate("MainWindow", u"Editar", None))
+        self.label_99.setText(QCoreApplication.translate("MainWindow", u"Usuario :", None))
+        self.label_97.setText(QCoreApplication.translate("MainWindow", u"Mail", None))
         self.label_84.setText(QCoreApplication.translate("MainWindow", u"Tipo de Usuario", None))
         self.label_92.setText(QCoreApplication.translate("MainWindow", u"Nombre del Usuario", None))
         self.label_91.setText("")
-        self.label_98.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
-        self.label_49.setText(QCoreApplication.translate("MainWindow", u"Editar", None))
-        self.label_93.setText(QCoreApplication.translate("MainWindow", u"label error", None))
-        self.pushButton_35.setText(QCoreApplication.translate("MainWindow", u"Cancelar", None))
-        self.label_99.setText(QCoreApplication.translate("MainWindow", u"Usuario :", None))
-        self.pushButton_33.setText(QCoreApplication.translate("MainWindow", u"Editar", None))
-        self.label_97.setText(QCoreApplication.translate("MainWindow", u"Mail", None))
+        self.label_86.setText(QCoreApplication.translate("MainWindow", u"Contrase\u00f1a", None))
         self.pushButton_41.setText("")
+        self.pushButton_35.setText(QCoreApplication.translate("MainWindow", u"Cancelar", None))
+        self.label_98.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
+        self.label_93.setText(QCoreApplication.translate("MainWindow", u"label error", None))
         self.pushButton_40.setText(QCoreApplication.translate("MainWindow", u"Borrar Usuario", None))
         self.label_94.setText(QCoreApplication.translate("MainWindow", u"Nombre del Usuario :", None))
         self.label_95.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
