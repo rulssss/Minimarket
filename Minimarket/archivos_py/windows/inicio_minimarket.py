@@ -3740,12 +3740,13 @@ class BuscarDatosTab:
             usuario = self.traer_usuario(dato[0])
             fecha_str = dato[1]
             
-        
-            # Quitar la zona horaria si existe
             fecha_str_sin_tz = fecha_str.split('+')[0].strip()
-            fecha_dt = datetime.strptime(fecha_str_sin_tz, "%Y-%m-%dT%H:%M:%S.%f")
+            try:
+                fecha_dt = datetime.strptime(fecha_str_sin_tz, "%Y-%m-%dT%H:%M:%S.%f")
+            except ValueError:
+                fecha_dt = datetime.strptime(fecha_str_sin_tz, "%Y-%m-%dT%H:%M:%S")
             fecha_separada = fecha_dt.strftime("%d-%m-%Y")
-
+            
             local_tz = pytz.timezone('America/Argentina/Buenos_Aires')
             fecha_dt_utc = fecha_dt.replace(tzinfo=pytz.UTC)
             hora_local = fecha_dt_utc.astimezone(local_tz)
