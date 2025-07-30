@@ -1677,12 +1677,6 @@ class Ui_MainWindow(object):
         self.frame_42.setFrameShadow(QFrame.Shadow.Raised)
         self.verticalLayout_34 = QVBoxLayout(self.frame_42)
         self.verticalLayout_34.setObjectName(u"verticalLayout_34")
-        self.label_82 = QLabel(self.frame_42)
-        self.label_82.setObjectName(u"label_82")
-        self.label_82.setFont(font12)
-
-        self.verticalLayout_34.addWidget(self.label_82, 0, Qt.AlignmentFlag.AlignHCenter)
-
 
         self.verticalLayout_12.addWidget(self.frame_42)
 
@@ -3749,7 +3743,6 @@ class Ui_MainWindow(object):
         self.pushButton_34.setText(QCoreApplication.translate("MainWindow", u"Borrar Proveedor", None))
         self.label_38.setText(QCoreApplication.translate("MainWindow", u"Nombre del Proveedor :", None))
         self.label_77.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
-        self.label_82.setText(QCoreApplication.translate("MainWindow", u"laberl de advertencia", None))
         self.label_52.setText(QCoreApplication.translate("MainWindow", u"N\u00famero de Telefono", None))
         self.pushButton_37.setText(QCoreApplication.translate("MainWindow", u"Editar", None))
         self.pushButton_38.setText(QCoreApplication.translate("MainWindow", u"Cancelar", None))

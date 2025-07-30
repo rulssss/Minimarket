@@ -1738,6 +1738,16 @@ class DatosTab:
                                 self.populate_combobox_proveedores(),
                                 self.proveedores()
                             ))
+
+                            global productos_cache, productos_por_id_cache, productos_por_nombre_cache
+                            productos_cache = None
+                            productos_por_id_cache = None
+                            productos_por_nombre_cache = None
+
+                            self.actualizar_variables_globales_de_uso(3, lambda: (
+                                self.populate_table_with_products(),
+                                
+                            ))
     
                             # Limpiar input y mostrar mensaje
                             lineEdit_20 = self.ui.frame_12.findChild(QLineEdit, "lineEdit_20")
@@ -2355,6 +2365,15 @@ class DatosTab:
                         self.populate_table_with_categorias(),
                         self.populate_combobox_categorias(),
                         self.categorias()
+                    ))
+
+                    global productos_cache, productos_por_nombre_cache, productos_por_id_cache
+                    productos_cache = None
+                    productos_por_nombre_cache = None
+                    productos_por_id_cache = None
+                    self.actualizar_variables_globales_de_uso(3, lambda: (
+                        self.populate_table_with_products(),
+                        
                     ))
 
                     lineEdit_21.clear()

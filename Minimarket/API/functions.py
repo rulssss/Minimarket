@@ -691,18 +691,47 @@ def cargar_proveedor(nombre_producto, num_telefono, mail):
     
 def buscar_proveedor(nombre_prov):
     global id_usuario_perfil
-    if nombre_prov != "Proveedor1":
-        try:
-            supabase.table("proveedores") \
-                .delete() \
-                .eq("nombre_proveedor", nombre_prov) \
-                .eq("u_id", id_usuario_perfil) \
-                .execute()
-            return True
-        except Exception as e:
-            print(f"Error al borrar proveedor en Supabase: {e}")
+    try:
+        # No permitir borrar el proveedor principal
+        if nombre_prov == "Proveedor1":
             return False
-    return False
+
+        # Verificar si existe el proveedor
+        response = supabase.table("proveedores") \
+            .select("id_proveedor") \
+            .eq("nombre_proveedor", nombre_prov) \
+            .eq("u_id", id_usuario_perfil) \
+            .execute()
+        data = response.data
+
+        if data:
+            id_proveedor = data[0]["id_proveedor"]
+            try:
+                # Intentar borrar el proveedor
+                supabase.table("proveedores") \
+                    .delete() \
+                    .eq("id_proveedor", id_proveedor) \
+                    .eq("u_id", id_usuario_perfil) \
+                    .execute()
+                return True
+            except Exception as e:
+                # Si hay error de ForeignKey, reasignar productos al proveedor id=1 y volver a intentar
+                supabase.table("productos") \
+                    .update({"id_proveedor": 1}) \
+                    .eq("id_proveedor", id_proveedor) \
+                    .eq("u_id", id_usuario_perfil) \
+                    .execute()
+                supabase.table("proveedores") \
+                    .delete() \
+                    .eq("id_proveedor", id_proveedor) \
+                    .eq("u_id", id_usuario_perfil) \
+                    .execute()
+                return True
+        else:
+            return False
+    except Exception as e:
+        print(f"Error al borrar proveedor en Supabase: {e}")
+        return False
 
 def actualizar_proveedor(nombre_proveedor, num_proveedor, mail_producto):
     global id_usuario_perfil
