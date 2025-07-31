@@ -387,6 +387,21 @@ def api_aumentar_precios_categoria():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
+
+@app.route('/api/bajar_precios_categoria', methods=['POST'])
+def api_bajar_precios_categoria():
+    data = request.json
+    valor1 = data.get('valor1')
+    valor2 = data.get('valor2')
+    categoria = data.get('categoria')
+    if valor1 is None or valor2 is None or not categoria:
+        return jsonify({"error": "Faltan datos"}), 400
+    try:
+        bajar_precios_categoria(valor1, valor2, categoria)
+        return jsonify({"exito": True})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
     
 @app.route('/api/aumentar_precios_proveedor', methods=['POST'])
 def api_aumentar_precios_proveedor():
@@ -398,6 +413,20 @@ def api_aumentar_precios_proveedor():
         return jsonify({"error": "Faltan datos"}), 400
     try:
         aumentar_precios_proveedor(valor1, valor2, proveedor)
+        return jsonify({"exito": True})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+@app.route('/api/bajar_precios_proveedor', methods=['POST'])
+def api_bajar_precios_proveedor():
+    data = request.json
+    valor1 = data.get('valor1')
+    valor2 = data.get('valor2')
+    proveedor = data.get('proveedor')
+    if valor1 is None or valor2 is None or not proveedor:
+        return jsonify({"error": "Faltan datos"}), 400
+    try:
+        bajar_precios_proveedor(valor1, valor2, proveedor)
         return jsonify({"exito": True})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -504,6 +533,7 @@ def api_agregar_registro_usuario():
         return jsonify({"exito": exito})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
     
 @app.route('/api/clear_data', methods=['POST'])
 def api_clear_data():
@@ -1296,6 +1326,20 @@ def api_movimiento_aumento_precios():
         return jsonify({"error": "Faltan datos"}), 400
     try:
         cargar_movimiento_aumento_precios(categoria_o_proveedor, usuario, es_categoria)
+        return jsonify({"exito": True})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+@app.route('/api/movimiento_bajar_precios', methods=['POST'])
+def api_movimiento_bajar_precios():
+    data = request.json
+    categoria_o_proveedor = data.get('categoria_o_proveedor')
+    usuario = data.get('usuario')
+    es_categoria = data.get('es_categoria')
+    if not categoria_o_proveedor or not usuario or es_categoria is None:
+        return jsonify({"error": "Faltan datos"}), 400
+    try:
+        cargar_movimiento_bajar_precios(categoria_o_proveedor, usuario, es_categoria)
         return jsonify({"exito": True})
     except Exception as e:
         return jsonify({"error": str(e)}), 500

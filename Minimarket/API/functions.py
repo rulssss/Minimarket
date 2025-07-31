@@ -563,6 +563,30 @@ def aumentar_precios_categoria(precio_compra, precio_venta, nombre):
         print(f"Error al aumentar precios por categoría en Supabase: {e}")
         return False
 
+def bajar_precios_categoria(precio_compra, precio_venta, nombre):
+    global id_usuario_perfil
+    id_categoria = traer_id_categoria(nombre)
+    try:
+        # Obtener todos los productos de la categoría
+        response = supabase.table("productos") \
+            .select("id_producto, precio_de_compra, precio_de_venta") \
+            .eq("id_categoria", id_categoria) \
+            .eq("u_id", id_usuario_perfil) \
+            .execute()
+        productos = response.data
+
+        for prod in productos:
+            nuevo_precio_compra = prod["precio_de_compra"] * (1 - precio_compra / 100.0)
+            nuevo_precio_venta = prod["precio_de_venta"] * (1 - precio_venta / 100.0)
+            supabase.table("productos").update({
+                "precio_de_compra": nuevo_precio_compra,
+                "precio_de_venta": nuevo_precio_venta
+            }).eq("id_producto", prod["id_producto"]).eq("u_id", id_usuario_perfil).execute()
+        return True
+    except Exception as e:
+        print(f"Error al bajar precios por categoría en Supabase: {e}")
+        return False
+
 def aumentar_precios_proveedor(precio_compra, precio_venta, nombre):
     """
     Aumenta los precios de compra y venta de todos los productos de un proveedor en un porcentaje dado.
@@ -591,6 +615,36 @@ def aumentar_precios_proveedor(precio_compra, precio_venta, nombre):
         return True
     except Exception as e:
         print(f"Error al aumentar precios por proveedor en Supabase: {e}")
+        return False
+    
+def bajar_precios_proveedor(precio_compra, precio_venta, nombre):
+    """
+    Baja los precios de compra y venta de todos los productos de un proveedor en un porcentaje dado.
+    precio_compra y precio_venta pueden ser decimales (ej: 5.5 para 5,5%).
+    nombre es el nombre del proveedor.
+    """
+    global id_usuario_perfil
+
+    id_proveedor = traer_id_proveedor(nombre)
+    try:
+        # Obtener todos los productos del proveedor
+        response = supabase.table("productos") \
+            .select("id_producto, precio_de_compra, precio_de_venta") \
+            .eq("id_proveedor", id_proveedor) \
+            .eq("u_id", id_usuario_perfil) \
+            .execute()
+        productos = response.data
+
+        for prod in productos:
+            nuevo_precio_compra = prod["precio_de_compra"] * (1 - precio_compra / 100.0)
+            nuevo_precio_venta = prod["precio_de_venta"] * (1 - precio_venta / 100.0)
+            supabase.table("productos").update({
+                "precio_de_compra": nuevo_precio_compra,
+                "precio_de_venta": nuevo_precio_venta
+            }).eq("id_producto", prod["id_producto"]).eq("u_id", id_usuario_perfil).execute()
+        return True
+    except Exception as e:
+        print(f"Error al bajar precios por proveedor en Supabase: {e}")
         return False
 
 def traer_datosproducto_por_id(barcode):
@@ -3366,7 +3420,7 @@ def cargar_movimiento_aumento_precios(combobox_20_value, usuario_activo, s):
         supabase.table("movimientos").insert({
             "id_usuario": id_usuario,
             "fecha_hora": fecha_hora,
-            "tipo_accion": "Aumento",
+            "tipo_accion": "Aumento precios",
             "entidad_afectada": "Productos",
             "id_entidad": combobox_20_ID,
             "descripcion": f"Aumento precios de: {combobox_20_value}",
@@ -3375,6 +3429,32 @@ def cargar_movimiento_aumento_precios(combobox_20_value, usuario_activo, s):
         return True
     except Exception as e:
         print(f"Error al registrar movimiento de aumento de precios en Supabase: {e}")
+        return False
+    
+def cargar_movimiento_bajar_precios(combobox_22_value, usuario_activo, s):
+    global id_usuario_perfil
+
+    id_usuario = traer_id_usuario(usuario_activo)
+    fecha_hora = datetime.now().astimezone().isoformat()
+
+    if s:
+        combobox_20_ID = traer_id_categoria(combobox_22_value)
+    else:
+        combobox_20_ID = traer_id_proveedor(combobox_22_value)
+
+    try:
+        supabase.table("movimientos").insert({
+            "id_usuario": id_usuario,
+            "fecha_hora": fecha_hora,
+            "tipo_accion": "Bajar precios",
+            "entidad_afectada": "Productos",
+            "id_entidad": combobox_20_ID,
+            "descripcion": f"Bajar precios de: {combobox_22_value}",
+            "u_id": id_usuario_perfil
+        }).execute()
+        return True
+    except Exception as e:
+        print(f"Error al registrar movimiento de bajar de precios en Supabase: {e}")
         return False
     
     

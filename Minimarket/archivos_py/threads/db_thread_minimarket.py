@@ -248,6 +248,32 @@ class AumentarPreciosCategoriaThread(QThread):
             print(f"Error en AumentarPreciosCategoriaThread: {e}")
             self.finished.emit()
 
+class BajarPreciosCategoriaThread(QThread):
+    finished = Signal()
+    def __init__(self, valor1, valor2, categoria):
+        super().__init__()
+        self.valor1 = valor1
+        self.valor2 = valor2
+        self.categoria = categoria
+    def run(self):
+        
+        try:
+            url = f"{API_URL}/api/bajar_precios_categoria"
+            payload = {
+                "valor1": self.valor1,
+                "valor2": self.valor2,
+                "categoria": self.categoria
+            }
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                self.finished.emit()
+            else:
+                print(f"Error al bajar precios por categoría: {response.text}")
+                self.finished.emit()
+        except Exception as e:
+            print(f"Error en BajarPreciosCategoriaThread: {e}")
+            self.finished.emit()
+
 
 class AumentarPreciosProveedorThread(QThread):
     finished = Signal()
@@ -275,6 +301,32 @@ class AumentarPreciosProveedorThread(QThread):
             print(f"Error en AumentarPreciosProveedorThread: {e}")
             self.finished.emit()
 
+class BajarPreciosProveedorThread(QThread):
+    finished = Signal()
+    def __init__(self, valor1, valor2, proveedor):
+        super().__init__()
+        self.valor1 = valor1
+        self.valor2 = valor2
+        self.proveedor = proveedor
+    def run(self):
+        
+        try:
+            url = f"{API_URL}/api/bajar_precios_proveedor"
+            payload = {
+                "valor1": self.valor1,
+                "valor2": self.valor2,
+                "proveedor": self.proveedor
+            }
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                self.finished.emit()
+            else:
+                print(f"Error al bajar precios por proveedor: {response.text}")
+                self.finished.emit()
+        except Exception as e:
+            print(f"Error en BajarPreciosProveedorThread: {e}")
+            self.finished.emit()
+
 
 class MovimientoAumentoPreciosThread(QThread):
     finished = Signal()
@@ -300,6 +352,33 @@ class MovimientoAumentoPreciosThread(QThread):
                 self.finished.emit()
         except Exception as e:
             print(f"Error en MovimientoAumentoPreciosThread: {e}")
+            self.finished.emit()
+
+class MovimientoBajarPreciosThread(QThread):
+    finished = Signal()
+    def __init__(self, categoria_o_proveedor, usuario, es_categoria):
+        super().__init__()
+        self.categoria_o_proveedor = categoria_o_proveedor
+        self.usuario = usuario
+        self.es_categoria = es_categoria
+
+    def run(self):
+        
+        try:
+            url = f"{API_URL}/api/movimiento_bajar_precios"
+            payload = {
+                "categoria_o_proveedor": self.categoria_o_proveedor,
+                "usuario": self.usuario,
+                "es_categoria": self.es_categoria
+            }
+            response = requests.post(url, json=payload)
+            if response.status_code == 200:
+                self.finished.emit()
+            else:
+                print(f"Error al cargar movimiento bajar precios: {response.text}")
+                self.finished.emit()
+        except Exception as e:
+            print(f"Error en MovimientoBajarPreciosThread: {e}")
             self.finished.emit()
 
 

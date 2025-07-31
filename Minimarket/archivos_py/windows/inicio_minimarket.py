@@ -51,6 +51,9 @@ class DatosTab:
         self.threads = []
 
         self.mp_verificados = False
+        self.aumento = False
+        self.bajar = False
+        self.editando = False
 
         if not self.mp_verificados:
             self.verificar_mp_thread = VerificarYAgregarMPThread()
@@ -883,6 +886,121 @@ class DatosTab:
             pushbutton_49.setEnabled(True)
             pushbutton_49.clicked.connect(self.update_product_prices)
 
+        # edicion frame bajar precios
+
+        combobox_21 = self.ui.frame_40.findChild(QComboBox, "comboBox_21")
+        if combobox_21:
+            if combobox_21.count() == 0:
+                combobox_21.addItem("Categoría")
+                combobox_21.addItem("Proveedor")
+
+            combobox_21.currentIndexChanged.connect(self.update_combobox_22)
+
+        combobox_22 = self.ui.frame_40.findChild(QComboBox, "comboBox_22")
+        if combobox_22:
+            if combobox_22.count() == 0:
+                self.update_combobox_22()
+
+        doublespinbox_3 = self.ui.frame_63.findChild(QDoubleSpinBox, "doubleSpinBox_3")
+        if doublespinbox_3:
+            doublespinbox_3.valueChanged.connect(self.update_spinbox_bajar_value)
+        
+        push_button_42 = self.ui.frame_40.findChild(QPushButton, "pushButton_42")
+        if push_button_42:
+            push_button_42.setEnabled(True)
+            push_button_42.clicked.connect(self.bajar_product_prices)
+
+    def bajar_product_prices(self):
+        global usuario_activo
+        if getattr(self, "bajar", False):
+            return  # Ya está en proceso, no ejecutar de nuevo
+        self.bajar = True
+
+        pushbutton_49 = self.ui.frame_55.findChild(QPushButton, "pushButton_49")
+        if pushbutton_49:
+            pushbutton_49.setEnabled(False)
+
+        boton_editar = self.ui.frame_7.findChild(QPushButton, "pushButton_23")
+        if boton_editar:
+            boton_editar.setEnabled(False)
+
+        boton_cancelar = self.ui.frame_7.findChild(QPushButton, "pushButton_24")
+        if boton_cancelar:
+            boton_cancelar.setEnabled(False)
+
+        push_button_42 = self.ui.frame_40.findChild(QPushButton, "pushButton_42")
+        if push_button_42:
+            push_button_42.setEnabled(False)
+
+        doublespinbox_3 = self.ui.frame_63.findChild(QDoubleSpinBox, "doubleSpinBox_3")
+        doublespinbox_4 = self.ui.frame_64.findChild(QDoubleSpinBox, "doubleSpinBox_4")
+        combobox_21 = self.ui.frame_40.findChild(QComboBox, "comboBox_21")
+        combobox_22 = self.ui.frame_40.findChild(QComboBox, "comboBox_22")
+
+        doublespinbox_value_3 = doublespinbox_3.value()
+        doublespinbox_value_4 = doublespinbox_4.value()
+        combobox_21_value = combobox_21.currentText()
+        combobox_22_value = combobox_22.currentText()
+
+        if combobox_21_value == "Categoría":
+            self.bajar_thread = BajarPreciosCategoriaThread(doublespinbox_value_3, doublespinbox_value_4, combobox_22_value)
+            s = True
+        else:
+            self.bajar_thread = BajarPreciosProveedorThread(doublespinbox_value_3, doublespinbox_value_4, combobox_22_value)
+            s = False
+
+        def on_bajar_finalizado():
+            self.bajar = False
+            
+            pushbutton_49 = self.ui.frame_55.findChild(QPushButton, "pushButton_49")
+            boton_editar = self.ui.frame_7.findChild(QPushButton, "pushButton_23")
+            boton_cancelar = self.ui.frame_7.findChild(QPushButton, "pushButton_24")
+            push_button_42 = self.ui.frame_40.findChild(QPushButton, "pushButton_42")
+
+            if doublespinbox_value_3 != 0.00 or doublespinbox_value_4 != 0.00:
+                global productos_cache
+                # Limpiar solo el cache de productos antes de actualizar
+                productos_cache = None
+                # Actualizar productos y refrescar la tabla y combobox cuando termine
+                self.actualizar_variables_globales_de_uso(3, lambda: (
+                    self.populate_table_with_products(),
+            
+                ))
+                
+                self.movimiento_thread = MovimientoBajarPreciosThread(combobox_22_value, usuario_activo, s)
+                self.movimiento_thread.finished.connect(lambda: (self.load_product_data(), self.clear_doublespinbox_values(), pushbutton_49.setEnabled(True), boton_editar.setEnabled(True), boton_cancelar.setEnabled(True), push_button_42.setEnabled(True)))
+                self.start_thread(self.movimiento_thread)
+
+            else:
+                if pushbutton_49:
+                    pushbutton_49.setEnabled(True)
+                if boton_editar:
+                    boton_editar.setEnabled(True)
+                if boton_cancelar:
+                    boton_cancelar.setEnabled(True)
+                if push_button_42:
+                    push_button_42.setEnabled(True)
+            
+        self.bajar_thread.finished.connect(on_bajar_finalizado)
+        self.start_thread(self.bajar_thread)
+
+    def update_combobox_22(self):
+        combobox_21 = self.ui.frame_40.findChild(QComboBox, "comboBox_21")
+        combobox_22 = self.ui.frame_40.findChild(QComboBox, "comboBox_22")
+        if combobox_21 and combobox_22:
+            combobox_22.clear()
+            if combobox_21.currentText() == "Categoría":
+                self.populate_combobox_with_categorias(combobox_22)
+            elif combobox_21.currentText() == "Proveedor":
+                self.populate_combobox_with_proveedores(combobox_22)
+
+    def update_spinbox_bajar_value(self):
+        doublespinbox_3 = self.ui.frame_63.findChild(QDoubleSpinBox, "doubleSpinBox_3")
+        doublespinbox_4 = self.ui.frame_64.findChild(QDoubleSpinBox, "doubleSpinBox_4")
+        doublespinbox_value_3 = doublespinbox_3.value()
+
+        if doublespinbox_4:
+            doublespinbox_4.setValue(doublespinbox_value_3)
 
     def update_spinbox_value(self):
         doublespinbox = self.ui.frame_55.findChild(QDoubleSpinBox, "doubleSpinBox")
@@ -906,13 +1024,23 @@ class DatosTab:
     def clear_doublespinbox_values(self):
         doublespinbox = self.ui.frame_55.findChild(QDoubleSpinBox, "doubleSpinBox")
         doublespinbox_2 = self.ui.frame_55.findChild(QDoubleSpinBox, "doubleSpinBox_2")
+        doublespinbox_3 = self.ui.frame_63.findChild(QDoubleSpinBox, "doubleSpinBox")
+        doublespinbox_4 = self.ui.frame_64.findChild(QDoubleSpinBox, "doubleSpinBox_2")
+
         if doublespinbox:
             doublespinbox.setValue(0.00)
         if doublespinbox_2:
             doublespinbox_2.setValue(0.00)
+        if doublespinbox_3:
+            doublespinbox_3.setValue(0.00)
+        if doublespinbox_4:
+            doublespinbox_4.setValue(0.00)
 
     def update_product_prices(self):
         global usuario_activo
+        if getattr(self, "aumento", False):
+            return  # Ya está en proceso, no ejecutar de nuevo
+        self.aumento = True
 
         pushbutton_49 = self.ui.frame_55.findChild(QPushButton, "pushButton_49")
         if pushbutton_49:
@@ -921,11 +1049,15 @@ class DatosTab:
         boton_editar = self.ui.frame_7.findChild(QPushButton, "pushButton_23")
         if boton_editar:
             boton_editar.setEnabled(False)
+            
         boton_cancelar = self.ui.frame_7.findChild(QPushButton, "pushButton_24")
         if boton_cancelar:
             boton_cancelar.setEnabled(False)
-            
 
+        push_button_42 = self.ui.frame_40.findChild(QPushButton, "pushButton_42")
+        if push_button_42:
+            push_button_42.setEnabled(False)
+            
         doublespinbox = self.ui.frame_55.findChild(QDoubleSpinBox, "doubleSpinBox")
         doublespinbox_2 = self.ui.frame_55.findChild(QDoubleSpinBox, "doubleSpinBox_2")
         combobox_19 = self.ui.frame_55.findChild(QComboBox, "comboBox_19")
@@ -944,9 +1076,11 @@ class DatosTab:
             s = False
 
         def on_aumento_finalizado():
+            self.aumento = False
             pushbutton_49 = self.ui.frame_55.findChild(QPushButton, "pushButton_49")
             boton_editar = self.ui.frame_7.findChild(QPushButton, "pushButton_23")
             boton_cancelar = self.ui.frame_7.findChild(QPushButton, "pushButton_24")
+            push_button_42 = self.ui.frame_40.findChild(QPushButton, "pushButton_42")
 
             if doublespinbox_value != 0.00 or doublespinbox_2_value != 0.00:
                 global productos_cache
@@ -959,7 +1093,7 @@ class DatosTab:
                 ))
                 
                 self.movimiento_thread = MovimientoAumentoPreciosThread(combobox_20_value, usuario_activo, s)
-                self.movimiento_thread.finished.connect(lambda: (self.load_product_data(), self.clear_doublespinbox_values(), pushbutton_49.setEnabled(True), boton_editar.setEnabled(True), boton_cancelar.setEnabled(True)))
+                self.movimiento_thread.finished.connect(lambda: (self.load_product_data(), self.clear_doublespinbox_values(), pushbutton_49.setEnabled(True), boton_editar.setEnabled(True), boton_cancelar.setEnabled(True), push_button_42.setEnabled(True)))
                 self.start_thread(self.movimiento_thread)
 
             else:
@@ -969,7 +1103,8 @@ class DatosTab:
                     boton_editar.setEnabled(True)
                 if boton_cancelar:
                     boton_cancelar.setEnabled(True)
-                
+                if push_button_42:
+                    push_button_42.setEnabled(True)
 
         self.aumentar_thread.finished.connect(on_aumento_finalizado)
         self.start_thread(self.aumentar_thread)
@@ -1065,6 +1200,7 @@ class DatosTab:
         self.start_thread(self.movimiento_producto_editado_thread)
 
     def on_producto_actualizado(self):
+        self.editando = False
         label_73 = self.ui.frame_7.findChild(QLabel, "label_73")
         label_74 = self.ui.frame_7.findChild(QLabel, "label_74")
         if label_73 and label_74:
@@ -1107,11 +1243,12 @@ class DatosTab:
         if pushbutton_49:
             pushbutton_49.setEnabled(True)
 
-     
-
 
     def verifica_datos_iguales(self, producto):
         global usuario_activo
+        if getattr(self, "editando", False):
+            return  # Ya está en proceso, no ejecutar de nuevo
+        self.editando = True
 
         if producto:
             if (self.ui.frame_7.findChild(QLineEdit, "lineEdit_9").text() == producto[1] and
@@ -1129,23 +1266,30 @@ class DatosTab:
                     label_73.setStyleSheet("color: red; font-weight: bold")
                     label_74.setText("los campos")
                     label_74.setStyleSheet("color: red; font-weight: bold")
+
+                self.editando = False
                     
 
             elif not (self.is_decimal(self.ui.frame_7.findChild(QLineEdit, "lineEdit_10").text()) and
                 self.is_decimal(self.ui.frame_7.findChild(QLineEdit, "lineEdit_11").text()) and
                 self.is_decimal(self.ui.frame_7.findChild(QLineEdit, "lineEdit_12").text()) and
                 self.is_decimal(self.ui.frame_7.findChild(QLineEdit, "lineEdit_13").text())):
+
+                self.editando = False
+
                 label_73 = self.ui.frame_7.findChild(QLabel, "label_73")
                 label_74 = self.ui.frame_7.findChild(QLabel, "label_74")
                 
+
                 if label_73 and label_74:
                     label_73.setText("Por favor, ingrese")
                     label_73.setStyleSheet("color: red; font-weight: bold")
                     label_74.setText("valores válidos")
                     label_74.setStyleSheet("color: red; font-weight: bold")
                    
-            
             else:
+                self.editando = False
+
                 label_73 = self.ui.frame_7.findChild(QLabel, "label_73")
                 label_74 = self.ui.frame_7.findChild(QLabel, "label_74")
 
@@ -1160,7 +1304,6 @@ class DatosTab:
                 if pushbutton_49:
                     pushbutton_49.setEnabled(False)
                 
-                    
                 if label_73 and label_74:
                     label_73.setText("Actualizando")
                     label_74.setText("producto...")
@@ -1179,6 +1322,8 @@ class DatosTab:
                 )
     
         else:
+            self.editando = False
+
             boton_editar = self.ui.frame_7.findChild(QPushButton, "pushButton_23")
             if boton_editar:
                 boton_editar.setEnabled(True)
@@ -3181,7 +3326,7 @@ class BuscarDatosTab:
     
     def populate_combobox_acciones(self, combobox):
         combobox.clear()
-        acciones = ["Agregar", "Borrar", "Editar", "Venta", "Compra", "Login"]
+        acciones = ["Agregar", "Borrar", "Editar", "Venta", "Compra", "Login", "Aumento precios", "Bajar precios"]
         combobox.addItems(acciones)
 
     def populate_combobox_with_names(self, combobox):
