@@ -3256,13 +3256,35 @@ class BuscarDatosTab:
         global categorias_cache, proveedores_cache, productos_cache, usuarios_cache, metodos_pago_cache
         global productos_cache_temporal, productos_por_id_cache, productos_por_nombre_cache, proveedores_por_nombre_cache
         global proveedores_por_telefono_cache, categorias_por_nombre_cache, usuarios_por_nombre_cache, metodos_pago_por_id_cache
-
+    
+        # Mostrar diálogo de confirmación
+        from PySide6.QtWidgets import QMessageBox
+        dialog = QMessageBox(self.main_window)
+        dialog.setWindowTitle("Cerrar sesión rls")
+        dialog.setText("¿Está seguro que desea cerrar sesión rls?")
+        dialog.setIcon(QMessageBox.Question)
+        dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        dialog.setDefaultButton(QMessageBox.No)
+    
+        # Personalizar los textos de los botones
+        yes_button = dialog.button(QMessageBox.Yes)
+        no_button = dialog.button(QMessageBox.No)
+        if yes_button:
+            yes_button.setText("Sí")
+        if no_button:
+            no_button.setText("No")
+    
+        respuesta = dialog.exec()
+        if respuesta != QMessageBox.Yes:
+            return  # Cancelado por el usuario
+    
+        # Limpiar caches
         categorias_cache = None
         proveedores_cache = None
         productos_cache = None
         usuarios_cache = None
         metodos_pago_cache = None
-
+    
         productos_cache_temporal = None
         productos_por_id_cache = None
         productos_por_nombre_cache = None
@@ -3271,9 +3293,8 @@ class BuscarDatosTab:
         categorias_por_nombre_cache = None
         usuarios_por_nombre_cache = None
         metodos_pago_por_id_cache = None
-
+    
         self.main_window.close()
-        # Importar aquí para evitar el ciclo
         from archivos_py.windows.inicio_login import Inicio
         self.inicio_window = Inicio()
         self.inicio_window.show()
