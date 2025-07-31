@@ -3209,9 +3209,10 @@ class DatosTab:
 ################
 
 class BuscarDatosTab:
-    def __init__(self, ui, datos_tab):
+    def __init__(self, ui, datos_tab, main_window):
         self.ui = ui
         self.datos_tab = datos_tab
+        self.main_window = main_window
         #crear arreglo con threads abiertos
         self.threads = []
 
@@ -3229,6 +3230,7 @@ class BuscarDatosTab:
         self.boton_mov()
         self.boton_arqueo()
         self.boton_estadisticas()
+        self.boton_cerrar_sesion()
 
     def start_thread(self, thread):
         self.threads.append(thread)
@@ -3238,6 +3240,49 @@ class BuscarDatosTab:
 
 ################
 ################
+
+    # cerrar sesion
+
+    def boton_cerrar_sesion(self):
+
+        push_button_51 = self.ui.tab_3.findChild(QPushButton, "pushButton_51")
+        if push_button_51:
+            push_button_51.setFocusPolicy(Qt.NoFocus)
+            push_button_51.setStyleSheet("background-color: red")
+            push_button_51.clicked.connect(self.cerrar_sesion)
+
+
+    def cerrar_sesion(self):
+        global categorias_cache, proveedores_cache, productos_cache, usuarios_cache, metodos_pago_cache
+        global productos_cache_temporal, productos_por_id_cache, productos_por_nombre_cache, proveedores_por_nombre_cache
+        global proveedores_por_telefono_cache, categorias_por_nombre_cache, usuarios_por_nombre_cache, metodos_pago_por_id_cache
+
+        categorias_cache = None
+        proveedores_cache = None
+        productos_cache = None
+        usuarios_cache = None
+        metodos_pago_cache = None
+
+        productos_cache_temporal = None
+        productos_por_id_cache = None
+        productos_por_nombre_cache = None
+        proveedores_por_nombre_cache = None
+        proveedores_por_telefono_cache = None
+        categorias_por_nombre_cache = None
+        usuarios_por_nombre_cache = None
+        metodos_pago_por_id_cache = None
+
+        self.main_window.close()
+        # Importar aquí para evitar el ciclo
+        from archivos_py.windows.inicio_login import Inicio
+        self.inicio_window = Inicio()
+        self.inicio_window.show()
+
+
+        
+################
+################
+
     # Movimientos
 
     def traer_metodo_pago_cache(self, id_metodo):
@@ -7082,7 +7127,7 @@ class MainWindow(QMainWindow):
 
         # Crear instancias de las clases de las pestañas
         self.datos_tab = DatosTab(self.ui)
-        self.buscar_datos_tab = BuscarDatosTab(self.ui, self.datos_tab)
+        self.buscar_datos_tab = BuscarDatosTab(self.ui, self.datos_tab, self)
         self.administracion_tab = AdministracionTab(self.ui, self.buscar_datos_tab, self.datos_tab)
 
         # Cerrar factureros al cambiar a la pestaña "Datos"

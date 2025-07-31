@@ -298,6 +298,17 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_3.addItem(self.verticalSpacer_2)
 
+        self.pushButton_51 = QPushButton(self.tab_3)
+        self.pushButton_51.setObjectName(u"pushButton_51")
+        self.pushButton_51.setMinimumSize(QSize(150, 0))
+        self.pushButton_51.setFont(font2)
+
+        self.verticalLayout_3.addWidget(self.pushButton_51, 0, Qt.AlignmentFlag.AlignHCenter)
+
+        self.horizontalSpacer_176 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.verticalLayout_3.addItem(self.horizontalSpacer_176)
+
         self.tabWidget.addTab(self.tab_3, "")
         self.tab = QWidget()
         self.tab.setObjectName(u"tab")
@@ -640,7 +651,7 @@ class Ui_MainWindow(object):
         self.frame_17 = QFrame(self.page_7)
         self.frame_17.setObjectName(u"frame_17")
         self.frame_17.setMaximumSize(QSize(800, 250))
-        self.frame_17.setAutoFillBackground(True)
+        self.frame_17.setAutoFillBackground(False)
         self.frame_17.setStyleSheet(u"#frame_17 {\n"
 "    border-radius: 10px;\n"
 " 	border: 1px solid palette(mid);\n"
@@ -778,7 +789,7 @@ class Ui_MainWindow(object):
         self.frame_6 = QFrame(self.page2)
         self.frame_6.setObjectName(u"frame_6")
         self.frame_6.setMaximumSize(QSize(800, 250))
-        self.frame_6.setAutoFillBackground(True)
+        self.frame_6.setAutoFillBackground(False)
         self.frame_6.setStyleSheet(u"#frame_6 {\n"
 "    border-radius: 10px;\n"
 " 	border: 1px solid palette(mid);\n"
@@ -875,7 +886,7 @@ class Ui_MainWindow(object):
         self.frame_7 = QFrame(self.page_2)
         self.frame_7.setObjectName(u"frame_7")
         self.frame_7.setMaximumSize(QSize(16777215, 250))
-        self.frame_7.setAutoFillBackground(True)
+        self.frame_7.setAutoFillBackground(False)
         self.frame_7.setStyleSheet(u"#frame_7 {\n"
 "    border-radius: 8px;\n"
 " 	border: 1px solid palette(mid);\n"
@@ -1066,7 +1077,7 @@ class Ui_MainWindow(object):
         self.frame_55 = QFrame(self.page_2)
         self.frame_55.setObjectName(u"frame_55")
         self.frame_55.setMaximumSize(QSize(800, 16777215))
-        self.frame_55.setAutoFillBackground(True)
+        self.frame_55.setAutoFillBackground(False)
         self.frame_55.setStyleSheet(u"#frame_55 {\n"
 "    border-radius: 8px;\n"
 " 	border: 1px solid palette(mid);\n"
@@ -1205,7 +1216,7 @@ class Ui_MainWindow(object):
         font16.setBold(False)
         font16.setStrikeOut(False)
         self.frame_40.setFont(font16)
-        self.frame_40.setAutoFillBackground(True)
+        self.frame_40.setAutoFillBackground(False)
         self.frame_40.setStyleSheet(u"#frame_40{\n"
 "    border-radius: 8px;\n"
 " 	border: 1px solid palette(mid);\n"
@@ -1355,7 +1366,7 @@ class Ui_MainWindow(object):
         self.frame_5 = QFrame(self.page_10)
         self.frame_5.setObjectName(u"frame_5")
         self.frame_5.setMaximumSize(QSize(16777215, 250))
-        self.frame_5.setAutoFillBackground(True)
+        self.frame_5.setAutoFillBackground(False)
         self.frame_5.setStyleSheet(u"#frame_5 {\n"
 "    border-radius: 8px;\n"
 " 	border: 1px solid palette(mid);\n"
@@ -1564,7 +1575,7 @@ class Ui_MainWindow(object):
         self.frame_10.setObjectName(u"frame_10")
         self.frame_10.setMinimumSize(QSize(500, 0))
         self.frame_10.setMaximumSize(QSize(16777215, 270))
-        self.frame_10.setAutoFillBackground(True)
+        self.frame_10.setAutoFillBackground(False)
         self.frame_10.setStyleSheet(u"#frame_10 {\n"
 "    border-radius: 8px;\n"
 " 	border: 1px solid palette(mid);\n"
@@ -1699,7 +1710,7 @@ class Ui_MainWindow(object):
         self.frame_12 = QFrame(self.page_4)
         self.frame_12.setObjectName(u"frame_12")
         self.frame_12.setMaximumSize(QSize(800, 250))
-        self.frame_12.setAutoFillBackground(True)
+        self.frame_12.setAutoFillBackground(False)
         self.frame_12.setStyleSheet(u"#frame_12 {\n"
 "    border-radius: 10px;\n"
 " 	border: 1px solid palette(mid);\n"
@@ -1803,7 +1814,7 @@ class Ui_MainWindow(object):
         self.frame_13.setObjectName(u"frame_13")
         self.frame_13.setMinimumSize(QSize(500, 0))
         self.frame_13.setMaximumSize(QSize(16777215, 270))
-        self.frame_13.setAutoFillBackground(True)
+        self.frame_13.setAutoFillBackground(False)
         self.frame_13.setStyleSheet(u"#frame_13 {\n"
 "    border-radius: 8px;\n"
 " 	border: 1px solid palette(mid);\n"
@@ -2071,7 +2082,7 @@ class Ui_MainWindow(object):
         self.frame_20 = QFrame(self.page_8)
         self.frame_20.setObjectName(u"frame_20")
         self.frame_20.setMaximumSize(QSize(800, 250))
-        self.frame_20.setAutoFillBackground(True)
+        self.frame_20.setAutoFillBackground(False)
         self.frame_20.setStyleSheet(u"#frame_20 {\n"
 "    border-radius: 10px;\n"
 " 	border: 1px solid palette(mid);\n"
@@ -3031,7 +3042,7 @@ class Ui_MainWindow(object):
         self.frame_29 = QFrame(self.page)
         self.frame_29.setObjectName(u"frame_29")
         self.frame_29.setMaximumSize(QSize(16777215, 250))
-        self.frame_29.setAutoFillBackground(True)
+        self.frame_29.setAutoFillBackground(False)
         self.frame_29.setStyleSheet(u"#frame_29 {\n"
 "    border-radius: 8px;\n"
 " 	border: 1px solid palette(mid);\n"
@@ -3209,7 +3220,7 @@ class Ui_MainWindow(object):
         self.frame_45 = QFrame(self.page_16)
         self.frame_45.setObjectName(u"frame_45")
         self.frame_45.setMaximumSize(QSize(16777215, 250))
-        self.frame_45.setAutoFillBackground(True)
+        self.frame_45.setAutoFillBackground(False)
         self.frame_45.setStyleSheet(u"#frame_45 {\n"
 "    border-radius: 8px;\n"
 " 	border: 1px solid palette(mid);\n"
@@ -3394,7 +3405,7 @@ class Ui_MainWindow(object):
         self.frame_47 = QFrame(self.page_17)
         self.frame_47.setObjectName(u"frame_47")
         self.frame_47.setMaximumSize(QSize(773, 250))
-        self.frame_47.setAutoFillBackground(True)
+        self.frame_47.setAutoFillBackground(False)
         self.frame_47.setStyleSheet(u"#frame_47 {\n"
 "    border-radius: 10px;\n"
 " 	border: 1px solid palette(mid);\n"
@@ -3756,6 +3767,7 @@ class Ui_MainWindow(object):
         self.pushButton_15.setText(QCoreApplication.translate("MainWindow", u" Arqueo", None))
         self.pushButton_13.setText(QCoreApplication.translate("MainWindow", u"Estadisticas", None))
         self.pushButton_48.setText(QCoreApplication.translate("MainWindow", u"Movimientos", None))
+        self.pushButton_51.setText(QCoreApplication.translate("MainWindow", u"Cerrar sesi\u00f3n rls", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), QCoreApplication.translate("MainWindow", u"Tab 2", None))
         self.label_3.setText(QCoreApplication.translate("MainWindow", u"Contenido de Administracion", None))
         self.pushButton_16.setText(QCoreApplication.translate("MainWindow", u" Facturero", None))

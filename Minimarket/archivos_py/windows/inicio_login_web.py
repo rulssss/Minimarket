@@ -130,7 +130,6 @@ class InicioWeb(QWidget):
 
              # Crear y mostrar la ventana Inicio
             try:
-
                 self.inicio_window = Inicio()
                 self.inicio_window.show()
             except Exception as e:
