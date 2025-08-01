@@ -648,7 +648,7 @@ class Ui_Form_login(object):
 
         self.retranslateUi(Form)
 
-        self.stackedWidget.setCurrentIndex(0)
+        self.stackedWidget.setCurrentIndex(1)
         self.pushButton_16.setDefault(False)
         self.pushButton_3.setDefault(False)
 
@@ -697,7 +697,7 @@ class Ui_Form_login(object):
         self.label_18.setText(QCoreApplication.translate("Form", u"Label de error", None))
         self.pushButton_10.setText(QCoreApplication.translate("Form", u"Verificar", None))
         self.pushButton_11.setText(QCoreApplication.translate("Form", u"Reenviar codigo", None))
-        self.pushButton_12.setText(QCoreApplication.translate("Form", u"< Atras ", None))
+        self.pushButton_12.setText(QCoreApplication.translate("Form", u"< Atr\u00e1s ", None))
         self.label_22.setText(QCoreApplication.translate("Form", u"label de titulo donde avisa que inserte el codigo ", None))
         self.label_23.setText(QCoreApplication.translate("Form", u"lABELD E ERRRO", None))
         self.pushButton_13.setText(QCoreApplication.translate("Form", u"Verificar", None))

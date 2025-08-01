@@ -3249,6 +3249,10 @@ class BuscarDatosTab:
         if push_button_51:
             push_button_51.setFocusPolicy(Qt.NoFocus)
             push_button_51.setStyleSheet("background-color: red")
+            try:
+                push_button_51.clicked.disconnect()
+            except Exception:
+                pass
             push_button_51.clicked.connect(self.cerrar_sesion)
 
 
