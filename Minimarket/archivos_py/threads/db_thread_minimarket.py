@@ -8,23 +8,22 @@ API_URL = "https://web-production-aa989.up.railway.app"
 # hilo para verificar si hay una actualización disponible
 
 class ObtenerVersionThread(QThread):
-    version_obtenida = Signal(str)
+    version_obtenida = Signal(str, str)  # versión, url
 
     def run(self):
-        import requests
         try:
-            url = f"{API_URL}/api/version"  # Cambia este endpoint por el de tu API real
+            url = f"{API_URL}/api/version"
             response = requests.get(url)
             if response.status_code == 200:
                 data = response.json()
                 version = data.get("version", "")
-                self.version_obtenida.emit(version)
+                url_instalador = data.get("url", "")
+                self.version_obtenida.emit(version, url_instalador)
             else:
-                print(f"Error al obtener versión: {response.text}")
-                self.version_obtenida.emit("")
+                self.version_obtenida.emit("", "")
         except Exception as e:
             print(f"Error en ObtenerVersionThread: {e}")
-            self.version_obtenida.emit("")
+            self.version_obtenida.emit("", "")
 
 #Agregar productos:
 

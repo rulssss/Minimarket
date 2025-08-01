@@ -49,18 +49,21 @@ from email.mime.text import MIMEText
 def traer_last_version():
     try:
         response = supabase.table("Actualizacion") \
-            .select("version") \
+            .select("version, update_url") \
             .order("id", desc=True) \
             .limit(1) \
             .execute()
         data = response.data
-        if data and "version" in data[0]:
-            return data[0]["version"]
+        if data and "version" in data[0] and "update_url" in data[0]:
+            return {
+                "version": data[0]["version"],
+                "url": data[0]["update_url"]
+            }
         else:
-            return None
+            return {"version": "", "url": ""}
     except Exception as e:
         print(f"Error al traer la última versión en Supabase: {e}")
-        return None
+        return {"version": "", "url": ""}
 
 #funcion para verificar perfiles
 

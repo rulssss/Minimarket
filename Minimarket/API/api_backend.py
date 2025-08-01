@@ -34,8 +34,11 @@ app = Flask(__name__)
 @app.route('/api/version', methods=['GET'])
 def api_traer_version():
     try:
-        version = traer_last_version()
-        return jsonify({"version": version})
+        # Suponiendo que traer_last_version() devuelve un dict con 'version' y 'url'
+        data = traer_last_version()
+        version = data.get("version", "")
+        url_instalador = data.get("url", "")
+        return jsonify({"version": version, "url": url_instalador})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

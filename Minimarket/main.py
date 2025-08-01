@@ -46,7 +46,7 @@ VERSION_ACTUAL = "1.0.1"  # inicia en vacio
 
 obtener_version_thread = None  # referencia global
 
-def mostrar_y_actualizar():
+def mostrar_y_actualizar(url_instalador):
     class ActualizandoDialog(QDialog):
         def __init__(self):
             super().__init__()
@@ -62,8 +62,8 @@ def mostrar_y_actualizar():
             self.setFixedSize(300, 100)
 
     # Cambia la URL y el destino por el ejecutable real de tu release
-    url = "https://github.com/rulssss/Minimarket/releases/download/v1.0.1/Minimarket_instalador.exe"
-    destino = "Minimarket_instalador.exe"
+    url = url_instalador
+    destino = "Minimarket.exe"
 
     dialog = ActualizandoDialog()
     dialog.show()
@@ -86,15 +86,17 @@ def mostrar_y_actualizar():
         QMessageBox.critical(None, "Error", f"No se pudo descargar la actualización.\n{e}")
         sys.exit(0)
 
-def on_version_obtenida(version):
+def on_version_obtenida(version, url_instalador):
     print("verificando version")
+    print("version obtenida:", version)
     if version and version.strip() != VERSION_ACTUAL:
         print("actualizando version")
-        mostrar_y_actualizar()
+        mostrar_y_actualizar(url_instalador)
     else:
         iniciar_aplicacion()
 
 def iniciar_aplicacion():
+    global window
     # Verificar si hay una sesión activa
     session_manager = SessionManager()
 
@@ -130,7 +132,6 @@ def iniciar_aplicacion():
         window = InicioWeb()
     
     window.show()
-    sys.exit(app.exec())
 
 
 #inicio del login web y luego al programa si no inicio sesion web y si inicio directo al programa
