@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication, QDialog, QVBoxLayout, QLabel, QProgressBar
 from archivos_py.windows.inicio_login import Inicio
 import sys
 from archivos_py.windows.inicio_login_web import InicioWeb
@@ -8,9 +8,8 @@ import socket
 import requests
 from PySide6.QtWidgets import QMessageBox
 from archivos_py.threads.db_thread_minimarket import ObtenerVersionThread
-from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QProgressBar
 import subprocess
-
+from PySide6.QtCore import QThread
 
 def verificar_estado_subscripcion(uid):
     """
@@ -61,9 +60,8 @@ def mostrar_y_actualizar(url_instalador):
             self.setLayout(layout)
             self.setFixedSize(300, 100)
 
-    # Cambia la URL y el destino por el ejecutable real de tu release
     url = url_instalador
-    destino = "Minimarket.exe"
+    destino = "rls.exe"
 
     dialog = ActualizandoDialog()
     dialog.show()
@@ -77,9 +75,8 @@ def mostrar_y_actualizar(url_instalador):
                     if chunk:
                         f.write(chunk)
         dialog.close()
-        # Ejecutar el instalador descargado
+        QThread.sleep(3)  # <-- Espera 3 segundos extra antes de continuar
         subprocess.Popen([destino], shell=True)
-        # Cerrar el programa actual
         sys.exit(0)
     except Exception as e:
         dialog.close()
@@ -139,6 +136,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     app.setStyle("Fusion")
 
+    
     # Ejecutar el hilo para obtener la versión antes de mostrar la ventana principal
     obtener_version_thread = ObtenerVersionThread()
     obtener_version_thread.version_obtenida.connect(on_version_obtenida)
