@@ -1,12 +1,16 @@
 from PySide6.QtWidgets import QApplication
 from archivos_py.windows.inicio_login import Inicio
 import sys
-from archivos_py.windows.inicio_minimarket import MainWindow
 from archivos_py.windows.inicio_login_web import InicioWeb
 from archivos_py.db.sesiones import SessionManager
 from archivos_py.threads.db_thread_loginWeb_api import Login_web_Thread_verificar_existencia_mail
 import socket
 import requests
+from PySide6.QtWidgets import QMessageBox
+from archivos_py.threads.db_thread_minimarket import ObtenerVersionThread
+from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QProgressBar
+import subprocess
+
 
 def verificar_estado_subscripcion(uid):
     """
@@ -36,13 +40,61 @@ if not check_single_instance():
     print("El programa ya está abierto.")
     sys.exit(0)
 
-   
 
-#inicio del login web y luego al programa si no inicio sesion web y si inicio directo al programa
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    app.setStyle("Fusion")
-    
+VERSION_ACTUAL = "1.0.1"  # inicia en vacio
+
+
+obtener_version_thread = None  # referencia global
+
+def mostrar_y_actualizar():
+    class ActualizandoDialog(QDialog):
+        def __init__(self):
+            super().__init__()
+            self.setWindowTitle("Actualizando aplicación")
+            self.setModal(True)
+            layout = QVBoxLayout()
+            self.label = QLabel("Actualizando aplicación...\nPor favor espere.")
+            self.progress = QProgressBar()
+            self.progress.setRange(0, 0)  # Barra indeterminada
+            layout.addWidget(self.label)
+            layout.addWidget(self.progress)
+            self.setLayout(layout)
+            self.setFixedSize(300, 100)
+
+    # Cambia la URL y el destino por el ejecutable real de tu release
+    url = "https://github.com/rulssss/Minimarket/releases/download/v1.0.1/Minimarket_instalador.exe"
+    destino = "Minimarket_instalador.exe"
+
+    dialog = ActualizandoDialog()
+    dialog.show()
+    QApplication.processEvents()  # Para mostrar la ventana antes de descargar
+
+    try:
+        with requests.get(url, stream=True) as r:
+            r.raise_for_status()
+            with open(destino, "wb") as f:
+                for chunk in r.iter_content(chunk_size=8192):
+                    if chunk:
+                        f.write(chunk)
+        dialog.close()
+        # Ejecutar el instalador descargado
+        subprocess.Popen([destino], shell=True)
+        # Cerrar el programa actual
+        sys.exit(0)
+    except Exception as e:
+        dialog.close()
+        QMessageBox.critical(None, "Error", f"No se pudo descargar la actualización.\n{e}")
+        sys.exit(0)
+
+def on_version_obtenida(version):
+    print("verificando version")
+    if version and version.strip() != VERSION_ACTUAL:
+        print("actualizando version")
+        mostrar_y_actualizar()
+    else:
+        iniciar_aplicacion()
+
+def iniciar_aplicacion():
     # Verificar si hay una sesión activa
     session_manager = SessionManager()
 
@@ -79,6 +131,19 @@ if __name__ == "__main__":
     
     window.show()
     sys.exit(app.exec())
+
+
+#inicio del login web y luego al programa si no inicio sesion web y si inicio directo al programa
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    app.setStyle("Fusion")
+
+    # Ejecutar el hilo para obtener la versión antes de mostrar la ventana principal
+    obtener_version_thread = ObtenerVersionThread()
+    obtener_version_thread.version_obtenida.connect(on_version_obtenida)
+    obtener_version_thread.start()
+    sys.exit(app.exec())
+    
 
 
 # inicio del login pruebas del login rls

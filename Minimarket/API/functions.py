@@ -45,6 +45,23 @@ from email.mime.text import MIMEText
 
 # LOGIN
 
+#actualizacion de version
+def traer_last_version():
+    try:
+        response = supabase.table("Actualizacion") \
+            .select("version") \
+            .order("id", desc=True) \
+            .limit(1) \
+            .execute()
+        data = response.data
+        if data and "version" in data[0]:
+            return data[0]["version"]
+        else:
+            return None
+    except Exception as e:
+        print(f"Error al traer la última versión en Supabase: {e}")
+        return None
+
 #funcion para verificar perfiles
 
 def verificar_existencia_usuario_mail(email, uid):

@@ -5,6 +5,27 @@ from datetime import date, datetime
 API_URL = "https://web-production-aa989.up.railway.app"
 
 
+# hilo para verificar si hay una actualización disponible
+
+class ObtenerVersionThread(QThread):
+    version_obtenida = Signal(str)
+
+    def run(self):
+        import requests
+        try:
+            url = f"{API_URL}/api/version"  # Cambia este endpoint por el de tu API real
+            response = requests.get(url)
+            if response.status_code == 200:
+                data = response.json()
+                version = data.get("version", "")
+                self.version_obtenida.emit(version)
+            else:
+                print(f"Error al obtener versión: {response.text}")
+                self.version_obtenida.emit("")
+        except Exception as e:
+            print(f"Error en ObtenerVersionThread: {e}")
+            self.version_obtenida.emit("")
+
 #Agregar productos:
 
 class CategoriasThread(QThread):

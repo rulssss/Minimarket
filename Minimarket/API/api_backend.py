@@ -29,6 +29,16 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 app = Flask(__name__)
 
+# endpoint actualizacion version
+
+@app.route('/api/version', methods=['GET'])
+def api_traer_version():
+    try:
+        version = traer_last_version()
+        return jsonify({"version": version})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 ###### firebase endpoints ######
 
 @app.route('/api/verificar_existencia_mail', methods=['POST'])
