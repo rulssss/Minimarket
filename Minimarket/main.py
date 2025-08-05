@@ -134,7 +134,7 @@ def iniciar_aplicacion():
         
         # Ejecutar el hilo para llevar el UID a functions para poder enviar querys
         login_thread_verificar = Login_web_Thread_verificar_existencia_mail(email, uid)
-        login_thread_verificar.start()
+        start_thread(login_thread_verificar)
 
         # Verificar estado de suscripción en Firebase
         if verificar_estado_subscripcion(uid):

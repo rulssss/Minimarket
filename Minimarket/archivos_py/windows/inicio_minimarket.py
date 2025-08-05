@@ -7206,7 +7206,6 @@ class MainWindow(QMainWindow):
             self.overlay.hide()
 
 
-
     def start_thread(self, thread):
         self.threads.append(thread)
         thread.finished.connect(lambda: self.threads.remove(thread) if thread in self.threads else None)
