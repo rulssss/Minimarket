@@ -28,11 +28,15 @@ def verificar_estado_subscripcion(uid):
         return False
 
 
+single_instance_socket = None  # <-- variable global
+
 # Verificar si ya hay una instancia del programa corriendo
 def check_single_instance(port=65432):
+    global single_instance_socket
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         s.bind(("127.0.0.1", port))
+        single_instance_socket = s
         return True
     except OSError:
         return False
@@ -41,16 +45,17 @@ if not check_single_instance():
     print("El programa ya está abierto.")
     sys.exit(0)
 
+
+# Obtener la ruta base del directorio del script
 if getattr(sys, 'frozen', False):
     BASE_DIR = os.path.dirname(sys.executable)
 else:
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-
+# Definir la versión actual
 VERSION_ACTUAL = "1.0.1"  
 
-
-obtener_version_thread = None  # referencia global
+threads = []  # Lista para almacenar los hilos
 
 def mostrar_y_actualizar(url_instalador):
     class ActualizandoDialog(QDialog):
@@ -63,7 +68,7 @@ def mostrar_y_actualizar(url_instalador):
             self.setWindowIcon(QIcon(icon_path))
             
             layout = QVBoxLayout()
-            self.label = QLabel("Actualizando aplicación...\nPor favor espere.")
+            self.label = QLabel("Actualizando aplicación...\nPor favor espere el programa se iniciara en cuanto termine\nsu actualización.")
             self.progress = QProgressBar()
             self.progress.setRange(0, 0)  # Barra indeterminada
             layout.addWidget(self.label)
@@ -147,17 +152,21 @@ def iniciar_aplicacion():
     
     window.show()
 
-
+def start_thread(thread):
+        threads.append(thread)
+        thread.finished.connect(lambda: threads.remove(thread) if thread in threads else None)
+        thread.start()
+        
 #inicio del login web y luego al programa si no inicio sesion web y si inicio directo al programa
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     app.setStyle("Fusion")
 
-    
     # Ejecutar el hilo para obtener la versión antes de mostrar la ventana principal
     obtener_version_thread = ObtenerVersionThread()
     obtener_version_thread.version_obtenida.connect(on_version_obtenida)
-    obtener_version_thread.start()
+    start_thread(obtener_version_thread)
+
     sys.exit(app.exec())
     
 
