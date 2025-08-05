@@ -12,6 +12,8 @@ import subprocess
 from PySide6.QtCore import QThread
 import os
 from PySide6.QtGui import QIcon
+from archivos_py.ui.theme_utils import is_windows_dark_mode, apply_dark_palette
+
 
 def verificar_estado_subscripcion(uid):
     """
@@ -68,7 +70,7 @@ def mostrar_y_actualizar(url_instalador):
             self.setWindowIcon(QIcon(icon_path))
             
             layout = QVBoxLayout()
-            self.label = QLabel("Actualizando aplicación...\nPor favor espere el programa se iniciara en cuanto termine\nsu actualización.")
+            self.label = QLabel("Actualizando aplicación...\nPor favor espere el programa se iniciara en cuanto\ntermine su actualización.")
             self.progress = QProgressBar()
             self.progress.setRange(0, 0)  # Barra indeterminada
             layout.addWidget(self.label)
@@ -161,6 +163,8 @@ def start_thread(thread):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     app.setStyle("Fusion")
+    if is_windows_dark_mode():
+        apply_dark_palette(app)
 
     # Ejecutar el hilo para obtener la versión antes de mostrar la ventana principal
     obtener_version_thread = ObtenerVersionThread()
