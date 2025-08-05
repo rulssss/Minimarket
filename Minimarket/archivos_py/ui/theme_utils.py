@@ -60,34 +60,20 @@ def apply_dark_palette(app):
 
 # edicion de colores de botones y letras apartes
 
-    # Añadir estilos personalizados para botones específicos
+    # Añadir estilos personalizados solo para los botones indicados
     extra_qss = '''
-    
-    #pushButton {
-        color: black;
-    }
-    #pushButton_5 {
-        color: black;
-    }
-    #pushButton_11 {
-        color: black;
-    }
-    #pushButton_12 {
-        color: black;
-    }
-    #pushButton_50 {
-        color: black;
-    }
-    #pushButton_51 {
-        color: black;
-    }
-    #pushButton_16 {
-        color: black;
-    }
+    #pushButton,
+    #pushButton_5,
+    #pushButton_11,
+    #pushButton_12,
+    #pushButton_50,
+    #pushButton_51,
+    #pushButton_16,
     #pushButton_17 {
         color: black;
+        font-weight: bold;
+        
     }
-
 
     #pushButton_19 {
         color: black;
