@@ -15,6 +15,8 @@ import copy
 import pytz 
 from archivos_py.db.sesiones import SessionManager
 from uuid import uuid4
+import os
+import sys
 
 # ------------ VARIABLES DE CACHE GLOBALES ------------
 categorias_cache = None
@@ -36,7 +38,15 @@ metodos_pago_por_id_cache = None
 
 # -----------------------------------------------------
 
-# 
+if getattr(sys, 'frozen', False):
+    BASE_DIR = os.path.dirname(sys.executable)
+else:
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+icon_path = os.path.join(BASE_DIR, "archivos_py", "resources", "r.ico")
+eye_visible_path = os.path.join(BASE_DIR, "archivos_py", "resources", "eye_visible_hide_hidden_show_icon_145988.png")
+
+#------------------------------------------------------ 
 class DatosTab:
     def __init__(self, ui):
         self.ui = ui
@@ -2712,7 +2722,7 @@ class DatosTab:
         
         if push_button_39:
             push_button_39.setFocusPolicy(Qt.NoFocus)
-            push_button_39.setIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\eye_visible_hide_hidden_show_icon_145988.png"))
+            push_button_39.setIcon(QIcon(eye_visible_path))
             push_button_39.clicked.connect(self.setear_lineedit_avisual_agregar)
 
         if label_90:
@@ -2917,7 +2927,7 @@ class DatosTab:
             
         if push_button_41:
             push_button_41.setFocusPolicy(Qt.NoFocus)
-            push_button_41.setIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\eye_visible_hide_hidden_show_icon_145988.png"))
+            push_button_41.setIcon(QIcon(eye_visible_path))
             push_button_41.clicked.connect(self.setear_lineedit_avisual_editar)
 
         if label_98:
@@ -5154,7 +5164,7 @@ class AdministracionTab:
             self.facturero_ui = Ui_VentanaFactureroVentas()
             self.facturero_ui.setupUi(self.facturero_ventas_window)
             # Establece el icono y el título de la ventana principal
-            self.facturero_ventas_window.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
+            self.facturero_ventas_window.setWindowIcon(QIcon(icon_path))
             self.facturero_ventas_window.setWindowTitle("Facturero Ventas")
             self.facturero_ventas_window.setWindowModality(Qt.NonModal)
             self.facturero_ventas_window.setFixedSize(self.facturero_ventas_window.size())
@@ -5292,7 +5302,7 @@ class AdministracionTab:
         ui_ventana = Ui_Dialog()
         ui_ventana.setupUi(dialogo_agregar_mp)
         dialogo_agregar_mp.setWindowTitle("Agregar Método de Pago")
-        dialogo_agregar_mp.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
+        dialogo_agregar_mp.setWindowIcon(QIcon(icon_path))
 
         # --- 3. Configurar widgets ---
         lineEdit = dialogo_agregar_mp.findChild(QLineEdit, "lineEdit")
@@ -5403,7 +5413,7 @@ class AdministracionTab:
         ui_ventana = Ui_Dialog2()
         ui_ventana.setupUi(dialogo_borrar_mp)
         dialogo_borrar_mp.setWindowTitle("Borrar Método de Pago")
-        dialogo_borrar_mp.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
+        dialogo_borrar_mp.setWindowIcon(QIcon(icon_path))
         global metodos_pago_cache, metodos_pago_por_id_cache
 
         # --- 3. Configurar widgets ---
@@ -5459,7 +5469,7 @@ class AdministracionTab:
             if combobox_value != "":
                 # ACA - Diálogo de confirmación
                 dialogo_confirmacion = QMessageBox(dialog)
-                dialogo_confirmacion.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
+                dialogo_confirmacion.setWindowIcon(QIcon(icon_path))
                 dialogo_confirmacion.setWindowTitle("Confirmar eliminación")
                 dialogo_confirmacion.setText(f"Está por borrar: \"{combobox_value}\"")
                 dialogo_confirmacion.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
@@ -6244,7 +6254,7 @@ class AdministracionTab:
             self.facturero_compras_window = QDialog(self.ui.centralwidget)
             self.facturero_ui = Ui_VentanaFactureroCompras()
             self.facturero_ui.setupUi(self.facturero_compras_window)
-            self.facturero_compras_window.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
+            self.facturero_compras_window.setWindowIcon(QIcon(icon_path))
             self.facturero_compras_window.setWindowTitle("Facturero Compras")
             self.facturero_compras_window.setWindowModality(Qt.NonModal)
             self.facturero_compras_window.setFixedSize(self.facturero_compras_window.size())
@@ -6386,7 +6396,7 @@ class AdministracionTab:
         ui_ventana = Ui_Dialog()
         ui_ventana.setupUi(dialogo_agregar_mp)
         dialogo_agregar_mp.setWindowTitle("Agregar Método de Pago")
-        dialogo_agregar_mp.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
+        dialogo_agregar_mp.setWindowIcon(QIcon(icon_path))
 
         # --- 3. Configurar widgets ---
         lineEdit = dialogo_agregar_mp.findChild(QLineEdit, "lineEdit")
@@ -6495,7 +6505,7 @@ class AdministracionTab:
         ui_ventana = Ui_Dialog2()
         ui_ventana.setupUi(dialogo_borrar_mp)
         dialogo_borrar_mp.setWindowTitle("Borrar Método de Pago")
-        dialogo_borrar_mp.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
+        dialogo_borrar_mp.setWindowIcon(QIcon(icon_path))
 
        # --- 3. Configurar widgets ---
         combobox = dialogo_borrar_mp.findChild(QComboBox, "comboBox")
@@ -6554,7 +6564,7 @@ class AdministracionTab:
             if combobox_value != "":
                 # ACA - Diálogo de confirmación
                 dialogo_confirmacion = QMessageBox(dialog)
-                dialogo_confirmacion.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
+                dialogo_confirmacion.setWindowIcon(QIcon(icon_path))
                 dialogo_confirmacion.setWindowTitle("Confirmar eliminación")
                 dialogo_confirmacion.setText(f"Está por borrar: \"{combobox_value}\"")
                 dialogo_confirmacion.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
@@ -7058,7 +7068,7 @@ class MainWindow(QMainWindow):
         
 
         # Establece el icono y el título de la ventana principal
-        self.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
+        self.setWindowIcon(QIcon(icon_path))
         self.setWindowTitle("rls")  
 
         # Mostrar overlay de carga al iniciar
@@ -7073,7 +7083,7 @@ class MainWindow(QMainWindow):
             # Mostrar diálogo de confirmación ANTES de cerrar sesión
             from PySide6.QtWidgets import QMessageBox
             dialogo_confirmacion = QMessageBox()
-            dialogo_confirmacion.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
+            dialogo_confirmacion.setWindowIcon(QIcon(icon_path))
             dialogo_confirmacion.setWindowTitle("Confirmar Cierre de Sesión")
             dialogo_confirmacion.setText("¿Está seguro de que desea cerrar sesión?")
             dialogo_confirmacion.setInformativeText("La aplicación volverá al login y deberá autenticarse nuevamente.")
@@ -7099,7 +7109,7 @@ class MainWindow(QMainWindow):
 
                 # Mostrar mensaje de confirmación
                 msg = QMessageBox()
-                msg.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
+                msg.setWindowIcon(QIcon(icon_path))
                 msg.setWindowTitle("Sesión Cerrada")
                 msg.setText("Has cerrado sesión exitosamente.\nVolviendo al login...")
                 msg.setIcon(QMessageBox.Information)
@@ -7128,7 +7138,7 @@ class MainWindow(QMainWindow):
             # Mostrar mensaje de error
             from PySide6.QtWidgets import QMessageBox
             msg = QMessageBox()
-            msg.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
+            msg.setWindowIcon(QIcon(icon_path))
             msg.setWindowTitle("Error")
             msg.setText(f"Error al cerrar sesión: {e}")
             msg.setIcon(QMessageBox.Critical)
@@ -7480,7 +7490,7 @@ class MainWindow(QMainWindow):
         self.connect_button("pushButton_48", stacked_widget, 19)
         push_button_48 = self.findChild(QPushButton, "pushButton_48")
         if push_button_48:
-            push_button_48.setIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\eye_visible_hide_hidden_show_icon_145988.png"))
+            push_button_48.setIcon(QIcon(eye_visible_path))
             self.connect_button("pushButton_48", stacked_widget, 19,  lambda: self.change_table_headers_color_visualizar_movimientos())
 
         # VENTANA ADMINISTRACION
@@ -7532,7 +7542,7 @@ class MainWindow(QMainWindow):
 
     def show_confirmation_dialog(self):
         dialog = QMessageBox()
-        dialog.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
+        dialog.setWindowIcon(QIcon(icon_path))
         dialog.setWindowTitle("Confirmación")
         dialog.setText("¿Está seguro de que desea borrar TODOS los datos?")
         dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)

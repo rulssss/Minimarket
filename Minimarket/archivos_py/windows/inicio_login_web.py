@@ -7,7 +7,14 @@ import sys
 import webbrowser  # Agregué este import
 from PySide6.QtCore import Qt
 from archivos_py.db.sesiones import SessionManager
+import os
  
+if getattr(sys, 'frozen', False):
+    BASE_DIR = os.path.dirname(sys.executable)
+else:
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+icon_path = os.path.join(BASE_DIR, "archivos_py", "resources", "r.ico")
 
 
 class InicioWeb(QWidget):
@@ -24,7 +31,7 @@ class InicioWeb(QWidget):
         self.pushButton_connected = False
 
         # Establece el icono y el título de la ventana principal
-        self.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
+        self.setWindowIcon(QIcon(icon_path))
         self.setWindowTitle("rls")
 
         self.open_login_web_window()

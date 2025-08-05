@@ -6,8 +6,16 @@ from archivos_py.threads.db_threads_login import LoginThread, RegistroCheckThrea
 from PySide6 import QtGui
 from archivos_py.windows.inicio_minimarket import MainWindow
 from archivos_py.threads.db_thread_minimarket import MovimientoLoginThread
+import os
+import sys
 
+#se establece el directorio base para los recursos
+if getattr(sys, 'frozen', False):
+    BASE_DIR = os.path.dirname(sys.executable)
+else:
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
+icon_path = os.path.join(BASE_DIR, "archivos_py", "resources", "r.ico")
 
 
 class Inicio(QWidget):
@@ -24,7 +32,7 @@ class Inicio(QWidget):
         self.pushButton_connected = False
 
         # Establece el icono y el título de la ventana principal
-        self.setWindowIcon(QIcon(r"C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico"))
+        self.setWindowIcon(QIcon(icon_path))
         self.setWindowTitle("rls")
 
         self.open_login_window()

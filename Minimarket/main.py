@@ -10,6 +10,8 @@ from PySide6.QtWidgets import QMessageBox
 from archivos_py.threads.db_thread_minimarket import ObtenerVersionThread
 import subprocess
 from PySide6.QtCore import QThread
+import os
+from PySide6.QtGui import QIcon
 
 def verificar_estado_subscripcion(uid):
     """
@@ -39,8 +41,13 @@ if not check_single_instance():
     print("El programa ya está abierto.")
     sys.exit(0)
 
+if getattr(sys, 'frozen', False):
+    BASE_DIR = os.path.dirname(sys.executable)
+else:
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-VERSION_ACTUAL = "1.0.1"  # inicia en vacio
+
+VERSION_ACTUAL = "1.0.1"  
 
 
 obtener_version_thread = None  # referencia global
@@ -51,6 +58,10 @@ def mostrar_y_actualizar(url_instalador):
             super().__init__()
             self.setWindowTitle("Actualizando aplicación")
             self.setModal(True)
+            # Establecer el ícono personalizado
+            icon_path = os.path.join(BASE_DIR, "archivos_py", "resources", "r.ico")
+            self.setWindowIcon(QIcon(icon_path))
+            
             layout = QVBoxLayout()
             self.label = QLabel("Actualizando aplicación...\nPor favor espere.")
             self.progress = QProgressBar()
@@ -61,7 +72,7 @@ def mostrar_y_actualizar(url_instalador):
             self.setFixedSize(300, 100)
 
     url = url_instalador
-    destino = "rls.exe"
+    destino = "rls_nuevo.exe"
 
     dialog = ActualizandoDialog()
     dialog.show()
@@ -76,7 +87,13 @@ def mostrar_y_actualizar(url_instalador):
                         f.write(chunk)
         dialog.close()
         QThread.sleep(3)  # <-- Espera 3 segundos extra antes de continuar
-        subprocess.Popen([destino], shell=True)
+        
+        # Usa la ruta absoluta de updater.exe
+        updater_path = os.path.join(os.path.dirname(sys.argv[0]), "updater.exe")
+        print("Buscando updater.exe en:", updater_path)
+        print("Archivos en la carpeta:", os.listdir(os.path.dirname(sys.argv[0])))
+
+        subprocess.Popen([updater_path, "rls_nuevo.exe", "rls.exe"], shell=False)
         sys.exit(0)
     except Exception as e:
         dialog.close()
