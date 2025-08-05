@@ -37,9 +37,6 @@ def apply_dark_palette(app):
         QStackedWidget, QTabWidget::pane, QTabWidget > QWidget, QTabBar, QWidget {
             background-color: #1e1e1e;
         }
-        QTabWidget::tab-bar {
-            left: 5px; /* Espaciado opcional */
-        }
         QTabBar::tab {
             background: #353535;
             color: #fff;
@@ -106,6 +103,18 @@ def apply_dark_palette(app):
         color: black;
     }
     #pushButton_40 {
+        color: black;
+    }
+
+    #comboBox_8 {
+        color: black;
+    }
+
+    #comboBox_9 {
+        color: black;
+    }
+
+    #comboBox_10 {
         color: black;
     }
 
