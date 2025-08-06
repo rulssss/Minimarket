@@ -17,6 +17,8 @@ from archivos_py.db.sesiones import SessionManager
 from uuid import uuid4
 import os
 import sys
+import warnings
+warnings.filterwarnings("ignore", message=".*Failed to disconnect.*")
 
 # ------------ VARIABLES DE CACHE GLOBALES ------------
 categorias_cache = None

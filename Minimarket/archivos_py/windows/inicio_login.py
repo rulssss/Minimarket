@@ -8,6 +8,8 @@ from archivos_py.windows.inicio_minimarket import MainWindow
 from archivos_py.threads.db_thread_minimarket import MovimientoLoginThread
 import os
 import sys
+import warnings
+warnings.filterwarnings("ignore", message=".*Failed to disconnect.*")
 
 #se establece el directorio base para los recursos
 if getattr(sys, 'frozen', False):
