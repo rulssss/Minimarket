@@ -69,7 +69,8 @@ def apply_dark_palette(app):
     #pushButton_17 {
         color: black;
         font-weight: bold;
-        
+        font-size: 15px;
+
     }
 
     #pushButton_19 {
@@ -106,6 +107,7 @@ def apply_dark_palette(app):
         color: black;
     }
 
+    
     #comboBox_8 {
         color: black;
     }
