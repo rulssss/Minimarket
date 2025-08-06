@@ -672,12 +672,14 @@ class Inicio(QWidget):
                 label_23.setText("Codigo incorrecto")
                 label_23.setStyleSheet("color: red;")
                 pushButton_13.setEnabled(True)
+                pushButton_14.setEnabled(True)
                 QTimer.singleShot(6000, lambda: label_23.setStyleSheet("color: transparent;"))
         else:
             QTimer.singleShot(0, lambda: QTimer().stop())
             label_23.setText("Complete el código correctamente")
             label_23.setStyleSheet("color: red;")
             pushButton_13.setEnabled(True)
+            pushButton_14.setEnabled(True)
             QTimer.singleShot(6000, lambda: label_23.setStyleSheet("color: transparent;"))
 
     def on_registro_cuenta_finished(self, exito, line_edit_10, line_edit_3, line_edit_4, line_edit_8, combobox, label_23):
@@ -729,7 +731,6 @@ class Inicio(QWidget):
 
         if label_17:
             label_17.setStyleSheet("color: transparent;")
-
 
     def verificar_existencia_mail(self):
         line_edit_7 = self.ui.stackedWidget.findChild(QWidget, "lineEdit_7")
@@ -794,24 +795,35 @@ class Inicio(QWidget):
         line_edit_9 = self.ui.stackedWidget.findChild(QWidget, "lineEdit_9")
 
         if line_edit_9:
+            line_edit_9.clear()
             line_edit_9.setAlignment(Qt.AlignCenter)
             line_edit_9.setPlaceholderText("Codigo de verificacion")
             line_edit_9.setFocus()
 
         if pushButton_10:
             pushButton_10.setEnabled(True)
+            try:
+                pushButton_10.clicked.disconnect()
+            except (TypeError, RuntimeError):
+                pass
             pushButton_10.clicked.connect(self.verificar_codigo)
             pushButton_10.setShortcut(Qt.Key_Return)
-
 
         if pushButton_11:
             pushButton_11.setEnabled(False)
             QTimer.singleShot(40000, lambda: pushButton_11.setEnabled(True))
+            try:
+                pushButton_11.clicked.disconnect()
+            except (TypeError, RuntimeError):
+                pass
             pushButton_11.clicked.connect(lambda: (self.reenviar_mail(), pushButton_11.setEnabled(False), QTimer.singleShot(60000, lambda: pushButton_11.setEnabled(True))))
-            
 
         if pushButton_12:
             pushButton_12.setEnabled(True)
+            try:
+                pushButton_12.clicked.disconnect()
+            except (TypeError, RuntimeError):
+                pass
             pushButton_12.clicked.connect(self.open_recover_window)
 
         if label_18:
