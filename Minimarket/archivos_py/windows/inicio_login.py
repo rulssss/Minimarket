@@ -121,7 +121,7 @@ class Inicio(QWidget):
             QTimer.singleShot(6000, lambda: label_21.setStyleSheet("color: transparent;"))
     
     def on_login_finished(self, exito, mensaje, pushButton, push_button_2, push_button_3, label_21, usuario, account):
-        print(mensaje)
+        
         if not exito:
             pushButton.setEnabled(True)
             push_button_2.setEnabled(True)
@@ -263,7 +263,7 @@ class Inicio(QWidget):
 
     def on_registro_check_finished(self, result, value_combobox_2, pushButton_4, pushButton_5):
         label_20 = self.ui.stackedWidget.findChild(QWidget, "label_20")
-        print(result)
+        
         if value_combobox_2 == "Administrador" and result["hay_admin"]:
             if result["usuario_existe"]:
                 label_20.setText("Usuario ya existente")

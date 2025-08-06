@@ -105,8 +105,6 @@ class InicioWeb(QWidget):
             print(f"Error al abrir el navegador: {e}")
 
     def handle_login_finished(self, exito, datos_usuario):
-
-        print("Respuesta de la API Flask:", datos_usuario)
         
         push_button_15 = self.ui.stackedWidget.findChild(QWidget, "pushButton_15")
         label_32 = self.ui.stackedWidget.findChild(QWidget, "label_32")
@@ -165,7 +163,5 @@ class InicioWeb(QWidget):
         email = session_manager.get_email()
         uid = session_manager.get_uid()
         # Ahora puedes usar email y uid como necesites
-        print("Email:", email)
-        print("UID:", uid)
 
 

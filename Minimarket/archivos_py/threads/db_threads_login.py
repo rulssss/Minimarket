@@ -22,7 +22,7 @@ class LoginThread(QThread):
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
-                print(f"Respuesta del backend: {data}")
+                
                 valido = data.get("valido", False)
                 mensaje = "Login correcto" if valido else "Usuario o contraseña incorrectos"
                 self.finished.emit(valido, mensaje)
@@ -113,7 +113,7 @@ class CodigoOtroAdminThread(QThread):
             if response.status_code == 200:
                 data = response.json()
                 codigo = data.get("codigo")
-                print("codigo enviado a admin", codigo)
+                
                 self.finished.emit(codigo)
             else:
                 print(f"Error al obtener código de otro admin: {response.text}")
@@ -169,7 +169,7 @@ class VerificarYEnviarCodigoThread(QThread):
                 existe = data.get("existe", False)
                 codigo = data.get("codigo")
                 if existe and codigo:
-                    print(f"Codigo enviado al usuario: {codigo}")
+                    
                     self.finished.emit(True, codigo)
                 else:
                     print("No se pudo enviar el código.")

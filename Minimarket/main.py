@@ -97,8 +97,6 @@ def mostrar_y_actualizar(url_instalador):
         
         # Usa la ruta absoluta de updater.exe
         updater_path = os.path.join(os.path.dirname(sys.argv[0]), "updater.exe")
-        print("Buscando updater.exe en:", updater_path)
-        print("Archivos en la carpeta:", os.listdir(os.path.dirname(sys.argv[0])))
 
         subprocess.Popen([updater_path, "rls_nuevo.exe", "rls.exe"], shell=False)
         sys.exit(0)
