@@ -422,14 +422,14 @@ class Inicio(QWidget):
                 QTimer.singleShot(6000, lambda: label_23.setStyleSheet("color: transparent;"))
                 
                 if pushButton_13 and pushButton_14:
-                    pushButton_13.setEnabled(False)
-                    pushButton_14.setEnabled(False)
+                    pushButton_13.setEnabled(True)
+                    pushButton_14.setEnabled(True)
                 
                 line_edit_10.clear()
         else:
             if pushButton_13 and pushButton_14:
-                pushButton_13.setEnabled(False)
-                pushButton_14.setEnabled(False)
+                pushButton_13.setEnabled(True)
+                pushButton_14.setEnabled(True)
             QTimer.singleShot(0, lambda: QTimer().stop())
             label_23 = self.ui.stackedWidget.findChild(QWidget, "label_23")
             label_23.setText("Complete el código correctamente")
@@ -541,6 +541,8 @@ class Inicio(QWidget):
                 pushButton_13.setEnabled(True)
                 pushButton_14.setEnabled(True)
         else:
+            pushButton_13.setEnabled(True)
+            pushButton_14.setEnabled(True)
             QTimer.singleShot(0, lambda: QTimer().stop())
             label_23.setText("Complete el código correctamente")
             label_23.setStyleSheet("color: red;")
