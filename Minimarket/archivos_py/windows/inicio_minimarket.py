@@ -67,6 +67,7 @@ class DatosTab:
         self.bajar = False
         self.editando = False
         self._borrar_producto = False
+        self._borrar_usuario_en_proceso = False
 
         if not self.mp_verificados:
             self.verificar_mp_thread = VerificarYAgregarMPThread()
@@ -2950,9 +2951,11 @@ class DatosTab:
 
         if label_98:
             label_98.setStyleSheet("color: transparent")
+            label_98.setText("")
 
         if label_93:
             label_93.setStyleSheet("color: transparent")
+            label_93.setText("")
 
         if push_button_33:
             push_button_33.setFocusPolicy(Qt.NoFocus)
@@ -3001,11 +3004,6 @@ class DatosTab:
     def validar_datos_iguales_usuario(self, usuario_selecc):
         push_button_33 = self.ui.frame_45.findChild(QPushButton, "pushButton_33")
         push_button_35 = self.ui.frame_45.findChild(QPushButton, "pushButton_35")
-
-        if push_button_33:
-            push_button_33.setEnabled(False)
-        if push_button_35:
-            push_button_35.setEnabled(False)
 
         label_93 = self.ui.frame_45.findChild(QLabel, "label_93")
         label_98 = self.ui.frame_45.findChild(QLabel, "label_98")
@@ -3139,17 +3137,23 @@ class DatosTab:
     def delete_usuario(self):
         global usuarios  # Asegúrate de tener la variable global usuarios cargada
 
+        if getattr(self, "_borrar_usuario_en_proceso", False):
+            return
+        self._borrar_usuario_en_proceso = True
+
         line_edit_29 = self.ui.frame_47.findChild(QLineEdit, "lineEdit_29")
         label_95 = self.ui.frame_47.findChild(QLabel, "label_95")
         value_line_edit_29 = line_edit_29.text().strip()
 
         if value_line_edit_29 == "":
+            self._borrar_usuario_en_proceso = False
             label_95.setText("Complete el campo")
             label_95.setStyleSheet("color: red; font-weight: bold")
             line_edit_29.setFocus()
             return
 
         if str(usuario_activo) == str(value_line_edit_29):
+            self._borrar_usuario_en_proceso = False
             label_95.setText("No se puede borrar el usuario activo")
             label_95.setStyleSheet("color: red; font-weight: bold")
             QTimer.singleShot(6000, lambda: label_95.setStyleSheet("color: transparent"))
@@ -3182,6 +3186,8 @@ class DatosTab:
                     self.movimiento_usuario_borrado_thread = MovimientoUsuarioBorradoThread(value_line_edit_29, id_usuario, usuario_activo)
                     self.start_thread(self.movimiento_usuario_borrado_thread)
 
+                    self._borrar_usuario_en_proceso = False
+
                     global usuarios_cache, usuarios_por_nombre_cache
                     usuarios_cache = None
                     usuarios_por_nombre_cache = None
@@ -3198,6 +3204,7 @@ class DatosTab:
 
                     if push_buttton_40:
                         push_buttton_40.setEnabled(True)
+                
                 else:
                     print("Error al borrar el usuario")
 
