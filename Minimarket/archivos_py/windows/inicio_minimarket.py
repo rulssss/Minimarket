@@ -674,6 +674,7 @@ class DatosTab:
         input_nombre_o_id = self.ui.frame_6.findChild(QLineEdit, "lineEdit_2")
         input_nombre_o_id_value = input_nombre_o_id.text().strip()
         if not input_nombre_o_id_value:
+            self._borrar_producto = False
             if label_72:
                 label_72.setText("Complete el campo")
                 label_72.setStyleSheet("color: red; font-weight: bold")
@@ -780,9 +781,6 @@ class DatosTab:
         self._on_nombre_obtenido(self._borrar_nombre)
 
     def _on_nombre_obtenido(self, nombre_producto):
-        if getattr(self, "_borrar_producto", False):
-            return  # Ya está en proceso, no ejecutar de nuevo
-        self._borrar_producto = True
 
         label_72 = self.ui.frame_6.findChild(QLabel, "label_72")
         if label_72:
@@ -806,8 +804,7 @@ class DatosTab:
             print("algo ocurrio que no se pudo borrar el producto")
             
     def on_producto_borrado(self):
-          
-
+        
         #se actualizan otras aprtes del programa
         # Limpiar solo el cache de productos antes de actualizar
         global productos_cache, productos_por_id_cache
