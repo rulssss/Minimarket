@@ -7079,74 +7079,6 @@ class MainWindow(QMainWindow):
         QTimer.singleShot(500, self.inicializar_aplicacion)  # Esperar 500ms antes de inicializar
 
 
-    def logout(self):
-        """Cerrar sesión y volver al login"""
-        try:
-            # Mostrar diálogo de confirmación ANTES de cerrar sesión
-            from PySide6.QtWidgets import QMessageBox
-            dialogo_confirmacion = QMessageBox()
-            dialogo_confirmacion.setWindowIcon(QIcon(icon_path))
-            dialogo_confirmacion.setWindowTitle("Confirmar Cierre de Sesión")
-            dialogo_confirmacion.setText("¿Está seguro de que desea cerrar sesión?")
-            dialogo_confirmacion.setInformativeText("La aplicación volverá al login y deberá autenticarse nuevamente.")
-            dialogo_confirmacion.setIcon(QMessageBox.Question)
-            dialogo_confirmacion.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
-            dialogo_confirmacion.setDefaultButton(QMessageBox.Cancel)
-
-            # Personalizar el texto de los botones
-            boton_aceptar = dialogo_confirmacion.button(QMessageBox.Ok)
-            boton_cancelar = dialogo_confirmacion.button(QMessageBox.Cancel)
-            if boton_aceptar:
-                boton_aceptar.setText("Aceptar")
-            if boton_cancelar:
-                boton_cancelar.setText("Cancelar")
-
-            # Mostrar el diálogo y verificar la respuesta
-            respuesta = dialogo_confirmacion.exec()
-
-            if respuesta == QMessageBox.Ok:
-                # Usuario confirmó, proceder con el cierre de sesión
-                # Limpiar la sesión
-                self.session_manager.clear_session()
-
-                # Mostrar mensaje de confirmación
-                msg = QMessageBox()
-                msg.setWindowIcon(QIcon(icon_path))
-                msg.setWindowTitle("Sesión Cerrada")
-                msg.setText("Has cerrado sesión exitosamente.\nVolviendo al login...")
-                msg.setIcon(QMessageBox.Information)
-                msg.exec()
-
-                # Cerrar la ventana actual
-                self.close()
-
-                # Abrir la ventana de login web
-                try:
-                    from archivos_py.windows.inicio_login_web import InicioWeb
-                    self.login_window = InicioWeb()
-                    self.login_window.show()
-                except Exception as e:
-                    print(f"Error al abrir ventana de login: {e}")
-                    # Si hay error, cerrar la aplicación
-                    import sys
-                    sys.exit()
-            else:
-                # Usuario canceló, no hacer nada
-                print("Cierre de sesión cancelado por el usuario")
-                return
-
-        except Exception as e:
-            print(f"Error al cerrar sesión: {e}")
-            # Mostrar mensaje de error
-            from PySide6.QtWidgets import QMessageBox
-            msg = QMessageBox()
-            msg.setWindowIcon(QIcon(icon_path))
-            msg.setWindowTitle("Error")
-            msg.setText(f"Error al cerrar sesión: {e}")
-            msg.setIcon(QMessageBox.Critical)
-            msg.exec()
-
-
     def inicializar_aplicacion(self):
         """Inicializar la aplicación después de mostrar el overlay"""
 
@@ -7416,15 +7348,7 @@ class MainWindow(QMainWindow):
     #conectar botones a pestañas
     def connect_buttons(self, stacked_widget):
         # VENTANA DE DATOS
-
-        #boton de cerrar sesion
-        # Si no se encuentra, intentar búsqueda directa
-        logout_button = self.findChild(QPushButton, "pushButton_50")
-        if logout_button:
-            logout_button.clicked.connect(self.logout)
-            logout_button.setStyleSheet("background-color: rgb(255, 127, 127); font-weight: bold;")
-
-
+        
         # Botón visualizar productos
         button = self.findChild(QPushButton, "pushButton")
         if button:
