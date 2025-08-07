@@ -2341,8 +2341,8 @@ class DatosTab:
                 push_button_28.setEnabled(False)
 
             if label_80:
-            
                 label_80.setStyleSheet("color: green; font-weight: bold")
+                label_80.setText("Cargando categoría...")
 
             self.cargar_categoria_thread = CargarCategoriaThread(lineEdit_16_value)
             def on_categoria_cargada(exito):
