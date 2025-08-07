@@ -68,6 +68,7 @@ class DatosTab:
         self.editando = False
         self._borrar_producto = False
         self._borrar_usuario_en_proceso = False
+        self._actualizar_usuario_en_proceso = False
 
         if not self.mp_verificados:
             self.verificar_mp_thread = VerificarYAgregarMPThread()
@@ -3002,9 +3003,6 @@ class DatosTab:
         self.load_user_data()
 
     def validar_datos_iguales_usuario(self, usuario_selecc):
-        push_button_33 = self.ui.frame_45.findChild(QPushButton, "pushButton_33")
-        push_button_35 = self.ui.frame_45.findChild(QPushButton, "pushButton_35")
-
         label_93 = self.ui.frame_45.findChild(QLabel, "label_93")
         label_98 = self.ui.frame_45.findChild(QLabel, "label_98")
 
@@ -3029,6 +3027,10 @@ class DatosTab:
     def validar_editar_usuario(self):
         global usuario_selecc, usuario_activo, usuarios
 
+        if getattr(self, "_actualizar_usuario_en_proceso", False):
+            return
+        self._actualizar_usuario_en_proceso = True
+
         push_button_33 = self.ui.frame_45.findChild(QPushButton, "pushButton_33")
         push_button_35 = self.ui.frame_45.findChild(QPushButton, "pushButton_35")
 
@@ -3045,6 +3047,7 @@ class DatosTab:
 
         # Validar que la contraseña tenga al menos 8 caracteres
         if len(value_line_edit_25) <= 8:
+            self._actualizar_usuario_en_proceso = False
             label_93.setText("La contraseña debe tener")
             label_98.setText("al menos 8 caracteres")
             label_98.setStyleSheet("color: red; font-weight: bold")
@@ -3055,6 +3058,7 @@ class DatosTab:
 
         # Validar si el email ya existe en otro usuario (excepto el usuario actual)
         if any(u[2].strip().lower() == value_line_edit_22.lower() and u[0] != usuario_selecc[0][0] for u in usuarios):
+            self._actualizar_usuario_en_proceso = False
             label_93.setText("El email ya está en uso")
             label_98.setText("por otro usuario")
             label_98.setStyleSheet("color: red; font-weight: bold")
@@ -3087,6 +3091,8 @@ class DatosTab:
                     self.populate_combobox_with_names(combobox_16)
                 ))
 
+                self._actualizar_usuario_en_proceso = False
+
                 label_93.setText("Usuario")
                 label_98.setText("actualizado")
                 label_98.setStyleSheet("color: green; font-weight: bold")
@@ -3100,6 +3106,7 @@ class DatosTab:
                     push_button_35.setEnabled(True)
 
             else:
+                self._actualizar_usuario_en_proceso = False
                 if push_button_33:
                     push_button_33.setEnabled(True)
                 if push_button_35:
