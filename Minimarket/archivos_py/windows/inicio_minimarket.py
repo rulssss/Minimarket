@@ -66,6 +66,7 @@ class DatosTab:
         self.aumento = False
         self.bajar = False
         self.editando = False
+        self._borrar_producto = False
 
         if not self.mp_verificados:
             self.verificar_mp_thread = VerificarYAgregarMPThread()
@@ -640,6 +641,10 @@ class DatosTab:
         # obtener datos de qline edit
         button21 = self.ui.frame_6.findChild(QPushButton, "pushButton_21")
         if button21:
+            try:
+                button21.clicked.disconnect()
+            except Exception:
+                pass
             button21.setStyleSheet("background-color: red; padding: 5px;")
             button21.clicked.connect(self.delete_product)
 
@@ -654,6 +659,11 @@ class DatosTab:
 
     #funcion para borrar
     def delete_product(self):
+
+        if getattr(self, "_borrar_producto", False):
+            return
+        self._borrar_producto = True
+
         global usuario_activo, productos_por_id_cache, productos_por_nombre_cache
         label_72 = self.ui.frame_6.findChild(QLabel, "label_72")
 
@@ -687,6 +697,7 @@ class DatosTab:
                 if self.show_delete_product_warning(self._borrar_nombre):
                     self._on_nombre_obtenido(self._borrar_nombre)
                 else:
+                    self._borrar_producto = False
                     if button21:
                         button21.setEnabled(True)
                     if label_72:
@@ -695,6 +706,8 @@ class DatosTab:
                     input_nombre_o_id.setFocus()
                 return
             else:
+                self._borrar_producto = False
+
                 if button21:
                     button21.setEnabled(True)
                 if label_72:
@@ -710,6 +723,8 @@ class DatosTab:
                 if self.show_delete_product_warning(self._borrar_nombre):
                     self._on_nombre_obtenido(self._borrar_nombre)
                 else:
+                    self._borrar_producto = False
+
                     if button21:
                         button21.setEnabled(True)
                     if label_72:
@@ -719,6 +734,7 @@ class DatosTab:
                 return
             
             else:
+                self._borrar_producto = False
                 if button21:
                     button21.setEnabled(True)
                 if label_72:
@@ -807,6 +823,8 @@ class DatosTab:
         combobox_id = self.ui.frame_7.findChild(QComboBox, "comboBox_3")
         if combobox_id:
             self.populate_combobox_with_ids(combobox_id)
+
+        self._borrar_producto = False
 
         label_72 = self.ui.frame_6.findChild(QLabel, "label_72")
         self.clear_inputs_borrar_productos()
