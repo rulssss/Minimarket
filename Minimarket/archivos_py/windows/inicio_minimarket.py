@@ -2313,6 +2313,7 @@ class DatosTab:
         label_80 = self.ui.frame_17.findChild(QLabel, "label_80")
         if label_80:
             label_80.setStyleSheet("color: transparent")
+            label_80.setText("")
 
     def validate_and_process_inputs_categorias(self):
         if getattr(self, "_categoria_en_proceso", False):
