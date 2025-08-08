@@ -857,19 +857,20 @@ class DatosTab:
         global producto_selecc
         combobox_id = self.ui.frame_7.findChild(QComboBox, "comboBox_3")
         
-
         if combobox_id:
             combobox_id.setEditable(True)
+            combobox_id.setFocus()
             combobox_id.setInsertPolicy(QComboBox.NoInsert)
             combobox_id.setCompleter(None)
             # Solo permitir números
-            combobox_id.setValidator(QIntValidator())
+            
+
             # Filtrar IDs mientras se escribe
             combobox_id.lineEdit().textEdited.connect(lambda text: self.filter_combobox_ids(combobox_id, text))
             # Ejecutar load_product_data cada vez que cambia el texto del QLineEdit
-            combobox_id.lineEdit().textChanged.connect(lambda _: self.load_product_data())
+            combobox_id.currentIndexChanged.connect(lambda _: self.load_product_data())
             self.populate_combobox_with_ids(combobox_id)
-            combobox_id.setFocus()
+            
             combobox_id.lineEdit().selectAll()
 
         boton_editar = self.ui.frame_7.findChild(QPushButton, "pushButton_23")
@@ -5233,6 +5234,7 @@ class AdministracionTab:
                 combobox_id.setMaxVisibleItems(5)
                 combobox_id.setInsertPolicy(QComboBox.NoInsert)
                 combobox_id.setCompleter(None)
+                
 
                 # Eliminar la lógica que fuerza la apertura del menú desplegable
                 combobox_id.lineEdit().textEdited.connect(lambda text: self.filter_combobox_ids(combobox_id, text))
