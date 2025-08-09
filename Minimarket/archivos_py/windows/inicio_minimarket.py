@@ -6117,14 +6117,16 @@ class AdministracionTab:
 
                 for row, producto in enumerate(filtered_productos):
                     for col, value in enumerate(producto):
-                        item = QTableWidgetItem(str(value))
+                        # Formatear stock y stock ideal con dos decimales
+                        if col in [4, 5]:  # Stock y Stock Ideal
+                            item = QTableWidgetItem(f"{float(value):.1f}")
+                        else:
+                            item = QTableWidgetItem(str(value))
                         item.setFont(QFont("Segoe ui", 12))
                         item.setTextAlignment(Qt.AlignCenter)
-
                         # Aplicar color rojo si el stock es menor al ideal 
                         if col == 4 and float(producto[4]) < float(producto[5]):
                             item.setForeground(Qt.red)
-
                         table_widget.setItem(row, col, item)
 
             # NO cambiar el texto del line_edit para mantener el filtro
