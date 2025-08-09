@@ -3526,20 +3526,27 @@ class BuscarDatosTab:
             
                     # Fecha
                     fecha_str = movimiento[1]
-                    # Quitar la zona horaria si existe
-                    fecha_str_sin_tz = fecha_str.split('+')[0].strip()
-                    fecha_dt = datetime.strptime(fecha_str_sin_tz, "%Y-%m-%dT%H:%M:%S.%f")
-                    fecha_formateada = fecha_dt.strftime("%d-%m-%Y")
+                    try:
+                       fecha_dt = datetime.fromisoformat(fecha_str)
+                    except Exception:
+                       # Fallback si el formato no es ISO
+                       fecha_str_sin_tz = fecha_str.split('+')[0].strip()
+                       try:
+                           fecha_dt = datetime.strptime(fecha_str_sin_tz, "%Y-%m-%dT%H:%M:%S.%f")
+                       except ValueError:
+                           fecha_dt = datetime.strptime(fecha_str_sin_tz, "%Y-%m-%dT%H:%M:%S")
+                       fecha_dt = fecha_dt.replace(tzinfo=pytz.UTC)
+
+                    local_tz = pytz.timezone('America/Argentina/Buenos_Aires')
+                    fecha_local = fecha_dt.astimezone(local_tz)
+                    fecha_formateada = fecha_local.strftime("%d-%m-%Y")
+                    hora_formateada = fecha_local.strftime("%I:%M %p")
+
                     item = QTableWidgetItem(fecha_formateada)
                     item.setFont(QFont("Segoe UI", 12))
                     item.setTextAlignment(Qt.AlignCenter)
                     table.setItem(row, 1, item)
-            
-                    # Hora
-                    local_tz = pytz.timezone('America/Argentina/Buenos_Aires')
-                    fecha_dt_utc = fecha_dt.replace(tzinfo=pytz.UTC)
-                    hora_local = fecha_dt_utc.astimezone(local_tz)
-                    hora_formateada = hora_local.strftime("%I:%M %p")
+
                     item = QTableWidgetItem(hora_formateada)
                     item.setFont(QFont("Segoe UI", 12))
                     item.setTextAlignment(Qt.AlignCenter)
@@ -3962,19 +3969,24 @@ class BuscarDatosTab:
     
         for row, dato in enumerate(datos):
             usuario = self.traer_usuario(dato[0])
+            
             fecha_str = dato[1]
             
-            fecha_str_sin_tz = fecha_str.split('+')[0].strip()
-            try:
-                fecha_dt = datetime.strptime(fecha_str_sin_tz, "%Y-%m-%dT%H:%M:%S.%f")
-            except ValueError:
-                fecha_dt = datetime.strptime(fecha_str_sin_tz, "%Y-%m-%dT%H:%M:%S")
-            fecha_separada = fecha_dt.strftime("%d-%m-%Y")
-            
+            try:            
+                fecha_dt = datetime.fromisoformat(fecha_str)
+            except Exception:
+                # Fallback si el formato no es ISO
+                fecha_str_sin_tz = fecha_str.split('+')[0].strip()
+                try:
+                    fecha_dt = datetime.strptime(fecha_str_sin_tz, "%Y-%m-%dT%H:%M:%S.%f")
+                except ValueError:
+                    fecha_dt = datetime.strptime(fecha_str_sin_tz, "%Y-%m-%dT%H:%M:%S")
+                fecha_dt = fecha_dt.replace(tzinfo=pytz.UTC)
+
             local_tz = pytz.timezone('America/Argentina/Buenos_Aires')
-            fecha_dt_utc = fecha_dt.replace(tzinfo=pytz.UTC)
-            hora_local = fecha_dt_utc.astimezone(local_tz)
-            hora_separada = hora_local.strftime("%I:%M %p")
+            fecha_local = fecha_dt.astimezone(local_tz)
+            fecha_separada = fecha_local.strftime("%d-%m-%Y")
+            hora_separada = fecha_local.strftime("%I:%M %p")
     
             metodo_pago = self.traer_metodo_pago_cache(dato[2])
             producto = self.traer_nom_producto(dato[3])
