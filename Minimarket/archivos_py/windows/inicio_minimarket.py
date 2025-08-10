@@ -3526,6 +3526,7 @@ class BuscarDatosTab:
             
                     # Fecha
                     fecha_str = movimiento[1]
+                    print(fecha_str)
                     try:
                        fecha_dt = datetime.fromisoformat(fecha_str)
                     except Exception:
@@ -4678,8 +4679,8 @@ class BuscarDatosTab:
                 if label_110:
                     label_110.setText(f"${resultados['venta_promedio']:.2f}")
                 if label_111:
-                    label_111.setText(f"${resultados['ganancias_totales']:.2f}")
-
+                    label_111.setText(f"${resultados['ganancias_totales']:.2f}")  
+ 
         self.ventas_totales_mes_thread = TraerVentasTotalesMesThread(ano_actual, mes_actual)
         self.numero_de_ventas_mes_thread = TraerNumeroDeVentasMesThread(ano_actual, mes_actual)
         self.venta_promedio_mes_thread = TraerVentaPromedioMesThread(ano_actual, mes_actual)
@@ -5034,7 +5035,7 @@ class BuscarDatosTab:
         self.ventas_totales_semana_thread = TraerVentasTotalesSemanaThread(ano_actual, semana_actual)
         self.numero_de_ventas_semana_thread = TraerNumeroDeVentasSemanaThread(ano_actual, semana_actual)
         self.venta_promedio_semana_thread = TraerVentaPromedioSemanaThread(ano_actual, semana_actual)
-        self.ganancias_totales_semana_thread = TraerGananciasTotalesSemanaThread(ano_actual, semana_actual)
+        self.ganancias_totales_semana_thread = TraerGananciasTotalesSemanaThread(ano_actual, semana_actual) 
 
         self.ventas_totales_semana_thread.resultado.connect(lambda x: (resultados.update({'ventas_totales': x}), check_and_update_labels()))
         self.numero_de_ventas_semana_thread.resultado.connect(lambda x: (resultados.update({'numero_de_ventas': x}), check_and_update_labels()))

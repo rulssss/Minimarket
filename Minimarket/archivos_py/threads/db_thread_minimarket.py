@@ -1603,28 +1603,6 @@ class TraerNumeroDeVentasMesThread(QThread):
             print(f"Error en TraerNumeroDeVentasMesThread: {e}")
             self.resultado.emit(0)
 
-class TraerVentasTotalesAnoThread(QThread):
-    resultado = Signal(float)
-    def __init__(self, anio):
-        super().__init__()
-        self.anio = anio
-    def run(self):
-        
-        try:
-            url = f"{API_URL}/api/traer_ventas_totales_ano"
-            payload = {"anio": self.anio}
-            response = requests.post(url, json=payload)
-            if response.status_code == 200:
-                data = response.json()
-                total = data.get("total", 0.0)
-                self.resultado.emit(total)
-            else:
-                print(f"Error al traer ventas totales del año: {response.text}")
-                self.resultado.emit(0.0)
-        except Exception as e:
-            print(f"Error en TraerVentasTotalesAnoThread: {e}")
-            self.resultado.emit(0.0)
-
 
 class TraerComprasTotalesAnoThread(QThread):
     resultado = Signal(float)
