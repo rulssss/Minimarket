@@ -3526,7 +3526,7 @@ class BuscarDatosTab:
             
                     # Fecha
                     fecha_str = movimiento[1]
-                    print(fecha_str)
+                    
                     try:
                        fecha_dt = datetime.fromisoformat(fecha_str)
                     except Exception:
