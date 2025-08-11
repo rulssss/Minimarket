@@ -2742,6 +2742,10 @@ class DatosTab:
             line_edit_24.setEchoMode(QLineEdit.Password)
         
         if push_button_39:
+            try:
+                push_button_39.clicked.disconnect()
+            except Exception:
+                pass
             push_button_39.setFocusPolicy(Qt.NoFocus)
             push_button_39.setIcon(QIcon(eye_visible_path))
             push_button_39.clicked.connect(self.setear_lineedit_avisual_agregar)
@@ -2947,6 +2951,10 @@ class DatosTab:
             self.populate_combobox_with_names(combobox_16)  # Llenar el combobox con los nombres de usuarios
             
         if push_button_41:
+            try:
+                push_button_41.clicked.disconnect()
+            except Exception:
+                pass
             push_button_41.setFocusPolicy(Qt.NoFocus)
             push_button_41.setIcon(QIcon(eye_visible_path))
             push_button_41.clicked.connect(self.setear_lineedit_avisual_editar)
