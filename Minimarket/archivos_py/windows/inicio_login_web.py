@@ -99,7 +99,7 @@ class InicioWeb(QWidget):
     def open_link_a_recuperar_contrasenia(self):
         """Abre el link de recuperación de contraseña en el navegador web"""
         try:
-            webbrowser.open("https://rlsweb.vercel.app/dashboard")
+            webbrowser.open("https://www.rlsdesktop.com/dashboard")
             print("Abriendo link de recuperación de contraseña...")
         except Exception as e:
             print(f"Error al abrir el navegador: {e}")
