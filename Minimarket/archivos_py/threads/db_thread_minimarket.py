@@ -2389,16 +2389,17 @@ class GuardarAlCerrarThread(QThread):
 
 class MovimientoLoginThread(QThread):
     finished = Signal(bool)
-    
-    def __init__(self, usuario):
+
+    def __init__(self, id_usuario_perfil, usuario):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.usuario = usuario
     
     def run(self):
         import requests
         try:
             url = f"{API_URL}/api/cargar_movimiento_inicio"
-            payload = {"usuario": self.usuario}
+            payload = {"usuario": self.usuario, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()

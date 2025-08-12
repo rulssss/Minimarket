@@ -131,18 +131,10 @@ class InicioWeb(QWidget):
 
             # verificar existencia de mail , si existe pasa y sino guarda el mail y uid
             self.login_thread_verificar = Login_web_Thread_verificar_existencia_mail(email, uid)
+            self.login_thread_verificar.resultado.connect(self.handle_verificar_mail_finished)
             self.start_thread(self.login_thread_verificar)
 
-             # Crear y mostrar la ventana Inicio
-            try:
-                self.inicio_window = Inicio()
-                self.inicio_window.show()
-            except Exception as e:
-                print(f"Error al abrir ventana Inicio: {e}")
-
         else:
-            
-
             if datos_usuario == "Usuario sin suscripción Pro":
             
                 if label_32:
@@ -157,11 +149,18 @@ class InicioWeb(QWidget):
 
                 push_button_15.setEnabled(True)
 
+    def handle_verificar_mail_finished(self, exito, id_usuario_perfil):
+        if exito:
+            # Crear y mostrar la ventana Inicio, pasando el id_usuario_perfil
+            try:
+                self.inicio_window = Inicio(id_usuario_perfil)  
+                self.inicio_window.show()
+            except Exception as e:
+                print(f"Error al abrir ventana Inicio: {e}")
+        else:
+            print("dio error al verificar mail")
+            pass
 
-    def verificar_estado_subscripcion(self):
-        session_manager = SessionManager()
-        email = session_manager.get_email()
-        uid = session_manager.get_uid()
-        # Ahora puedes usar email y uid como necesites
+
 
 

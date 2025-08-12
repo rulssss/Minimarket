@@ -7382,7 +7382,7 @@ class MainWindow(QMainWindow):
             label = QLabel("Guardando anotaciones")
         else:
              # Crear el label con el mensaje
-            label = QLabel("Cargando Datos")
+            label = QLabel("LA PATO EN 4(CUATRO)")
     
         label.setStyleSheet("""
                 QLabel {

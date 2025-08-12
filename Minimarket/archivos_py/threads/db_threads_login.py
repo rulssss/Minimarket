@@ -5,11 +5,12 @@ API_URL = "https://web-production-aa989.up.railway.app"
 
 class LoginThread(QThread):
     finished = Signal(bool, str)
-    def __init__(self, tipo, usuario, contrasenia):
+    def __init__(self, id_usuario_perfil, tipo, usuario, contrasenia):
         super().__init__()
         self.usuario = usuario
         self.contrasenia = contrasenia
         self.tipo = tipo
+        self.id_usuario_perfil = id_usuario_perfil
 
     def run(self):
         try:
@@ -17,7 +18,8 @@ class LoginThread(QThread):
             payload = {
                 "tipo_usuario": self.tipo,
                 "usuario": self.usuario,
-                "contrasenia": self.contrasenia
+                "contrasenia": self.contrasenia,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -35,8 +37,9 @@ class LoginThread(QThread):
 class RegistroCheckThread(QThread):
     finished = Signal(dict)
 
-    def __init__(self, username, password, email, tipo_usuario):
+    def __init__(self, id_usuario_perfil, username, password, email, tipo_usuario):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.username = username
         self.password = password
         self.email = email
@@ -49,7 +52,8 @@ class RegistroCheckThread(QThread):
                 "username": self.username,
                 "password": self.password,
                 "email": self.email,
-                "tipo_usuario": self.tipo_usuario
+                "tipo_usuario": self.tipo_usuario,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -104,15 +108,20 @@ class EnviarCodigoThread(QThread):
 
 class CodigoOtroAdminThread(QThread):
     finished = Signal(object)  # El código o None
+    def __init__(self, id_usuario_perfil):
+       super().__init__()
+       self.id_usuario_perfil = id_usuario_perfil
 
     def run(self):
         
         try:
             url = f"{API_URL}/api/codigo_otro_admin"
-            response = requests.post(url)
+            payload = {"id_usuario_perfil": self.id_usuario_perfil}
+            response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
                 codigo = data.get("codigo")
+
                 
                 self.finished.emit(codigo)
             else:
@@ -125,8 +134,9 @@ class CodigoOtroAdminThread(QThread):
 class RegistrarUsuarioThread(QThread):
     finished = Signal(bool)
 
-    def __init__(self, usuario, contrasena, tipo, email):
+    def __init__(self, id_usuario_perfil, usuario, contrasena, tipo, email):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.usuario = usuario
         self.contrasena = contrasena
         self.tipo = tipo
@@ -140,7 +150,8 @@ class RegistrarUsuarioThread(QThread):
                 "usuario": self.usuario,
                 "contrasena": self.contrasena,
                 "tipo": self.tipo,
-                "email": self.email
+                "email": self.email,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -155,19 +166,21 @@ class RegistrarUsuarioThread(QThread):
 class VerificarYEnviarCodigoThread(QThread):
     finished = Signal(bool, object)  # (existe, codigo o None)
 
-    def __init__(self, mail):
+    def __init__(self, id_usuario_perfil, mail):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.mail = mail
 
     def run(self):
         try:
             url = f"{API_URL}/api/verificar_y_enviar_codigo"
-            payload = {"mail": self.mail}
+            payload = {"mail": self.mail, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
                 existe = data.get("existe", False)
                 codigo = data.get("codigo")
+                
                 if existe and codigo:
                     
                     self.finished.emit(True, codigo)
@@ -185,8 +198,9 @@ class VerificarYEnviarCodigoThread(QThread):
 class ActualizarContrasenaThread(QThread):
     finished = Signal(bool)
 
-    def __init__(self, nueva_contrasena, email):
+    def __init__(self, id_usuario_perfil, nueva_contrasena, email):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.nueva_contrasena = nueva_contrasena
         self.email = email
 
@@ -195,7 +209,8 @@ class ActualizarContrasenaThread(QThread):
             url = f"{API_URL}/api/actualizar_contrasena"
             payload = {
                 "nueva_contrasena": self.nueva_contrasena,
-                "email": self.email
+                "email": self.email,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:

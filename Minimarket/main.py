@@ -55,7 +55,7 @@ else:
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Definir la versión actual
-VERSION_ACTUAL = "1.0.1"  
+VERSION_ACTUAL = "1.0.2"  
 
 threads = []  # Lista para almacenar los hilos
 

@@ -21,11 +21,11 @@ icon_path = os.path.join(BASE_DIR, "archivos_py", "resources", "r.ico")
 
 
 class Inicio(QWidget):
-    def __init__(self):
+    def __init__(self, id_usuario_perfil):
         super(Inicio, self).__init__()
         self.ui = Ui_Form_login()
         self.ui.setupUi(self)  # Configura la interfaz en el widget base (self)
-
+        self.id_usuario_perfil = id_usuario_perfil
 
         # Inicializa los atributos necesarios para almacenar threads
         self.threads = []
@@ -107,7 +107,7 @@ class Inicio(QWidget):
             push_button_3.setEnabled(False)
 
             # Aquí lanzas el thread en vez de llamar directo a la función lenta
-            self.login_thread = LoginThread(value_combobox, value_line_edit, value_line_edit_2)
+            self.login_thread = LoginThread(self.id_usuario_perfil, value_combobox, value_line_edit, value_line_edit_2)
             self.login_thread.finished.connect(
                 lambda exito, mensaje: self.on_login_finished(
                     exito, mensaje, pushButton, push_button_2, push_button_3, label_21, value_line_edit, value_combobox
@@ -134,7 +134,7 @@ class Inicio(QWidget):
             label_21.setText("Ingresando...")
             label_21.setStyleSheet("color: green;")
             QTimer.singleShot(6000, lambda: label_21.setStyleSheet("color: transparent;"))
-            QTimer.singleShot(6000, lambda: (self.close(), self.open_main_window(usuario, account)))
+            QTimer.singleShot(6000, lambda: (self.close(), self.open_main_window(self.id_usuario_perfil, usuario, account)))
 
     def start_thread(self, thread):
         self.threads.append(thread)
@@ -149,14 +149,14 @@ class Inicio(QWidget):
         self.threads.clear()
         event.accept()
 
-    def open_main_window(self, usuario, account):
+    def open_main_window(self, id_usuario_perfil, usuario, account):
         print("se inicia el minimarket")
-        self.main_window = MainWindow(usuario, account)
+        self.main_window = MainWindow(id_usuario_perfil, usuario, account)
         self.main_window.resize(1690, 900)
         self.main_window.show()
 
         # Crear y ejecutar hilo para cargar movimiento del usuario
-        self.movimiento_login_thread = MovimientoLoginThread(usuario)
+        self.movimiento_login_thread = MovimientoLoginThread(self.id_usuario_perfil, usuario)
         self.start_thread(self.movimiento_login_thread)
     
         self.close()  # Cierra la ventana de login
@@ -246,8 +246,8 @@ class Inicio(QWidget):
         if value_line_edit_3 and value_line_edit_4 and value_line_edit_8 and ("@gmail" in value_line_edit_8 or "@hotmail" in value_line_edit_8 or "@outlook" in value_line_edit_8) and value_combobox_2:
             pushButton_4.setEnabled(False)
             push_button_5.setEnabled(False)
-            
-            self.registro_thread = RegistroCheckThread(value_line_edit_3, value_line_edit_4, value_line_edit_8, value_combobox_2)
+
+            self.registro_thread = RegistroCheckThread(self.id_usuario_perfil, value_line_edit_3, value_line_edit_4, value_line_edit_8, value_combobox_2)
             self.registro_thread.finished.connect(
             lambda result: (
                 
@@ -440,7 +440,7 @@ class Inicio(QWidget):
 
     def verificar_codigo_para_agregar_otro_admin(self):
 
-        self.codigo_otro_admin_thread = CodigoOtroAdminThread()
+        self.codigo_otro_admin_thread = CodigoOtroAdminThread(self.id_usuario_perfil)
         self.codigo_otro_admin_thread.finished.connect(self.on_codigo_otro_admin_finished)
         self.start_thread(self.codigo_otro_admin_thread)
 
@@ -525,7 +525,7 @@ class Inicio(QWidget):
                 value_line_edit_8 = line_edit_8.text()
 
                 # Lanzar el thread para registrar usuario
-                self.registrar_usuario_thread = RegistrarUsuarioThread(
+                self.registrar_usuario_thread = RegistrarUsuarioThread(self.id_usuario_perfil,
                     value_line_edit_3, value_line_edit_4, combobox, value_line_edit_8
                 )
                 self.registrar_usuario_thread.finished.connect(
@@ -660,7 +660,7 @@ class Inicio(QWidget):
 
                 # Lanzar el thread para registrar usuario
                 
-                self.registrar_usuario_cuenta_thread = RegistrarUsuarioThread(
+                self.registrar_usuario_cuenta_thread = RegistrarUsuarioThread(self.id_usuario_perfil,
                     value_line_edit_3, value_line_edit_4, value_combobox, value_line_edit_8
                 )
                 self.registrar_usuario_cuenta_thread.finished.connect(
@@ -751,7 +751,7 @@ class Inicio(QWidget):
             # Deshabilita el botón y muestra mensaje de espera si quieres
             label_17.setText("Verificando email y enviando código...")
             label_17.setStyleSheet("color: blue;")
-            self.verificar_thread = VerificarYEnviarCodigoThread(value_line_edit_7)
+            self.verificar_thread = VerificarYEnviarCodigoThread(self.id_usuario_perfil, value_line_edit_7)
             self.verificar_thread.finished.connect(self.on_verificar_existencia_mail_finished)
             self.start_thread(self.verificar_thread)
         else:
@@ -936,7 +936,7 @@ class Inicio(QWidget):
             if len(value_line_edit_5) >= 8 and len(value_line_edit_6) >= 8:
                 if value_line_edit_5 == value_line_edit_6:
                     # Lanza el thread para actualizar la contraseña
-                    self.actualizar_contrasena_thread = ActualizarContrasenaThread(value_line_edit_5, email_guardado)
+                    self.actualizar_contrasena_thread = ActualizarContrasenaThread(self.id_usuario_perfil, value_line_edit_5, email_guardado)
                     self.actualizar_contrasena_thread.finished.connect(
                         lambda exito: self.on_actualizar_contrasena_finished(
                             exito, label_19
