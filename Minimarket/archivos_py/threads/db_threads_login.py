@@ -94,7 +94,7 @@ class EnviarCodigoThread(QThread):
                 data = response.json()
                 codigo = data.get("codigo")
                 if codigo:
-                    print(f"Codigo enviado al usuario: {codigo}")
+                    
                     self.finished.emit(codigo)
                 else:
                     print("No se pudo enviar el código.")
@@ -209,7 +209,7 @@ class ActualizarContrasenaThread(QThread):
             url = f"{API_URL}/api/actualizar_contrasena"
             payload = {
                 "nueva_contrasena": self.nueva_contrasena,
-                "email": self.email,
+                "mail": self.email,
                 "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)

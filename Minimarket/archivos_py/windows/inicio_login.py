@@ -969,6 +969,12 @@ class Inicio(QWidget):
             label_19.setStyleSheet("color: green;")
             QTimer.singleShot(6000, lambda: (label_19.setStyleSheet("color: transparent;"), self.open_login_window()))
         else:
+            pushButton_6 = self.ui.stackedWidget.findChild(QWidget, "pushButton_6")
+            pushButton_7 = self.ui.stackedWidget.findChild(QWidget, "pushButton_7")
+
+            pushButton_6.setEnabled(True)
+            pushButton_7.setEnabled(True)
+
             label_19.setText("Error al cambiar la contraseña")
             label_19.setStyleSheet("color: red;")
             QTimer.singleShot(6000, lambda: label_19.setStyleSheet("color: transparent;"))
