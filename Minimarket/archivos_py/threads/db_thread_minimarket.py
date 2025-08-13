@@ -153,55 +153,7 @@ class MovimientoProductoThread(QThread):
 
 
 # Borrar productos: 
-# -> se utiliza el de movimientoproductothread tambien
 
-class TraerIdProductoThread(QThread):
-    resultado = Signal(int)
-
-    def __init__(self, nombre):
-        super().__init__()
-        self.nombre = nombre
-
-    def run(self):
-        
-        try:
-            url = f"{API_URL}/api/traer_id_producto"
-            payload = {"nombre": self.nombre}
-            response = requests.post(url, json=payload)
-            if response.status_code == 200:
-                data = response.json()
-                id_producto = data.get("id_producto", -1)
-                self.resultado.emit(id_producto)
-            else:
-                print(f"Error al traer id_producto: {response.text}")
-                self.resultado.emit(-1)
-        except Exception as e:
-            print(f"Error en TraerIdProductoThread: {e}")
-            self.resultado.emit(-1)
-
-
-class TraerNomProductoThread(QThread):
-    resultado = Signal(str)
-    def __init__(self, id_producto):
-        super().__init__()
-        self.id_producto = id_producto
-
-    def run(self):
-        
-        try:
-            url = f"{API_URL}/api/traer_nom_producto"
-            payload = {"id_producto": self.id_producto}
-            response = requests.post(url, json=payload)
-            if response.status_code == 200:
-                data = response.json()
-                nombre_producto = data.get("nombre_producto", "")
-                self.resultado.emit(nombre_producto)
-            else:
-                print(f"Error al traer nombre de producto: {response.text}")
-                self.resultado.emit("")
-        except Exception as e:
-            print(f"Error en TraerNomProductoThread: {e}")
-            self.resultado.emit("")
 
 class BorrarProductoThread(QThread):
     resultado = Signal(bool)
@@ -431,28 +383,6 @@ class MovimientoBajarPreciosThread(QThread):
             print(f"Error en MovimientoBajarPreciosThread: {e}")
             self.finished.emit()
 
-
-class TraerProductoPorIdThread(QThread):
-    resultado = Signal(object)
-    def __init__(self, id_producto):
-        super().__init__()
-        self.id_producto = id_producto
-    def run(self):
-        
-        try:
-            url = f"{API_URL}/api/traer_producto_por_id"
-            payload = {"id_producto": self.id_producto}
-            response = requests.post(url, json=payload)
-            if response.status_code == 200:
-                data = response.json()
-                producto = data.get("producto", None)
-                self.resultado.emit(producto)
-            else:
-                print(f"Error al traer producto por id: {response.text}")
-                self.resultado.emit(None)
-        except Exception as e:
-            print(f"Error en TraerProductoPorIdThread: {e}")
-            self.resultado.emit(None)
 
 
 class ActualizarProductoThread(QThread):
@@ -1046,28 +976,6 @@ class CargarMovimientoEditarUsuarioThread(QThread):
             print(f"Error en CargarMovimientoEditarUsuarioThread: {e}")
 
 
-class TraerIdUsuarioThread(QThread):
-    resultado = Signal(object)
-    def __init__(self, nombre_usuario):
-        super().__init__()
-        self.nombre_usuario = nombre_usuario
-
-    def run(self):
-        
-        try:
-            url = f"{API_URL}/api/traer_id_usuario"
-            payload = {"nombre_usuario": self.nombre_usuario}
-            response = requests.post(url, json=payload)
-            if response.status_code == 200:
-                data = response.json()
-                id_usuario = data.get("id_usuario", None)
-                self.resultado.emit(id_usuario)
-            else:
-                print(f"Error al traer id usuario: {response.text}")
-                self.resultado.emit(None)
-        except Exception as e:
-            print(f"Error en TraerIdUsuarioThread: {e}")
-            self.resultado.emit(None)
 
 # Hilo para borrar el usuario
 class BorrarUsuarioThread(QThread):
@@ -1232,28 +1140,6 @@ class TraerTodosLosMetodosPagoThread(QThread):
             print(f"Error al obtener métodos de pago: {e}")
             self.resultado.emit([])
 
-class TraerMetodoPagoIdThread(QThread):
-    resultado = Signal(object)
-    def __init__(self, nombre_metodo):
-        super().__init__()
-        self.nombre_metodo = nombre_metodo
-
-    def run(self):
-        
-        try:
-            url = f"{API_URL}/api/traer_metodo_pago_id"
-            payload = {"nombre_metodo": self.nombre_metodo}
-            response = requests.post(url, json=payload)
-            if response.status_code == 200:
-                data = response.json()
-                id_metodo = data.get("id_metodo", None)
-                self.resultado.emit(id_metodo)
-            else:
-                print(f"Error al traer id del método de pago: {response.text}")
-                self.resultado.emit(None)
-        except Exception as e:
-            print(f"Error en TraerMetodoPagoIdThread: {e}")
-            self.resultado.emit(None)
 
 class TraerDatosVentasMetodoUsuarioThread(QThread):
     resultado = Signal(list)
@@ -1408,158 +1294,6 @@ class TraerMetodosDePago_y_sus_idsThread(QThread):
             self.resultado.emit([])
 
 
-class TraerMetodosDePagoThread(QThread):
-    resultado = Signal(list)
-    def run(self):
-        
-        try:
-            url = f"{API_URL}/api/traer_metodos_de_pago"
-            response = requests.get(url)
-            if response.status_code == 200:
-                data = response.json()
-                metodos = data.get("metodos_pago", [])
-                self.resultado.emit(metodos)
-            else:
-                print(f"Error al obtener métodos de pago: {response.text}")
-                self.resultado.emit([])
-        except Exception as e:
-            print(f"Error en TraerMetodosDePagoThread: {e}")
-            self.resultado.emit([])
-
-
-class TraerVentasTotalesDiaThread(QThread):
-    resultado = Signal(float)
-    def __init__(self, fecha):
-        super().__init__()
-        self.fecha = fecha
-    def run(self):
-        
-        try:
-            url = f"{API_URL}/api/traer_ventas_totales_dia"
-            payload = {"fecha": self.fecha}
-            response = requests.post(url, json=payload)
-            if response.status_code == 200:
-                data = response.json()
-                total = data.get("total", 0.0)
-                self.resultado.emit(total)
-            else:
-                print(f"Error al traer ventas totales del día: {response.text}")
-                self.resultado.emit(0.0)
-        except Exception as e:
-            print(f"Error en TraerVentasTotalesDiaThread: {e}")
-            self.resultado.emit(0.0)
-
-class TraerGananciasTotalesDiaThread(QThread):
-    resultado = Signal(float)
-    def __init__(self, fecha):
-        super().__init__()
-        self.fecha = fecha
-    def run(self):
-        
-        try:
-            url = f"{API_URL}/api/traer_ganancias_totales_dia"
-            payload = {"fecha": self.fecha}
-            response = requests.post(url, json=payload)
-            if response.status_code == 200:
-                data = response.json()
-                total = data.get("total", 0.0)
-                self.resultado.emit(total)
-            else:
-                print(f"Error al traer ganancias totales del día: {response.text}")
-                self.resultado.emit(0.0)
-        except Exception as e:
-            print(f"Error en TraerGananciasTotalesDiaThread: {e}")
-            self.resultado.emit(0.0)
-
-class TraerComprasTotalesDiaThread(QThread):
-    resultado = Signal(float)
-    def __init__(self, fecha):
-        super().__init__()
-        self.fecha = fecha
-    def run(self):
-        
-        try:
-            url = f"{API_URL}/api/traer_compras_totales_dia"
-            payload = {"fecha": self.fecha}
-            response = requests.post(url, json=payload)
-            if response.status_code == 200:
-                data = response.json()
-                total = data.get("total", 0.0)
-                self.resultado.emit(total)
-            else:
-                print(f"Error al traer compras totales del día: {response.text}")
-                self.resultado.emit(0.0)
-        except Exception as e:
-            print(f"Error en TraerComprasTotalesDiaThread: {e}")
-            self.resultado.emit(0.0)
-
-class TraerNumeroDeComprasDiaThread(QThread):
-    resultado = Signal(int)
-    def __init__(self, fecha):
-        super().__init__()
-        self.fecha = fecha
-    def run(self):
-        
-        try:
-            url = f"{API_URL}/api/traer_numero_de_compras_dia"
-            payload = {"fecha": self.fecha}
-            response = requests.post(url, json=payload)
-            if response.status_code == 200:
-                data = response.json()
-                total = data.get("total", 0)
-                self.resultado.emit(total)
-            else:
-                print(f"Error al traer número de compras del día: {response.text}")
-                self.resultado.emit(0)
-        except Exception as e:
-            print(f"Error en TraerNumeroDeComprasDiaThread: {e}")
-            self.resultado.emit(0)
-
-class TraerVentasPorMetodoDiaThread(QThread):
-    resultado = Signal(dict)
-    def __init__(self, fecha):
-        super().__init__()
-        self.fecha = fecha
-    def run(self):
-        
-        try:
-            url = f"{API_URL}/api/traer_ventas_por_metodo_dia"
-            payload = {"fecha": self.fecha}
-            response = requests.post(url, json=payload)
-            if response.status_code == 200:
-                data = response.json()
-                ventas_por_metodo = data.get("ventas_por_metodo", {})
-                self.resultado.emit(ventas_por_metodo)
-            else:
-                print(f"Error al traer ventas por método del día: {response.text}")
-                self.resultado.emit({})
-        except Exception as e:
-            print(f"Error en TraerVentasPorMetodoDiaThread: {e}")
-            self.resultado.emit({})
-
-
-class TraerNumeroDeVentasDiaThread(QThread):
-    resultado = Signal(int)
-    def __init__(self, fecha):
-        super().__init__()
-        self.fecha = fecha
-    def run(self):
-        
-        try:
-            url = f"{API_URL}/api/traer_numero_de_ventas_dia"
-            payload = {"fecha": self.fecha}
-            response = requests.post(url, json=payload)
-            if response.status_code == 200:
-                data = response.json()
-                total = data.get("total", 0)
-                self.resultado.emit(total)
-            else:
-                print(f"Error al traer número de ventas del día: {response.text}")
-                self.resultado.emit(0)
-        except Exception as e:
-            print(f"Error en TraerNumeroDeVentasDiaThread: {e}")
-            self.resultado.emit(0)
-
 class TraerVentasTotalesMesThread(QThread):
     resultado = Signal(float)
     def __init__(self, id_usuario_perfil, anio, mes):
@@ -1608,75 +1342,6 @@ class TraerGananciasTotalesMesThread(QThread):
             print(f"Error en TraerGananciasTotalesMesThread: {e}")
             self.resultado.emit(0.0)
 
-class TraerComprasTotalesMesThread(QThread):
-    resultado = Signal(float)
-    def __init__(self, anio, mes):
-        super().__init__()
-        self.anio = anio
-        self.mes = mes
-    def run(self):
-        
-        try:
-            url = f"{API_URL}/api/traer_compras_totales_mes"
-            payload = {"anio": self.anio, "mes": self.mes}
-            response = requests.post(url, json=payload)
-            if response.status_code == 200:
-                data = response.json()
-                total = data.get("total", 0.0)
-                self.resultado.emit(total)
-            else:
-                print(f"Error al traer compras totales del mes: {response.text}")
-                self.resultado.emit(0.0)
-        except Exception as e:
-            print(f"Error en TraerComprasTotalesMesThread: {e}")
-            self.resultado.emit(0.0)
-
-class TraerNumeroDeComprasMesThread(QThread):
-    resultado = Signal(int)
-    def __init__(self, anio, mes):
-        super().__init__()
-        self.anio = anio
-        self.mes = mes
-    def run(self):
-        
-        try:
-            url = f"{API_URL}/api/traer_numero_de_compras_mes"
-            payload = {"anio": self.anio, "mes": self.mes}
-            response = requests.post(url, json=payload)
-            if response.status_code == 200:
-                data = response.json()
-                total = data.get("total", 0)
-                self.resultado.emit(total)
-            else:
-                print(f"Error al traer número de compras del mes: {response.text}")
-                self.resultado.emit(0)
-        except Exception as e:
-            print(f"Error en TraerNumeroDeComprasMesThread: {e}")
-            self.resultado.emit(0)
-
-class TraerVentasPorMetodoMesThread(QThread):
-    resultado = Signal(dict)
-    def __init__(self, anio, mes):
-        super().__init__()
-        self.anio = anio
-        self.mes = mes
-    def run(self):
-        
-        try:
-            url = f"{API_URL}/api/traer_ventas_por_metodo_mes"
-            payload = {"anio": self.anio, "mes": self.mes}
-            response = requests.post(url, json=payload)
-            if response.status_code == 200:
-                data = response.json()
-                ventas_por_metodo = data.get("ventas_por_metodo", {})
-                self.resultado.emit(ventas_por_metodo)
-            else:
-                print(f"Error al traer ventas por método del mes: {response.text}")
-                self.resultado.emit({})
-        except Exception as e:
-            print(f"Error en TraerVentasPorMetodoMesThread: {e}")
-            self.resultado.emit({})
-
 class TraerNumeroDeVentasMesThread(QThread):
     resultado = Signal(int)
     def __init__(self, id_usuario_perfil, anio, mes):
@@ -1702,28 +1367,6 @@ class TraerNumeroDeVentasMesThread(QThread):
             self.resultado.emit(0)
 
 
-class TraerComprasTotalesAnoThread(QThread):
-    resultado = Signal(float)
-    def __init__(self, anio):
-        super().__init__()
-        self.anio = anio
-    def run(self):
-        
-        try:
-            url = f"{API_URL}/api/traer_compras_totales_ano"
-            payload = {"anio": self.anio}
-            response = requests.post(url, json=payload)
-            if response.status_code == 200:
-                data = response.json()
-                total = data.get("total", 0.0)
-                self.resultado.emit(total)
-            else:
-                print(f"Error al traer compras totales del año: {response.text}")
-                self.resultado.emit(0.0)
-        except Exception as e:
-            print(f"Error en TraerComprasTotalesAnoThread: {e}")
-            self.resultado.emit(0.0)
-
 class TraerNumeroDeComprasAnoThread(QThread):
     resultado = Signal(int)
     def __init__(self, anio):
@@ -1746,27 +1389,6 @@ class TraerNumeroDeComprasAnoThread(QThread):
             print(f"Error en TraerNumeroDeComprasAnoThread: {e}")
             self.resultado.emit(0)
 
-class TraerVentasPorMetodoAnoThread(QThread):
-    resultado = Signal(dict)
-    def __init__(self, anio):
-        super().__init__()
-        self.anio = anio
-    def run(self):
-        
-        try:
-            url = f"{API_URL}/api/traer_ventas_por_metodo_ano"
-            payload = {"anio": self.anio}
-            response = requests.post(url, json=payload)
-            if response.status_code == 200:
-                data = response.json()
-                ventas_por_metodo = data.get("ventas_por_metodo", {})
-                self.resultado.emit(ventas_por_metodo)
-            else:
-                print(f"Error al traer ventas por método del año: {response.text}")
-                self.resultado.emit({})
-        except Exception as e:
-            print(f"Error en TraerVentasPorMetodoAnoThread: {e}")
-            self.resultado.emit({})
 
 class TraerNumeroDeVentasAnoThread(QThread):
     resultado = Signal(int)
@@ -2215,16 +1837,17 @@ class VerificarYAgregarMPThread(QThread):
 
 class AgregarMPThread(QThread):
     resultado = Signal(bool)
-    
-    def __init__(self, nombre_metodo):
+
+    def __init__(self, id_usuario_perfil, nombre_metodo):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.nombre_metodo = nombre_metodo
     
     def run(self):
         import requests
         try:
             url = f"{API_URL}/api/agregar_metodo_pago"
-            payload = {"nombre_metodo": self.nombre_metodo}
+            payload = {"nombre_metodo": self.nombre_metodo, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -2240,8 +1863,9 @@ class AgregarMPThread(QThread):
 class BorrarMPThread(QThread):
     resultado = Signal(bool, int)  # Emite bool e int
 
-    def __init__(self, nombre_metodo):
+    def __init__(self, id_usuario_perfil, nombre_metodo):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.nombre_metodo = nombre_metodo
 
     def run(self):
@@ -2249,7 +1873,7 @@ class BorrarMPThread(QThread):
         try:
             # Traer el id del método de pago
             url_id = f"{API_URL}/api/traer_metodo_pago_id"
-            payload_id = {"nombre_metodo": self.nombre_metodo}
+            payload_id = {"nombre_metodo": self.nombre_metodo, "id_usuario_perfil": self.id_usuario_perfil}
             response_id = requests.post(url_id, json=payload_id)
             if response_id.status_code == 200:
                 data_id = response_id.json()
@@ -2261,7 +1885,7 @@ class BorrarMPThread(QThread):
 
             # Borrar el método de pago
             url_borrar = f"{API_URL}/api/borrar_metodo_pago"
-            payload_borrar = {"nombre_metodo": self.nombre_metodo}
+            payload_borrar = {"nombre_metodo": self.nombre_metodo, "id_usuario_perfil": self.id_usuario_perfil}
             response_borrar = requests.post(url_borrar, json=payload_borrar)
             if response_borrar.status_code == 200:
                 data_borrar = response_borrar.json()
@@ -2275,41 +1899,12 @@ class BorrarMPThread(QThread):
             self.resultado.emit(False, 0)
 
 
-class ActualizarCantidadProductosThread(QThread):
-    resultado = Signal(bool)
-    
-    def __init__(self, productos_seleccionados, m, s=False):
-        super().__init__()
-        self.productos_seleccionados = productos_seleccionados
-        self.m = m
-        self.s = s
-    
-    def run(self):
-        import requests
-        try:
-            url = f"{API_URL}/api/actualizar_cantidad_productos"
-            payload = {
-                "productos_seleccionados": self.productos_seleccionados,
-                "m": self.m,
-                "s": self.s
-            }
-            response = requests.post(url, json=payload)
-            if response.status_code == 200:
-                data = response.json()
-                exito = data.get("exito", False)
-                self.resultado.emit(exito)
-            else:
-                print(f"Error al actualizar cantidad de productos: {response.text}")
-                self.resultado.emit(False)
-        except Exception as e:
-            print(f"Error en ActualizarCantidadProductosThread: {e}")
-            self.resultado.emit(False)
-
 class AgregarARegistroThread(QThread):
     resultado = Signal(bool)
-    
-    def __init__(self, productos_seleccionados, s, usuario_activo):
+
+    def __init__(self, id_usuario_perfil, productos_seleccionados, s, usuario_activo):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.productos_seleccionados = productos_seleccionados
         self.s = s
         self.usuario_activo = usuario_activo
@@ -2321,7 +1916,8 @@ class AgregarARegistroThread(QThread):
             payload = {
                 "productos_seleccionados": self.productos_seleccionados,
                 "s": self.s,
-                "usuario_activo": self.usuario_activo
+                "usuario_activo": self.usuario_activo,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -2336,60 +1932,12 @@ class AgregarARegistroThread(QThread):
             self.resultado.emit(False)
 
 
-class CargarMovimientoVentaThread(QThread):
-    resultado = Signal(bool)
-    
-    def __init__(self, usuario_activo):
-        super().__init__()
-        self.usuario_activo = usuario_activo
-    
-    def run(self):
-        import requests
-        try:
-            url = f"{API_URL}/api/cargar_movimiento_venta"
-            payload = {"usuario": self.usuario_activo}
-            response = requests.post(url, json=payload)
-            if response.status_code == 200:
-                data = response.json()
-                exito = data.get("resultado", False)
-                self.resultado.emit(exito)
-            else:
-                print(f"Error al cargar movimiento venta: {response.text}")
-                self.resultado.emit(False)
-        except Exception as e:
-            print(f"Error en CargarMovimientoVentaThread: {e}")
-            self.resultado.emit(False)
-
-class CargarMovimientoCompraThread(QThread):
-    resultado = Signal(bool)
-    
-    def __init__(self, usuario_activo):
-        super().__init__()
-        self.usuario_activo = usuario_activo
-    
-    def run(self):
-        import requests
-        try:
-            url = f"{API_URL}/api/cargar_movimiento_compra"
-            payload = {"usuario": self.usuario_activo}
-            response = requests.post(url, json=payload)
-            if response.status_code == 200:
-                data = response.json()
-                exito = data.get("resultado", False)
-                self.resultado.emit(exito)
-            else:
-                print(f"Error al cargar movimiento compra: {response.text}")
-                self.resultado.emit(False)
-        except Exception as e:
-            print(f"Error en CargarMovimientoCompraThread: {e}")
-            self.resultado.emit(False)
-
-
 class MovimientoAgregarMetodoPagoThread(QThread):
     finished = Signal()
 
-    def __init__(self, metodo_pago, usuario_activo):
+    def __init__(self, id_usuario_perfil, metodo_pago, usuario_activo):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.metodo_pago = metodo_pago
         self.usuario_activo = usuario_activo
 
@@ -2399,7 +1947,8 @@ class MovimientoAgregarMetodoPagoThread(QThread):
             url = f"{API_URL}/api/cargar_movimiento_agregar_metodo_pago"
             payload = {
                 "metodo_pago": self.metodo_pago,
-                "usuario": self.usuario_activo
+                "usuario": self.usuario_activo,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -2414,8 +1963,9 @@ class MovimientoAgregarMetodoPagoThread(QThread):
 class MovimientoBorrarMetodoPagoThread(QThread):
     finished = Signal()
 
-    def __init__(self, metodo_pago, usuario_activo, id):
+    def __init__(self, id_usuario_perfil, metodo_pago, usuario_activo, id):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.metodo_pago = metodo_pago
         self.usuario_activo = usuario_activo
         self.id = id
@@ -2427,7 +1977,8 @@ class MovimientoBorrarMetodoPagoThread(QThread):
             payload = {
                 "metodo_pago": self.metodo_pago,
                 "usuario": self.usuario_activo,
-                "id": self.id
+                "id": self.id,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:

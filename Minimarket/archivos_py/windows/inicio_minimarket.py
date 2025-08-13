@@ -5188,13 +5188,14 @@ class BuscarDatosTab:
 ################
 ################
 
-class AdministracionTab: #$$$$$ SEGUIR CON ESTA CLASE PASANDOLE EL ID
-    def __init__(self, ui, buscar_datos_tab, datos_tab):
+class AdministracionTab:    
+    def __init__(self, ui, buscar_datos_tab, datos_tab, id_usuario_perfil):
         self.ui = ui
         self.facturero_ventas_window = None
         self.facturero_compras_window = None
         self.buscar_datos_tab = buscar_datos_tab  # Guarda la referenciaBuscarDatosTab
         self.datos_tab = datos_tab
+        self.id_usuario_perfil = id_usuario_perfil
 
         #crear arreglo con threads abiertos
         self.threads = []
@@ -5399,19 +5400,19 @@ class AdministracionTab: #$$$$$ SEGUIR CON ESTA CLASE PASANDOLE EL ID
                     lineEdit_value = lineEdit_value[0].upper() + lineEdit_value[1:]
     
                 # Usar el hilo para agregar método de pago
-                self.agregar_mp_thread = AgregarMPThread(lineEdit_value)
+                self.agregar_mp_thread = AgregarMPThread(self.id_usuario_perfil, lineEdit_value)
     
                 def on_resultado(exito):
                     if exito:
                         #  Hilo para cargar movimiento de agregar método de pago
                         global usuario_activo, metodos_pago_por_id_cache, metodos_pago_cache
-                        self.movimiento_agregar_mp_thread = MovimientoAgregarMetodoPagoThread(lineEdit_value, usuario_activo)
+                        self.movimiento_agregar_mp_thread = MovimientoAgregarMetodoPagoThread(self.id_usuario_perfil, lineEdit_value, usuario_activo)
                         self.start_thread(self.movimiento_agregar_mp_thread)
     
                         # Actualizar el combobox usando un hilo
                         combobox_metodo_pago_facturero.setEnabled(False)  # Deshabilita el combobox antes de actualizar
 
-                        self.metodos_pago_thread = TraerMetodosPagoYSuIdThread()
+                        self.metodos_pago_thread = TraerMetodosPagoYSuIdThread(self.id_usuario_perfil)
                         def on_metodos_obtenidos(metodos):
                             combobox_metodo_pago_facturero.clear()
                             
@@ -5550,13 +5551,13 @@ class AdministracionTab: #$$$$$ SEGUIR CON ESTA CLASE PASANDOLE EL ID
                         label_2.setText("Borrando método de pago...")
                         label_2.setStyleSheet("color: green; font-weight: bold")
 
-                    self.borrar_mp_thread = BorrarMPThread(combobox_value)
+                    self.borrar_mp_thread = BorrarMPThread(self.id_usuario_perfil, combobox_value)
 
                     def on_resultado(exito, id_metodo):
                         if exito:
                             #  Hilo para cargar movimiento de borrar método de pago
                             global usuario_activo
-                            self.movimiento_borrar_mp_thread = MovimientoBorrarMetodoPagoThread(combobox_value, usuario_activo, id_metodo)
+                            self.movimiento_borrar_mp_thread = MovimientoBorrarMetodoPagoThread(self.id_usuario_perfil, combobox_value, usuario_activo, id_metodo)
                             self.start_thread(self.movimiento_borrar_mp_thread)
                             
                             # Actualizar comboboxes usando un hilo
@@ -5590,7 +5591,7 @@ class AdministracionTab: #$$$$$ SEGUIR CON ESTA CLASE PASANDOLE EL ID
                                 if combobox_mp_facturero:
                                     combobox_mp_facturero.setEnabled(True)  # Habilitar el combobox después de actualizar
 
-                            self.metodos_pago_thread = TraerMetodosPagoYSuIdThread()
+                            self.metodos_pago_thread = TraerMetodosPagoYSuIdThread(self.id_usuario_perfil)
                             self.metodos_pago_thread.resultado.connect(actualizar_comboboxes_metodos)
                             self.start_thread(self.metodos_pago_thread)
 
@@ -5961,7 +5962,7 @@ class AdministracionTab: #$$$$$ SEGUIR CON ESTA CLASE PASANDOLE EL ID
                 label_9.setText("Procesando factura...")
                 label_9.setStyleSheet("color: green; font-weight: bold")
             # Usar hilo para agregar a registro
-            self.agregar_registro_thread = AgregarARegistroThread(
+            self.agregar_registro_thread = AgregarARegistroThread(self.id_usuario_perfil,
                 productos_seleccionados_facturero_ventas, s, usuario_activo
             )
 
@@ -6492,19 +6493,19 @@ class AdministracionTab: #$$$$$ SEGUIR CON ESTA CLASE PASANDOLE EL ID
                     lineEdit_value = lineEdit_value[0].upper() + lineEdit_value[1:]
                 
                 # Usar el hilo para agregar método de pago
-                self.agregar_mp_thread = AgregarMPThread(lineEdit_value)
+                self.agregar_mp_thread = AgregarMPThread(self.id_usuario_perfil, lineEdit_value)
     
                 def on_resultado(exito):
                     if exito:
                         #  Hilo para cargar movimiento de agregar método de pago
                         global usuario_activo, metodos_pago_por_id_cache, metodos_pago_cache
-                        self.movimiento_agregar_mp_thread = MovimientoAgregarMetodoPagoThread(lineEdit_value, usuario_activo)
+                        self.movimiento_agregar_mp_thread = MovimientoAgregarMetodoPagoThread(self.id_usuario_perfil, lineEdit_value, usuario_activo)
                         self.start_thread(self.movimiento_agregar_mp_thread)
     
                         # Actualizar el combobox usando un hilo
                         combobox_metodo_pago_facturero.setEnabled(False)  # Deshabilita el combobox antes de actualizar
 
-                        self.metodos_pago_thread = TraerMetodosPagoYSuIdThread()
+                        self.metodos_pago_thread = TraerMetodosPagoYSuIdThread(self.id_usuario_perfil)
                         def on_metodos_obtenidos(metodos):
                             combobox_metodo_pago_facturero.clear()
                             
@@ -6647,13 +6648,13 @@ class AdministracionTab: #$$$$$ SEGUIR CON ESTA CLASE PASANDOLE EL ID
                         label_2.setText("Borrando método de pago...")
                         label_2.setStyleSheet("color: green; font-weight: bold")
 
-                    self.borrar_mp_thread = BorrarMPThread(combobox_value)
+                    self.borrar_mp_thread = BorrarMPThread(self.id_usuario_perfil, combobox_value)
 
                     def on_resultado(exito, id_metodo):
                         if exito:
                             #  Hilo para cargar movimiento de borrar método de pago
                             global usuario_activo
-                            self.movimiento_borrar_mp_thread = MovimientoBorrarMetodoPagoThread(combobox_value, usuario_activo, id_metodo)
+                            self.movimiento_borrar_mp_thread = MovimientoBorrarMetodoPagoThread(self.id_usuario_perfil, combobox_value, usuario_activo, id_metodo)
                             self.start_thread(self.movimiento_borrar_mp_thread)
                             
                             # Actualizar comboboxes usando un hilo
@@ -6687,7 +6688,7 @@ class AdministracionTab: #$$$$$ SEGUIR CON ESTA CLASE PASANDOLE EL ID
                                 if combobox_mp_facturero:
                                     combobox_mp_facturero.setEnabled(True)  # Habilitar el combobox después de actualizar
 
-                            self.metodos_pago_thread = TraerMetodosPagoYSuIdThread()
+                            self.metodos_pago_thread = TraerMetodosPagoYSuIdThread(self.id_usuario_perfil)
                             self.metodos_pago_thread.resultado.connect(actualizar_comboboxes_metodos)
                             self.start_thread(self.metodos_pago_thread)
 
@@ -6953,7 +6954,7 @@ class AdministracionTab: #$$$$$ SEGUIR CON ESTA CLASE PASANDOLE EL ID
                 label_9.setText("Procesando factura...")
                 label_9.setStyleSheet("color: green; font-weight: bold")
             # Usar hilo para agregar a registro
-            self.agregar_registro_thread = AgregarARegistroThread(
+            self.agregar_registro_thread = AgregarARegistroThread(self.id_usuario_perfil,
                 productos_seleccionados_facturero_compras, s, usuario_activo
             )
 
@@ -7181,7 +7182,7 @@ class MainWindow(QMainWindow):
                 # Abrir la ventana de login web
                 try:
                     from archivos_py.windows.inicio_login_web import InicioWeb
-                    self.login_window = InicioWeb(self.id_usuario_perfil)
+                    self.login_window = InicioWeb()
                     self.login_window.show()
                 except Exception as e:
                     print(f"Error al abrir ventana de login: {e}")
@@ -7385,7 +7386,7 @@ class MainWindow(QMainWindow):
             label = QLabel("Guardando anotaciones")
         else:
              # Crear el label con el mensaje
-            label = QLabel("LA PATO EN 4(CUATRO)")
+            label = QLabel("Cargando datos")
     
         label.setStyleSheet("""
                 QLabel {

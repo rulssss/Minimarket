@@ -1,3 +1,4 @@
+from urllib import response
 import requests
 from PySide6.QtCore import QThread, Signal
 
@@ -27,7 +28,7 @@ class Login_web_Thread(QThread):
 
 
 class Login_web_Thread_verificar_existencia_mail(QThread):
-    finished_verification = Signal()  # Señal que se emite cuando termina la verificación
+    resultado = Signal(bool, str)  # bool para éxito, str para id_usuario_perfil
 
     def __init__(self, email, uid):
         super().__init__()
@@ -37,13 +38,22 @@ class Login_web_Thread_verificar_existencia_mail(QThread):
     def run(self):
         try:
             url = f"{API_URL}/api/verificar_existencia_mail"
-            payload = {"email": self.email,  "uid": self.uid}
+            payload = {"email": self.email, "uid": self.uid}
             print(f"  Email: {self.email}")
             response = requests.post(url, json=payload)
-            self.finished_verification.emit()
+           
+            if response.status_code == 200:
+                data = response.json()
+                verificado = data.get("verificado", [False, None])
+                exito = verificado[0]
+                id_usuario_perfil = verificado[1]
+
+                self.resultado.emit(exito, id_usuario_perfil)
+            else:
+                self.resultado.emit(False, None)
         except Exception as e:
             print(f"Error en el thread de verificación de mail: {e}")
-            self.finished_verification.emit()
+            self.resultado.emit(False, None)
 
 
 class Login_web_Thread_actualizar_pago_por_uid(QThread):

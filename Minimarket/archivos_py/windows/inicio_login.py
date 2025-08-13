@@ -39,7 +39,6 @@ class Inicio(QWidget):
 
         self.open_login_window()
 
-
     # funcion para abrir la ventana de login
     def open_login_window(self):
         

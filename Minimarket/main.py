@@ -13,7 +13,7 @@ from PySide6.QtCore import QThread
 import os
 from PySide6.QtGui import QIcon
 from archivos_py.ui.theme_utils import is_windows_dark_mode, apply_dark_palette
-
+import hashlib
 
 def verificar_estado_subscripcion(uid):
     """
@@ -130,26 +130,40 @@ def iniciar_aplicacion():
         # Obtener datos guardados
         email = session_manager.get_email()
         uid = session_manager.get_uid()
- 
+
+        id_usuario_perfil = firebase_uid_to_uuid(uid)
         
         # Ejecutar el hilo para llevar el UID a functions para poder enviar querys
-        login_thread_verificar = Login_web_Thread_verificar_existencia_mail(email, uid)
+        login_thread_verificar = Login_web_Thread_verificar_existencia_mail(email, id_usuario_perfil)
+        login_thread_verificar.resultado.connect(lambda exito, id_usuario_perfil: on_login_web_verificado(exito, id_usuario_perfil, uid, session_manager))
         start_thread(login_thread_verificar)
-
-        # Verificar estado de suscripción en Firebase
-        if verificar_estado_subscripcion(uid):
-            window = Inicio()
-        else:
-            print("La suscripción Pro ha cambiado. Mostrando login web.")
-            session_manager.clear_session()
-            window = InicioWeb()
 
     else:
         
         # Si no hay sesión, mostrar login
         print("No hay sesión activa, mostrando login...")
         window = InicioWeb()
-    
+        window.show()
+
+def firebase_uid_to_uuid(uid):
+        import hashlib
+        uid_limpio = uid.strip().strip('"').strip("'")
+        firebase_bytes = uid_limpio.encode('utf-8')
+        hash_object = hashlib.md5(firebase_bytes)
+        uuid_string = hash_object.hexdigest()
+        formatted_uuid = f"{uuid_string[:8]}-{uuid_string[8:12]}-{uuid_string[12:16]}-{uuid_string[16:20]}-{uuid_string[20:32]}"
+        return formatted_uuid
+
+def on_login_web_verificado(exito, id_usuario_perfil, uid, session_manager):
+    global window
+     # erificar estado de suscripción en Firebase
+    if verificar_estado_subscripcion(uid):
+        window = Inicio(id_usuario_perfil)
+    else:
+        print("La suscripción Pro ha cambiado. Mostrando login web.")
+        session_manager.clear_session()
+        window = InicioWeb()
+
     window.show()
 
 def start_thread(thread):

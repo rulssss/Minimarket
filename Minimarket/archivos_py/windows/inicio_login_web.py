@@ -126,9 +126,6 @@ class InicioWeb(QWidget):
             # Guardar la sesión
             self.session_manager.save_session(email, uid)
 
-            #se cierra la aplicacion de login web
-            self.close()
-
             # verificar existencia de mail , si existe pasa y sino guarda el mail y uid
             self.login_thread_verificar = Login_web_Thread_verificar_existencia_mail(email, uid)
             self.login_thread_verificar.resultado.connect(self.handle_verificar_mail_finished)
@@ -153,8 +150,12 @@ class InicioWeb(QWidget):
         if exito:
             # Crear y mostrar la ventana Inicio, pasando el id_usuario_perfil
             try:
+                #se cierra la aplicacion de login web
+                self.close()
+                
                 self.inicio_window = Inicio(id_usuario_perfil)  
                 self.inicio_window.show()
+                 
             except Exception as e:
                 print(f"Error al abrir ventana Inicio: {e}")
         else:
