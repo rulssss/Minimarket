@@ -30,11 +30,16 @@ class ObtenerVersionThread(QThread):
 class CategoriasThread(QThread):
     categorias_obtenidas = Signal(list)
 
+    def __init__(self, id_usuario_perfil):
+        super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
+
     def run(self):
         
         try:
             url = f"{API_URL}/api/categorias"
-            response = requests.get(url)
+            payload = {"id_usuario_perfil": self.id_usuario_perfil}
+            response = requests.get(url, params=payload)
             if response.status_code == 200:
                 data = response.json()
                 categorias = data.get("categorias", [])
@@ -50,11 +55,16 @@ class CategoriasThread(QThread):
 class ProveedoresThread(QThread):
     proveedores_obtenidos = Signal(list)
 
+    def __init__(self, id_usuario_perfil):
+        super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
+
     def run(self):
         
         try:
             url = f"{API_URL}/api/proveedores"
-            response = requests.get(url)
+            payload = {"id_usuario_perfil": self.id_usuario_perfil}
+            response = requests.get(url, params=payload)
             if response.status_code == 200:
                 data = response.json()
                 proveedores = data.get("proveedores", [])
@@ -71,6 +81,7 @@ class AgregarProductoThread(QThread):
 
     def __init__(
         self,
+        id_usuario_perfil,
         id_producto,
         nombre_producto,
         precio_compra_producto,
@@ -82,6 +93,7 @@ class AgregarProductoThread(QThread):
     ):
         super().__init__()
         self.producto_data = {
+            "id_usuario_perfil": id_usuario_perfil,
             "id_producto": id_producto,
             "nombre_producto": nombre_producto,
             "precio_compra_producto": precio_compra_producto,
@@ -112,8 +124,9 @@ class AgregarProductoThread(QThread):
 class MovimientoProductoThread(QThread):
     movimiento_cargado = Signal()
 
-    def __init__(self, input_id_value, usuario):
+    def __init__(self, id_usuario_perfil, input_id_value, usuario):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.input_id_value = input_id_value
         self.usuario = usuario
 
@@ -124,6 +137,7 @@ class MovimientoProductoThread(QThread):
             payload = {
                 "input_id_value": self.input_id_value,
                 "usuario": self.usuario,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -191,14 +205,16 @@ class TraerNomProductoThread(QThread):
 
 class BorrarProductoThread(QThread):
     resultado = Signal(bool)
-    def __init__(self, valor):
+    def __init__(self, id_usuario_perfil, valor):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.valor = valor
+
     def run(self):
         
         try:
             url = f"{API_URL}/api/borrar_producto"
-            payload = {"valor": self.valor}
+            payload = {"valor": self.valor, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -215,8 +231,9 @@ class BorrarProductoThread(QThread):
 class MovimientoProductoBorrarThread(QThread):
     movimiento_borrado = Signal()
 
-    def __init__(self, _borrar_id, input_nombre_o_id_value, usuario_activo):
+    def __init__(self, id_usuario_perfil, _borrar_id, input_nombre_o_id_value, usuario_activo):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self._borrar_id = _borrar_id
         self.input_nombre_o_id_value = input_nombre_o_id_value
         self.usuario_activo = usuario_activo
@@ -228,7 +245,8 @@ class MovimientoProductoBorrarThread(QThread):
             payload = {
                 "_borrar_id": self._borrar_id,
                 "input_nombre_o_id_value": self.input_nombre_o_id_value,
-                "usuario_activo": self.usuario_activo
+                "usuario_activo": self.usuario_activo,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -244,8 +262,9 @@ class MovimientoProductoBorrarThread(QThread):
 
 class AumentarPreciosCategoriaThread(QThread):
     finished = Signal()
-    def __init__(self, valor1, valor2, categoria):
+    def __init__(self, id_usuario_perfil, valor1, valor2, categoria):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.valor1 = valor1
         self.valor2 = valor2
         self.categoria = categoria
@@ -256,7 +275,8 @@ class AumentarPreciosCategoriaThread(QThread):
             payload = {
                 "valor1": self.valor1,
                 "valor2": self.valor2,
-                "categoria": self.categoria
+                "categoria": self.categoria,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -270,8 +290,9 @@ class AumentarPreciosCategoriaThread(QThread):
 
 class BajarPreciosCategoriaThread(QThread):
     finished = Signal()
-    def __init__(self, valor1, valor2, categoria):
+    def __init__(self, id_usuario_perfil, valor1, valor2, categoria):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.valor1 = valor1
         self.valor2 = valor2
         self.categoria = categoria
@@ -282,7 +303,8 @@ class BajarPreciosCategoriaThread(QThread):
             payload = {
                 "valor1": self.valor1,
                 "valor2": self.valor2,
-                "categoria": self.categoria
+                "categoria": self.categoria,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -297,8 +319,9 @@ class BajarPreciosCategoriaThread(QThread):
 
 class AumentarPreciosProveedorThread(QThread):
     finished = Signal()
-    def __init__(self, valor1, valor2, proveedor):
+    def __init__(self, id_usuario_perfil, valor1, valor2, proveedor):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.valor1 = valor1
         self.valor2 = valor2
         self.proveedor = proveedor
@@ -309,7 +332,8 @@ class AumentarPreciosProveedorThread(QThread):
             payload = {
                 "valor1": self.valor1,
                 "valor2": self.valor2,
-                "proveedor": self.proveedor
+                "proveedor": self.proveedor,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -323,8 +347,9 @@ class AumentarPreciosProveedorThread(QThread):
 
 class BajarPreciosProveedorThread(QThread):
     finished = Signal()
-    def __init__(self, valor1, valor2, proveedor):
+    def __init__(self, id_usuario_perfil, valor1, valor2, proveedor):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.valor1 = valor1
         self.valor2 = valor2
         self.proveedor = proveedor
@@ -335,7 +360,8 @@ class BajarPreciosProveedorThread(QThread):
             payload = {
                 "valor1": self.valor1,
                 "valor2": self.valor2,
-                "proveedor": self.proveedor
+                "proveedor": self.proveedor,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -350,8 +376,9 @@ class BajarPreciosProveedorThread(QThread):
 
 class MovimientoAumentoPreciosThread(QThread):
     finished = Signal()
-    def __init__(self, categoria_o_proveedor, usuario, es_categoria):
+    def __init__(self, id_usuario_perfil, categoria_o_proveedor, usuario, es_categoria):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.categoria_o_proveedor = categoria_o_proveedor
         self.usuario = usuario
         self.es_categoria = es_categoria
@@ -362,7 +389,8 @@ class MovimientoAumentoPreciosThread(QThread):
             payload = {
                 "categoria_o_proveedor": self.categoria_o_proveedor,
                 "usuario": self.usuario,
-                "es_categoria": self.es_categoria
+                "es_categoria": self.es_categoria,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -376,8 +404,9 @@ class MovimientoAumentoPreciosThread(QThread):
 
 class MovimientoBajarPreciosThread(QThread):
     finished = Signal()
-    def __init__(self, categoria_o_proveedor, usuario, es_categoria):
+    def __init__(self, id_usuario_perfil, categoria_o_proveedor, usuario, es_categoria):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.categoria_o_proveedor = categoria_o_proveedor
         self.usuario = usuario
         self.es_categoria = es_categoria
@@ -389,7 +418,8 @@ class MovimientoBajarPreciosThread(QThread):
             payload = {
                 "categoria_o_proveedor": self.categoria_o_proveedor,
                 "usuario": self.usuario,
-                "es_categoria": self.es_categoria
+                "es_categoria": self.es_categoria,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -427,8 +457,9 @@ class TraerProductoPorIdThread(QThread):
 
 class ActualizarProductoThread(QThread):
     finished = Signal()
-    def __init__(self, id, nombre_prod, precio_compra, precio_venta, stock, stock_ideal, categoria, proveedor):
+    def __init__(self, id_usuario_perfil, id, nombre_prod, precio_compra, precio_venta, stock, stock_ideal, categoria, proveedor):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.id = id
         self.nombre_prod = nombre_prod
         self.precio_compra = precio_compra
@@ -450,7 +481,8 @@ class ActualizarProductoThread(QThread):
                 "stock": self.stock,
                 "stock_ideal": self.stock_ideal,
                 "categoria": self.categoria,
-                "proveedor": self.proveedor
+                "proveedor": self.proveedor,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -466,8 +498,9 @@ class ActualizarProductoThread(QThread):
 class MovimientoProductoEditadoThread(QThread):
     movimiento_editado = Signal()
 
-    def __init__(self, id_producto, usuario_activo):
+    def __init__(self, id_usuario_perfil, id_producto, usuario_activo):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.id_producto = id_producto
         self.usuario_activo = usuario_activo
 
@@ -477,7 +510,8 @@ class MovimientoProductoEditadoThread(QThread):
             url = f"{API_URL}/api/movimiento_producto_editado"
             payload = {
                 "id_producto": self.id_producto,
-                "usuario_activo": self.usuario_activo
+                "usuario_activo": self.usuario_activo,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -495,11 +529,17 @@ class MovimientoProductoEditadoThread(QThread):
 
 class TraerTodosLosProductosThread(QThread):
     resultado = Signal(list)
+
+    def __init__(self, id_usuario_perfil):
+        super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
+
     def run(self):
         
         try:
             url = f"{API_URL}/api/traer_todos_los_productos"
-            response = requests.get(url)
+            payload = {"id_usuario_perfil": self.id_usuario_perfil}
+            response = requests.get(url, params=payload)
             if response.status_code == 200:
                 data = response.json()
                 productos = data.get("productos", [])
@@ -517,8 +557,9 @@ class TraerTodosLosProductosThread(QThread):
 
 class ProveedorThread(QThread):
     proveedor_cargado = Signal(bool)
-    def __init__(self, nombre, telefono, direccion):
+    def __init__(self, id_usuario_perfil, nombre, telefono, direccion):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.nombre = nombre
         self.telefono = telefono
         self.direccion = direccion if direccion else ""  # Manejo de dirección opcional
@@ -529,7 +570,8 @@ class ProveedorThread(QThread):
             payload = {
                 "nombre": self.nombre,
                 "telefono": self.telefono,
-                "direccion": self.direccion
+                "direccion": self.direccion,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -546,8 +588,9 @@ class ProveedorThread(QThread):
 
 class MovimientoProveedorThread(QThread):
     movimiento_cargado = Signal()
-    def __init__(self, nombre, usuario_activo):
+    def __init__(self, id_usuario_perfil, nombre, usuario_activo):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.nombre = nombre
         self.usuario_activo = usuario_activo
     def run(self):
@@ -556,7 +599,8 @@ class MovimientoProveedorThread(QThread):
             url = f"{API_URL}/api/movimiento_agregar_proveedor"
             payload = {
                 "nombre": self.nombre,
-                "usuario_activo": self.usuario_activo
+                "usuario_activo": self.usuario_activo,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -574,14 +618,15 @@ class MovimientoProveedorThread(QThread):
 
 class BuscarProveedorThread(QThread):
     resultado = Signal(bool)
-    def __init__(self, nombre):
+    def __init__(self, id_usuario_perfil, nombre):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.nombre = nombre
     def run(self):
         
         try:
             url = f"{API_URL}/api/buscar_proveedor"
-            payload = {"nombre": self.nombre}
+            payload = {"nombre": self.nombre, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -599,14 +644,15 @@ class BuscarProveedorThread(QThread):
 
 class TraerIdProveedorThread(QThread):
     resultado = Signal(int)
-    def __init__(self, nombre):
+    def __init__(self, id_usuario_perfil, nombre):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.nombre = nombre
     def run(self):
         
         try:
             url = f"{API_URL}/api/traer_id_proveedor"
-            payload = {"nombre": self.nombre}
+            payload = {"nombre": self.nombre, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -622,8 +668,9 @@ class TraerIdProveedorThread(QThread):
 # Hilo para cargar movimiento de proveedor borrado
 
 class MovimientoProveedorBorradoThread(QThread):
-    def __init__(self, nombre, id_proveedor, usuario_activo):
+    def __init__(self, id_usuario_perfil, nombre, id_proveedor, usuario_activo):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.nombre = nombre
         self.id_proveedor = id_proveedor
         self.usuario_activo = usuario_activo
@@ -635,7 +682,8 @@ class MovimientoProveedorBorradoThread(QThread):
             payload = {
                 "nombre": self.nombre,
                 "id_proveedor": self.id_proveedor,
-                "usuario_activo": self.usuario_activo
+                "usuario_activo": self.usuario_activo,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -649,8 +697,9 @@ class MovimientoProveedorBorradoThread(QThread):
 
 class ActualizarProveedorThread(QThread):
     resultado = Signal(bool)
-    def __init__(self, nombre, telefono, direccion):
+    def __init__(self, id_usuario_perfil, nombre, telefono, direccion):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.nombre = nombre
         self.telefono = telefono
         self.direccion = direccion if direccion else ""  # Manejo de dirección opcional 
@@ -661,7 +710,8 @@ class ActualizarProveedorThread(QThread):
             payload = {
                 "nombre": self.nombre,
                 "telefono": self.telefono,
-                "direccion": self.direccion
+                "direccion": self.direccion,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -676,8 +726,9 @@ class ActualizarProveedorThread(QThread):
             self.resultado.emit(False)
 
 class MovimientoProveedorEditadoThread(QThread):
-    def __init__(self, nombre, usuario_activo):
+    def __init__(self, id_usuario_perfil, nombre, usuario_activo):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.nombre = nombre
         self.usuario_activo = usuario_activo
     def run(self):
@@ -686,7 +737,8 @@ class MovimientoProveedorEditadoThread(QThread):
             url = f"{API_URL}/api/movimiento_proveedor_editado"
             payload = {
                 "nombre": self.nombre,
-                "usuario_activo": self.usuario_activo
+                "usuario_activo": self.usuario_activo,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -700,14 +752,18 @@ class MovimientoProveedorEditadoThread(QThread):
 
 class CargarCategoriaThread(QThread):
     resultado = Signal(bool)
-    def __init__(self, nombre_categoria):
+    def __init__(self, id_usuario_perfil, nombre_categoria):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.nombre_categoria = nombre_categoria
     def run(self):
         
         try:
             url = f"{API_URL}/api/agregar_categoria"
-            payload = {"nombre_categoria": self.nombre_categoria}
+            payload = {
+                "nombre_categoria": self.nombre_categoria,
+                "id_usuario_perfil": self.id_usuario_perfil
+            }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -721,8 +777,9 @@ class CargarCategoriaThread(QThread):
             self.resultado.emit(False)
 
 class MovimientoAgregarCategoriaThread(QThread):
-    def __init__(self, nombre_categoria, usuario_activo):
+    def __init__(self, id_usuario_perfil, nombre_categoria, usuario_activo):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.nombre_categoria = nombre_categoria
         self.usuario_activo = usuario_activo
     def run(self):
@@ -731,7 +788,8 @@ class MovimientoAgregarCategoriaThread(QThread):
             url = f"{API_URL}/api/movimiento_agregar_categoria"
             payload = {
                 "nombre_categoria": self.nombre_categoria,
-                "usuario_activo": self.usuario_activo
+                "usuario_activo": self.usuario_activo,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -744,14 +802,16 @@ class MovimientoAgregarCategoriaThread(QThread):
 # borrar categoria
 class BuscarCategoriaThread(QThread):
     resultado = Signal(bool)
-    def __init__(self, nombre_categoria):
+    def __init__(self, id_usuario_perfil, nombre_categoria):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.nombre_categoria = nombre_categoria
+
     def run(self):
         
         try:
             url = f"{API_URL}/api/buscar_categoria"
-            payload = {"nombre_categoria": self.nombre_categoria}
+            payload = {"nombre_categoria": self.nombre_categoria, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -766,8 +826,9 @@ class BuscarCategoriaThread(QThread):
 
 
 class MovimientoCategoriaBorradaThread(QThread):
-    def __init__(self, nombre_categoria, id_categoria, usuario_activo):
+    def __init__(self, id_usuario_perfil, nombre_categoria, id_categoria, usuario_activo):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.nombre_categoria = nombre_categoria
         self.id_categoria = id_categoria
         self.usuario_activo = usuario_activo
@@ -778,7 +839,8 @@ class MovimientoCategoriaBorradaThread(QThread):
             payload = {
                 "nombre_categoria": self.nombre_categoria,
                 "id_categoria": self.id_categoria,
-                "usuario_activo": self.usuario_activo
+                "usuario_activo": self.usuario_activo,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -791,14 +853,16 @@ class MovimientoCategoriaBorradaThread(QThread):
 # borrar datos
 
 class CargarMovimientosThread(QThread):
-    def __init__(self, usuario_activo):
+    def __init__(self, usuario_activo, id_usuario_perfil):
         super().__init__()
         self.usuario_activo = usuario_activo
+        self.id_usuario_perfil = id_usuario_perfil
+
     def run(self):
         
         try:
             url = f"{API_URL}/api/cargar_movimientos_datos_borrados"
-            payload = {"usuario_activo": self.usuario_activo}
+            payload = {"usuario_activo": self.usuario_activo, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 pass
@@ -809,13 +873,14 @@ class CargarMovimientosThread(QThread):
 
 class ClearDataThread(QThread):
     finished = Signal()
-    def __init__(self, borrar_categorias, borrar_ventas_compras, borrar_proveedores, borrar_usuarios, borrar_movimientos):
+    def __init__(self, borrar_categorias, borrar_ventas_compras, borrar_proveedores, borrar_usuarios, borrar_movimientos, id_usuario_perfil):
         super().__init__()
         self.borrar_categorias = borrar_categorias
         self.borrar_ventas_compras = borrar_ventas_compras
         self.borrar_proveedores = borrar_proveedores
         self.borrar_usuarios = borrar_usuarios
         self.borrar_movimientos = borrar_movimientos
+        self.id_usuario_perfil = id_usuario_perfil
     def run(self):
         
         try:
@@ -825,7 +890,8 @@ class ClearDataThread(QThread):
                 "borrar_ventas_compras": self.borrar_ventas_compras,
                 "borrar_proveedores": self.borrar_proveedores,
                 "borrar_usuarios": self.borrar_usuarios,
-                "borrar_movimientos": self.borrar_movimientos
+                "borrar_movimientos": self.borrar_movimientos,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -843,8 +909,9 @@ class ClearDataThread(QThread):
 
 class AgregarRegistroUsuarioThread(QThread):
     resultado = Signal(bool)
-    def __init__(self, rol, usuario, password, email):
+    def __init__(self, id_usuario_perfil, rol, usuario, password, email):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.rol = rol
         self.usuario = usuario
         self.password = password
@@ -857,7 +924,8 @@ class AgregarRegistroUsuarioThread(QThread):
                 "rol": self.rol,
                 "usuario": self.usuario,
                 "password": self.password,
-                "email": self.email
+                "email": self.email,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -873,8 +941,9 @@ class AgregarRegistroUsuarioThread(QThread):
 
 
 class CargarMovimientoAgregarUsuarioThread(QThread):
-    def __init__(self, usuario, usuario_activo):
+    def __init__(self, id_usuario_perfil, usuario, usuario_activo):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.usuario = usuario
         self.usuario_activo = usuario_activo
     def run(self):
@@ -883,7 +952,8 @@ class CargarMovimientoAgregarUsuarioThread(QThread):
             url = f"{API_URL}/api/movimiento_agregar_usuario"
             payload = {
                 "usuario": self.usuario,
-                "usuario_activo": self.usuario_activo
+                "usuario_activo": self.usuario_activo,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -895,13 +965,16 @@ class CargarMovimientoAgregarUsuarioThread(QThread):
 
 class TraerTodosLosUsuariosThread(QThread):
     resultado = Signal(list)
-    def __init__(self):
+    def __init__(self, id_usuario_perfil):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
+
     def run(self):
         
         try:
             url = f"{API_URL}/api/traer_todos_los_usuarios"
-            response = requests.get(url)
+            payload = {"id_usuario_perfil": self.id_usuario_perfil}
+            response = requests.get(url, params=payload)
             if response.status_code == 200:
                 data = response.json()
                 usuarios = data.get("usuarios", [])
@@ -917,8 +990,9 @@ class TraerTodosLosUsuariosThread(QThread):
 
 class ActualizarUsuarioThread(QThread):
     resultado = Signal(bool)
-    def __init__(self, id_usuario, rol, mail, password):
+    def __init__(self, id_usuario_perfil, id_usuario, rol, mail, password):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.id_usuario = id_usuario
         self.rol = rol
         self.mail = mail
@@ -931,7 +1005,8 @@ class ActualizarUsuarioThread(QThread):
                 "id_usuario": self.id_usuario,
                 "rol": self.rol,
                 "mail": self.mail,
-                "password": self.password
+                "password": self.password,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -946,8 +1021,9 @@ class ActualizarUsuarioThread(QThread):
             self.resultado.emit(False)
 
 class CargarMovimientoEditarUsuarioThread(QThread):
-    def __init__(self, id_usuario, nombre_usuario, usuario_activo):
+    def __init__(self, id_usuario_perfil, id_usuario, nombre_usuario, usuario_activo):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.id_usuario = id_usuario
         self.nombre_usuario = nombre_usuario
         self.usuario_activo = usuario_activo
@@ -958,7 +1034,8 @@ class CargarMovimientoEditarUsuarioThread(QThread):
             payload = {
                 "id_usuario": self.id_usuario,
                 "nombre_usuario": self.nombre_usuario,
-                "usuario_activo": self.usuario_activo
+                "usuario_activo": self.usuario_activo,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -995,15 +1072,16 @@ class TraerIdUsuarioThread(QThread):
 # Hilo para borrar el usuario
 class BorrarUsuarioThread(QThread):
     resultado = Signal(bool)
-    def __init__(self, nombre_usuario):
+    def __init__(self, id_usuario_perfil, nombre_usuario):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.nombre_usuario = nombre_usuario
 
     def run(self):
         
         try:
             url = f"{API_URL}/api/borrar_usuario"
-            payload = {"nombre_usuario": self.nombre_usuario}
+            payload = {"nombre_usuario": self.nombre_usuario, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -1021,8 +1099,9 @@ class BorrarUsuarioThread(QThread):
 # Hilo para cargar el movimiento de usuario borrado
 class MovimientoUsuarioBorradoThread(QThread):
     finished = Signal(object)
-    def __init__(self, nombre_usuario, id_usuario, usuario_activo):
+    def __init__(self, id_usuario_perfil, nombre_usuario, id_usuario, usuario_activo):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.nombre_usuario = nombre_usuario
         self.id_usuario = id_usuario
         self.usuario_activo = usuario_activo
@@ -1034,7 +1113,8 @@ class MovimientoUsuarioBorradoThread(QThread):
             payload = {
                 "nombre_usuario": self.nombre_usuario,
                 "id_usuario": self.id_usuario,
-                "usuario_activo": self.usuario_activo
+                "usuario_activo": self.usuario_activo,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -1127,12 +1207,17 @@ class MovimientosPorAccionThread(QThread):
 
 class TraerTodosLosMetodosPagoThread(QThread):
     resultado = Signal(list)
-    
+
+    def __init__(self, id_usuario_perfil):
+        super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
+
     def run(self):
         
         try:
             url = f"{API_URL}/api/traer_todos_metodos_pago"
-            response = requests.get(url)
+            payload = {"id_usuario_perfil": self.id_usuario_perfil}
+            response = requests.get(url, params=payload)
             if response.status_code == 200:
                 data = response.json()
                 metodos = data.get("metodos_pago", [])
@@ -1810,11 +1895,17 @@ class TraerGananciasAnoActualThread(QThread):
 
 class TraerMetodosPagoYSuIdThread(QThread):
     resultado = Signal(list)
+
+    def __init__(self, id_usuario_perfil):
+        super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
+
     def run(self):
         import requests
         try:
             url = f"{API_URL}/api/traer_metodos_pago_y_su_id"
-            response = requests.get(url)
+            payload = {"id_usuario_perfil": self.id_usuario_perfil}
+            response = requests.get(url, params=payload)
             if response.status_code == 200:
                 data = response.json()
                 metodos = data.get("metodos_pago", [])
@@ -2062,14 +2153,16 @@ class TraerDatosPorMetodoYDiaSemanaThread(QThread):
 class VerificarYAgregarMPThread(QThread):
     finished = Signal()
 
-    def __init__(self):
+    def __init__(self, id_usuario_perfil):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
 
     def run(self):
         import requests
         try:
             url_verificar = f"{API_URL}/api/verificar_existencia_de_mp"
-            response = requests.get(url_verificar)
+            payload = {"id_usuario_perfil": self.id_usuario_perfil}
+            response = requests.get(url_verificar, params=payload)
             existe = False
             if response.status_code == 200:
                 data = response.json()
@@ -2079,7 +2172,7 @@ class VerificarYAgregarMPThread(QThread):
 
             if not existe:
                 url_agregar = f"{API_URL}/api/agregar_mp_default"
-                response_agregar = requests.post(url_agregar)
+                response_agregar = requests.post(url_agregar, json=payload)
                 if response_agregar.status_code != 200:
                     print(f"Error al agregar MP default: {response_agregar.text}")
 
@@ -2318,12 +2411,17 @@ class MovimientoBorrarMetodoPagoThread(QThread):
 
 class TraerUltimoTextoAnotadorThread(QThread):
     resultado = Signal(str)  # Emite el texto obtenido
-    
+
+    def __init__(self, id_usuario_perfil):
+       super().__init__()
+       self.id_usuario_perfil = id_usuario_perfil
+
     def run(self):
         import requests
         try:
             url = f"{API_URL}/api/traer_ultimo_texto_anotador"
-            response = requests.get(url)
+            payload = {"id_usuario_perfil": self.id_usuario_perfil}
+            response = requests.get(url, params=payload)
             if response.status_code == 200:
                 data = response.json()
                 ultimo_texto = data.get("ultimo_texto", "")
@@ -2338,15 +2436,16 @@ class TraerUltimoTextoAnotadorThread(QThread):
 class SetTextoAnotadorThread(QThread):
     resultado = Signal(bool)  # Emite True si se estableció correctamente
 
-    def __init__(self, usuario):
+    def __init__(self, id_usuario_perfil, usuario):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.usuario = usuario
 
     def run(self):
         import requests
         try:
             url = f"{API_URL}/api/set_texto_principal_anotador"
-            payload = {"usuario": self.usuario}
+            payload = {"usuario": self.usuario, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -2362,16 +2461,17 @@ class SetTextoAnotadorThread(QThread):
 class GuardarAlCerrarThread(QThread):
     resultado = Signal(bool)  # Señal para indicar si se guardó correctamente
 
-    def __init__(self, texto, usuario):
+    def __init__(self, texto, usuario, id_usuario_perfil):
         super().__init__()
         self.texto = texto
         self.usuario = usuario
+        self.id_usuario_perfil = id_usuario_perfil
 
     def run(self):
         import requests
         try:
             url = f"{API_URL}/api/guardar_texto_anotador"
-            payload = {"texto": self.texto, "usuario": self.usuario}
+            payload = {"texto": self.texto, "usuario": self.usuario, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -2415,11 +2515,17 @@ class MovimientoLoginThread(QThread):
 
 class TraerAnios(QThread):
     resultado = Signal(list)
+
+    def __init__(self, id_usuario_perfil):
+        super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
+
     def run(self):
         import requests
         try:
             url = f"{API_URL}/api/traer_anios_con_datos"
-            response = requests.get(url)
+            payload = {"id_usuario_perfil": self.id_usuario_perfil}
+            response = requests.get(url, params=payload)
             if response.status_code == 200:
                 data = response.json()
                 anios = data.get("anios", [])

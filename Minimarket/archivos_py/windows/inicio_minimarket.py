@@ -50,8 +50,9 @@ eye_visible_path = os.path.join(BASE_DIR, "archivos_py", "resources", "eye_visib
 
 #------------------------------------------------------ 
 class DatosTab:
-    def __init__(self, ui):
+    def __init__(self, ui, id_usuario_perfil):
         self.ui = ui
+        self.id_usuario_perfil = id_usuario_perfil
         self.button19_connected = False
         self.button34_connected = False
         self.button_agregar = False
@@ -71,7 +72,7 @@ class DatosTab:
         self._actualizar_usuario_en_proceso = False
 
         if not self.mp_verificados:
-            self.verificar_mp_thread = VerificarYAgregarMPThread()
+            self.verificar_mp_thread = VerificarYAgregarMPThread(self.id_usuario_perfil)
             def on_mp_verificado():
     
                 self.mp_verificados = True
@@ -201,7 +202,7 @@ class DatosTab:
         global categorias_por_nombre_cache, usuarios_por_nombre_cache, metodos_pago_por_id_cache, metodos_pago_cache
         global anios_obtenidos
         
-        self.anios_thread = TraerAnios()
+        self.anios_thread = TraerAnios(self.id_usuario_perfil)
         def on_anios_obtenidos(anios):
             global anios_obtenidos
             anio_actual = datetime.now().year
@@ -253,7 +254,7 @@ class DatosTab:
                         callback()
 
             # obetener todos los metodos de pago al iniciar
-            self.metodos_pago_thread = TraerMetodosPagoYSuIdThread()
+            self.metodos_pago_thread = TraerMetodosPagoYSuIdThread(self.id_usuario_perfil)
             def on_metodos_obtenidos(metodos):
                 global metodos_pago_cache, metodos_pago_por_id_cache
                 
@@ -267,7 +268,7 @@ class DatosTab:
             self.start_thread(self.metodos_pago_thread)
            
             # Obtener todas las categorías y asignarlas a la variable global 'categorias'
-            self.categorias_thread = CategoriasThread()
+            self.categorias_thread = CategoriasThread(self.id_usuario_perfil)
             def on_categorias_obtenidas(cats):
                 global categorias, categorias_por_nombre_cache
                 categorias = cats
@@ -279,7 +280,7 @@ class DatosTab:
             self.start_thread(self.categorias_thread)
         
             # Obtener todos los proveedores y asignarlos a la variable global 'proveedores'
-            self.proveedores_thread = ProveedoresThread()
+            self.proveedores_thread = ProveedoresThread(self.id_usuario_perfil)
             def on_proveedores_obtenidos(provs):
                 global proveedores, proveedores_por_nombre_cache, proveedores_por_telefono_cache
                 proveedores = provs
@@ -292,7 +293,7 @@ class DatosTab:
             self.start_thread(self.proveedores_thread)
         
             # Obtener todos los productos y asignarlos a la variable global 'productos'
-            self.productos_thread = TraerTodosLosProductosThread()
+            self.productos_thread = TraerTodosLosProductosThread(self.id_usuario_perfil)
             def on_productos_obtenidos(productos_obtenidos):
                 global productos, productos_por_id_cache, productos_por_nombre_cache
                 productos = productos_obtenidos
@@ -305,7 +306,7 @@ class DatosTab:
             self.start_thread(self.productos_thread)
 
             # obtener todos los usuarios
-            self.usuarios_thread = TraerTodosLosUsuariosThread()
+            self.usuarios_thread = TraerTodosLosUsuariosThread(self.id_usuario_perfil)
             def on_usuarios_obtenidos(usuarios_obtenidos):
                 global usuarios, usuarios_por_nombre_cache
                 usuarios = usuarios_obtenidos
@@ -319,7 +320,7 @@ class DatosTab:
         else:
             if r == 1:
                 # Obtener todas las categorías y asignarlas a la variable global 'categorias'
-                self.categorias_thread = CategoriasThread()
+                self.categorias_thread = CategoriasThread(self.id_usuario_perfil)
                 def on_categorias_obtenidas(cats):
                     global categorias, categorias_cache, categorias_por_nombre_cache
                     categorias = cats
@@ -332,7 +333,7 @@ class DatosTab:
                 self.start_thread(self.categorias_thread)
             elif r == 2:
                 # Obtener todos los proveedores y asignarlos a la variable global 'proveedores'
-                self.proveedores_thread = ProveedoresThread()
+                self.proveedores_thread = ProveedoresThread(self.id_usuario_perfil)
                 def on_proveedores_obtenidos(provs):
                     global proveedores, proveedores_cache, proveedores_por_nombre_cache, proveedores_por_telefono_cache
                     proveedores = provs
@@ -346,7 +347,7 @@ class DatosTab:
                 self.start_thread(self.proveedores_thread)
             elif r == 3:
                 # Obtener todos los productos y asignarlos a la variable global 'productos'
-                self.productos_thread = TraerTodosLosProductosThread()
+                self.productos_thread = TraerTodosLosProductosThread(self.id_usuario_perfil)
                 def on_productos_obtenidos(productos_obtenidos):
                     global productos, productos_cache, productos_por_id_cache, productos_por_nombre_cache
                     productos = productos_obtenidos
@@ -360,7 +361,7 @@ class DatosTab:
                 self.start_thread(self.productos_thread)
             elif r == 4:
                  # obtener todos los usuarios
-                self.usuarios_thread = TraerTodosLosUsuariosThread()
+                self.usuarios_thread = TraerTodosLosUsuariosThread(self.id_usuario_perfil)
                 def on_usuarios_obtenidos(usuarios_obtenidos):
                     global usuarios, usuarios_por_nombre_cache
                     usuarios = usuarios_obtenidos
@@ -373,7 +374,7 @@ class DatosTab:
 
             elif r == 5:
                 # Obtener todos los métodos de pago y asignarlos a la variable global 'metodos_pago'
-                self.metodos_pago_thread = TraerTodosLosMetodosPagoThread()
+                self.metodos_pago_thread = TraerTodosLosMetodosPagoThread(self.id_usuario_perfil)
                 def on_metodos_pago_obtenidos(metodos_obtenidos):
                     global metodos_pago, metodos_pago_cache, metodos_pago_por_id_cache
                     metodos_pago = metodos_obtenidos
@@ -391,7 +392,7 @@ class DatosTab:
 
     # AGREGAR PRODUCTOS
 
-    def ventana_agregar_productos(self):
+    def ventana_agregar_productos(self): 
         #BOTONES de la ventana agregar productos
 
         button19 = self.ui.frame_5.findChild(QPushButton, "pushButton_19")
@@ -536,7 +537,7 @@ class DatosTab:
                 label_71.setStyleSheet("color: green; font-weight: bold")
 
             # Lanzar el thread para agregar producto
-            self.agregar_thread = AgregarProductoThread(
+            self.agregar_thread = AgregarProductoThread(self.id_usuario_perfil,
                 input_id_value, input_nombre_value, input_precio_compra_value, input_precio_venta_value,
                 input_stock_value, input_stock_ideal_value, input_categoria_value, input_proveedor_value
             )
@@ -586,7 +587,7 @@ class DatosTab:
         if exito:
             
             # Usar hilo para cargar el movimiento
-            self.movimiento_thread = MovimientoProductoThread(input_id_value, usuario_activo)
+            self.movimiento_thread = MovimientoProductoThread(self.id_usuario_perfil, input_id_value, usuario_activo)
             self.start_thread(self.movimiento_thread)
     
             # Limpiar solo el cache de productos antes de actualizar
@@ -791,7 +792,7 @@ class DatosTab:
             
         self._borrar_nombre = nombre_producto
         # Cuando tenemos ambos datos, lanzar el hilo de borrado
-        self.borrar_thread = BorrarProductoThread(self._borrar_valor)
+        self.borrar_thread = BorrarProductoThread(self.id_usuario_perfil, self._borrar_valor)
         self.borrar_thread.resultado.connect(self._on_borrado_result)
         self.start_thread(self.borrar_thread)
 
@@ -799,7 +800,7 @@ class DatosTab:
         if exito:
             self._borrar_producto = False
             # Lanzar hilo de movimiento
-            self.movimiento_thread = MovimientoProductoBorrarThread(self._borrar_id, self._borrar_nombre, usuario_activo)
+            self.movimiento_thread = MovimientoProductoBorrarThread(self.id_usuario_perfil, self._borrar_id, self._borrar_nombre, usuario_activo)
             self.movimiento_thread.movimiento_borrado.connect(self.on_producto_borrado)
             self.start_thread(self.movimiento_thread)
         else:
@@ -973,10 +974,10 @@ class DatosTab:
         combobox_22_value = combobox_22.currentText()
 
         if combobox_21_value == "Categoría":
-            self.bajar_thread = BajarPreciosCategoriaThread(doublespinbox_value_3, doublespinbox_value_4, combobox_22_value)
+            self.bajar_thread = BajarPreciosCategoriaThread(self.id_usuario_perfil, doublespinbox_value_3, doublespinbox_value_4, combobox_22_value)
             s = True
         else:
-            self.bajar_thread = BajarPreciosProveedorThread(doublespinbox_value_3, doublespinbox_value_4, combobox_22_value)
+            self.bajar_thread = BajarPreciosProveedorThread(self.id_usuario_perfil, doublespinbox_value_3, doublespinbox_value_4, combobox_22_value)
             s = False
 
         def on_bajar_finalizado():
@@ -997,7 +998,7 @@ class DatosTab:
             
                 ))
                 
-                self.movimiento_thread = MovimientoBajarPreciosThread(combobox_22_value, usuario_activo, s)
+                self.movimiento_thread = MovimientoBajarPreciosThread(self.id_usuario_perfil, combobox_22_value, usuario_activo, s)
                 self.movimiento_thread.finished.connect(lambda: (self.load_product_data(), self.clear_doublespinbox_values(), pushbutton_49.setEnabled(True), boton_editar.setEnabled(True), boton_cancelar.setEnabled(True), push_button_42.setEnabled(True)))
                 self.start_thread(self.movimiento_thread)
 
@@ -1099,10 +1100,10 @@ class DatosTab:
         combobox_20_value = combobox_20.currentText()
 
         if combobox_19_value == "Categoría":
-            self.aumentar_thread = AumentarPreciosCategoriaThread(doublespinbox_value, doublespinbox_2_value, combobox_20_value)
+            self.aumentar_thread = AumentarPreciosCategoriaThread(self.id_usuario_perfil, doublespinbox_value, doublespinbox_2_value, combobox_20_value)
             s = True
         else:
-            self.aumentar_thread = AumentarPreciosProveedorThread(doublespinbox_value, doublespinbox_2_value, combobox_20_value)
+            self.aumentar_thread = AumentarPreciosProveedorThread(self.id_usuario_perfil, doublespinbox_value, doublespinbox_2_value, combobox_20_value)
             s = False
 
         def on_aumento_finalizado():
@@ -1122,7 +1123,7 @@ class DatosTab:
             
                 ))
                 
-                self.movimiento_thread = MovimientoAumentoPreciosThread(combobox_20_value, usuario_activo, s)
+                self.movimiento_thread = MovimientoAumentoPreciosThread(self.id_usuario_perfil, combobox_20_value, usuario_activo, s)
                 self.movimiento_thread.finished.connect(lambda: (self.load_product_data(), self.clear_doublespinbox_values(), pushbutton_49.setEnabled(True), boton_editar.setEnabled(True), boton_cancelar.setEnabled(True), push_button_42.setEnabled(True)))
                 self.start_thread(self.movimiento_thread)
 
@@ -1219,14 +1220,14 @@ class DatosTab:
 
     def edit_product(self, id, nombre_prod, precio_compra, precio_venta, stock, stock_ideal, categoria, proveedor):
         
-        self.actualizar_thread = ActualizarProductoThread(
+        self.actualizar_thread = ActualizarProductoThread(self.id_usuario_perfil,
             id, nombre_prod, precio_compra, precio_venta, stock, stock_ideal, categoria, proveedor
         )
         self.actualizar_thread.finished.connect(self.on_producto_actualizado)
         self.start_thread(self.actualizar_thread)
 
         # Usar hilo para cargar movimiento editado
-        self.movimiento_producto_editado_thread = MovimientoProductoEditadoThread(id, usuario_activo)
+        self.movimiento_producto_editado_thread = MovimientoProductoEditadoThread(self.id_usuario_perfil, id, usuario_activo)
         self.start_thread(self.movimiento_producto_editado_thread)
 
     def on_producto_actualizado(self):
@@ -1745,7 +1746,7 @@ class DatosTab:
                     label_75.setText("Cargando Proveedor...")
                    
                     
-                    self.proveedor_thread = ProveedorThread(lineEdit_14_value, lineEdit_15_value, lineEdit_17_value)
+                    self.proveedor_thread = ProveedorThread(self.id_usuario_perfil, lineEdit_14_value, lineEdit_15_value, lineEdit_17_value)
                     self.proveedor_thread.proveedor_cargado.connect(lambda exito: self.on_proveedor_cargado(exito, lineEdit_14_value))
                     self.start_thread(self.proveedor_thread)
                 else:
@@ -1769,7 +1770,7 @@ class DatosTab:
     def on_proveedor_cargado(self, exito, nombre_proveedor):
         global usuario_activo
         if exito:
-            self.movimiento_proveedor_thread = MovimientoProveedorThread(nombre_proveedor, usuario_activo)
+            self.movimiento_proveedor_thread = MovimientoProveedorThread(self.id_usuario_perfil, nombre_proveedor, usuario_activo)
             self.start_thread(self.movimiento_proveedor_thread)
             #limpia inputs
             self.clear_inputs_agregar_proveedores()
@@ -1877,11 +1878,11 @@ class DatosTab:
             def on_id_obtenido(id_proveedor):
                 if id_proveedor:
                     # 2. Buscar en la base (puede tener lógica extra)
-                    self.buscar_prov_thread = BuscarProveedorThread(input_nombre_value)
+                    self.buscar_prov_thread = BuscarProveedorThread(self.id_usuario_perfil, input_nombre_value)
                     def on_busqueda_finalizada(bandera):
                         if bandera:
                             # 3. Cargar movimiento en hilo SOLO cuando ya tenemos el id_proveedor
-                            self.movimiento_borrado_thread = MovimientoProveedorBorradoThread(input_nombre_value, id_proveedor, usuario_activo)
+                            self.movimiento_borrado_thread = MovimientoProveedorBorradoThread(self.id_usuario_perfil, input_nombre_value, id_proveedor, usuario_activo)
                             self.start_thread(self.movimiento_borrado_thread)
     
                             # actualizar cache, tablas y comboboxes
@@ -1936,7 +1937,7 @@ class DatosTab:
                     if input_nombre:
                         input_nombre.setFocus()
     
-            self.traer_id_thread = TraerIdProveedorThread(input_nombre_value)
+            self.traer_id_thread = TraerIdProveedorThread(self.id_usuario_perfil ,input_nombre_value)
             self.traer_id_thread.resultado.connect(on_id_obtenido)
             self.start_thread(self.traer_id_thread)
         else:
@@ -2014,13 +2015,13 @@ class DatosTab:
                     label_76.setStyleSheet("color: green; font-weight: bold")
                     label_76.setText("Actualizando")
 
-                self.actualizar_prov_thread = ActualizarProveedorThread(comboBox_value, lineEdit_28_value, lineEdit_26_value)
+                self.actualizar_prov_thread = ActualizarProveedorThread(self.id_usuario_perfil, comboBox_value, lineEdit_28_value, lineEdit_26_value)
                 def on_actualizado(exito):
                     button_38 = self.ui.frame_13.findChild(QPushButton, "pushButton_38")
                     button_37 = self.ui.frame_13.findChild(QPushButton, "pushButton_37")
 
                     if exito:
-                        self.movimiento_proveedor_editado_thread = MovimientoProveedorEditadoThread(comboBox_value, usuario_activo)
+                        self.movimiento_proveedor_editado_thread = MovimientoProveedorEditadoThread(self.id_usuario_perfil, comboBox_value, usuario_activo)
                         self.start_thread(self.movimiento_proveedor_editado_thread)
 
                         if label_76:
@@ -2344,7 +2345,7 @@ class DatosTab:
                 label_80.setStyleSheet("color: green; font-weight: bold")
                 label_80.setText("Cargando categoría...")
 
-            self.cargar_categoria_thread = CargarCategoriaThread(lineEdit_16_value)
+            self.cargar_categoria_thread = CargarCategoriaThread(self.id_usuario_perfil, lineEdit_16_value)
             def on_categoria_cargada(exito):
 
                 if exito:
@@ -2357,7 +2358,7 @@ class DatosTab:
                         QTimer.singleShot(6000, lambda: label_80.setStyleSheet("color: transparent"))
 
                     # Hilo para cargar movimiento
-                    self.movimiento_categoria_thread = MovimientoAgregarCategoriaThread(lineEdit_16_value, usuario_activo)
+                    self.movimiento_categoria_thread = MovimientoAgregarCategoriaThread(self.id_usuario_perfil, lineEdit_16_value, usuario_activo)
                     self.start_thread(self.movimiento_categoria_thread)
 
                     # actualziar variables globales de uso
@@ -2487,13 +2488,13 @@ class DatosTab:
                 label_81.setStyleSheet("color: green; font-weight: bold")
 
             # Buscar la categoría en un hilo
-            self.buscar_categoria_thread = BuscarCategoriaThread(lineEdit_21_value)
+            self.buscar_categoria_thread = BuscarCategoriaThread(self.id_usuario_perfil, lineEdit_21_value)
             def on_busqueda_finalizada(existe):
                 if existe:
                     self._borrar_categoria_en_proceso = False
                 
                     # Cargar movimiento en hilo
-                    self.movimiento_categoria_thread = MovimientoCategoriaBorradaThread(lineEdit_21_value, id_categoria, usuario_activo)
+                    self.movimiento_categoria_thread = MovimientoCategoriaBorradaThread(self.id_usuario_perfil, lineEdit_21_value, id_categoria, usuario_activo)
                     self.start_thread(self.movimiento_categoria_thread)
     
                     # Limpiar cache de categorías
@@ -2819,7 +2820,7 @@ class DatosTab:
                         label_96.setStyleSheet("color: green; font-weight: bold")
                         label_90.setStyleSheet("color: green; font-weight: bold")
 
-                    self.registro_thread = AgregarRegistroUsuarioThread(value_combobox_14, value_line_edit_23, value_line_edit_24, value_line_edit)
+                    self.registro_thread = AgregarRegistroUsuarioThread(self.id_usuario_perfil, value_combobox_14, value_line_edit_23, value_line_edit_24, value_line_edit)
                     def on_registro_finalizado(exito):
                         if exito:
                             #controla para que no s eejecute dos veces
@@ -2828,7 +2829,7 @@ class DatosTab:
                             label_90 = self.ui.frame_29.findChild(QLabel, "label_90")
                             label_96 = self.ui.frame_29.findChild(QLabel, "label_96")
 
-                            self.movimiento_thread = CargarMovimientoAgregarUsuarioThread(value_line_edit_23, usuario_activo)
+                            self.movimiento_thread = CargarMovimientoAgregarUsuarioThread(self.id_usuario_perfil, value_line_edit_23, usuario_activo)
                             self.start_thread(self.movimiento_thread)
                             self.clear_inputs_agregar_usuario()
                             combobox_16 = self.ui.frame_45.findChild(QComboBox, "comboBox_16")
@@ -3082,12 +3083,12 @@ class DatosTab:
             label_98.setStyleSheet("color: green; font-weight: bold")
             label_93.setStyleSheet("color: green; font-weight: bold")
 
-        self.actualizar_usuario_thread = ActualizarUsuarioThread(
+        self.actualizar_usuario_thread = ActualizarUsuarioThread(self.id_usuario_perfil,
             usuario_selecc[0][0], value_combobox_15, value_line_edit_25, value_line_edit_22
         )
         def on_actualizado(s):
             if s:
-                self.movimiento_thread = CargarMovimientoEditarUsuarioThread(
+                self.movimiento_thread = CargarMovimientoEditarUsuarioThread(self.id_usuario_perfil,
                     usuario_selecc[0][0], value_combobox_16, usuario_activo
                 )
                 self.start_thread(self.movimiento_thread)
@@ -3195,11 +3196,11 @@ class DatosTab:
             label_95.setStyleSheet("color: green; font-weight: bold")
 
             # Hilo para borrar el usuario
-            self.borrar_usuario_thread = BorrarUsuarioThread(value_line_edit_29)
+            self.borrar_usuario_thread = BorrarUsuarioThread(self.id_usuario_perfil, value_line_edit_29)
             def on_usuario_borrado(exito):
                 if exito:
                     # Hilo para cargar el movimiento de usuario borrado
-                    self.movimiento_usuario_borrado_thread = MovimientoUsuarioBorradoThread(value_line_edit_29, id_usuario, usuario_activo)
+                    self.movimiento_usuario_borrado_thread = MovimientoUsuarioBorradoThread(self.id_usuario_perfil, value_line_edit_29, id_usuario, usuario_activo)
                     self.start_thread(self.movimiento_usuario_borrado_thread)
 
                     self._borrar_usuario_en_proceso = False
@@ -7109,15 +7110,16 @@ class AdministracionTab:
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, usuario, account):
+    def __init__(self, id_usuario_perfil, usuario, account):
         super(MainWindow, self).__init__()
         self.session_manager = SessionManager()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.save_timer = QTimer()  # Inicializar el temporizador
         self.save_timer.setSingleShot(True)  # Asegurarse de que solo se ejecute una vez por evento
-        self.usuario = usuario # trae el usuario que inciio sesion
-        self.account = account # trae el tipo de cuenta que tiene el usuario
+        self.usuario = usuario # trae el usuario que inciio sesion EN EL PROGRAMA
+        self.account = account # trae el tipo de cuenta que tiene el usuario DEL PROGRAMA
+        self.id_usuario_perfil = id_usuario_perfil  # UID del usuario WEB
         self.setMinimumSize(1180, 800)
 
         global usuario_activo
@@ -7218,9 +7220,9 @@ class MainWindow(QMainWindow):
                 tab_widget.setTabText(tab_widget.indexOf(self.ui.tab), "Administración")
 
         # Crear instancias de las clases de las pestañas
-        self.datos_tab = DatosTab(self.ui)
-        self.buscar_datos_tab = BuscarDatosTab(self.ui, self.datos_tab, self)
-        self.administracion_tab = AdministracionTab(self.ui, self.buscar_datos_tab, self.datos_tab)
+        self.datos_tab = DatosTab(self.ui, self.id_usuario_perfil)
+        self.buscar_datos_tab = BuscarDatosTab(self.ui, self.datos_tab, self, self.id_usuario_perfil)
+        self.administracion_tab = AdministracionTab(self.ui, self.buscar_datos_tab, self.datos_tab, self.id_usuario_perfil)
 
         # Cerrar factureros al cambiar a la pestaña "Datos"
         tab_widget = self.ui.tabWidget
@@ -7274,19 +7276,19 @@ class MainWindow(QMainWindow):
         if textEdit_3:
 
             # Usar hilo para traer el último texto
-            self.traer_texto_thread = TraerUltimoTextoAnotadorThread()
+            self.traer_texto_thread = TraerUltimoTextoAnotadorThread(self.id_usuario_perfil)
 
             def on_texto_obtenido(ultimo_texto):
                 if ultimo_texto:
                     textEdit_3.setPlainText(ultimo_texto)
                 else:
                     # Si no hay texto, establecer texto principal usando hilo
-                    self.set_texto_thread = SetTextoAnotadorThread(usuario)
+                    self.set_texto_thread = SetTextoAnotadorThread(self.id_usuario_perfil, usuario)
 
                     def on_texto_establecido(exito):
                         if exito:
                             # Traer el texto nuevamente después de establecerlo
-                            self.traer_texto_final_thread = TraerUltimoTextoAnotadorThread()
+                            self.traer_texto_final_thread = TraerUltimoTextoAnotadorThread(self.id_usuario_perfil)
                             self.traer_texto_final_thread.resultado.connect(
                                 lambda texto_final: textEdit_3.setPlainText(texto_final)
                             )
@@ -7307,7 +7309,7 @@ class MainWindow(QMainWindow):
         texto = textEdit.toPlainText()
         try:
             # Crear y ejecutar el hilo de guardado
-            self.guardar_cerrar_thread = GuardarAlCerrarThread(texto, usuario)
+            self.guardar_cerrar_thread = GuardarAlCerrarThread(texto, usuario, self.id_usuario_perfil)
             self.start_thread(self.guardar_cerrar_thread)
         except Exception as e:
             print(f"Error al guardar: {e}")
@@ -7335,7 +7337,7 @@ class MainWindow(QMainWindow):
         texto = textEdit.toPlainText()
 
         # Crear y ejecutar el hilo de guardado
-        self.guardar_cerrar_thread = GuardarAlCerrarThread(texto, usuario)
+        self.guardar_cerrar_thread = GuardarAlCerrarThread(texto, usuario, self.id_usuario_perfil)
 
         def on_guardado_completado(exito):
             if not exito:
@@ -7581,7 +7583,7 @@ class MainWindow(QMainWindow):
         if borrar_categorias and borrar_ventas_compras and borrar_proveedores and borrar_usuarios and borrar_movimientos:
             if self.show_confirmation_dialog():
                 # Ejecutar ambos hilos y mostrar mensaje cuando ambos terminen
-                self.clear_thread = ClearDataThread(borrar_categorias, borrar_ventas_compras, borrar_proveedores, borrar_usuarios, borrar_movimientos)
+                self.clear_thread = ClearDataThread(borrar_categorias, borrar_ventas_compras, borrar_proveedores, borrar_usuarios, borrar_movimientos, self.id_usuario_perfil)
                 self._clear_done = False  # bandera interna
                 def on_clear_finished():
                     if self._clear_done:
@@ -7592,7 +7594,7 @@ class MainWindow(QMainWindow):
                     
                 self.clear_thread.finished.connect(on_clear_finished)
                 self.start_thread(self.clear_thread)
-                self.mov_thread = CargarMovimientosThread(usuario_activo)
+                self.mov_thread = CargarMovimientosThread(usuario_activo, self.id_usuario_perfil)
                 self.start_thread(self.mov_thread)
 
 
