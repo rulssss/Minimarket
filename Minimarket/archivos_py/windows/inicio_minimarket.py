@@ -3261,10 +3261,11 @@ class DatosTab:
 ################
 
 class BuscarDatosTab:
-    def __init__(self, ui, datos_tab, main_window):
+    def __init__(self, ui, datos_tab, main_window, id_usuario_perfil):
         self.ui = ui
         self.datos_tab = datos_tab
         self.main_window = main_window
+        self.id_usuario_perfil = id_usuario_perfil
         #crear arreglo con threads abiertos
         self.threads = []
 
@@ -3352,7 +3353,7 @@ class BuscarDatosTab:
     
         self.main_window.close()
         from archivos_py.windows.inicio_login import Inicio
-        self.inicio_window = Inicio()
+        self.inicio_window = Inicio(self.id_usuario_perfil)
         self.inicio_window.show()
 
 
@@ -3466,14 +3467,14 @@ class BuscarDatosTab:
         if filtro == "Usuario" and combobox_18:
             usuario_seleccionado = combobox_18.currentText()
             if usuario_seleccionado:
-                self.mov_thread = MovimientosPorUsuarioThread(usuario_seleccionado)
+                self.mov_thread = MovimientosPorUsuarioThread(self.id_usuario_perfil, usuario_seleccionado)
                 self.mov_thread.resultado.connect(self._on_movimientos_obtenidos)
                 self.start_thread(self.mov_thread)
 
         elif filtro == "Fecha" and date_edit:
             fecha_qdate = date_edit.date()
             fecha_seleccionada = f"{fecha_qdate.year()}-{fecha_qdate.month():02d}-{fecha_qdate.day():02d}"
-            self.mov_thread = MovimientosPorFechaThread(fecha_seleccionada)
+            self.mov_thread = MovimientosPorFechaThread(self.id_usuario_perfil, fecha_seleccionada)
             self.mov_thread.resultado.connect(self._on_movimientos_obtenidos)
             self.start_thread(self.mov_thread)
 
@@ -3482,7 +3483,7 @@ class BuscarDatosTab:
             accion_seleccionada = combobox_18.currentText()
 
             if accion_seleccionada:
-                self.mov_thread = MovimientosPorAccionThread(accion_seleccionada)
+                self.mov_thread = MovimientosPorAccionThread(self.id_usuario_perfil, accion_seleccionada)
                 self.mov_thread.resultado.connect(self._on_movimientos_obtenidos)
                 self.start_thread(self.mov_thread)
 
@@ -3803,27 +3804,27 @@ class BuscarDatosTab:
                     return
 
     def obtener_metodo_pago(self, id_metodo, callback):
-        self.metodo_pago_thread = TraerMetodoPagoThread(id_metodo)
+        self.metodo_pago_thread = TraerMetodoPagoThread(self.id_usuario_perfil, id_metodo)
         self.metodo_pago_thread.resultado.connect(callback)
         self.start_thread(self.metodo_pago_thread)
 
     def obtener_datos_ventas(self, id_metodo_o_usuario, fecha, verif, callback):
-        self.ventas_thread = TraerDatosVentasMetodoUsuarioThread(id_metodo_o_usuario, fecha, verif)
+        self.ventas_thread = TraerDatosVentasMetodoUsuarioThread(self.id_usuario_perfil, id_metodo_o_usuario, fecha, verif)
         self.ventas_thread.resultado.connect(callback)
         self.start_thread(self.ventas_thread)
 
     def obtener_datos_compras(self, id_metodo_o_usuario, fecha, verif, callback):
-        self.compras_thread = TraerDatosComprasMetodoUsuarioThread(id_metodo_o_usuario, fecha, verif)
+        self.compras_thread = TraerDatosComprasMetodoUsuarioThread(self.id_usuario_perfil, id_metodo_o_usuario, fecha, verif)
         self.compras_thread.resultado.connect(callback)
         self.start_thread(self.compras_thread)
     
     def obtener_datos_arqueo_ventas_fecha(self, fecha, callback):
-        self.arqueo_ventas_thread = TraerDatosArqueoVentasFechaThread(fecha)
+        self.arqueo_ventas_thread = TraerDatosArqueoVentasFechaThread(self.id_usuario_perfil, fecha)
         self.arqueo_ventas_thread.resultado.connect(callback)
         self.start_thread(self.arqueo_ventas_thread)
 
     def obtener_datos_arqueo_compras_fecha(self, fecha, callback):
-        self.arqueo_compras_thread = TraerDatosArqueoComprasFechaThread(fecha)
+        self.arqueo_compras_thread = TraerDatosArqueoComprasFechaThread(self.id_usuario_perfil, fecha)
         self.arqueo_compras_thread.resultado.connect(callback)
         self.start_thread(self.arqueo_compras_thread)
 
@@ -3913,7 +3914,7 @@ class BuscarDatosTab:
 
         if metodos_pago_por_id_cache is None:
             # Cargar cache si no existe
-            self.metodos_pago_thread = TraerTodosLosMetodosPagoThread()
+            self.metodos_pago_thread = TraerTodosLosMetodosPagoThread(self.id_usuario_perfil)
 
             def on_metodos_obtenidos(metodos):
                 global metodos_pago_por_id_cache
@@ -4509,10 +4510,10 @@ class BuscarDatosTab:
                 if label_111:
                     label_111.setText(f"${resultados['ganancias_totales']:.2f}")
 
-        self.ventas_totales_ano_thread = TraerVentasTotalesAnoThread(ano_actual)
-        self.numero_de_ventas_ano_thread = TraerNumeroDeVentasAnoThread(ano_actual)
-        self.venta_promedio_ano_thread = TraerVentaPromedioAnoThread(ano_actual)
-        self.ganancias_totales_ano_thread = TraerGananciasTotalesAnoThread(ano_actual)
+        self.ventas_totales_ano_thread = TraerVentasTotalesAnoThread(self.id_usuario_perfil, ano_actual)
+        self.numero_de_ventas_ano_thread = TraerNumeroDeVentasAnoThread(self.id_usuario_perfil, ano_actual)
+        self.venta_promedio_ano_thread = TraerVentaPromedioAnoThread(self.id_usuario_perfil, ano_actual)
+        self.ganancias_totales_ano_thread = TraerGananciasTotalesAnoThread(self.id_usuario_perfil, ano_actual)
 
         self.ventas_totales_ano_thread.resultado.connect(lambda x: (resultados.update({'ventas_totales': x}), check_and_update_labels()))
         self.numero_de_ventas_ano_thread.resultado.connect(lambda x: (resultados.update({'numero_de_ventas': x}), check_and_update_labels()))
@@ -4560,8 +4561,8 @@ class BuscarDatosTab:
                     parent_widget.setLayout(layout)
                 layout.addWidget(canvas)
 
-        self.ventas_ano_thread = TraerVentasAnoActualThread(ano_actual, meses)
-        self.ganancias_ano_thread = TraerGananciasAnoActualThread(ano_actual, meses)
+        self.ventas_ano_thread = TraerVentasAnoActualThread(self.id_usuario_perfil, ano_actual, meses)
+        self.ganancias_ano_thread = TraerGananciasAnoActualThread(self.id_usuario_perfil, ano_actual, meses)
         self.ventas_ano_thread.resultado.connect(lambda x: (graf_resultados.update({'ventas': x}), check_and_draw_graph()))
         self.ganancias_ano_thread.resultado.connect(lambda x: (graf_resultados.update({'ganancias': x}), check_and_draw_graph()))
         self.start_thread(self.ventas_ano_thread)
@@ -4600,7 +4601,7 @@ class BuscarDatosTab:
                     for i, metodo in enumerate(metodos_pago):
                         id_metodo = metodo[0]
                         nombre_metodo = metodo[1]
-                        thread = TraerDatosPorMetodoYMesThread(ano_actual, id_metodo, meses)
+                        thread = TraerDatosPorMetodoYMesThread(self.id_usuario_perfil, ano_actual, id_metodo, meses)
                         def make_callback(idx, nombre_metodo):
                             return lambda datos: (
                                 graf2_resultados['datos_por_metodo'].__setitem__(nombre_metodo, datos),
@@ -4645,7 +4646,7 @@ class BuscarDatosTab:
                         widget_2.setLayout(layout)
                     layout.addWidget(canvas)
 
-            self.metodos_pago_y_id_thread = TraerMetodosPagoYSuIdThread()
+            self.metodos_pago_y_id_thread = TraerMetodosPagoYSuIdThread(self.id_usuario_perfil)
             self.metodos_pago_y_id_thread.resultado.connect(on_metodos_pago_obtenidos)
             self.start_thread(self.metodos_pago_y_id_thread)
 
@@ -4690,10 +4691,10 @@ class BuscarDatosTab:
                 if label_111:
                     label_111.setText(f"${resultados['ganancias_totales']:.2f}")  
  
-        self.ventas_totales_mes_thread = TraerVentasTotalesMesThread(ano_actual, mes_actual)
-        self.numero_de_ventas_mes_thread = TraerNumeroDeVentasMesThread(ano_actual, mes_actual)
-        self.venta_promedio_mes_thread = TraerVentaPromedioMesThread(ano_actual, mes_actual)
-        self.ganancias_totales_mes_thread = TraerGananciasTotalesMesThread(ano_actual, mes_actual)
+        self.ventas_totales_mes_thread = TraerVentasTotalesMesThread(self.id_usuario_perfil, ano_actual, mes_actual)
+        self.numero_de_ventas_mes_thread = TraerNumeroDeVentasMesThread(self.id_usuario_perfil, ano_actual, mes_actual)
+        self.venta_promedio_mes_thread = TraerVentaPromedioMesThread(self.id_usuario_perfil, ano_actual, mes_actual)
+        self.ganancias_totales_mes_thread = TraerGananciasTotalesMesThread(self.id_usuario_perfil, ano_actual, mes_actual)
 
         self.ventas_totales_mes_thread.resultado.connect(lambda x: (resultados.update({'ventas_totales': x}), check_and_update_labels()))
         self.numero_de_ventas_mes_thread.resultado.connect(lambda x: (resultados.update({'numero_de_ventas': x}), check_and_update_labels()))
@@ -4740,8 +4741,8 @@ class BuscarDatosTab:
                         widget.setLayout(layout)
                     layout.addWidget(canvas)
 
-            self.ventas_mes_thread = TraerVentasTotalesMesThread(ano_actual, mes_actual)
-            self.ganancias_mes_thread = TraerGananciasTotalesMesThread(ano_actual, mes_actual)
+            self.ventas_mes_thread = TraerVentasTotalesMesThread(self.id_usuario_perfil, ano_actual, mes_actual)
+            self.ganancias_mes_thread = TraerGananciasTotalesMesThread(self.id_usuario_perfil, ano_actual, mes_actual)
             self.ventas_mes_thread.resultado.connect(lambda x: (graf_resultados.update({'ventas': x}), check_and_draw_graph()))
             self.ganancias_mes_thread.resultado.connect(lambda x: (graf_resultados.update({'ganancias': x}), check_and_draw_graph()))
             self.start_thread(self.ventas_mes_thread)
@@ -4780,7 +4781,7 @@ class BuscarDatosTab:
                     for i, metodo in enumerate(metodos_pago):
                         id_metodo = metodo[0]
                         nombre_metodo = metodo[1]
-                        thread = TraerDatosPorMetodoYMesThread(ano_actual, id_metodo, [mes_actual])
+                        thread = TraerDatosPorMetodoYMesThread(self.id_usuario_perfil, ano_actual, id_metodo, [mes_actual])
                         def make_callback(idx, nombre_metodo):
                             return lambda datos: (
                                 graf2_resultados['datos_por_metodo'].__setitem__(nombre_metodo, datos),
@@ -4825,7 +4826,7 @@ class BuscarDatosTab:
                         widget_2.setLayout(layout)
                     layout.addWidget(canvas)
 
-            self.metodos_pago_y_id_thread = TraerMetodosPagoYSuIdThread()
+            self.metodos_pago_y_id_thread = TraerMetodosPagoYSuIdThread(self.id_usuario_perfil)
             self.metodos_pago_y_id_thread.resultado.connect(on_metodos_pago_obtenidos)
             self.start_thread(self.metodos_pago_y_id_thread)
 
@@ -4872,10 +4873,10 @@ class BuscarDatosTab:
                 if label_111:
                     label_111.setText(f"${resultados['ganancias_totales']:.2f}")
 
-        self.ventas_totales_mes_thread = TraerVentasTotalesMesThread(ano_actual, mes_anterior)
-        self.numero_de_ventas_mes_thread = TraerNumeroDeVentasMesThread(ano_actual, mes_anterior)
-        self.venta_promedio_mes_thread = TraerVentaPromedioMesThread(ano_actual, mes_anterior)
-        self.ganancias_totales_mes_thread = TraerGananciasTotalesMesThread(ano_actual, mes_anterior)
+        self.ventas_totales_mes_thread = TraerVentasTotalesMesThread(self.id_usuario_perfil, ano_actual, mes_anterior)
+        self.numero_de_ventas_mes_thread = TraerNumeroDeVentasMesThread(self.id_usuario_perfil, ano_actual, mes_anterior)
+        self.venta_promedio_mes_thread = TraerVentaPromedioMesThread(self.id_usuario_perfil, ano_actual, mes_anterior)
+        self.ganancias_totales_mes_thread = TraerGananciasTotalesMesThread(self.id_usuario_perfil, ano_actual, mes_anterior)
 
         self.ventas_totales_mes_thread.resultado.connect(lambda x: (resultados.update({'ventas_totales': x}), check_and_update_labels()))
         self.numero_de_ventas_mes_thread.resultado.connect(lambda x: (resultados.update({'numero_de_ventas': x}), check_and_update_labels()))
@@ -4920,7 +4921,7 @@ class BuscarDatosTab:
                     for i, metodo in enumerate(metodos_pago):
                         id_metodo = metodo[0]
                         nombre_metodo = metodo[1]
-                        thread = TraerDatosPorMetodoYMesThread(ano_actual, id_metodo, [mes_anterior])
+                        thread = TraerDatosPorMetodoYMesThread(self.id_usuario_perfil, ano_actual, id_metodo, [mes_anterior])
                         def make_callback(idx, nombre_metodo):
                             return lambda datos: (
                                 graf2_resultados['datos_por_metodo'].__setitem__(nombre_metodo, datos),
@@ -4965,7 +4966,7 @@ class BuscarDatosTab:
                         widget_2.setLayout(layout)
                     layout.addWidget(canvas)
 
-            self.metodos_pago_y_id_thread = TraerMetodosPagoYSuIdThread()
+            self.metodos_pago_y_id_thread = TraerMetodosPagoYSuIdThread(self.id_usuario_perfil)
             self.metodos_pago_y_id_thread.resultado.connect(on_metodos_pago_obtenidos)
             self.start_thread(self.metodos_pago_y_id_thread)
 
@@ -5004,8 +5005,8 @@ class BuscarDatosTab:
                         widget.setLayout(layout)
                     layout.addWidget(canvas)
 
-            self.ventas_mes_thread = TraerVentasTotalesMesThread(ano_actual, mes_anterior)
-            self.ganancias_mes_thread = TraerGananciasTotalesMesThread(ano_actual, mes_anterior)
+            self.ventas_mes_thread = TraerVentasTotalesMesThread(self.id_usuario_perfil, ano_actual, mes_anterior)
+            self.ganancias_mes_thread = TraerGananciasTotalesMesThread(self.id_usuario_perfil, ano_actual, mes_anterior)
             self.ventas_mes_thread.resultado.connect(lambda x: (graf_resultados.update({'ventas': x}), check_and_draw_graph()))
             self.ganancias_mes_thread.resultado.connect(lambda x: (graf_resultados.update({'ganancias': x}), check_and_draw_graph()))
             self.start_thread(self.ventas_mes_thread)
@@ -5041,10 +5042,10 @@ class BuscarDatosTab:
                 if label_111:
                     label_111.setText(f"${resultados['ganancias_totales']:.2f}")
 
-        self.ventas_totales_semana_thread = TraerVentasTotalesSemanaThread(ano_actual, semana_actual)
-        self.numero_de_ventas_semana_thread = TraerNumeroDeVentasSemanaThread(ano_actual, semana_actual)
-        self.venta_promedio_semana_thread = TraerVentaPromedioSemanaThread(ano_actual, semana_actual)
-        self.ganancias_totales_semana_thread = TraerGananciasTotalesSemanaThread(ano_actual, semana_actual) 
+        self.ventas_totales_semana_thread = TraerVentasTotalesSemanaThread(self.id_usuario_perfil, ano_actual, semana_actual)
+        self.numero_de_ventas_semana_thread = TraerNumeroDeVentasSemanaThread(self.id_usuario_perfil, ano_actual, semana_actual)
+        self.venta_promedio_semana_thread = TraerVentaPromedioSemanaThread(self.id_usuario_perfil, ano_actual, semana_actual)
+        self.ganancias_totales_semana_thread = TraerGananciasTotalesSemanaThread(self.id_usuario_perfil, ano_actual, semana_actual)
 
         self.ventas_totales_semana_thread.resultado.connect(lambda x: (resultados.update({'ventas_totales': x}), check_and_update_labels()))
         self.numero_de_ventas_semana_thread.resultado.connect(lambda x: (resultados.update({'numero_de_ventas': x}), check_and_update_labels()))
@@ -5092,8 +5093,8 @@ class BuscarDatosTab:
                         widget.setLayout(layout)
                     layout.addWidget(canvas)
 
-            self.ventas_semana_thread = TraerVentasSemanaActualThread(ano_actual, semana_actual, dias_semana)
-            self.ganancias_semana_thread = TraerGananciasSemanaActualThread(ano_actual, semana_actual, dias_semana)
+            self.ventas_semana_thread = TraerVentasSemanaActualThread(self.id_usuario_perfil, ano_actual, semana_actual, dias_semana)
+            self.ganancias_semana_thread = TraerGananciasSemanaActualThread(self.id_usuario_perfil, ano_actual, semana_actual, dias_semana)
             self.ventas_semana_thread.resultado.connect(lambda x: (graf_resultados.update({'ventas': x}), check_and_draw_graph()))
             self.ganancias_semana_thread.resultado.connect(lambda x: (graf_resultados.update({'ganancias': x}), check_and_draw_graph()))
             self.start_thread(self.ventas_semana_thread)
@@ -5132,7 +5133,7 @@ class BuscarDatosTab:
                     for i, metodo in enumerate(metodos_pago):
                         id_metodo = metodo[0]
                         nombre_metodo = metodo[1]
-                        thread = TraerDatosPorMetodoYDiaSemanaThread(ano_actual, semana_actual, id_metodo, dias_semana)
+                        thread = TraerDatosPorMetodoYDiaSemanaThread(self.id_usuario_perfil, ano_actual, semana_actual, id_metodo, dias_semana)
                         def make_callback(idx, nombre_metodo):
                             return lambda datos: (
                                 graf2_resultados['datos_por_metodo'].__setitem__(nombre_metodo, datos),
@@ -5177,7 +5178,7 @@ class BuscarDatosTab:
                         widget_2.setLayout(layout)
                     layout.addWidget(canvas)
 
-            self.metodos_pago_y_id_thread = TraerMetodosPagoYSuIdThread()
+            self.metodos_pago_y_id_thread = TraerMetodosPagoYSuIdThread(self.id_usuario_perfil)
             self.metodos_pago_y_id_thread.resultado.connect(on_metodos_pago_obtenidos)
             self.start_thread(self.metodos_pago_y_id_thread)
     
@@ -5187,7 +5188,7 @@ class BuscarDatosTab:
 ################
 ################
 
-class AdministracionTab:
+class AdministracionTab: #$$$$$ SEGUIR CON ESTA CLASE PASANDOLE EL ID
     def __init__(self, ui, buscar_datos_tab, datos_tab):
         self.ui = ui
         self.facturero_ventas_window = None
@@ -7180,7 +7181,7 @@ class MainWindow(QMainWindow):
                 # Abrir la ventana de login web
                 try:
                     from archivos_py.windows.inicio_login_web import InicioWeb
-                    self.login_window = InicioWeb()
+                    self.login_window = InicioWeb(self.id_usuario_perfil)
                     self.login_window.show()
                 except Exception as e:
                     print(f"Error al abrir ventana de login: {e}")

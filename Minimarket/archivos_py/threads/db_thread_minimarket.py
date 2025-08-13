@@ -1134,15 +1134,16 @@ class MovimientoUsuarioBorradoThread(QThread):
 
 class MovimientosPorUsuarioThread(QThread):
     resultado = Signal(list)
-    def __init__(self, usuario):
+    def __init__(self, id_usuario_perfil, usuario):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.usuario = usuario
 
     def run(self):
         
         try:
             url = f"{API_URL}/api/movimientos_por_usuario"
-            payload = {"usuario": self.usuario}
+            payload = {"usuario": self.usuario, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -1158,15 +1159,16 @@ class MovimientosPorUsuarioThread(QThread):
 
 class MovimientosPorFechaThread(QThread):
     resultado = Signal(list)
-    def __init__(self, fecha):
+    def __init__(self, id_usuario_perfil, fecha):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.fecha = fecha
 
     def run(self):
         
         try:
             url = f"{API_URL}/api/movimientos_por_fecha"
-            payload = {"fecha": self.fecha}
+            payload = {"fecha": self.fecha, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -1181,15 +1183,16 @@ class MovimientosPorFechaThread(QThread):
 
 class MovimientosPorAccionThread(QThread):
     resultado = Signal(list)
-    def __init__(self, accion):
+    def __init__(self, id_usuario_perfil, accion):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.accion = accion
 
     def run(self):
         
         try:
             url = f"{API_URL}/api/movimientos_por_accion"
-            payload = {"accion": self.accion}
+            payload = {"accion": self.accion, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -1254,8 +1257,9 @@ class TraerMetodoPagoIdThread(QThread):
 
 class TraerDatosVentasMetodoUsuarioThread(QThread):
     resultado = Signal(list)
-    def __init__(self, id_metodo_o_usuario, fecha, verif):
+    def __init__(self, id_usuario_perfil, id_metodo_o_usuario, fecha, verif):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.id_metodo_o_usuario = id_metodo_o_usuario
         self.fecha = fecha
         self.verif = verif  # Verificación para distinguir si es id de usuario o de metodo de pago
@@ -1267,7 +1271,8 @@ class TraerDatosVentasMetodoUsuarioThread(QThread):
             payload = {
                 "id_metodo_o_usuario": self.id_metodo_o_usuario,
                 "fecha": self.fecha,
-                "verif": self.verif
+                "verif": self.verif,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -1283,8 +1288,9 @@ class TraerDatosVentasMetodoUsuarioThread(QThread):
 
 class TraerDatosComprasMetodoUsuarioThread(QThread):
     resultado = Signal(list)
-    def __init__(self, id_metodo_o_usuario, fecha, verif):
+    def __init__(self, id_usuario_perfil, id_metodo_o_usuario, fecha, verif):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.id_metodo_o_usuario = id_metodo_o_usuario
         self.fecha = fecha
         self.verif = verif  # Verificación para distinguir si es id de usuario o de metodo de pago
@@ -1296,7 +1302,8 @@ class TraerDatosComprasMetodoUsuarioThread(QThread):
             payload = {
                 "id_metodo_o_usuario": self.id_metodo_o_usuario,
                 "fecha": self.fecha,
-                "verif": self.verif
+                "verif": self.verif,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -1312,15 +1319,16 @@ class TraerDatosComprasMetodoUsuarioThread(QThread):
 
 class TraerMetodoPagoThread(QThread):
     resultado = Signal(object)
-    def __init__(self, id_metodo):
+    def __init__(self, id_usuario_perfil, id_metodo):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.id_metodo = id_metodo
 
     def run(self):
         
         try:
             url = f"{API_URL}/api/traer_metodo_pago"
-            payload = {"id_metodo": self.id_metodo}
+            payload = {"id_metodo": self.id_metodo, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -1335,15 +1343,16 @@ class TraerMetodoPagoThread(QThread):
 
 class TraerDatosArqueoVentasFechaThread(QThread):
     resultado = Signal(list)
-    def __init__(self, fecha):
+    def __init__(self, id_usuario_perfil, fecha):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.fecha = fecha
 
     def run(self):
         
         try:
             url = f"{API_URL}/api/traer_datos_arqueo_ventas_fecha"
-            payload = {"fecha": self.fecha}
+            payload = {"fecha": self.fecha, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -1358,15 +1367,16 @@ class TraerDatosArqueoVentasFechaThread(QThread):
 
 class TraerDatosArqueoComprasFechaThread(QThread):
     resultado = Signal(list)
-    def __init__(self, fecha):
+    def __init__(self, id_usuario_perfil, fecha):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.fecha = fecha
 
     def run(self):
         
         try:
             url = f"{API_URL}/api/traer_datos_arqueo_compras_fecha"
-            payload = {"fecha": self.fecha}
+            payload = {"fecha": self.fecha, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -1552,15 +1562,16 @@ class TraerNumeroDeVentasDiaThread(QThread):
 
 class TraerVentasTotalesMesThread(QThread):
     resultado = Signal(float)
-    def __init__(self, anio, mes):
+    def __init__(self, id_usuario_perfil, anio, mes):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.anio = anio
         self.mes = mes
     def run(self):
         
         try:
             url = f"{API_URL}/api/traer_ventas_totales_mes"
-            payload = {"anio": self.anio, "mes": self.mes}
+            payload = {"anio": self.anio, "mes": self.mes, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -1575,15 +1586,16 @@ class TraerVentasTotalesMesThread(QThread):
 
 class TraerGananciasTotalesMesThread(QThread):
     resultado = Signal(float)
-    def __init__(self, anio, mes):
+    def __init__(self, id_usuario_perfil, anio, mes):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.anio = anio
         self.mes = mes
     def run(self):
         
         try:
             url = f"{API_URL}/api/traer_ganancias_totales_mes"
-            payload = {"anio": self.anio, "mes": self.mes}
+            payload = {"anio": self.anio, "mes": self.mes, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -1667,15 +1679,16 @@ class TraerVentasPorMetodoMesThread(QThread):
 
 class TraerNumeroDeVentasMesThread(QThread):
     resultado = Signal(int)
-    def __init__(self, anio, mes):
+    def __init__(self, id_usuario_perfil, anio, mes):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.anio = anio
         self.mes = mes
     def run(self):
         
         try:
             url = f"{API_URL}/api/traer_numero_de_ventas_mes"
-            payload = {"anio": self.anio, "mes": self.mes}
+            payload = {"anio": self.anio, "mes": self.mes, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -1757,15 +1770,16 @@ class TraerVentasPorMetodoAnoThread(QThread):
 
 class TraerNumeroDeVentasAnoThread(QThread):
     resultado = Signal(int)
-    def __init__(self, anio):
+    def __init__(self, id_usuario_perfil, anio):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.anio = anio
 
     def run(self):
         
         try:
             url = f"{API_URL}/api/traer_numero_de_ventas_ano"
-            payload = {"anio": self.anio}
+            payload = {"anio": self.anio, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -1783,14 +1797,15 @@ class TraerNumeroDeVentasAnoThread(QThread):
 
 class TraerVentasTotalesAnoThread(QThread):
     resultado = Signal(float)
-    def __init__(self, anio):
+    def __init__(self, id_usuario_perfil, anio):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.anio = anio
     def run(self):
         
         try:
             url = f"{API_URL}/api/traer_ventas_totales_ano"
-            payload = {"anio": self.anio}
+            payload = {"anio": self.anio, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -1805,14 +1820,15 @@ class TraerVentasTotalesAnoThread(QThread):
 
 class TraerVentaPromedioAnoThread(QThread):
     resultado = Signal(float)
-    def __init__(self, anio):
+    def __init__(self, id_usuario_perfil, anio):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.anio = anio
     def run(self):
         import requests
         try:
             url = f"{API_URL}/api/traer_venta_promedio_ano_actual"
-            payload = {"anio": self.anio}
+            payload = {"anio": self.anio, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -1827,14 +1843,15 @@ class TraerVentaPromedioAnoThread(QThread):
 
 class TraerGananciasTotalesAnoThread(QThread):
     resultado = Signal(float)
-    def __init__(self, anio):
+    def __init__(self, id_usuario_perfil, anio):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.anio = anio
     def run(self):
         import requests
         try:
             url = f"{API_URL}/api/traer_ganancias_totales_ano"
-            payload = {"anio": self.anio}
+            payload = {"anio": self.anio, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -1849,15 +1866,16 @@ class TraerGananciasTotalesAnoThread(QThread):
 
 class TraerVentasAnoActualThread(QThread):
     resultado = Signal(list)
-    def __init__(self, anio, meses):
+    def __init__(self, id_usuario_perfil, anio, meses):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.anio = anio
         self.meses = meses
     def run(self):
         import requests
         try:
             url = f"{API_URL}/api/traer_ventas_ano_actual"
-            payload = {"anio": self.anio, "meses": self.meses}
+            payload = {"anio": self.anio, "meses": self.meses, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -1872,15 +1890,16 @@ class TraerVentasAnoActualThread(QThread):
 
 class TraerGananciasAnoActualThread(QThread):
     resultado = Signal(list)
-    def __init__(self, anio, meses):
+    def __init__(self, id_usuario_perfil, anio, meses):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.anio = anio
         self.meses = meses
     def run(self):
         import requests
         try:
             url = f"{API_URL}/api/traer_ganancias_ano_actual"
-            payload = {"anio": self.anio, "meses": self.meses}
+            payload = {"anio": self.anio, "meses": self.meses, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -1919,8 +1938,9 @@ class TraerMetodosPagoYSuIdThread(QThread):
 
 class TraerDatosPorMetodoYMesThread(QThread):
     resultado = Signal(list)
-    def __init__(self, anio, id_metodo, meses):
+    def __init__(self, id_usuario_perfil, anio, id_metodo, meses):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.anio = anio
         self.id_metodo = id_metodo
         self.meses = meses
@@ -1931,7 +1951,8 @@ class TraerDatosPorMetodoYMesThread(QThread):
             payload = {
                 "anio": self.anio,
                 "metodo": self.id_metodo,
-                "meses": self.meses
+                "meses": self.meses,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -1947,15 +1968,16 @@ class TraerDatosPorMetodoYMesThread(QThread):
 
 class TraerVentaPromedioMesThread(QThread):
     resultado = Signal(float)
-    def __init__(self, anio, mes):
+    def __init__(self, id_usuario_perfil, anio, mes):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.anio = anio
         self.mes = mes
     def run(self):
         import requests
         try:
             url = f"{API_URL}/api/traer_venta_promedio_mes"
-            payload = {"anio": self.anio, "mes": self.mes}
+            payload = {"anio": self.anio, "mes": self.mes, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -1971,15 +1993,16 @@ class TraerVentaPromedioMesThread(QThread):
 
 class TraerVentasTotalesSemanaThread(QThread):
     resultado = Signal(float)
-    def __init__(self, anio, semana):
+    def __init__(self, id_usuario_perfil, anio, semana):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.anio = anio
         self.semana = semana
     def run(self):
         import requests
         try:
             url = f"{API_URL}/api/traer_ventas_totales_semana"
-            payload = {"anio": self.anio, "semana": self.semana}
+            payload = {"anio": self.anio, "semana": self.semana, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -1994,15 +2017,16 @@ class TraerVentasTotalesSemanaThread(QThread):
 
 class TraerNumeroDeVentasSemanaThread(QThread):
     resultado = Signal(int)
-    def __init__(self, anio, semana):
+    def __init__(self, id_usuario_perfil, anio, semana):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.anio = anio
         self.semana = semana
     def run(self):
         import requests
         try:
             url = f"{API_URL}/api/traer_numero_de_ventas_semana"
-            payload = {"anio": self.anio, "semana": self.semana}
+            payload = {"anio": self.anio, "semana": self.semana, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -2017,15 +2041,16 @@ class TraerNumeroDeVentasSemanaThread(QThread):
 
 class TraerVentaPromedioSemanaThread(QThread):
     resultado = Signal(float)
-    def __init__(self, anio, semana):
+    def __init__(self, id_usuario_perfil, anio, semana):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.anio = anio
         self.semana = semana
     def run(self):
         import requests
         try:
             url = f"{API_URL}/api/traer_venta_promedio_semana"
-            payload = {"anio": self.anio, "semana": self.semana}
+            payload = {"anio": self.anio, "semana": self.semana, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -2040,15 +2065,16 @@ class TraerVentaPromedioSemanaThread(QThread):
 
 class TraerGananciasTotalesSemanaThread(QThread):
     resultado = Signal(float)
-    def __init__(self, anio, semana):
+    def __init__(self, id_usuario_perfil, anio, semana):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.anio = anio
         self.semana = semana
     def run(self):
         import requests
         try:
             url = f"{API_URL}/api/traer_ganancias_totales_semana"
-            payload = {"anio": self.anio, "semana": self.semana}
+            payload = {"anio": self.anio, "semana": self.semana, "id_usuario_perfil": self.id_usuario_perfil}
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
@@ -2063,8 +2089,9 @@ class TraerGananciasTotalesSemanaThread(QThread):
 
 class TraerVentasSemanaActualThread(QThread):
     resultado = Signal(list)
-    def __init__(self, anio, semana, dias_semana):
+    def __init__(self, id_usuario_perfil, anio, semana, dias_semana):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.anio = anio
         self.semana = semana
         self.dias_semana = dias_semana
@@ -2075,7 +2102,8 @@ class TraerVentasSemanaActualThread(QThread):
             payload = {
                 "anio": self.anio,
                 "semana": self.semana,
-                "dias": self.dias_semana
+                "dias": self.dias_semana,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -2091,8 +2119,9 @@ class TraerVentasSemanaActualThread(QThread):
 
 class TraerGananciasSemanaActualThread(QThread):
     resultado = Signal(list)
-    def __init__(self, anio, semana, dias_semana):
+    def __init__(self, id_usuario_perfil, anio, semana, dias_semana):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.anio = anio
         self.semana = semana
         self.dias_semana = dias_semana
@@ -2103,7 +2132,8 @@ class TraerGananciasSemanaActualThread(QThread):
             payload = {
                 "anio": self.anio,
                 "semana": self.semana,
-                "dias": self.dias_semana
+                "dias": self.dias_semana,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
@@ -2119,8 +2149,9 @@ class TraerGananciasSemanaActualThread(QThread):
 
 class TraerDatosPorMetodoYDiaSemanaThread(QThread):
     resultado = Signal(list)
-    def __init__(self, anio, semana, id_metodo, dias_semana):
+    def __init__(self, id_usuario_perfil, anio, semana, id_metodo, dias_semana):
         super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
         self.anio = anio
         self.semana = semana
         self.id_metodo = id_metodo
@@ -2133,7 +2164,8 @@ class TraerDatosPorMetodoYDiaSemanaThread(QThread):
                 "anio": self.anio,
                 "semana": self.semana,
                 "metodo": self.id_metodo,
-                "dias": self.dias_semana
+                "dias": self.dias_semana,
+                "id_usuario_perfil": self.id_usuario_perfil
             }
             response = requests.post(url, json=payload)
             if response.status_code == 200:
