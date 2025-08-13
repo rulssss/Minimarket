@@ -6604,6 +6604,7 @@ class AdministracionTab:
 
     def traer_metodos_de_pago(self):
         global metodos_pago_por_id_cache
+        
         if metodos_pago_por_id_cache:
             # Retorna solo los nombres (los valores del diccionario)
             return list(metodos_pago_por_id_cache.values())
