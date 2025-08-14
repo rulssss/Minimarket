@@ -202,20 +202,6 @@ class DatosTab:
         global categorias_por_nombre_cache, usuarios_por_nombre_cache, metodos_pago_por_id_cache, metodos_pago_cache
         global anios_obtenidos
         
-        self.anios_thread = TraerAnios(self.id_usuario_perfil)
-        def on_anios_obtenidos(anios):
-            global anios_obtenidos
-            anio_actual = datetime.now().year
-            # Asegurarse de que el año actual esté presente
-            if anio_actual not in anios:
-                anios.append(anio_actual)
-            anios = sorted(set(anios))  # Opcional: ordena y elimina duplicados
-            anios_obtenidos = anios
-
-        self.anios_thread.resultado.connect(on_anios_obtenidos)
-        self.start_thread(self.anios_thread)
-
-
             # Si ya hay cache, úsalo y llama al callback
         if r == 1 and categorias_cache is not None:
             categorias = categorias_cache
@@ -252,6 +238,22 @@ class DatosTab:
                 if all(self._datos_cargados.values()):
                     if callback:
                         callback()
+
+            self.anios_thread = TraerAnios(self.id_usuario_perfil)
+            def on_anios_obtenidos(anios):
+                global anios_obtenidos
+                
+                anio_actual = datetime.now().year
+                # Asegurarse de que el año actual esté presente
+                if anio_actual not in anios:
+                    anios.append(anio_actual)
+                anios = sorted(set(anios))  # Opcional: ordena y elimina duplicados
+                anios_obtenidos = anios
+                print("Años obtenidos:", anios_obtenidos)
+    
+            self.anios_thread.resultado.connect(on_anios_obtenidos)
+            self.start_thread(self.anios_thread)
+        
 
             # obetener todos los metodos de pago al iniciar
             self.metodos_pago_thread = TraerMetodosPagoYSuIdThread(self.id_usuario_perfil)
