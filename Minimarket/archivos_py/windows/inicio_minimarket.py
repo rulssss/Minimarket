@@ -1783,7 +1783,9 @@ class DatosTab:
             self.actualizar_variables_globales_de_uso(2, lambda: (self.populate_combobox_with_proveedores(self.ui.frame_13.findChild(QComboBox, "comboBox_11")),
                 self.populate_combobox_with_proveedores(self.ui.frame_7.findChild(QComboBox, "comboBox_7")),
                 self.populate_table_with_proveedores(),
-                self.proveedores()
+                self.proveedores(),
+                self.update_combobox_20(),
+                self.update_combobox_22()
             ))
 
             button_26 = self.ui.frame_10.findChild(QPushButton, "pushButton_26")
@@ -1895,7 +1897,9 @@ class DatosTab:
                                 self.populate_combobox_with_proveedores(self.ui.frame_7.findChild(QComboBox, "comboBox_7")),
                                 self.populate_table_with_proveedores(),
                                 self.populate_combobox_proveedores(),
-                                self.proveedores()
+                                self.proveedores(),
+                                self.update_combobox_20(),
+                                self.update_combobox_22()
                             ))
 
                             global productos_cache, productos_por_id_cache, productos_por_nombre_cache
@@ -2341,6 +2345,21 @@ class DatosTab:
             if push_button_28:
                 push_button_28.setEnabled(False)
 
+            global categorias_por_nombre_cache
+            categoria_existente = categorias_por_nombre_cache.get(lineEdit_16_value)
+            if categoria_existente or lineEdit_16_value == "Sin categoría":
+                if label_80:
+                    label_80.setText("Esta intentando cargar una categoría existente")
+                    label_80.setStyleSheet("color: red; font-weight: bold")
+                if push_button_27:
+                    push_button_27.setEnabled(True)
+                if push_button_28: 
+                    push_button_28.setEnabled(True)
+                lineEdit_16.selectAll()
+                lineEdit_16.setFocus()
+                self._categoria_en_proceso = False
+                return
+
             if label_80:
                 label_80.setStyleSheet("color: green; font-weight: bold")
                 label_80.setText("Cargando categoría...")
@@ -2370,7 +2389,9 @@ class DatosTab:
                         self.populate_combobox_with_categorias(self.ui.frame_7.findChild(QComboBox, "comboBox_4")),
                         self.populate_table_with_categorias(),
                         self.populate_combobox_categorias(),
-                        self.categorias()
+                        self.categorias(),
+                        self.update_combobox_20(),
+                        self.update_combobox_22()
                     ))
 
                     push_button_27 = self.ui.frame_17.findChild(QPushButton, "pushButton_27")
@@ -2507,7 +2528,9 @@ class DatosTab:
                         self.populate_combobox_with_categorias(self.ui.frame_7.findChild(QComboBox, "comboBox_4")),
                         self.populate_table_with_categorias(),
                         self.populate_combobox_categorias(),
-                        self.categorias()
+                        self.categorias(),
+                        self.update_combobox_20(),
+                        self.update_combobox_22()
                     ))
 
                     global productos_cache, productos_por_nombre_cache, productos_por_id_cache
