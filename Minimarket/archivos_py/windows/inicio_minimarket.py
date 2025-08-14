@@ -3721,27 +3721,6 @@ class BuscarDatosTab:
         mes_actual = hoy.month
         dia_actual = hoy.day
     
-        # Inicializar ComboBox de días
-        if combobox_10_dia:
-            combobox_10_dia.setStyleSheet("background-color: rgb(226, 245, 255);")
-            combobox_10_dia.setMaxVisibleItems(5)  # Mostrar un máximo de 5 elementos visibles
-            self.actualizar_dias_combobox(combobox_10_dia, mes_actual, anio_actual)
-            combobox_10_dia.setCurrentText(str(dia_actual))
-            
-            # En la inicialización del combobox de días:
-            combobox_10_dia.currentTextChanged.connect(lambda: self.timer_dia.start(2000))
-    
-        # Inicializar ComboBox de meses
-        if combobox_9_mes:
-            combobox_9_mes.clear()  # Limpiar el combobox antes de agregar elementos
-            combobox_9_mes.setStyleSheet("background-color: rgb(226, 245, 255);")
-            combobox_9_mes.addItems(["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-                                     "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"])
-            combobox_9_mes.setCurrentIndex(mes_actual)  # Los índices comienzan en 0
-            
-            # En la inicialización del combobox:
-            combobox_9_mes.currentTextChanged.connect(lambda: self.timer_dia.start(2000))
-    
         # Inicializar ComboBox de años
         if combobox_8_anio:
             global anios_obtenidos
@@ -3771,6 +3750,26 @@ class BuscarDatosTab:
                     )
                 )
 
+        # Inicializar ComboBox de meses
+        if combobox_9_mes:
+            combobox_9_mes.clear()  # Limpiar el combobox antes de agregar elementos
+            combobox_9_mes.setStyleSheet("background-color: rgb(226, 245, 255);")
+            combobox_9_mes.addItems(["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                                     "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"])
+            combobox_9_mes.setCurrentIndex(mes_actual)  # Los índices comienzan en 0
+            
+            # En la inicialización del combobox:
+            combobox_9_mes.currentTextChanged.connect(lambda: self.timer_dia.start(2000))
+            
+        # Inicializar ComboBox de días
+        if combobox_10_dia:
+            combobox_10_dia.setStyleSheet("background-color: rgb(226, 245, 255);")
+            combobox_10_dia.setMaxVisibleItems(5)  # Mostrar un máximo de 5 elementos visibles
+            self.actualizar_dias_combobox(combobox_10_dia, mes_actual, anio_actual)
+            combobox_10_dia.setCurrentText(str(dia_actual))
+            
+            # En la inicialización del combobox de días:
+            combobox_10_dia.currentTextChanged.connect(lambda: self.timer_dia.start(2000))
 
         # Inicializar ComboBox de métodos de pago o usuarios solo si esta vacio
         if combobox_12:
@@ -3842,6 +3841,7 @@ class BuscarDatosTab:
         self.start_thread(self.compras_thread)
     
     def obtener_datos_arqueo_ventas_fecha(self, fecha, callback):
+        print(fecha)
         self.arqueo_ventas_thread = TraerDatosArqueoVentasFechaThread(self.id_usuario_perfil, fecha)
         self.arqueo_ventas_thread.resultado.connect(callback)
         self.start_thread(self.arqueo_ventas_thread)
@@ -3926,9 +3926,9 @@ class BuscarDatosTab:
         if not mes and not dia:
             return anio
         elif mes and not dia:
-            return f"{anio}-{combobox_mes.currentIndex()}"
+            return f"{anio}-{combobox_mes.currentIndex():02d}-01"
         elif mes and dia:
-            return f"{anio}-{combobox_mes.currentIndex()}-{dia}"
+            return f"{anio}-{combobox_mes.currentIndex():02d}-{int(dia):02d}"
         return None
 
     def _verificar_cache_metodos_pago(self):
