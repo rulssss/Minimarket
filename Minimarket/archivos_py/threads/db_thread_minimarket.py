@@ -1628,7 +1628,7 @@ class TraerVentasTotalesSemanaThread(QThread):
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
-                total = data.get("total", 0.0)
+                total = data.get("total_ventas_semana", 0.0)
                 self.resultado.emit(total)
             else:
                 print(f"Error al traer ventas totales de la semana: {response.text}")
@@ -1652,7 +1652,7 @@ class TraerNumeroDeVentasSemanaThread(QThread):
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
-                total = data.get("total", 0)
+                total = data.get("numero_ventas_semana", 0)
                 self.resultado.emit(total)
             else:
                 print(f"Error al traer número de ventas de la semana: {response.text}")
@@ -1700,7 +1700,7 @@ class TraerGananciasTotalesSemanaThread(QThread):
             response = requests.post(url, json=payload)
             if response.status_code == 200:
                 data = response.json()
-                total = data.get("total", 0.0)
+                total = data.get("total_ganancias_semana", 0.0)
                 self.resultado.emit(total)
             else:
                 print(f"Error al traer ganancias totales de la semana: {response.text}")

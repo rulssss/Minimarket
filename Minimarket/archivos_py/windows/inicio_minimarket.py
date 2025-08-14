@@ -242,15 +242,15 @@ class DatosTab:
             self.anios_thread = TraerAnios(self.id_usuario_perfil)
             def on_anios_obtenidos(anios):
                 global anios_obtenidos
-                
+
                 anio_actual = datetime.now().year
                 # Asegurarse de que el año actual esté presente
                 if anio_actual not in anios:
                     anios.append(anio_actual)
                 anios = sorted(set(anios))  # Opcional: ordena y elimina duplicados
                 anios_obtenidos = anios
-                print("Años obtenidos:", anios_obtenidos)
-    
+               
+
             self.anios_thread.resultado.connect(on_anios_obtenidos)
             self.start_thread(self.anios_thread)
         
@@ -4465,15 +4465,31 @@ class BuscarDatosTab:
         # acciones  
 
         if ano_actual:
+            try:
+                ano_actual.clicked.disconnect()
+            except Exception:
+                pass
             ano_actual.clicked.connect(self.mostrar_estadisticas_ano_actual)
 
         if mes_actual:
+            try:
+                mes_actual.clicked.disconnect()
+            except Exception:
+                pass
             mes_actual.clicked.connect(self.mostrar_estadisticas_mes_actual)
 
         if mes_anteriror:
+            try:
+                mes_anteriror.clicked.disconnect()
+            except Exception:
+                pass
             mes_anteriror.clicked.connect(self.mostrar_estadisticas_mes_anterior)
 
         if semana_actual:
+            try:
+                semana_actual.clicked.disconnect()
+            except Exception:
+                pass
             semana_actual.clicked.connect(self.mostrar_estadisticas_semana_actual)
 
         # Limpiar el gráfico en el widget
@@ -5073,11 +5089,11 @@ class BuscarDatosTab:
         self.venta_promedio_semana_thread = TraerVentaPromedioSemanaThread(self.id_usuario_perfil, ano_actual, semana_actual)
         self.ganancias_totales_semana_thread = TraerGananciasTotalesSemanaThread(self.id_usuario_perfil, ano_actual, semana_actual)
 
-        self.ventas_totales_semana_thread.resultado.connect(lambda x: (resultados.update({'ventas_totales': x}), check_and_update_labels()))
-        self.numero_de_ventas_semana_thread.resultado.connect(lambda x: (resultados.update({'numero_de_ventas': x}), check_and_update_labels()))
-        self.venta_promedio_semana_thread.resultado.connect(lambda x: (resultados.update({'venta_promedio': x}), check_and_update_labels()))
-        self.ganancias_totales_semana_thread.resultado.connect(lambda x: (resultados.update({'ganancias_totales': x}), check_and_update_labels()))
-
+        self.ventas_totales_semana_thread.resultado.connect(lambda x: (print("ventas_totales", x), resultados.update({'ventas_totales': x}), check_and_update_labels()))
+        self.numero_de_ventas_semana_thread.resultado.connect(lambda x: (print("numero_de_ventas", x), resultados.update({'numero_de_ventas': x}), check_and_update_labels()))
+        self.venta_promedio_semana_thread.resultado.connect(lambda x: (print("venta_promedio", x), resultados.update({'venta_promedio': x}), check_and_update_labels()))
+        self.ganancias_totales_semana_thread.resultado.connect(lambda x: (print("ganancias_totales", x), resultados.update({'ganancias_totales': x}), check_and_update_labels()))
+        
         self.start_thread(self.ventas_totales_semana_thread)
         self.start_thread(self.numero_de_ventas_semana_thread)
         self.start_thread(self.venta_promedio_semana_thread)
