@@ -3841,7 +3841,7 @@ class BuscarDatosTab:
         self.start_thread(self.compras_thread)
     
     def obtener_datos_arqueo_ventas_fecha(self, fecha, callback):
-        print(fecha)
+        
         self.arqueo_ventas_thread = TraerDatosArqueoVentasFechaThread(self.id_usuario_perfil, fecha)
         self.arqueo_ventas_thread.resultado.connect(callback)
         self.start_thread(self.arqueo_ventas_thread)
