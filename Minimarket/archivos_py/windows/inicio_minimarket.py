@@ -4069,6 +4069,7 @@ class BuscarDatosTab:
         """Procesar datos filtrados por método de pago"""
         resultados = {}
         def on_metodo_pago_id_obtenido(metodo_pago_id):
+            
             resultados.clear()  # Limpiar resultados previos
             def on_ventas_obtenidas(datos_ventas):
                 self._procesar_datos_optimizado(datos_ventas, True, tablewidget_ventas, label_58)
