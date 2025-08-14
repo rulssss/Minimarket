@@ -1055,8 +1055,8 @@ class DatosTab:
     def clear_doublespinbox_values(self):
         doublespinbox = self.ui.frame_55.findChild(QDoubleSpinBox, "doubleSpinBox")
         doublespinbox_2 = self.ui.frame_55.findChild(QDoubleSpinBox, "doubleSpinBox_2")
-        doublespinbox_3 = self.ui.frame_63.findChild(QDoubleSpinBox, "doubleSpinBox")
-        doublespinbox_4 = self.ui.frame_64.findChild(QDoubleSpinBox, "doubleSpinBox_2")
+        doublespinbox_3 = self.ui.frame_63.findChild(QDoubleSpinBox, "doubleSpinBox_3")
+        doublespinbox_4 = self.ui.frame_64.findChild(QDoubleSpinBox, "doubleSpinBox_4")
 
         if doublespinbox:
             doublespinbox.setValue(0.00)
