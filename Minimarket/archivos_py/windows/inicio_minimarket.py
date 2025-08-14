@@ -3760,7 +3760,7 @@ class BuscarDatosTab:
             
             # En la inicialización del combobox:
             combobox_9_mes.currentTextChanged.connect(lambda: self.timer_dia.start(2000))
-            
+
         # Inicializar ComboBox de días
         if combobox_10_dia:
             combobox_10_dia.setStyleSheet("background-color: rgb(226, 245, 255);")
@@ -3926,7 +3926,7 @@ class BuscarDatosTab:
         if not mes and not dia:
             return anio
         elif mes and not dia:
-            return f"{anio}-{combobox_mes.currentIndex():02d}-01"
+            return f"{anio}-{combobox_mes.currentIndex():02d}"
         elif mes and dia:
             return f"{anio}-{combobox_mes.currentIndex():02d}-{int(dia):02d}"
         return None
