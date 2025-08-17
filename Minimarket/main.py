@@ -70,7 +70,7 @@ def mostrar_y_actualizar(url_instalador):
             self.setWindowIcon(QIcon(icon_path))
             
             layout = QVBoxLayout()
-            self.label = QLabel("Actualizando aplicación...\nPor favor espere el programa se iniciara en cuanto\ntermine su actualización.")
+            self.label = QLabel("Por favor espere el programa se iniciara en cuanto\ntermine su actualización.")
             self.progress = QProgressBar()
             self.progress.setRange(0, 0)  # Barra indeterminada
             layout.addWidget(self.label)
