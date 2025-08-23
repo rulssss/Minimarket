@@ -109,12 +109,13 @@ class InicioWeb(QWidget):
         push_button_15 = self.ui.stackedWidget.findChild(QWidget, "pushButton_15")
         label_32 = self.ui.stackedWidget.findChild(QWidget, "label_32")
 
-        print("datos del usuario:", datos_usuario)
+        #print("datos del usuario:", datos_usuario)
+        
         # Reactivar el botón
         if push_button_15:
             push_button_15.setEnabled(True)
 
-        if exito:
+        if exito and not datos_usuario.get('open', False):
             # Aquí puedes manejar el caso de éxito
             if label_32:
                 label_32.setStyleSheet("color: green; font-weight: bold")
@@ -140,6 +141,14 @@ class InicioWeb(QWidget):
                     label_32.setText("Usuario sin suscripción 'Pro'\n no puede iniciar sesión")
                 
                 push_button_15.setEnabled(True)
+
+            elif datos_usuario.get('open', False):
+                if label_32:
+                    label_32.setStyleSheet("color: red; font-weight: bold")
+                    label_32.setText("La cuenta se encuentra abierta en otra sesión.")
+
+                push_button_15.setEnabled(True)
+
             else:
                 if label_32:
                     label_32.setStyleSheet("color: red; font-weight: bold")
