@@ -109,6 +109,7 @@ class InicioWeb(QWidget):
         push_button_15 = self.ui.stackedWidget.findChild(QWidget, "pushButton_15")
         label_32 = self.ui.stackedWidget.findChild(QWidget, "label_32")
 
+        print("datos del usuario:", datos_usuario)
         # Reactivar el botón
         if push_button_15:
             push_button_15.setEnabled(True)

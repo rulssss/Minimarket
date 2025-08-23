@@ -23,8 +23,11 @@ def verificar_estado_subscripcion(uid):
     API_URL = "https://web-production-aa989.up.railway.app" # Pon aquí tu URL pública
     try:
         response = requests.post(f"{API_URL}/api/verificar_suscripcion", json={"uid": uid})
-        resultado = response.json().get("pro", False)
-        return resultado
+        data = response.json()
+        pro = data.get("pro", False)
+        open = data.get("open", False)
+
+        return pro, open
     except Exception as e:
         print(f"Error al consultar API: {e}")
         return False
@@ -139,7 +142,6 @@ def iniciar_aplicacion():
         start_thread(login_thread_verificar)
 
     else:
-        
         # Si no hay sesión, mostrar login
         print("No hay sesión activa, mostrando login...")
         window = InicioWeb()
@@ -157,10 +159,16 @@ def firebase_uid_to_uuid(uid):
 def on_login_web_verificado(exito, id_usuario_perfil, uid, session_manager):
     global window
      # erificar estado de suscripción en Firebase
-    if verificar_estado_subscripcion(uid):
+    pro, open = verificar_estado_subscripcion(uid)
+
+    if pro and not open:
         window = Inicio(id_usuario_perfil)
+    elif not pro:
+        print("El usuario no tiene suscripción Pro.")
+        session_manager.clear_session()
+        window = InicioWeb()
     else:
-        print("La suscripción Pro ha cambiado. Mostrando login web.")
+        print("La cuenta se encuentra abierta en otra sesión.")
         session_manager.clear_session()
         window = InicioWeb()
 
