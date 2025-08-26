@@ -18,6 +18,7 @@ from uuid import uuid4
 import os
 import sys
 import warnings
+from archivos_py.threads.db_thread_loginWeb_api import Cambiar_False_open
 warnings.filterwarnings("ignore", message=".*Failed to disconnect.*")
 
 # ------------ VARIABLES DE CACHE GLOBALES ------------
@@ -7377,9 +7378,15 @@ class MainWindow(QMainWindow):
         #  Crear y mostrar el overlay de guardado
         self.mostrar_overlay(i=True)
         
-
         # Obtener el texto del QTextEdit
         texto = textEdit.toPlainText()
+         
+        session_manager = SessionManager()
+        #hilo para cambiar la variable open a false
+        uid = session_manager.get_uid()
+        
+        thread_change_false_open = Cambiar_False_open(uid)
+        self.start_thread(thread_change_false_open)
 
         # Crear y ejecutar el hilo de guardado
         self.guardar_cerrar_thread = GuardarAlCerrarThread(texto, usuario, self.id_usuario_perfil)
