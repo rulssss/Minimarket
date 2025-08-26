@@ -30,17 +30,21 @@ class SessionManager:
         session = self.load_session()
         return session.get('email', '') if session else ''
 
+    def get_open(self):
+        session = self.load_session()
+        return session.get('open', False) if session else False
 
     def get_uid(self):
         session = self.load_session()
         return session.get('uid', '') if session else ''
 
-    def save_session(self, email, uid):
+    def save_session(self, email, uid, open_):
         """Guarda la sesión del usuario cifrada"""
         try:
             session_data = {
                 'email': email,
                 'uid': uid,
+                'open': open_,
                 'login_time': datetime.now().isoformat(),
             }
             json_data = json.dumps(session_data).encode("utf-8")

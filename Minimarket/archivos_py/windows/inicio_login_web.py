@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QWidget, QLineEdit, QApplication
 from archivos_py.ui.login import Ui_Form_login  # Importa la clase generada por qt Designer
 from PySide6.QtGui import QIcon
-from archivos_py.threads.db_thread_loginWeb_api import Login_web_Thread, Login_web_Thread_verificar_existencia_mail
+from archivos_py.threads.db_thread_loginWeb_api import Login_web_Thread, Login_web_Thread_verificar_existencia_mail, Cambiar_a_True_open
 from archivos_py.windows.inicio_login import Inicio
 import sys
 import webbrowser  # Agregué este import
@@ -84,6 +84,7 @@ class InicioWeb(QWidget):
         value_line_edit_11 = line_edit_11.text()
         value_line_edit_12 = line_edit_12.text()
 
+
         if value_line_edit_11 and value_line_edit_12:
             # Aquí deberías iniciar el thread de verificación de contraseña
             self.login_thread = Login_web_Thread(value_line_edit_11, value_line_edit_12)
@@ -124,9 +125,10 @@ class InicioWeb(QWidget):
              # Extraer solo uid y subscription de los datos del usuario
             uid = datos_usuario.get('uid', '')
             email = datos_usuario.get('email', '')
+            open_ = True
 
             # Guardar la sesión
-            self.session_manager.save_session(email, uid)
+            self.session_manager.save_session(email, uid, open_)
 
             # verificar existencia de mail , si existe pasa y sino guarda el mail y uid
             self.login_thread_verificar = Login_web_Thread_verificar_existencia_mail(email, uid)
@@ -158,6 +160,13 @@ class InicioWeb(QWidget):
 
     def handle_verificar_mail_finished(self, exito, id_usuario_perfil):
         if exito:
+            session_manager = SessionManager()
+
+            uid = session_manager.get_uid()
+
+            thread_change_open_true = Cambiar_a_True_open(uid)
+            self.start_thread(thread_change_open_true)
+
             # Crear y mostrar la ventana Inicio, pasando el id_usuario_perfil
             try:
                 #se cierra la aplicacion de login web

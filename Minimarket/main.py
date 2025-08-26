@@ -3,7 +3,7 @@ from archivos_py.windows.inicio_login import Inicio
 import sys
 from archivos_py.windows.inicio_login_web import InicioWeb
 from archivos_py.db.sesiones import SessionManager
-from archivos_py.threads.db_thread_loginWeb_api import Login_web_Thread_verificar_existencia_mail
+from archivos_py.threads.db_thread_loginWeb_api import Login_web_Thread_verificar_existencia_mail, Cambiar_a_True_open
 import socket
 import requests
 from PySide6.QtWidgets import QMessageBox
@@ -133,6 +133,7 @@ def iniciar_aplicacion():
         # Obtener datos guardados
         email = session_manager.get_email()
         uid = session_manager.get_uid()
+        #open = session_manager.get_open()
 
         id_usuario_perfil = firebase_uid_to_uuid(uid)
         
@@ -158,10 +159,18 @@ def firebase_uid_to_uuid(uid):
 
 def on_login_web_verificado(exito, id_usuario_perfil, uid, session_manager):
     global window
-     # erificar estado de suscripción en Firebase
+    # verificar estado de suscripción en Firebase
     pro, open = verificar_estado_subscripcion(uid)
 
     if pro and not open:
+        #$pasar variable open a true para indicar que la sesion esta activa
+        
+        # obtener el uid original de firebase
+        uid = session_manager.get_uid()
+
+        thread_change_false_open = Cambiar_a_True_open(uid)
+        start_thread(thread_change_false_open)
+
         window = Inicio(id_usuario_perfil)
     elif not pro:
         print("El usuario no tiene suscripción Pro.")

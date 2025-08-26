@@ -26,6 +26,40 @@ class Login_web_Thread(QThread):
             print(f"Error en el thread de login: {e}")
             self.resultado.emit(False, f"Error interno: {str(e)}")
 
+class Cambiar_a_True_open(QThread):
+    finished = Signal()  # Señal que emite cuando termina
+
+    def __init__(self, id_usuario_perfil):
+        super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
+
+    def run(self):
+        
+        try:
+            url = f"{API_URL}/api/cambiar_a_true_open"
+            response = requests.post(url, json={"uid": self.id_usuario_perfil})
+            # Puedes manejar la respuesta si lo necesitas
+            self.finished.emit()
+        except Exception as e:
+            print(f"Error al cambiar open a True: {e}")
+            self.finished.emit()
+
+class Cambiar_False_open(QThread):
+    finished = Signal()  # Señal que emite cuando termina
+
+    def __init__(self, id_usuario_perfil):
+        super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
+
+    def run(self):
+        try:
+            url = f"{API_URL}/api/cambiar_a_false_open"
+            response = requests.post(url, json={"uid": self.id_usuario_perfil})
+            # Puedes manejar la respuesta si lo necesitas
+            self.finished.emit()
+        except Exception as e:
+            print(f"Error al cambiar open a False: {e}")
+            self.finished.emit()
 
 class Login_web_Thread_verificar_existencia_mail(QThread):
     resultado = Signal(bool, str)  # bool para éxito, str para id_usuario_perfil
