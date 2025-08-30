@@ -136,7 +136,10 @@ class Inicio(QWidget):
             label_21.setText("Ingresando...")
             label_21.setStyleSheet("color: green;")
             QTimer.singleShot(6000, lambda: label_21.setStyleSheet("color: transparent;"))
-            QTimer.singleShot(6000, lambda: (self.close(), self.open_main_window(self.id_usuario_perfil, usuario, account)))
+            QTimer.singleShot(6000, lambda: (
+                setattr(self, "_cerrando_para_main", True),
+                self.open_main_window(self.id_usuario_perfil, usuario, account)
+            ))
 
     def start_thread(self, thread):
         self.threads.append(thread)
@@ -144,23 +147,23 @@ class Inicio(QWidget):
         thread.start()
 
     def closeEvent(self, event):
-        # Cambiar open a False en el backend antes de cerrar
-        session_manager = SessionManager()
-        uid = session_manager.get_uid()
+        # Solo poner open en False si NO es para abrir MainWindow
+        if not hasattr(self, "_cerrando_para_main") or not self._cerrando_para_main:
+            session_manager = SessionManager()
+            uid = session_manager.get_uid()
 
-        session_manager.set_open(False)  # Cambia el valor en el cache local
-
-        if uid:
-            self.thread_cambiar_false_open = Cambiar_False_open(uid)
-            self.start_thread(self.thread_cambiar_false_open)
+            if uid:
+                self.thread_cambiar_false_open = Cambiar_False_open(uid)
+                self.start_thread(self.thread_cambiar_false_open)
 
         # Detener y limpiar otros threads
-        for thread in list(self.threads):  # Copia para evitar modificación durante iteración
+        for thread in list(self.threads):
             thread.wait()
 
 
     def open_main_window(self, id_usuario_perfil, usuario, account):
         print("se inicia el minimarket")
+        self._cerrando_para_main = True  # <--- Marca que el cierre es para abrir MainWindow
         self.main_window = MainWindow(id_usuario_perfil, usuario, account)
         self.main_window.resize(1690, 900)
         self.main_window.show()

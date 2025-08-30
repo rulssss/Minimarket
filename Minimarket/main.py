@@ -30,7 +30,7 @@ def verificar_estado_subscripcion(uid):
         return pro, open
     except Exception as e:
         print(f"Error al consultar API: {e}")
-        return False
+        return False, False  # Devuelve SIEMPRE dos valores
 
 
 single_instance_socket = None  # <-- variable global
@@ -162,6 +162,9 @@ def on_login_web_verificado(exito, id_usuario_perfil, uid, session_manager):
     # verificar estado de suscripción en Firebase
     pro, open = verificar_estado_subscripcion(uid)
 
+    session_manager = SessionManager()
+    open_  = session_manager.get_open()
+
     if pro and not open:
         #$pasar variable open a true para indicar que la sesion esta activa
         
@@ -172,13 +175,22 @@ def on_login_web_verificado(exito, id_usuario_perfil, uid, session_manager):
         start_thread(thread_change_false_open)
 
         window = Inicio(id_usuario_perfil)
+
+    elif not pro and not open:
+        QMessageBox.critical(None, "Sin conexión", "No hay conexión a internet")
+        window = InicioWeb()
+
+    elif open and open_:
+        print("la cuenta se cerro en estado de Reconectando")
+        window = InicioWeb()
+
     elif not pro:
         print("El usuario no tiene suscripción Pro.")
         session_manager.clear_session()
         window = InicioWeb()
+
     else:
         print("La cuenta se encuentra abierta en otra sesión.")
-        session_manager.clear_session()
         window = InicioWeb()
 
     window.show()

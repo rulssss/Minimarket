@@ -5090,11 +5090,11 @@ class BuscarDatosTab:
         self.venta_promedio_semana_thread = TraerVentaPromedioSemanaThread(self.id_usuario_perfil, ano_actual, semana_actual)
         self.ganancias_totales_semana_thread = TraerGananciasTotalesSemanaThread(self.id_usuario_perfil, ano_actual, semana_actual)
 
-        self.ventas_totales_semana_thread.resultado.connect(lambda x: (print("ventas_totales", x), resultados.update({'ventas_totales': x}), check_and_update_labels()))
-        self.numero_de_ventas_semana_thread.resultado.connect(lambda x: (print("numero_de_ventas", x), resultados.update({'numero_de_ventas': x}), check_and_update_labels()))
-        self.venta_promedio_semana_thread.resultado.connect(lambda x: (print("venta_promedio", x), resultados.update({'venta_promedio': x}), check_and_update_labels()))
-        self.ganancias_totales_semana_thread.resultado.connect(lambda x: (print("ganancias_totales", x), resultados.update({'ganancias_totales': x}), check_and_update_labels()))
-        
+        self.ventas_totales_semana_thread.resultado.connect(lambda x: (resultados.update({'ventas_totales': x}), check_and_update_labels()))
+        self.numero_de_ventas_semana_thread.resultado.connect(lambda x: (resultados.update({'numero_de_ventas': x}), check_and_update_labels()))
+        self.venta_promedio_semana_thread.resultado.connect(lambda x: (resultados.update({'venta_promedio': x}), check_and_update_labels()))
+        self.ganancias_totales_semana_thread.resultado.connect(lambda x: (resultados.update({'ganancias_totales': x}), check_and_update_labels()))
+
         self.start_thread(self.ventas_totales_semana_thread)
         self.start_thread(self.numero_de_ventas_semana_thread)
         self.start_thread(self.venta_promedio_semana_thread)
@@ -7413,12 +7413,19 @@ class MainWindow(QMainWindow):
         if hasattr(self, '_cerrando') and self._cerrando:
             event.accept()
             return
-
-        #  Rechazar el evento la primera vez para mostrar el overlay
+    
+        # Verificar conexión a internet antes de guardar
+        if not self.check_internet_connection():
+            # Mostrar overlay de reconexión y cerrar inmediatamente
+            self.mostrar_overlay("r")
+            QTimer.singleShot(2000, self.cerrar_aplicacion_final)
+            return
+    
+        # Rechazar el evento la primera vez para mostrar el overlay
         event.ignore()
         self._cerrando = True  # Marcar que está cerrando
-
-        #  Crear y mostrar el overlay de guardado
+    
+        # Crear y mostrar el overlay de guardado
         self.mostrar_overlay(i=True)
         
         # Obtener el texto del QTextEdit
@@ -7427,24 +7434,22 @@ class MainWindow(QMainWindow):
         session_manager = SessionManager()
         #hilo para cambiar la variable open a false
         uid = session_manager.get_uid()
-
-        session_manager.set_open(False)  # Cambia el valor en el cache local
-        
+     
         thread_change_false_open = Cambiar_False_open(uid)
         self.start_thread(thread_change_false_open)
-
+    
         # Crear y ejecutar el hilo de guardado
         self.guardar_cerrar_thread = GuardarAlCerrarThread(texto, usuario, self.id_usuario_perfil)
-
+    
         def on_guardado_completado(exito):
             if not exito:
                 # Ocultar el overlay si existe en caso de error
                 if hasattr(self, 'overlay'):
                     self.overlay.hide()
-
+    
             # Ocultar el overlay y cerrar después de un breve delay
             QTimer.singleShot(3000, self.cerrar_aplicacion_final)
-
+    
         self.guardar_cerrar_thread.resultado.connect(on_guardado_completado)
         self.start_thread(self.guardar_cerrar_thread)
 

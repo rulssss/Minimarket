@@ -136,6 +136,10 @@ class InicioWeb(QWidget):
             self.start_thread(self.login_thread_verificar)
 
         else:
+
+            session_manager = SessionManager()
+            open_cache = session_manager.get_open()
+
             try: 
                 open_dato = datos_usuario.get('open', False)
 
@@ -148,6 +152,15 @@ class InicioWeb(QWidget):
                     label_32.setStyleSheet("color: red; font-weight: bold")
                     label_32.setText("Usuario sin suscripción 'Pro'\n no puede iniciar sesión")
                 
+                push_button_15.setEnabled(True)
+
+            elif open_cache and open_dato:
+                
+                if label_32:
+                    label_32.setStyleSheet("color: red; font-weight: bold")
+                    label_32.setAlignment(Qt.AlignCenter)
+                    label_32.setText("Usted cerró el programa en estado 'Reconectando'\n aguarde 5 minutos.")
+
                 push_button_15.setEnabled(True)
 
             elif open_dato is True:

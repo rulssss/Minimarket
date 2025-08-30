@@ -38,11 +38,11 @@ class SessionManager:
         session = self.load_session()
         return session.get('uid', '') if session else ''
     
-    def set_open(self, value: bool):
-        session = self.load_session()
-        if session:
-            session['open'] = value
-            self.save_session(session.get('email', ''), session.get('uid', ''), value)
+    #def set_open(self, value: bool):
+    #    session = self.load_session()
+    #    if session:
+    #        session['open'] = value
+    #        self.save_session(session.get('email', ''), session.get('uid', ''), value)
 
     def save_session(self, email, uid, open_):
         """Guarda la sesión del usuario cifrada"""
