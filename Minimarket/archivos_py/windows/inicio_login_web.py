@@ -136,6 +136,12 @@ class InicioWeb(QWidget):
             self.start_thread(self.login_thread_verificar)
 
         else:
+            try: 
+                open_dato = datos_usuario.get('open', False)
+
+            except AttributeError:
+                open_dato = False
+
             if datos_usuario == "Usuario sin suscripción Pro":
             
                 if label_32:
@@ -144,7 +150,7 @@ class InicioWeb(QWidget):
                 
                 push_button_15.setEnabled(True)
 
-            elif datos_usuario.get('open', False):
+            elif open_dato is True:
                 if label_32:
                     label_32.setStyleSheet("color: red; font-weight: bold")
                     label_32.setText("La cuenta se encuentra abierta en otra sesión.")

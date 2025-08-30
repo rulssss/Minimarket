@@ -2118,3 +2118,17 @@ class TraerAnios(QThread):
         except Exception as e:
             print(f"Error al traer años con datos: {e}")
             self.resultado.emit([])
+
+
+class HeartbeatThread(QThread):
+    def __init__(self, uid, api_url):
+        super().__init__()
+        self.uid = uid
+        self.api_url = api_url
+
+    def run(self):
+        try:
+            url = f"{self.api_url}/api/heartbeat"
+            requests.post(url, json={"uid": self.uid}, timeout=5)
+        except Exception as e:
+            print(f"Error enviando heartbeat: {e}")

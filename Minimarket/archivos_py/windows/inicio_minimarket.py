@@ -57,7 +57,6 @@ class DatosTab:
         self.button19_connected = False
         self.button34_connected = False
         self.button_agregar = False
-        self.delete_data = False
 
         global usuario_activo
 
@@ -195,7 +194,7 @@ class DatosTab:
             
             
     def actualizar_variables_globales_de_uso(self, r, callback=None):
-        global categorias , proveedores, productos, usuarios, metodos_pago
+        global categorias , proveedores, productos, usuarios, metodos_pago, usuarios_cache
      
         global categorias_cache, proveedores_cache, productos_cache
         global productos_por_id_cache, productos_por_nombre_cache
@@ -483,7 +482,7 @@ class DatosTab:
             input_proveedor.setCurrentIndex(0)
 
     def validate_and_process_inputs(self):  
-        global usuario_activo, productos_cache
+        global usuario_activo, productos_cache , productos_por_nombre_cache
         button19 = self.ui.frame_5.findChild(QPushButton, "pushButton_19")
         button20 = self.ui.frame_5.findChild(QPushButton, "pushButton_20")
 
@@ -7171,6 +7170,9 @@ class MainWindow(QMainWindow):
         global usuario_activo
         usuario_activo = self.usuario # se inicializa la variable global usuario para que sea la misma que la del mainwindow
         
+        self.heartbeat_timer = QTimer(self)
+        self.heartbeat_timer.timeout.connect(self.enviar_heartbeat)
+        self.heartbeat_timer.start(30000)  # 30 segundos
 
         # Establece el icono y el título de la ventana principal
         self.setWindowIcon(QIcon(icon_path))
@@ -7180,6 +7182,14 @@ class MainWindow(QMainWindow):
         QTimer.singleShot(0, lambda: self.mostrar_overlay(i=False))
         
         QTimer.singleShot(500, self.inicializar_aplicacion)  # Esperar 500ms antes de inicializar
+
+    # enviar signal de vida a firebase
+    def enviar_heartbeat(self):
+        API_URL = "https://web-production-aa989.up.railway.app"
+        session_manager = SessionManager()
+        uid = session_manager.get_uid()
+        self.heartbeat_thread = HeartbeatThread(uid, API_URL)
+        self.heartbeat_thread.start()
 
 
     def logout(self):
@@ -7486,9 +7496,13 @@ class MainWindow(QMainWindow):
 
     def cerrar_aplicacion_final(self):
         """Cerrar la aplicación después de guardar"""
-       
+
+        
         if hasattr(self, 'overlay'):
             self.overlay.hide()
+        
+        # Detén el timer al cerrar la ventana
+        self.heartbeat_timer.stop()
 
         # Cerrar la aplicación
         self.close()
