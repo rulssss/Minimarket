@@ -20,6 +20,7 @@ import sys
 import warnings
 from archivos_py.threads.db_thread_loginWeb_api import Cambiar_False_open
 warnings.filterwarnings("ignore", message=".*Failed to disconnect.*")
+import socket
 
 # ------------ VARIABLES DE CACHE GLOBALES ------------
 categorias_cache = None
@@ -7176,7 +7177,10 @@ class MainWindow(QMainWindow):
 
         # Establece el icono y el título de la ventana principal
         self.setWindowIcon(QIcon(icon_path))
-        self.setWindowTitle("rls")  
+        self.setWindowTitle("rls")
+
+        #Verificar internet
+        self.iniciar_monitor_internet()  
 
         # Mostrar overlay de carga al iniciar
         QTimer.singleShot(0, lambda: self.mostrar_overlay(i=False))
@@ -7191,7 +7195,36 @@ class MainWindow(QMainWindow):
         self.heartbeat_thread = HeartbeatThread(uid, API_URL)
         self.heartbeat_thread.start()
 
+    # funciones para verificar la conexión a internet
+    def check_internet_connection(self, host="8.8.8.8", port=53, timeout=3):
+        """Devuelve True si hay internet, False si no."""
+        try:
+            socket.setdefaulttimeout(timeout)
+            socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, port))
+            return True
+        except Exception:
+            return False
 
+    def iniciar_monitor_internet(self):
+        self.internet_overlay_visible = False
+        self.internet_timer = QTimer(self)
+        self.internet_timer.timeout.connect(self.verificar_internet_y_overlay)
+        self.internet_timer.start(3000)  # Chequea cada 3 segundos
+
+    def verificar_internet_y_overlay(self):
+        if not self.check_internet_connection():
+            if not getattr(self, "internet_overlay_visible", False):
+                self.mostrar_overlay("r")
+                self.internet_overlay_visible = True
+        else:
+            if getattr(self, "internet_overlay_visible", False):
+                if hasattr(self, 'overlay') and getattr(self, "overlay_tipo", None) == "reconectando":
+                    self.overlay.hide()
+                self.internet_overlay_visible = False
+
+    #######################################################################
+    
+    #funcion para desloguearse y vovler al loguin rls
     def logout(self):
         """Cerrar sesión y volver al login"""
         try:
@@ -7258,7 +7291,7 @@ class MainWindow(QMainWindow):
             msg.setText(f"Error al cerrar sesión: {e}")
             msg.setIcon(QMessageBox.Critical)
             msg.exec()
-
+    ################################################################
 
     def inicializar_aplicacion(self):
         """Inicializar la aplicación después de mostrar el overlay"""
@@ -7316,8 +7349,8 @@ class MainWindow(QMainWindow):
 
 
     def ocultar_overlay_inicial(self):
-        """Ocultar el overlay de carga inicial"""
-        if hasattr(self, 'overlay'):
+        """Ocultar el overlay de carga inicial, pero no si es de reconexión"""
+        if hasattr(self, 'overlay') and getattr(self, "overlay_tipo", None) != "reconectando":
             self.overlay.hide()
 
 
@@ -7441,12 +7474,18 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout(self.overlay)
         layout.setAlignment(Qt.AlignCenter)
         layout.setContentsMargins(0, 0, 0, 0)  # Sin márgenes para que ocupe toda la ventana
-        if i:
-            # Crear el label con el mensaje
+
+        # mensaje overlay
+        if i == "r":
+            label = QLabel("Reconectando")
+            self.overlay_tipo = "reconectando"
+
+        elif i:
             label = QLabel("Guardando anotaciones")
+            self.overlay_tipo = "guardando"
         else:
-             # Crear el label con el mensaje
             label = QLabel("Cargando datos")
+            self.overlay_tipo = "cargando"
     
         label.setStyleSheet("""
                 QLabel {
