@@ -10,6 +10,8 @@ import os
 import sys
 import warnings
 warnings.filterwarnings("ignore", message=".*Failed to disconnect.*")
+from archivos_py.db.sesiones import SessionManager
+from archivos_py.threads.db_thread_loginWeb_api import Cambiar_False_open
 
 #se establece el directorio base para los recursos
 if getattr(sys, 'frozen', False):
@@ -130,6 +132,7 @@ class Inicio(QWidget):
             label_21.setStyleSheet("color: red;")
             QTimer.singleShot(6000, lambda: label_21.setStyleSheet("color: transparent;"))
         else:
+
             label_21.setText("Ingresando...")
             label_21.setStyleSheet("color: green;")
             QTimer.singleShot(6000, lambda: label_21.setStyleSheet("color: transparent;"))
@@ -137,16 +140,24 @@ class Inicio(QWidget):
 
     def start_thread(self, thread):
         self.threads.append(thread)
-        thread.finished.connect(lambda: self.threads.remove(thread))
+        thread.finished.connect(lambda: self.threads.remove(thread) if thread in self.threads else None)
         thread.start()
 
     def closeEvent(self, event):
+        # Cambiar open a False en el backend antes de cerrar
+        session_manager = SessionManager()
+        uid = session_manager.get_uid()
+
+        session_manager.set_open(False)  # Cambia el valor en el cache local
+
+        if uid:
+            self.thread_cambiar_false_open = Cambiar_False_open(uid)
+            self.start_thread(self.thread_cambiar_false_open)
+
+        # Detener y limpiar otros threads
         for thread in list(self.threads):  # Copia para evitar modificación durante iteración
-            if hasattr(thread, 'stop'):
-                thread.stop()
             thread.wait()
-        self.threads.clear()
-        event.accept()
+
 
     def open_main_window(self, id_usuario_perfil, usuario, account):
         print("se inicia el minimarket")

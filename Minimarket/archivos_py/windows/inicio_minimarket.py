@@ -7427,6 +7427,8 @@ class MainWindow(QMainWindow):
         session_manager = SessionManager()
         #hilo para cambiar la variable open a false
         uid = session_manager.get_uid()
+
+        session_manager.set_open(False)  # Cambia el valor en el cache local
         
         thread_change_false_open = Cambiar_False_open(uid)
         self.start_thread(thread_change_false_open)
