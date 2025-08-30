@@ -7193,7 +7193,7 @@ class MainWindow(QMainWindow):
         session_manager = SessionManager()
         uid = session_manager.get_uid()
         self.heartbeat_thread = HeartbeatThread(uid, API_URL)
-        self.heartbeat_thread.start()
+        self.start_thread(self.heartbeat_thread)
 
     # funciones para verificar la conexión a internet
     def check_internet_connection(self, host="8.8.8.8", port=53, timeout=3):
