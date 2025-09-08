@@ -1750,7 +1750,9 @@ class DatosTab:
                     label_75 = self.ui.frame_10.findChild(QLabel, "label_75")
                     label_75.setStyleSheet("color: green; font-weight: bold")
                     label_75.setText("Cargando Proveedor...")
-                   
+
+                    # poner la primera letra del nombre del proveedor en mayuscula
+                    lineEdit_14_value = lineEdit_14_value.capitalize()
                     
                     self.proveedor_thread = ProveedorThread(self.id_usuario_perfil, lineEdit_14_value, lineEdit_15_value, lineEdit_17_value)
                     self.proveedor_thread.proveedor_cargado.connect(lambda exito: self.on_proveedor_cargado(exito, lineEdit_14_value))
