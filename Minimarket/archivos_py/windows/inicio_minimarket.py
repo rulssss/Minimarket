@@ -540,7 +540,7 @@ class DatosTab:
                 label_71.setStyleSheet("color: green; font-weight: bold")
 
             # pasar primera letra del nombre a mayuscula
-            input_nombre_value = input_nombre_value[0].upper() + input_nombre_value[1:]
+            input_nombre_value = input_nombre_value.capitalize()
 
             # Lanzar el thread para agregar producto
             self.agregar_thread = AgregarProductoThread(self.id_usuario_perfil,
@@ -2369,6 +2369,9 @@ class DatosTab:
             if label_80:
                 label_80.setStyleSheet("color: green; font-weight: bold")
                 label_80.setText("Cargando categoría...")
+            
+            # pasar primera letra de la categoria a mayuscula
+            lineEdit_16_value = lineEdit_16_value.capitalize()
 
             self.cargar_categoria_thread = CargarCategoriaThread(self.id_usuario_perfil, lineEdit_16_value)
             def on_categoria_cargada(exito):
