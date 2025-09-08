@@ -15,7 +15,6 @@ from PySide6.QtGui import QIcon
 from archivos_py.ui.theme_utils import is_windows_dark_mode, apply_dark_palette
 import hashlib
 
-# se hizo cambio
 def verificar_estado_subscripcion(uid):
     """
     Consulta a la API Flask si el usuario sigue teniendo suscripción Pro.

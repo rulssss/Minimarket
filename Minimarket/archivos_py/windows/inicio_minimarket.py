@@ -539,6 +539,9 @@ class DatosTab:
                 label_70.setStyleSheet("color: green; font-weight: bold")
                 label_71.setStyleSheet("color: green; font-weight: bold")
 
+            # pasar primera letra del nombre a mayuscula
+            input_nombre_value = input_nombre_value[0].upper() + input_nombre_value[1:]
+
             # Lanzar el thread para agregar producto
             self.agregar_thread = AgregarProductoThread(self.id_usuario_perfil,
                 input_id_value, input_nombre_value, input_precio_compra_value, input_precio_venta_value,
