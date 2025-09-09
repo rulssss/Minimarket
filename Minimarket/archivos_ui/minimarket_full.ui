@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1200</width>
-    <height>800</height>
+    <width>2530</width>
+    <height>1082</height>
    </rect>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -83,6 +83,8 @@
     </item>
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
+      <!-- Todas las páginas y widgets detectados serán agregados aquí -->
+      <!-- Ejemplo de página -->
       <widget class="QWidget" name="page_9">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
@@ -133,7 +135,7 @@
         </item>
        </layout>
       </widget>
-      <!-- Más páginas y widgets pueden agregarse aquí según lo necesites -->
+      <!-- Aquí se agregarán todas las demás páginas y widgets, siguiendo la estructura del archivo py -->
      </widget>
     </item>
    </layout>
