@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1200</width>
+    <height>800</height>
+   </rect>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="maximumSize">
+       <size>
+        <width>315</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <widget class="QWidget" name="tab_1">
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item><widget class="QLabel" name="label"/></item>
+        <item><widget class="QPushButton" name="pushButton_3"/></item>
+        <item><widget class="QPushButton" name="pushButton_2"/></item>
+        <item><widget class="QPushButton" name="pushButton_4"/></item>
+        <item><widget class="QPushButton" name="pushButton"/></item>
+        <item><widget class="QPushButton" name="pushButton_8"/></item>
+        <item><widget class="QPushButton" name="pushButton_6"/></item>
+        <item><widget class="QPushButton" name="pushButton_7"/></item>
+        <item><widget class="QPushButton" name="pushButton_5"/></item>
+        <item><widget class="QPushButton" name="pushButton_9"/></item>
+        <item><widget class="QPushButton" name="pushButton_10"/></item>
+        <item><widget class="QPushButton" name="pushButton_11"/></item>
+        <item><widget class="QPushButton" name="pushButton_14"/></item>
+        <item><widget class="QPushButton" name="pushButton_18"/></item>
+        <item><widget class="QPushButton" name="pushButton_22"/></item>
+        <item><widget class="QPushButton" name="pushButton_12"/></item>
+        <item><widget class="QFrame" name="frame_9">
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item><widget class="QLabel" name="label_4"/></item>
+          <item><widget class="QLabel" name="label_31"/></item>
+         </layout>
+        </widget></item>
+        <item><widget class="QPushButton" name="pushButton_50"/></item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_3">
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item><widget class="QLabel" name="label_2"/></item>
+        <item><widget class="QPushButton" name="pushButton_15"/></item>
+        <item><widget class="QPushButton" name="pushButton_13"/></item>
+        <item><widget class="QPushButton" name="pushButton_48"/></item>
+        <item><widget class="QPushButton" name="pushButton_51"/></item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab">
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item><widget class="QLabel" name="label_3"/></item>
+        <item><widget class="QPushButton" name="pushButton_16"/></item>
+        <item><widget class="QPushButton" name="pushButton_17"/></item>
+        <item><widget class="QLabel" name="label_63"/></item>
+        <item><widget class="QTextEdit" name="textEdit_3"/></item>
+        <item><widget class="QFrame" name="frame_39">
+         <layout class="QHBoxLayout" name="horizontalLayout_10">
+          <item><widget class="QLabel" name="label_68"/></item>
+          <item><widget class="QLabel" name="label_69"/></item>
+         </layout>
+        </widget></item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+    <item>
+     <widget class="QFrame" name="frame_37">
+      <layout class="QVBoxLayout" name="verticalLayout_33">
+       <item><widget class="QLabel" name="label_66"/></item>
+       <item><widget class="QLabel" name="label_65"/></item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QStackedWidget" name="stackedWidget">
+      <widget class="QWidget" name="page_9">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QFrame" name="frame">
+          <layout class="QVBoxLayout" name="verticalLayout_5">
+           <item>
+            <widget class="QFrame" name="frame_2">
+             <layout class="QGridLayout" name="gridLayout">
+              <item row="0" column="0">
+               <widget class="QFrame" name="frame_4">
+                <layout class="QVBoxLayout" name="verticalLayout_6">
+                 <item><widget class="QLabel" name="label_8"/></item>
+                 <item><widget class="QLineEdit" name="lineEdit1"/></item>
+                </layout>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QLabel" name="label_5"/>
+              </item>
+              <item row="0" column="4">
+               <widget class="QFrame" name="frame_3">
+                <layout class="QGridLayout" name="gridLayout_2">
+                 <item row="0" column="1"><widget class="QComboBox" name="comboBox"/></item>
+                 <item row="2" column="1"><widget class="QComboBox" name="comboBox_2"/></item>
+                 <item row="2" column="0"><widget class="QLabel" name="label_6"/></item>
+                 <item row="0" column="0"><widget class="QLabel" name="label_7"/></item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QFrame" name="frame_tabla_productos">
+             <layout class="QVBoxLayout" name="verticalLayout_7">
+              <item><widget class="QFrame" name="frame_59">
+               <layout class="QHBoxLayout" name="horizontalLayout_17">
+                <item><widget class="QLabel" name="label_120"/></item>
+                <item><widget class="QLabel" name="label_121"/></item>
+               </layout>
+              </widget></item>
+              <item><widget class="QTableWidget" name="tableWidget"/></item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <!-- Más páginas y widgets pueden agregarse aquí según lo necesites -->
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
