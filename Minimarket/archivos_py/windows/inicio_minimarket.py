@@ -7417,6 +7417,13 @@ class MainWindow(QMainWindow):
         self.save_timer.start(3000)  # Esperar 3 segundos antes de guardar
 
     def guardar_y_cerrar(self, event, textEdit, usuario):
+        # cerrar facturero si esta abierto al cerrar
+        if self.administracion_tab.facturero_ventas_window or self.administracion_tab.facturero_compras_window:
+            if self.administracion_tab.facturero_ventas_window:
+                self.administracion_tab.cerrar_facturero_venta()
+            if self.administracion_tab.facturero_compras_window:
+                self.administracion_tab.cerrar_facturero_compras()
+
         # Si ya está en proceso de cierre, permitir el cierre
         if hasattr(self, '_cerrando') and self._cerrando:
             event.accept()
