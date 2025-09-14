@@ -177,7 +177,13 @@ def on_login_web_verificado(exito, id_usuario_perfil, uid, session_manager):
         window = Inicio(id_usuario_perfil)
 
     elif not pro and not open:
-        QMessageBox.critical(None, "Sin conexión", "No hay conexión a internet")
+        icon_path = os.path.join(BASE_DIR, "archivos_py", "resources", "r.ico")
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Critical)
+        msg.setWindowTitle("Sin conexión")
+        msg.setText("No hay conexión a internet")
+        msg.setWindowIcon(QIcon(icon_path))
+        msg.exec()
         window = InicioWeb()
 
     elif open and open_:

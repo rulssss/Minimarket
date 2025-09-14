@@ -5,7 +5,7 @@ DefaultDirName={pf}\rls
 DefaultGroupName=rls
 OutputDir=.
 OutputBaseFilename=rlsSetup
-SetupIconFile=C:\Users\mariano\Desktop\proyectos\mnmkt\Minimarket\archivos_py\resources\r.ico
+SetupIconFile=C:\Users\maria\Desktop\proyectos\Minimarket\Minimarket\archivos_py\resources\r.ico
 
 [Files]
 Source: "dist\rls.exe"; DestDir: "{app}"; Flags: ignoreversion
