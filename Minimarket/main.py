@@ -32,6 +32,15 @@ def verificar_estado_subscripcion(uid):
         print(f"Error al consultar API: {e}")
         return False, False  # Devuelve SIEMPRE dos valores
 
+# funciones para verificar la conexión a internet
+def check_internet_connection(host="8.8.8.8", port=53, timeout=3):
+    """Devuelve True si hay internet, False si no."""
+    try:
+        socket.setdefaulttimeout(timeout)
+        socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, port))
+        return True
+    except Exception:
+        return False
 
 single_instance_socket = None  # <-- variable global
 
@@ -126,27 +135,38 @@ def iniciar_aplicacion():
     #session_manager.clear_session()
     ####################################
 
-
-    if session_manager.is_logged_in():
-        # Si hay sesión activa, ir directamente al inicio
-        print("Sesión activa encontrada, iniciando aplicación...")
-        # Obtener datos guardados
-        email = session_manager.get_email()
-        uid = session_manager.get_uid()
-        #open = session_manager.get_open()
-
-        id_usuario_perfil = firebase_uid_to_uuid(uid)
-        
-        # Ejecutar el hilo para llevar el UID a functions para poder enviar querys
-        login_thread_verificar = Login_web_Thread_verificar_existencia_mail(email, id_usuario_perfil)
-        login_thread_verificar.resultado.connect(lambda exito, id_usuario_perfil: on_login_web_verificado(exito, id_usuario_perfil, uid, session_manager))
-        start_thread(login_thread_verificar)
+    if check_internet_connection() is False:
+        icon_path = os.path.join(BASE_DIR, "archivos_py", "resources", "r.ico")
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Critical)
+        msg.setWindowTitle("Sin conexión")
+        msg.setText("No hay conexión a internet")
+        msg.setWindowIcon(QIcon(icon_path))
+        msg.exec()
+        window = InicioWeb()
 
     else:
-        # Si no hay sesión, mostrar login
-        print("No hay sesión activa, mostrando login...")
-        window = InicioWeb()
-        window.show()
+
+        if session_manager.is_logged_in():
+            # Si hay sesión activa, ir directamente al inicio
+            print("Sesión activa encontrada, iniciando aplicación...")
+            # Obtener datos guardados
+            email = session_manager.get_email()
+            uid = session_manager.get_uid()
+            #open = session_manager.get_open()
+
+            id_usuario_perfil = firebase_uid_to_uuid(uid)
+
+            # Ejecutar el hilo para llevar el UID a functions para poder enviar querys
+            login_thread_verificar = Login_web_Thread_verificar_existencia_mail(email, id_usuario_perfil)
+            login_thread_verificar.resultado.connect(lambda exito, id_usuario_perfil: on_login_web_verificado(exito, id_usuario_perfil, uid, session_manager))
+            start_thread(login_thread_verificar)
+
+        else:
+            # Si no hay sesión, mostrar login
+            print("No hay sesión activa, mostrando login...")
+            window = InicioWeb()
+            window.show()
 
 def firebase_uid_to_uuid(uid):
         import hashlib
@@ -175,16 +195,6 @@ def on_login_web_verificado(exito, id_usuario_perfil, uid, session_manager):
         start_thread(thread_change_false_open)
 
         window = Inicio(id_usuario_perfil)
-
-    elif not pro and not open:
-        icon_path = os.path.join(BASE_DIR, "archivos_py", "resources", "r.ico")
-        msg = QMessageBox()
-        msg.setIcon(QMessageBox.Critical)
-        msg.setWindowTitle("Sin conexión")
-        msg.setText("No hay conexión a internet")
-        msg.setWindowIcon(QIcon(icon_path))
-        msg.exec()
-        window = InicioWeb()
 
     elif open and open_:
         print("la cuenta se cerro en estado de Reconectando")
