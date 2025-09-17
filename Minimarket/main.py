@@ -144,6 +144,7 @@ def iniciar_aplicacion():
         msg.setWindowIcon(QIcon(icon_path))
         msg.exec()
         window = InicioWeb()
+        window.show()
 
     else:
 
