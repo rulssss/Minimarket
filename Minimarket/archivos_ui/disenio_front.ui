@@ -26,7 +26,24 @@
    <string>MainWindow</string>
   </property>
   <property name="autoFillBackground">
-   <bool>true</bool>
+   <bool>false</bool>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">
+QWidget {
+    background-color: #ffffff; /* Fondo blanco */
+}
+
+QPushButton {
+    background-color: #f8f9fa;      /* Gris muy claro */
+    color: #222222;                 /* Texto oscuro */
+}
+QPushButton:hover {
+    background-color: #e2e6ea;      /* Un poco más oscuro al pasar el mouse */
+}
+QPushButton:pressed {
+    background-color: #d1d5d8;      /* Gris más oscuro al presionar */
+}</string>
   </property>
   <property name="animated">
    <bool>true</bool>
