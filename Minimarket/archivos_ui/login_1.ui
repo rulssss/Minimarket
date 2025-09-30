@@ -52,8 +52,16 @@ QPushButton:pressed {
        <height>39</height>
       </size>
      </property>
+     <property name="styleSheet">
+      <string notr="true">QLineEdit {
+    background-color: #f0f0f0;
+}
+QComboBox {
+    background-color: #f0f0f0;
+}</string>
+     </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="page_1">
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -1240,18 +1248,18 @@ QPushButton:pressed {
          </property>
         </widget>
        </item>
-       <item>
-        <spacer name="horizontalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Orientation::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
+       <item alignment="Qt::AlignmentFlag::AlignHCenter">
+        <widget class="QLabel" name="label_28">
+         <property name="maximumSize">
           <size>
-           <width>40</width>
+           <width>16777215</width>
            <height>20</height>
           </size>
          </property>
-        </spacer>
+         <property name="text">
+          <string>label error</string>
+         </property>
+        </widget>
        </item>
        <item alignment="Qt::AlignmentFlag::AlignHCenter">
         <widget class="QPushButton" name="pushButton_13">
