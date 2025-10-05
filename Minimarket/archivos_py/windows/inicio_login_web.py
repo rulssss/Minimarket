@@ -8,6 +8,7 @@ import webbrowser  # Agregué este import
 from PySide6.QtCore import Qt
 from archivos_py.db.sesiones import SessionManager
 import os
+from archivos_py.threads.db_thread_loginWeb_api import Cambiar_False_open
  
 if getattr(sys, 'frozen', False):
     BASE_DIR = os.path.dirname(sys.executable)
@@ -40,30 +41,32 @@ class InicioWeb(QWidget):
         self.threads.append(thread)
         thread.finished.connect(lambda: self.threads.remove(thread) if thread in self.threads else None)
         thread.start()
-        
+    
 
     def open_login_web_window(self):
 
-        self.ui.stackedWidget.setCurrentIndex(0)
+        self.ui.stackedWidget.setCurrentIndex(1)  # Cambia al índice del stack que contiene los elementos de login web
 
 
-        line_edit_11 = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_11")
-        line_edit_12 = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_12")
-        push_button_15 = self.ui.stackedWidget.findChild(QWidget, "pushButton_15")
-        push_button_16 = self.ui.stackedWidget.findChild(QWidget, "pushButton_16")
-        label_32 = self.ui.stackedWidget.findChild(QWidget, "label_32")
-        if label_32:
-            label_32.setStyleSheet("color: transparent")
+        line_edit_11 = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_11") # line edit email
+        line_edit_12 = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_12") # line edit contraseña
+        push_button_15 = self.ui.stackedWidget.findChild(QWidget, "pushButton_15") # boton ingresar
+        push_button_16 = self.ui.stackedWidget.findChild(QWidget, "pushButton_16") # boton olvide mi contraseña
+        label_27 = self.ui.stackedWidget.findChild(QWidget, "label_27") # label error
+        if label_27:
+            label_27.setStyleSheet("color: transparent")
 
         if push_button_15:
             push_button_15.setShortcut(Qt.Key_Return)
             push_button_15.clicked.connect(self.open_verificar_contrasenia)
 
         if line_edit_11:
-            line_edit_11.setPlaceholderText("Email")
+            line_edit_11.setAlignment(Qt.AlignCenter)
+            line_edit_11.setPlaceholderText("E-mail")
             line_edit_11.setClearButtonEnabled(True)
 
         if line_edit_12:
+            line_edit_12.setAlignment(Qt.AlignCenter)
             line_edit_12.setEchoMode(QLineEdit.Password)
             line_edit_12.setPlaceholderText("Contraseña")
 
@@ -75,7 +78,7 @@ class InicioWeb(QWidget):
 
         line_edit_11 = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_11")
         line_edit_12 = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_12")
-        label_32 = self.ui.stackedWidget.findChild(QWidget, "label_32")
+        label_27 = self.ui.stackedWidget.findChild(QWidget, "label_27")
         push_button_15 = self.ui.stackedWidget.findChild(QWidget, "pushButton_15")
 
         if push_button_15:
@@ -91,9 +94,9 @@ class InicioWeb(QWidget):
             self.login_thread.resultado.connect(self.handle_login_finished)
             self.start_thread(self.login_thread)
         else:
-            if label_32:
-                label_32.setStyleSheet("color: red; font-weight: bold")
-                label_32.setText("Por favor, completa todos los campos")
+            if label_27:
+                label_27.setStyleSheet("color: red; font-weight: bold")
+                label_27.setText("Por favor, completa todos los campos")
 
             push_button_15.setEnabled(True)
 
@@ -108,7 +111,7 @@ class InicioWeb(QWidget):
     def handle_login_finished(self, exito, datos_usuario):
         
         push_button_15 = self.ui.stackedWidget.findChild(QWidget, "pushButton_15")
-        label_32 = self.ui.stackedWidget.findChild(QWidget, "label_32")
+        label_27 = self.ui.stackedWidget.findChild(QWidget, "label_27")
 
         #print("datos del usuario:", datos_usuario)
         
@@ -118,9 +121,9 @@ class InicioWeb(QWidget):
 
         if exito and not datos_usuario.get('open', False):
             # Aquí puedes manejar el caso de éxito
-            if label_32:
-                label_32.setStyleSheet("color: green; font-weight: bold")
-                label_32.setText("Login exitoso Ingresando...")
+            if label_27:
+                label_27.setStyleSheet("color: green; font-weight: bold")
+                label_27.setText("Login exitoso Ingresando...")
 
              # Extraer solo uid y subscription de los datos del usuario
             uid = datos_usuario.get('uid', '')
@@ -148,32 +151,32 @@ class InicioWeb(QWidget):
 
             if datos_usuario == "Usuario sin suscripción Pro":
             
-                if label_32:
-                    label_32.setStyleSheet("color: red; font-weight: bold")
-                    label_32.setText("Usuario sin suscripción 'Pro'\n no puede iniciar sesión")
-                
+                if label_27:
+                    label_27.setStyleSheet("color: red; font-weight: bold")
+                    label_27.setText("Usuario sin suscripción 'Pro'\n no puede iniciar sesión")
+
                 push_button_15.setEnabled(True)
 
             elif open_cache and open_dato:
-                
-                if label_32:
-                    label_32.setStyleSheet("color: red; font-weight: bold")
-                    label_32.setAlignment(Qt.AlignCenter)
-                    label_32.setText("Usted cerró el programa en estado 'Reconectando'\n aguarde 5 minutos.")
+
+                if label_27:
+                    label_27.setStyleSheet("color: red; font-weight: bold")
+                    label_27.setAlignment(Qt.AlignCenter)
+                    label_27.setText("Usted cerró el programa en estado 'Reconectando'\n aguarde 5 minutos.")
 
                 push_button_15.setEnabled(True)
 
             elif open_dato is True:
-                if label_32:
-                    label_32.setStyleSheet("color: red; font-weight: bold")
-                    label_32.setText("La cuenta se encuentra abierta en otra sesión.")
+                if label_27:
+                    label_27.setStyleSheet("color: red; font-weight: bold")
+                    label_27.setText("La cuenta se encuentra abierta en otra sesión.")
 
                 push_button_15.setEnabled(True)
 
             else:
-                if label_32:
-                    label_32.setStyleSheet("color: red; font-weight: bold")
-                    label_32.setText("Usuario o contraseña incorrectos")
+                if label_27:
+                    label_27.setStyleSheet("color: red; font-weight: bold")
+                    label_27.setText("Usuario o contraseña incorrectos")
 
                 push_button_15.setEnabled(True)
 

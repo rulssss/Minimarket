@@ -217,30 +217,30 @@ def start_thread(thread):
         thread.finished.connect(lambda: threads.remove(thread) if thread in threads else None)
         thread.start()
         
-#inicio del login web y luego al programa si no inicio sesion web y si inicio directo al programa
+#inicio del login web y luego al programa si no inicio sesion web y sino inicio directo al programa
 
-#if __name__ == "__main__":
-#    app = QApplication(sys.argv)
-#    app.setStyle("Fusion")
-#    if is_windows_dark_mode():
-#        apply_dark_palette(app)
-#
-#    # Ejecutar el hilo para obtener la versión antes de mostrar la ventana principal
-#    obtener_version_thread = ObtenerVersionThread()
-#    obtener_version_thread.version_obtenida.connect(on_version_obtenida)
-#    start_thread(obtener_version_thread)
-#
-#    sys.exit(app.exec())
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    app.setStyle("Fusion")
+    if is_windows_dark_mode():
+        apply_dark_palette(app)
+
+    # Ejecutar el hilo para obtener la versión antes de mostrar la ventana principal
+    obtener_version_thread = ObtenerVersionThread()
+    obtener_version_thread.version_obtenida.connect(on_version_obtenida)
+    start_thread(obtener_version_thread)
+
+    sys.exit(app.exec())
     
 
 
 # inicio del login pruebas del login rls
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    app.setStyle("Fusion")
-    window = Inicio(id_usuario_perfil="1ac97aec-4745-2d2c-c85d-fbed8ba498bf")
-    window.show()
-    sys.exit(app.exec())
+#if __name__ == "__main__":
+#    app = QApplication(sys.argv)
+#    app.setStyle("Fusion")
+#    window = Inicio(id_usuario_perfil="1ac97aec-4745-2d2c-c85d-fbed8ba498bf")
+#    window.show()
+#    sys.exit(app.exec())
 
 
 # inicio del minimarket SOLO para pruebas ya que se abre el minimarket sin loguin

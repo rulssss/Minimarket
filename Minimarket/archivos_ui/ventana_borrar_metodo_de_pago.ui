@@ -40,6 +40,10 @@ QPushButton:hover {
 }
 QPushButton:pressed {
     background-color: #d1d5d8;      /* Gris más oscuro al presionar */
+}
+
+QComboBox {
+    background-color: #f0f0f0;
 }</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">

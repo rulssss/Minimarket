@@ -7260,6 +7260,16 @@ class MainWindow(QMainWindow):
 
             if respuesta == QMessageBox.Ok:
                 # Usuario confirmó, proceder con el cierre de sesión
+
+                #cambiar variable open antes de limpiar sesión
+                session_manager = SessionManager()
+                #hilo para cambiar la variable open a false
+                uid = session_manager.get_uid()
+
+                self.thread_cambiar_false_open = Cambiar_False_open(uid)
+                self.start_thread(self.thread_cambiar_false_open)
+
+
                 # Limpiar la sesión
                 self.session_manager.clear_session()
 
@@ -7286,7 +7296,7 @@ class MainWindow(QMainWindow):
                     sys.exit()
             else:
                 # Usuario canceló, no hacer nada
-                print("Cierre de sesión cancelado por el usuario")
+                print("Cierre de sesión cancelado por el administrador.")
                 return
 
         except Exception as e:
