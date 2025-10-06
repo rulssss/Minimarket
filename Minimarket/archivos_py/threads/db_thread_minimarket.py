@@ -2131,4 +2131,4 @@ class HeartbeatThread(QThread):
             url = f"{self.api_url}/api/heartbeat"
             requests.post(url, json={"uid": self.uid}, timeout=5)
         except Exception as e:
-            print(f"Error enviando heartbeat: {e}")
+            print(f"Error enviando heartbeat minimarket: {e}")

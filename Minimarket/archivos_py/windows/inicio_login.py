@@ -2,7 +2,7 @@ from PySide6.QtWidgets import QWidget, QLineEdit
 from PySide6.QtGui import QIcon, Qt
 from PySide6.QtCore import QTimer, QThread
 from archivos_py.ui.login import Ui_Form_login  # Importa la clase generada por qt Designer
-from archivos_py.threads.db_threads_login import LoginThread, RegistroCheckThread, EnviarCodigoThread, CodigoOtroAdminThread, RegistrarUsuarioThread, VerificarYEnviarCodigoThread, ActualizarContrasenaThread
+from archivos_py.threads.db_threads_login import LoginThread, RegistroCheckThread, EnviarCodigoThread, CodigoOtroAdminThread, RegistrarUsuarioThread, VerificarYEnviarCodigoThread, ActualizarContrasenaThread, HeartbeatThread
 from PySide6 import QtGui
 from archivos_py.windows.inicio_minimarket import MainWindow
 from archivos_py.threads.db_thread_minimarket import MovimientoLoginThread
@@ -32,6 +32,10 @@ class Inicio(QWidget):
         # Inicializa los atributos necesarios para almacenar threads
         self.threads = []
 
+        self.heartbeat_timer = QTimer(self)
+        self.heartbeat_timer.timeout.connect(self.enviar_heartbeat)
+        self.heartbeat_timer.start(30000)  # 30 segundos
+
         # Atributo para rastrear si el botón ya está conectado
         self.pushButton_connected = False
 
@@ -40,6 +44,14 @@ class Inicio(QWidget):
         self.setWindowTitle("rls")
 
         self.open_login_window()
+
+    # enviar signal de vida a firebase
+    def enviar_heartbeat(self):
+        API_URL = "https://web-production-aa989.up.railway.app"
+        session_manager = SessionManager()
+        uid = session_manager.get_uid()
+        self.heartbeat_thread = HeartbeatThread(uid, API_URL)
+        self.start_thread(self.heartbeat_thread)
 
     # funcion para abrir la ventana de login
     def open_login_window(self):
@@ -165,6 +177,10 @@ class Inicio(QWidget):
 
     def open_main_window(self, id_usuario_perfil, usuario, account):
         print("se inicia el minimarket")
+
+        # Detén el timer al cerrar la ventana
+        self.heartbeat_timer.stop()
+
         self._cerrando_para_main = True  # <--- Marca que el cierre es para abrir MainWindow
         self.main_window = MainWindow(id_usuario_perfil, usuario, account)
         self.main_window.resize(1690, 900)
