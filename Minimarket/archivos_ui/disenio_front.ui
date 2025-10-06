@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1627</width>
-    <height>861</height>
+    <height>852</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -66,7 +66,7 @@ QComboBox {
        </size>
       </property>
       <property name="currentIndex">
-       <number>7</number>
+       <number>12</number>
       </property>
       <widget class="QWidget" name="widget">
        <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1965,7 +1965,7 @@ QComboBox {
         <item row="0" column="0">
          <widget class="QFrame" name="frame_18">
           <property name="frameShape">
-           <enum>QFrame::Shape::StyledPanel</enum>
+           <enum>QFrame::Shape::NoFrame</enum>
           </property>
           <property name="frameShadow">
            <enum>QFrame::Shadow::Raised</enum>
@@ -2189,7 +2189,7 @@ QComboBox {
         <item row="0" column="0">
          <widget class="QFrame" name="frame_21">
           <property name="frameShape">
-           <enum>QFrame::Shape::StyledPanel</enum>
+           <enum>QFrame::Shape::NoFrame</enum>
           </property>
           <property name="frameShadow">
            <enum>QFrame::Shadow::Raised</enum>
@@ -2559,7 +2559,7 @@ QComboBox {
         <item row="0" column="0">
          <widget class="QFrame" name="frame_23">
           <property name="frameShape">
-           <enum>QFrame::Shape::StyledPanel</enum>
+           <enum>QFrame::Shape::NoFrame</enum>
           </property>
           <property name="frameShadow">
            <enum>QFrame::Shadow::Raised</enum>
@@ -2923,7 +2923,7 @@ QComboBox {
         <item row="0" column="0">
          <widget class="QFrame" name="frame_27">
           <property name="frameShape">
-           <enum>QFrame::Shape::StyledPanel</enum>
+           <enum>QFrame::Shape::NoFrame</enum>
           </property>
           <property name="frameShadow">
            <enum>QFrame::Shadow::Raised</enum>
@@ -3351,7 +3351,7 @@ QComboBox {
         <item row="0" column="0">
          <widget class="QFrame" name="frame_26">
           <property name="frameShape">
-           <enum>QFrame::Shape::StyledPanel</enum>
+           <enum>QFrame::Shape::NoFrame</enum>
           </property>
           <property name="frameShadow">
            <enum>QFrame::Shadow::Raised</enum>
@@ -3600,7 +3600,7 @@ QComboBox {
         <item row="0" column="0">
          <widget class="QFrame" name="frame_38">
           <property name="frameShape">
-           <enum>QFrame::Shape::StyledPanel</enum>
+           <enum>QFrame::Shape::NoFrame</enum>
           </property>
           <property name="frameShadow">
            <enum>QFrame::Shadow::Raised</enum>
@@ -4018,7 +4018,7 @@ QComboBox {
         <item row="0" column="0">
          <widget class="QFrame" name="frame_45">
           <property name="frameShape">
-           <enum>QFrame::Shape::StyledPanel</enum>
+           <enum>QFrame::Shape::NoFrame</enum>
           </property>
           <property name="frameShadow">
            <enum>QFrame::Shadow::Raised</enum>
@@ -4151,6 +4151,12 @@ QComboBox {
               </item>
               <item row="4" column="4">
                <widget class="QPushButton" name="pushButton_40">
+                <property name="maximumSize">
+                 <size>
+                  <width>30</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="font">
                  <font>
                   <pointsize>10</pointsize>
@@ -4474,7 +4480,7 @@ QComboBox {
         <item row="0" column="0">
          <widget class="QFrame" name="frame_47">
           <property name="frameShape">
-           <enum>QFrame::Shape::StyledPanel</enum>
+           <enum>QFrame::Shape::NoFrame</enum>
           </property>
           <property name="frameShadow">
            <enum>QFrame::Shadow::Raised</enum>
@@ -4617,6 +4623,12 @@ QComboBox {
               </item>
               <item row="4" column="4">
                <widget class="QPushButton" name="pushButton_43">
+                <property name="maximumSize">
+                 <size>
+                  <width>30</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string/>
                 </property>
@@ -4907,7 +4919,7 @@ QComboBox {
         <item row="0" column="0">
          <widget class="QFrame" name="frame_49">
           <property name="frameShape">
-           <enum>QFrame::Shape::StyledPanel</enum>
+           <enum>QFrame::Shape::NoFrame</enum>
           </property>
           <property name="frameShadow">
            <enum>QFrame::Shadow::Raised</enum>

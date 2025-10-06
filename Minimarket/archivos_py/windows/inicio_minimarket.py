@@ -7613,38 +7613,38 @@ class MainWindow(QMainWindow):
 
         #boton de cerrar sesion
         # Si no se encuentra, intentar búsqueda directa
-        logout_button = self.findChild(QPushButton, "pushButton_50")
+        logout_button = self.findChild(QPushButton, "pushButton_16")
         if logout_button:
             logout_button.clicked.connect(self.logout)
             logout_button.setStyleSheet("background-color: rgb(255, 127, 127); font-weight: bold;")
 
 
         # Botón visualizar productos
-        button = self.findChild(QPushButton, "pushButton")
+        button = self.findChild(QPushButton, "pushButton_4")
         if button:
             button.setStyleSheet("background-color: rgb(226, 245, 255)")
             button.clicked.connect(self.change_table_headers_color_visualizar_productos)
-            self.connect_button("pushButton", stacked_widget, 0, lambda: self.focus_visualziar_prod())
+            self.connect_button("pushButton_4", stacked_widget, 0, lambda: self.focus_visualziar_prod())
             
 
-        self.connect_button("pushButton_4", stacked_widget, 3, lambda: self.focus_borrar_prod())
-        self.connect_button("pushButton_2", stacked_widget, 4, lambda: self.focus_editar_prod())
+        self.connect_button("pushButton_3", stacked_widget, 4, lambda: self.focus_borrar_prod())
+        self.connect_button("pushButton_2", stacked_widget, 3, lambda: self.focus_editar_prod())
 
         # Botón visualizar proveedores
-        button5 = self.findChild(QPushButton, "pushButton_5")
-        if button5:
-            button5.setStyleSheet("background-color: rgb(226, 245, 255)")
-            button5.clicked.connect(self.change_table_headers_color_visualizar_proveedores)
-            self.connect_button("pushButton_5", stacked_widget, 9, lambda: self.focus_visualizar_prov())
+        button_8 = self.findChild(QPushButton, "pushButton_8")
+        if button_8:
+            button_8.setStyleSheet("background-color: rgb(226, 245, 255)")
+            button_8.clicked.connect(self.change_table_headers_color_visualizar_proveedores)
+            self.connect_button("pushButton_8", stacked_widget, 8, lambda: self.focus_visualizar_prov())
 
         # Agregar productos
-        self.connect_button("pushButton_3", stacked_widget, 5, lambda: self.focus_agregar_prod())
+        self.connect_button("pushButton", stacked_widget, 2, lambda: self.focus_agregar_prod())
      
 
-        self.connect_button("pushButton_8", stacked_widget, 6,  lambda: self.focus_agregar_proveedor())
+        self.connect_button("pushButton_5", stacked_widget, 5,  lambda: self.focus_agregar_proveedor())
         self.connect_button("pushButton_7", stacked_widget, 7, lambda: self.focus_borrar_proveedor())
-        self.connect_button("pushButton_6", stacked_widget, 8,  lambda: self.focus_editar_proveedor())
-        self.connect_button("pushButton_9", stacked_widget, 1,  lambda: self.focus_agregar_categoria())
+        self.connect_button("pushButton_6", stacked_widget, 6,  lambda: self.focus_editar_proveedor())
+        self.connect_button("pushButton_9", stacked_widget, 9,  lambda: self.focus_agregar_categoria())
         self.connect_button("pushButton_10", stacked_widget, 10, lambda: self.focus_borrar_categoria())
 
         # Visualizar categorías
@@ -7655,56 +7655,56 @@ class MainWindow(QMainWindow):
             self.connect_button("pushButton_11", stacked_widget, 11,  lambda: self.focus_visualizar_categorias())
 
         # Botón borrar datos
-        button12 = self.findChild(QPushButton, "pushButton_12")
-        if button12:
-            button12.setStyleSheet("background-color: red")
-            button12.clicked.connect(self.delete_all_data)
+        button15 = self.findChild(QPushButton, "pushButton_15")
+        if button15:
+            button15.setStyleSheet("background-color: red")
+            button15.clicked.connect(self.delete_all_data)
 
         #agregar usuario
-        button_14 = self.findChild(QPushButton, "pushButton_14")
-        if button_14:
-            self.connect_button("pushButton_14", stacked_widget, 16, lambda: self.focus_agregar_usuario())
+        button_12 = self.findChild(QPushButton, "pushButton_12")
+        if button_12:
+            self.connect_button("pushButton_12", stacked_widget, 12, lambda: self.focus_agregar_usuario())
 
         # editar usuario
-        button_18 = self.findChild(QPushButton, "pushButton_18")
-        if button_18:
-            self.connect_button("pushButton_18", stacked_widget, 17, lambda: self.focus_nombre_usuario())
+        button_13 = self.findChild(QPushButton, "pushButton_13")
+        if button_13:
+            self.connect_button("pushButton_13", stacked_widget, 13, lambda: self.focus_nombre_usuario())
         
         #borrar usuario
-        button_22 = self.findChild(QPushButton, "pushButton_22")
-        if button_22:
-            self.connect_button("pushButton_22", stacked_widget, 18, lambda : self.focus_borrar_usuario())
+        button_14 = self.findChild(QPushButton, "pushButton_14")
+        if button_14:
+            self.connect_button("pushButton_14", stacked_widget, 14, lambda : self.focus_borrar_usuario())
 
         # VENTANA BUSCAR DATOS
-        botton_15 = self.findChild(QPushButton, "pushButton_15")
-        if botton_15:
-            self.connect_button("pushButton_15", stacked_widget, 13)
-            botton_15.clicked.connect(self.change_table_headers_color_arqueo)
+        botton_17 = self.findChild(QPushButton, "pushButton_17")
+        if botton_17:
+            self.connect_button("pushButton_17", stacked_widget, 15)
+            botton_17.clicked.connect(self.change_table_headers_color_arqueo)
 
-        self.connect_button("pushButton_13", stacked_widget, 14)
-        self.connect_button("pushButton_48", stacked_widget, 19)
-        push_button_48 = self.findChild(QPushButton, "pushButton_48")
-        if push_button_48:
-            push_button_48.setIcon(QIcon(eye_visible_path))
-            self.connect_button("pushButton_48", stacked_widget, 19,  lambda: self.change_table_headers_color_visualizar_movimientos())
+        self.connect_button("pushButton_18", stacked_widget, 16)
+    
+        push_button_19 = self.findChild(QPushButton, "pushButton_19")
+        if push_button_19:
+            push_button_19.setIcon(QIcon(eye_visible_path))
+            self.connect_button("pushButton_19", stacked_widget, 17,  lambda: self.change_table_headers_color_visualizar_movimientos())
 
         # VENTANA ADMINISTRACION
 
         # Botón facturero ventas
-        button16 = self.findChild(QPushButton, "pushButton_16")
-        if button16:
-            button16.setStyleSheet("background-color: rgb(198, 255, 202)")
-            button16.clicked.connect(self.administracion_tab.visualizar_productos_facturero)
-            self.connect_button("pushButton_16", stacked_widget, 15, self.administracion_tab.open_facturero_ventas)
-            button16.clicked.connect(self.change_table_headers_color_ventas)
+        button21 = self.findChild(QPushButton, "pushButton_21")
+        if button21:
+            button21.setStyleSheet("background-color: rgb(198, 255, 202)")
+            button21.clicked.connect(self.administracion_tab.visualizar_productos_facturero)
+            self.connect_button("pushButton_21", stacked_widget, 18, self.administracion_tab.open_facturero_ventas)
+            button21.clicked.connect(self.change_table_headers_color_ventas)
 
         # Botón facturero compras
-        button17 = self.findChild(QPushButton, "pushButton_17")
-        if button17:
-            button17.setStyleSheet("background-color: rgb(255, 230, 107)")
-            button17.clicked.connect(self.administracion_tab.visualizar_productos_facturero)
-            self.connect_button("pushButton_17", stacked_widget, 15, self.administracion_tab.open_facturero_compras)
-            button17.clicked.connect(self.change_table_headers_color_compras)
+        button22 = self.findChild(QPushButton, "pushButton_22")
+        if button22:
+            button22.setStyleSheet("background-color: rgb(255, 230, 107)")
+            button22.clicked.connect(self.administracion_tab.visualizar_productos_facturero)
+            self.connect_button("pushButton_22", stacked_widget, 18, self.administracion_tab.open_facturero_compras)
+            button22.clicked.connect(self.change_table_headers_color_compras)
 
 
     # borrar datos:

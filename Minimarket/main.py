@@ -217,7 +217,7 @@ def start_thread(thread):
         thread.finished.connect(lambda: threads.remove(thread) if thread in threads else None)
         thread.start()
         
-#inicio del login web y luego al programa si no inicio sesion web y sino inicio directo al programa
+#inicio del login web y luego al programaz
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
