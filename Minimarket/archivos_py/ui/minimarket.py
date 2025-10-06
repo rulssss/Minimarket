@@ -2921,7 +2921,7 @@ class Ui_MainWindow(object):
         sizePolicy5.setHeightForWidth(self.tabWidget.sizePolicy().hasHeightForWidth())
         self.tabWidget.setSizePolicy(sizePolicy5)
         self.tabWidget.setMinimumSize(QSize(200, 0))
-        self.tabWidget.setMaximumSize(QSize(300, 16777215))
+        self.tabWidget.setMaximumSize(QSize(330, 16777215))
         self.tabWidget.setFont(font5)
         self.tab_1 = QWidget()
         self.tab_1.setObjectName(u"tab_1")
