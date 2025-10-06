@@ -2922,6 +2922,7 @@ class Ui_MainWindow(object):
         self.tabWidget.setSizePolicy(sizePolicy5)
         self.tabWidget.setMinimumSize(QSize(200, 0))
         self.tabWidget.setMaximumSize(QSize(300, 16777215))
+        self.tabWidget.setFont(font5)
         self.tab_1 = QWidget()
         self.tab_1.setObjectName(u"tab_1")
         self.verticalLayout = QVBoxLayout(self.tab_1)
@@ -3253,7 +3254,7 @@ class Ui_MainWindow(object):
 
         self.stackedWidget.setCurrentIndex(12)
         self.pushButton_49.setDefault(False)
-        self.tabWidget.setCurrentIndex(2)
+        self.tabWidget.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
