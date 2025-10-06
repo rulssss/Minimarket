@@ -142,10 +142,7 @@ class Ui_MainWindow(object):
         self.comboBox.setObjectName(u"comboBox")
         self.comboBox.setMinimumSize(QSize(150, 0))
         self.comboBox.setMaximumSize(QSize(150, 16777215))
-        font5 = QFont()
-        font5.setPointSize(10)
-        font5.setBold(True)
-        self.comboBox.setFont(font5)
+        self.comboBox.setFont(font4)
 
         self.gridLayout_2.addWidget(self.comboBox, 0, 1, 1, 1)
 
@@ -153,7 +150,7 @@ class Ui_MainWindow(object):
         self.comboBox_2.setObjectName(u"comboBox_2")
         self.comboBox_2.setMinimumSize(QSize(150, 0))
         self.comboBox_2.setMaximumSize(QSize(150, 16777215))
-        self.comboBox_2.setFont(font5)
+        self.comboBox_2.setFont(font4)
 
         self.gridLayout_2.addWidget(self.comboBox_2, 1, 1, 1, 1)
 
@@ -193,6 +190,9 @@ class Ui_MainWindow(object):
 
         self.label_62 = QLabel(self.frame_35)
         self.label_62.setObjectName(u"label_62")
+        font5 = QFont()
+        font5.setPointSize(10)
+        font5.setBold(True)
         self.label_62.setFont(font5)
 
         self.horizontalLayout_12.addWidget(self.label_62)
@@ -288,7 +288,7 @@ class Ui_MainWindow(object):
 
         self.lineEdit_3 = QLineEdit(self.frame_8)
         self.lineEdit_3.setObjectName(u"lineEdit_3")
-        self.lineEdit_3.setFont(font5)
+        self.lineEdit_3.setFont(font4)
 
         self.gridLayout_6.addWidget(self.lineEdit_3, 4, 4, 1, 1)
 
@@ -318,13 +318,13 @@ class Ui_MainWindow(object):
 
         self.lineEdit_7 = QLineEdit(self.frame_8)
         self.lineEdit_7.setObjectName(u"lineEdit_7")
-        self.lineEdit_7.setFont(font5)
+        self.lineEdit_7.setFont(font4)
 
         self.gridLayout_6.addWidget(self.lineEdit_7, 4, 0, 1, 1)
 
         self.lineEdit_6 = QLineEdit(self.frame_8)
         self.lineEdit_6.setObjectName(u"lineEdit_6")
-        self.lineEdit_6.setFont(font5)
+        self.lineEdit_6.setFont(font4)
 
         self.gridLayout_6.addWidget(self.lineEdit_6, 4, 1, 1, 1)
 
@@ -390,7 +390,7 @@ class Ui_MainWindow(object):
 
         self.lineEdit_4 = QLineEdit(self.frame_8)
         self.lineEdit_4.setObjectName(u"lineEdit_4")
-        self.lineEdit_4.setFont(font5)
+        self.lineEdit_4.setFont(font4)
 
         self.gridLayout_6.addWidget(self.lineEdit_4, 4, 2, 1, 1)
 
@@ -413,7 +413,7 @@ class Ui_MainWindow(object):
 
         self.lineEdit_2 = QLineEdit(self.frame_8)
         self.lineEdit_2.setObjectName(u"lineEdit_2")
-        self.lineEdit_2.setFont(font5)
+        self.lineEdit_2.setFont(font4)
 
         self.gridLayout_6.addWidget(self.lineEdit_2, 4, 3, 1, 1)
 
@@ -439,7 +439,7 @@ class Ui_MainWindow(object):
 
         self.lineEdit_5 = QLineEdit(self.frame_8)
         self.lineEdit_5.setObjectName(u"lineEdit_5")
-        self.lineEdit_5.setFont(font5)
+        self.lineEdit_5.setFont(font4)
 
         self.gridLayout_6.addWidget(self.lineEdit_5, 4, 5, 1, 1)
 
@@ -796,7 +796,7 @@ class Ui_MainWindow(object):
 
         self.lineEdit_9 = QLineEdit(self.frame_9)
         self.lineEdit_9.setObjectName(u"lineEdit_9")
-        self.lineEdit_9.setFont(font5)
+        self.lineEdit_9.setFont(font4)
 
         self.gridLayout_8.addWidget(self.lineEdit_9, 4, 4, 1, 1)
 
@@ -853,13 +853,13 @@ class Ui_MainWindow(object):
 
         self.lineEdit_8 = QLineEdit(self.frame_9)
         self.lineEdit_8.setObjectName(u"lineEdit_8")
-        self.lineEdit_8.setFont(font5)
+        self.lineEdit_8.setFont(font4)
 
         self.gridLayout_8.addWidget(self.lineEdit_8, 4, 3, 1, 1)
 
         self.lineEdit_10 = QLineEdit(self.frame_9)
         self.lineEdit_10.setObjectName(u"lineEdit_10")
-        self.lineEdit_10.setFont(font5)
+        self.lineEdit_10.setFont(font4)
 
         self.gridLayout_8.addWidget(self.lineEdit_10, 4, 2, 1, 1)
 
@@ -877,7 +877,7 @@ class Ui_MainWindow(object):
 
         self.lineEdit_11 = QLineEdit(self.frame_9)
         self.lineEdit_11.setObjectName(u"lineEdit_11")
-        self.lineEdit_11.setFont(font5)
+        self.lineEdit_11.setFont(font4)
 
         self.gridLayout_8.addWidget(self.lineEdit_11, 4, 1, 1, 1)
 
@@ -889,7 +889,7 @@ class Ui_MainWindow(object):
 
         self.lineEdit_13 = QLineEdit(self.frame_9)
         self.lineEdit_13.setObjectName(u"lineEdit_13")
-        self.lineEdit_13.setFont(font5)
+        self.lineEdit_13.setFont(font4)
 
         self.gridLayout_8.addWidget(self.lineEdit_13, 4, 5, 1, 1)
 
@@ -1750,7 +1750,7 @@ class Ui_MainWindow(object):
 
         self.lineEdit_21 = QLineEdit(self.frame_43)
         self.lineEdit_21.setObjectName(u"lineEdit_21")
-        self.lineEdit_21.setFont(font1)
+        self.lineEdit_21.setFont(font2)
 
         self.verticalLayout_24.addWidget(self.lineEdit_21)
 
@@ -2799,7 +2799,7 @@ class Ui_MainWindow(object):
 
         self.lineEdit_29 = QLineEdit(self.frame_64)
         self.lineEdit_29.setObjectName(u"lineEdit_29")
-        self.lineEdit_29.setFont(font1)
+        self.lineEdit_29.setFont(font2)
 
         self.verticalLayout_37.addWidget(self.lineEdit_29)
 
@@ -2915,13 +2915,13 @@ class Ui_MainWindow(object):
 
         self.tabWidget = QTabWidget(self.centralwidget)
         self.tabWidget.setObjectName(u"tabWidget")
-        sizePolicy5 = QSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Expanding)
+        sizePolicy5 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         sizePolicy5.setHorizontalStretch(0)
         sizePolicy5.setVerticalStretch(0)
         sizePolicy5.setHeightForWidth(self.tabWidget.sizePolicy().hasHeightForWidth())
         self.tabWidget.setSizePolicy(sizePolicy5)
-        self.tabWidget.setMinimumSize(QSize(200, 0))
-        self.tabWidget.setMaximumSize(QSize(330, 16777215))
+        self.tabWidget.setMinimumSize(QSize(290, 0))
+        self.tabWidget.setMaximumSize(QSize(290, 16777215))
         self.tabWidget.setFont(font5)
         self.tab_1 = QWidget()
         self.tab_1.setObjectName(u"tab_1")
@@ -3252,7 +3252,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.stackedWidget.setCurrentIndex(12)
+        self.stackedWidget.setCurrentIndex(2)
         self.pushButton_49.setDefault(False)
         self.tabWidget.setCurrentIndex(0)
 
