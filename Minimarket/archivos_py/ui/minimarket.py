@@ -3199,6 +3199,8 @@ class Ui_MainWindow(object):
 
         self.textEdit = QTextEdit(self.tab)
         self.textEdit.setObjectName(u"textEdit")
+        self.textEdit.setStyleSheet(u"background-color: #f0f0f0;\n"
+"")
 
         self.verticalLayout_3.addWidget(self.textEdit)
 

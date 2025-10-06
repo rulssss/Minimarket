@@ -7346,7 +7346,7 @@ class MainWindow(QMainWindow):
         # Establece inicio rls
         stacked_widget = self.ui.stackedWidget
         if stacked_widget:
-            stacked_widget.setCurrentIndex(2)
+            stacked_widget.setCurrentIndex(1)
 
         # Crear arreglo con threads abiertos
         self.threads = []

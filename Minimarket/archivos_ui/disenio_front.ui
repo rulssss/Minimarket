@@ -7158,7 +7158,12 @@ QComboBox {
          </widget>
         </item>
         <item>
-         <widget class="QTextEdit" name="textEdit"/>
+         <widget class="QTextEdit" name="textEdit">
+          <property name="styleSheet">
+           <string notr="true">background-color: #f0f0f0;
+</string>
+          </property>
+         </widget>
         </item>
         <item>
          <spacer name="horizontalSpacer_164">
