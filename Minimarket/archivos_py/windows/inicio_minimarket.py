@@ -55,7 +55,7 @@ class DatosTab:
     def __init__(self, ui, id_usuario_perfil):
         self.ui = ui
         self.id_usuario_perfil = id_usuario_perfil
-        self.button19_connected = False
+        self.button23_connected = False
         self.button34_connected = False
         self.button_agregar = False
 
@@ -398,18 +398,18 @@ class DatosTab:
     def ventana_agregar_productos(self): 
         #BOTONES de la ventana agregar productos
 
-        button19 = self.ui.frame_5.findChild(QPushButton, "pushButton_19")
-        if button19:
-            if not self.button19_connected:
-                button19.setStyleSheet("background-color: rgb(168, 225, 255)")
-                button19.clicked.connect(self.validate_and_process_inputs)
-                button19.setShortcut(Qt.Key_Return)
-                self.button19_connected = True
-           
-            
-        button20 = self.ui.frame_5.findChild(QPushButton, "pushButton_20")
-        if button20:            
-            button20.clicked.connect(self.clear_inputs_agregar_productos)
+        button23 = self.ui.frame_8.findChild(QPushButton, "pushButton_23")
+        if button23:
+            if not self.button23_connected:
+                button23.setStyleSheet("background-color: rgb(168, 225, 255)")
+                button23.clicked.connect(self.validate_and_process_inputs)
+                button23.setShortcut(Qt.Key_Return)
+                self.button23_connected = True
+
+
+        button24 = self.ui.frame_8.findChild(QPushButton, "pushButton_24")
+        if button24:
+            button24.clicked.connect(self.clear_inputs_agregar_productos)
 
 
         #configurar categorias y proveedores disponibles
@@ -418,19 +418,19 @@ class DatosTab:
 
         #labels de agregar productos
 
-        label_70 = self.ui.frame_5.findChild(QLabel, "label_70")
-        if label_70:
-            if label_70.text() != "Agregando":
-                label_70.setStyleSheet("color: transparent")
+        label_125 = self.ui.frame_8.findChild(QLabel, "label_125")
+        if label_125:
+            if label_125.text() != "Agregando":
+                label_125.setStyleSheet("color: transparent")
 
-        label_71 = self.ui.frame_5.findChild(QLabel, "label_71")
-        if label_71:
-            if label_71.text() != "producto...":
-                label_71.setStyleSheet("color: transparent")
+        label_126 = self.ui.frame_8.findChild(QLabel, "label_126")
+        if label_126:
+            if label_126.text() != "producto...":
+                label_126.setStyleSheet("color: transparent")
 
     #actualiza las categorias del combobox de la ventana agregar productos
     def categorias(self):
-        input_categoria = self.ui.frame_5.findChild(QComboBox, "comboBox_5")
+        input_categoria = self.ui.frame_8.findChild(QComboBox, "comboBox_3")
         input_categoria.clear()
         #se importa variable global categorias
         global categorias
@@ -440,7 +440,7 @@ class DatosTab:
 
     #actualiza los proveedores del combobox de la ventana agregar productos
     def proveedores(self):
-        input_proveedor = self.ui.frame_5.findChild(QComboBox, "comboBox_6")
+        input_proveedor = self.ui.frame_8.findChild(QComboBox, "comboBox_4")
         input_proveedor.clear()
         #se importa varable global proveedores
         global proveedores
@@ -449,58 +449,58 @@ class DatosTab:
             input_proveedor.addItem(f"{i[0]}")
 
     def clear_inputs_agregar_productos(self):
-        input_id = self.ui.frame_5.findChild(QLineEdit, "lineEdit_7")
+        input_id = self.ui.frame_8.findChild(QLineEdit, "lineEdit_7")
         if input_id:
             input_id.clear()
             input_id.setFocus()
 
-        input_nombre = self.ui.frame_5.findChild(QLineEdit, "lineEdit_6")
+        input_nombre = self.ui.frame_8.findChild(QLineEdit, "lineEdit_6")
         if input_nombre:
             input_nombre.clear()
 
-        input_precio_compra = self.ui.frame_5.findChild(QLineEdit, "lineEdit_5")
+        input_precio_compra = self.ui.frame_8.findChild(QLineEdit, "lineEdit_4")
         if input_precio_compra:
             input_precio_compra.clear()
 
-        input_precio_venta = self.ui.frame_5.findChild(QLineEdit, "lineEdit_4")
+        input_precio_venta = self.ui.frame_8.findChild(QLineEdit, "lineEdit_2")
         if input_precio_venta:
             input_precio_venta.clear()
 
-        input_stock = self.ui.frame_5.findChild(QLineEdit, "lineEdit_3")
+        input_stock = self.ui.frame_8.findChild(QLineEdit, "lineEdit_3")
         if input_stock:
             input_stock.clear()
 
-        input_stock_ideal = self.ui.frame_5.findChild(QLineEdit, "lineEdit_8")
+        input_stock_ideal = self.ui.frame_8.findChild(QLineEdit, "lineEdit_5")
         if input_stock_ideal:
             input_stock_ideal.clear()
 
-        input_categoria = self.ui.frame_5.findChild(QComboBox, "comboBox_5")
+        input_categoria = self.ui.frame_8.findChild(QComboBox, "comboBox_3")
         if input_categoria:
             input_categoria.setCurrentIndex(0)
 
-        input_proveedor = self.ui.frame_5.findChild(QComboBox, "comboBox_6")
+        input_proveedor = self.ui.frame_8.findChild(QComboBox, "comboBox_4")
         if input_proveedor:
             input_proveedor.setCurrentIndex(0)
 
     def validate_and_process_inputs(self):  
         global usuario_activo, productos_cache , productos_por_nombre_cache
-        button19 = self.ui.frame_5.findChild(QPushButton, "pushButton_19")
-        button20 = self.ui.frame_5.findChild(QPushButton, "pushButton_20")
+        button23 = self.ui.frame_8.findChild(QPushButton, "pushButton_23") # button 19 boton agregar
+        button24 = self.ui.frame_8.findChild(QPushButton, "pushButton_24") # button 20 boton limpiar
 
-        if button19:
-            button19.setEnabled(False)
-        if button20:
-            button20.setEnabled(False)
+        if button23:
+            button23.setEnabled(False)
+        if button24:
+            button24.setEnabled(False)
 
         # lineEditS
-        input_id = self.ui.frame_5.findChild(QLineEdit, "lineEdit_7")
-        input_nombre = self.ui.frame_5.findChild(QLineEdit, "lineEdit_6")
-        input_precio_compra = self.ui.frame_5.findChild(QLineEdit, "lineEdit_5")
-        input_precio_venta = self.ui.frame_5.findChild(QLineEdit, "lineEdit_4")
-        input_stock = self.ui.frame_5.findChild(QLineEdit, "lineEdit_3")
-        input_stock_ideal = self.ui.frame_5.findChild(QLineEdit, "lineEdit_8")
-        input_categoria = self.ui.frame_5.findChild(QComboBox, "comboBox_5")
-        input_proveedor = self.ui.frame_5.findChild(QComboBox, "comboBox_6")
+        input_id = self.ui.frame_8.findChild(QLineEdit, "lineEdit_7")
+        input_nombre = self.ui.frame_8.findChild(QLineEdit, "lineEdit_6")
+        input_precio_compra = self.ui.frame_8.findChild(QLineEdit, "lineEdit_4")
+        input_precio_venta = self.ui.frame_8.findChild(QLineEdit, "lineEdit_2")
+        input_stock = self.ui.frame_8.findChild(QLineEdit, "lineEdit_3")
+        input_stock_ideal = self.ui.frame_8.findChild(QLineEdit, "lineEdit_5")
+        input_categoria = self.ui.frame_8.findChild(QComboBox, "comboBox_3")
+        input_proveedor = self.ui.frame_8.findChild(QComboBox, "comboBox_4")
 
         input_id_value = input_id.text().strip() if input_id else ""
         input_nombre_value = input_nombre.text().strip() if input_nombre else ""
@@ -516,28 +516,30 @@ class DatosTab:
         existe_id = productos_por_id_cache and input_id_value in productos_por_id_cache
         existe_nombre = productos_por_nombre_cache and input_nombre_value.lower() in productos_por_nombre_cache
 
-        label_70 = self.ui.frame_5.findChild(QLabel, "label_70")
-        label_71 = self.ui.frame_5.findChild(QLabel, "label_71")
+        label_125 = self.ui.frame_8.findChild(QLabel, "label_125") # label 70   
+        label_126 = self.ui.frame_8.findChild(QLabel, "label_126") # label 71
 
         if existe_id or existe_nombre:
-            if button19:
-                button19.setEnabled(True)
-            if button20:
-                button20.setEnabled(True)
+            if button23:
+                button23.setEnabled(True)
+            if button24:
+                button24.setEnabled(True)
 
-            if label_70 and label_71:
-                label_70.setText("Está intentando cargar")
-                label_71.setText("un producto existente")
-                label_70.setStyleSheet("color: red; font-weight: bold")
-                label_71.setStyleSheet("color: red; font-weight: bold")
+            if label_125 and label_126:
+                label_125.setStyleSheet("color: red; font-weight: bold")
+                label_125.setText("Está intentando cargar")
+                label_126.setStyleSheet("color: red; font-weight: bold")
+                label_126.setText("un producto existente")
+               
             return
 
         if self.is_digit(input_id_value) and input_nombre_value and self.is_decimal(input_precio_compra_value) and self.is_decimal(input_precio_venta_value) and self.is_decimal(input_stock_value) and self.is_decimal(input_stock_ideal_value):
-            if label_70 and label_71:
-                label_70.setText("Agregando")
-                label_71.setText("producto...")
-                label_70.setStyleSheet("color: green; font-weight: bold")
-                label_71.setStyleSheet("color: green; font-weight: bold")
+            if label_125 and label_126:
+                label_125.setStyleSheet("color: green; font-weight: bold")
+                label_125.setText("Agregando")
+                label_126.setStyleSheet("color: green; font-weight: bold")
+                label_126.setText("producto...")
+                
 
             # pasar primera letra del nombre a mayuscula
             input_nombre_value = input_nombre_value.capitalize()
@@ -552,16 +554,17 @@ class DatosTab:
             )
             self.start_thread(self.agregar_thread)
         else:
-            if button19:
-                button19.setEnabled(True)
-            if button20:
-                button20.setEnabled(True)
-            
-            if label_70 and label_71:
-                label_70.setText("Por favor, complete todos")
-                label_71.setText("los campos correctamente")
-                label_70.setStyleSheet("color: red; font-weight: bold")
-                label_71.setStyleSheet("color: red; font-weight: bold")
+            if button23:
+                button23.setEnabled(True)
+            if button24:
+                button24.setEnabled(True)
+
+            if label_125 and label_126:
+                label_125.setStyleSheet("color: red; font-weight: bold")
+                label_126.setStyleSheet("color: red; font-weight: bold")
+                label_125.setText("Por favor, complete todos")
+                label_126.setText("los campos correctamente")
+    
 
             # Focus en el campo incorrecto
             if not self.is_digit(input_id_value):
@@ -585,10 +588,10 @@ class DatosTab:
 
 
     def on_producto_agregado(self, exito, input_id_value, usuario_activo, input_id):
-        label_70 = self.ui.frame_5.findChild(QLabel, "label_70")
-        label_71 = self.ui.frame_5.findChild(QLabel, "label_71")
-        button19 = self.ui.frame_5.findChild(QPushButton, "pushButton_19")
-        button20 = self.ui.frame_5.findChild(QPushButton, "pushButton_20")
+        label_125 = self.ui.frame_8.findChild(QLabel, "label_125")
+        label_126 = self.ui.frame_8.findChild(QLabel, "label_126")
+        button23 = self.ui.frame_8.findChild(QPushButton, "pushButton_23")
+        button24 = self.ui.frame_8.findChild(QPushButton, "pushButton_24")
 
         if exito:
             
@@ -613,33 +616,33 @@ class DatosTab:
             #actualizar combobox id de editar productos
 
             self.clear_inputs_agregar_productos()
-                
-            if label_70 and label_71:
-                label_70.setText("Producto cargado")
-                label_71.setText("con éxito!")
-                label_70.setStyleSheet("color: green; font-weight: bold")
-                label_71.setStyleSheet("color: green; font-weight: bold")
-                QTimer.singleShot(6000, lambda: label_70.setStyleSheet("color: transparent"))
-                QTimer.singleShot(6000, lambda: label_71.setStyleSheet("color: transparent"))
 
-            if button19:
-                button19.setEnabled(True)
-            if button20:
-                button20.setEnabled(True)
+            if label_125 and label_126:
+                label_125.setText("Producto cargado")
+                label_126.setText("con éxito!")
+                label_125.setStyleSheet("color: green; font-weight: bold")
+                label_126.setStyleSheet("color: green; font-weight: bold")
+                QTimer.singleShot(6000, lambda: label_125.setStyleSheet("color: transparent"))
+                QTimer.singleShot(6000, lambda: label_126.setStyleSheet("color: transparent"))
+
+            if button23:
+                button23.setEnabled(True)
+            if button24:
+                button24.setEnabled(True)
 
         else:
 
             self.clear_inputs_agregar_productos()
 
-            label_70.setText("Esta intentando cargar")
-            label_71.setText("un producto existente")
-            label_70.setStyleSheet("color: green; font-weight: bold")
-            label_71.setStyleSheet("color: green; font-weight: bold")
+            label_125.setText("Esta intentando cargar")
+            label_126.setText("un producto existente")
+            label_125.setStyleSheet("color: green; font-weight: bold")
+            label_126.setStyleSheet("color: green; font-weight: bold")
 
-            if button19:
-                button19.setEnabled(True)
-            if button20:
-                button20.setEnabled(True)
+            if button23:
+                button23.setEnabled(True)
+            if button24:
+                button24.setEnabled(True)
 
 #################
 #################
@@ -7379,15 +7382,15 @@ class MainWindow(QMainWindow):
 
     def inicializar_anotador(self, usuario):
         # Buscar el QTextEdit dentro del tabWidget
-        textEdit_3 = self.ui.tabWidget.findChild(QTextEdit, "textEdit_3")
-        if textEdit_3:
+        textEdit = self.ui.tabWidget.findChild(QTextEdit, "textEdit")
+        if textEdit:
 
             # Usar hilo para traer el último texto
             self.traer_texto_thread = TraerUltimoTextoAnotadorThread(self.id_usuario_perfil)
 
             def on_texto_obtenido(ultimo_texto):
                 if ultimo_texto:
-                    textEdit_3.setPlainText(ultimo_texto)
+                    textEdit.setPlainText(ultimo_texto)
                 else:
                     # Si no hay texto, establecer texto principal usando hilo
                     self.set_texto_thread = SetTextoAnotadorThread(self.id_usuario_perfil, usuario)
@@ -7397,7 +7400,7 @@ class MainWindow(QMainWindow):
                             # Traer el texto nuevamente después de establecerlo
                             self.traer_texto_final_thread = TraerUltimoTextoAnotadorThread(self.id_usuario_perfil)
                             self.traer_texto_final_thread.resultado.connect(
-                                lambda texto_final: textEdit_3.setPlainText(texto_final)
+                                lambda texto_final: textEdit.setPlainText(texto_final)
                             )
                             self.start_thread(self.traer_texto_final_thread)
 
@@ -7580,21 +7583,20 @@ class MainWindow(QMainWindow):
 
     def anotador(self, usuario):
         # Buscar el QTextEdit dentro del tabWidget
-        textEdit_3 = self.ui.tabWidget.findChild(QTextEdit, "textEdit_3")
-        if textEdit_3:
+        textEdit = self.ui.tabWidget.findChild(QTextEdit, "textEdit")
+        if textEdit:
 
             # Crear un QTimer para retrasar el guardado
             self.save_timer = QTimer()
             self.save_timer.setSingleShot(True)  # Asegurarse de que solo se ejecute una vez por evento
-            self.save_timer.timeout.connect(lambda: self.guardar_en_base_de_datos(textEdit_3, usuario))  # Conectar al método de guardado
+            self.save_timer.timeout.connect(lambda: self.guardar_en_base_de_datos(textEdit, usuario))  # Conectar al método de guardado
 
             # Conectar el evento textChanged al método que inicia el temporizador
-            textEdit_3.textChanged.connect(self.iniciar_guardado_demorado)
+            textEdit.textChanged.connect(self.iniciar_guardado_demorado)
 
             # Conectar el evento closeEvent para guardar el texto al cerrar
-            self.closeEvent = lambda event: self.guardar_y_cerrar(event, textEdit_3, usuario)
+            self.closeEvent = lambda event: self.guardar_y_cerrar(event, textEdit, usuario)
 
-    
     # Muestra la página correspondiente en el stacked widget
     def connect_button(self, button_name, stacked_widget, page_index, extra_action=None):
         button = self.findChild(QPushButton, button_name)
@@ -7781,77 +7783,76 @@ class MainWindow(QMainWindow):
 
     def focus_agregar_prod(self):
          # Buscar el line_edit_7 en el frame correspondiente
-        line_edit_7 = self.ui.frame_5.findChild(QLineEdit, "lineEdit_7")
+        line_edit_7 = self.ui.frame_8.findChild(QLineEdit, "lineEdit_7")
         if line_edit_7:
             line_edit_7.setFocus()  # Establecer el foco
 
     def focus_borrar_prod(self):
          # Buscar el line_edit_7 en el frame correspondiente
-        line_edit_2 = self.ui.frame_6.findChild(QLineEdit, "lineEdit_2")
-        if line_edit_2:
-            line_edit_2.setFocus()  # Establecer el foco
+        line_edit_12 = self.ui.frame_19.findChild(QLineEdit, "lineEdit_12")
+        if line_edit_12:
+            line_edit_12.setFocus()  # Establecer el foco
 
     def focus_editar_prod(self):
-        combobox_id = self.ui.frame_7.findChild(QComboBox, "comboBox_3")
+        combobox_id = self.ui.frame_9.findChild(QComboBox, "comboBox_7")
         if combobox_id:
             combobox_id.setFocus()
 
     def focus_visualziar_prod(self):
-        line_edit1 = self.ui.frame_2.findChild(QLineEdit, "lineEdit1")
-        if line_edit1:
-            line_edit1.setFocus()
+        line_edit = self.ui.frame_5.findChild(QLineEdit, "lineEdit")
+        if line_edit:
+            line_edit.setFocus()
 
     def focus_agregar_proveedor(self):
-        line_edit_14 = self.ui.frame_10.findChild(QLineEdit, "lineEdit_14")
-        if line_edit_14:
-            line_edit_14.setFocus()
+        line_edit_16 = self.ui.frame_20.findChild(QLineEdit, "lineEdit_16")
+        if line_edit_16:
+            line_edit_16.setFocus()
 
     def focus_borrar_proveedor(self):
-        lineEdit_20 = self.ui.frame_12.findChild(QLineEdit, "lineEdit_20")
-        if lineEdit_20:
-            lineEdit_20.setFocus()
+        lineEdit_22 = self.ui.frame_29.findChild(QLineEdit, "lineEdit_22")
+        if lineEdit_22:
+            lineEdit_22.setFocus()
 
     def focus_editar_proveedor(self):
-        combobox_11 = self.ui.frame_13.findChild(QComboBox, "comboBox_11")
-        if combobox_11:
-            combobox_11.setFocus()
-            
+        combobox_12 = self.ui.frame_24.findChild(QComboBox, "comboBox_12")
+        if combobox_12:
+            combobox_12.setFocus()
 
     def focus_visualizar_prov(self):
-        line_edit_27 = self.ui.frame_16.findChild(QLineEdit, "lineEdit_27")
-        if line_edit_27:
-            line_edit_27.setFocus()
-
-
-    def focus_agregar_categoria(self):
-        lineedit_16 = self.ui.frame_17.findChild(QLineEdit, "lineEdit_16")
-        if lineedit_16:
-            lineedit_16.setFocus()
-
-    def focus_borrar_categoria(self):
-        line_edit_21 = self.ui.frame_20.findChild(QLineEdit, "lineEdit_21")
-        if line_edit_21:
-            line_edit_21.setFocus()
-
-    def focus_visualizar_categorias(self):
-        lineEdit_19 = self.ui.frame_26.findChild(QLineEdit, "lineEdit_19")
-        if lineEdit_19:
-            lineEdit_19.setFocus()
-
-    def focus_nombre_usuario(self):
-        combobox_16 = self.ui.frame_45.findChild(QComboBox, "comboBox_16")
-        if combobox_16:
-            combobox_16.setFocus()
-
-    def focus_agregar_usuario(self):
-        line_edit_23 = self.ui.frame_29.findChild(QLineEdit, "lineEdit_23")
+        line_edit_23 = self.ui.frame_32.findChild(QLineEdit, "lineEdit_23")
         if line_edit_23:
             line_edit_23.setFocus()
 
+
+    def focus_agregar_categoria(self):
+        lineedit_19 = self.ui.frame_28.findChild(QLineEdit, "lineEdit_19")
+        if lineedit_19:
+            lineedit_19.setFocus()
+
+    def focus_borrar_categoria(self):
+        line_edit_20 = self.ui.frame_39.findChild(QLineEdit, "lineEdit_20")
+        if line_edit_20:
+            line_edit_20.setFocus()
+
+    def focus_visualizar_categorias(self):
+        lineEdit_21 = self.ui.frame_43.findChild(QLineEdit, "lineEdit_21")
+        if lineEdit_21:
+            lineEdit_21.setFocus()
+
+    def focus_nombre_usuario(self):
+        combobox_15 = self.ui.frame_48.findChild(QComboBox, "comboBox_15")
+        if combobox_15:
+            combobox_15.setFocus()
+
+    def focus_agregar_usuario(self):
+        line_edit_24 = self.ui.frame_46.findChild(QLineEdit, "lineEdit_24")
+        if line_edit_24:
+            line_edit_24.setFocus()
+
     def focus_borrar_usuario(self):
-        line_edit_29 = self.ui.frame_47.findChild(QLineEdit, "lineEdit_29")
-        if line_edit_29:
-            line_edit_29.setFocus()
+        line_edit_27 = self.ui.frame_50.findChild(QLineEdit, "lineEdit_27")
+        if line_edit_27:
+            line_edit_27.setFocus()
 
     
     #####    
@@ -7870,7 +7871,7 @@ class MainWindow(QMainWindow):
             """)
 
     def change_table_headers_color_visualizar_movimientos(self):
-        table = self.ui.frame_52.findChild(QTableWidget, "tableWidget_5")
+        table = self.ui.frame_52.findChild(QTableWidget, "tableWidget_6")
         # Aplicar estilo mediante stylesheet con el color especificado
         table.setStyleSheet("""
             QHeaderView::section {
@@ -7916,7 +7917,7 @@ class MainWindow(QMainWindow):
         
 
     def change_table_headers_color_ventas(self):
-        table_widget = self.findChild(QTableWidget, "tableWidget_4")
+        table_widget = self.findChild(QTableWidget, "tableWidget_7")
         if table_widget:
             table_widget.setStyleSheet("""
             QHeaderView::section {
@@ -7929,7 +7930,7 @@ class MainWindow(QMainWindow):
             """)
 
     def change_table_headers_color_compras(self):
-        table_widget = self.findChild(QTableWidget, "tableWidget_4")
+        table_widget = self.findChild(QTableWidget, "tableWidget_7")
         if table_widget:
             table_widget.setStyleSheet("""
             QHeaderView::section {
@@ -7943,11 +7944,11 @@ class MainWindow(QMainWindow):
             """)
 
     def change_table_headers_color_arqueo(self):
-        table_widget_6 = self.findChild(QTableWidget, "tableWidget_6")
-        table_widget_7 = self.findChild(QTableWidget, "tableWidget_7")
+        table_widget_4 = self.findChild(QTableWidget, "tableWidget_4")
+        table_widget_5 = self.findChild(QTableWidget, "tableWidget_5")
 
-        if table_widget_6 and table_widget_7:
-            table_widget_6.setStyleSheet("""
+        if table_widget_4 and table_widget_5:
+            table_widget_4.setStyleSheet("""
             QHeaderView::section {
                 background-color: rgb(226, 245, 255);
                 color: black;
@@ -7956,7 +7957,7 @@ class MainWindow(QMainWindow):
                 font-weight: bold;
             }
             """)
-            table_widget_7.setStyleSheet("""
+            table_widget_5.setStyleSheet("""
             QHeaderView::section {
                 background-color: rgb(226, 245, 255);
                 color: black;
