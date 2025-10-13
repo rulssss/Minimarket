@@ -738,6 +738,13 @@ class Inicio(QWidget):
         label_18 = self.ui.stackedWidget.findChild(QLabel, "label_18")
         pushButton_6 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_6")
         push_Button_7 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_7")
+        line_edit_6 = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_6")
+
+        if line_edit_6:
+            line_edit_6.clear()
+            line_edit_6.setAlignment(Qt.AlignCenter)
+            line_edit_6.setPlaceholderText("E-mail")
+            line_edit_6.setFocus()
 
         if pushButton_6:
             pushButton_6.setEnabled(True)
