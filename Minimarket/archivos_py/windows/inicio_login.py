@@ -68,15 +68,11 @@ class Inicio(QWidget):
 
         if combobox_2:
             combobox_2.clear()
-            combobox_2.setEditable(True)
-            combobox_2.lineEdit().setAlignment(Qt.AlignCenter)
-            combobox_2.setEditable(False)
             combobox_2.addItem("Administrador")
             combobox_2.addItem("Usuario")
 
         if line_edit:
             line_edit.setPlaceholderText("Usuario")
-            line_edit.setAlignment(Qt.AlignCenter)
             line_edit.setFocus()
     
 
@@ -215,17 +211,14 @@ class Inicio(QWidget):
             combobox.addItem("Usuario")
 
         if line_edit:
-            line_edit.setAlignment(Qt.AlignCenter)
             line_edit.setPlaceholderText("Usuario")
             line_edit.setFocus()
 
         if line_edit_2:
-            line_edit_2.setAlignment(Qt.AlignCenter)
             line_edit_2.setEchoMode(QLineEdit.Password)
             line_edit_2.setPlaceholderText("Contraseña")
 
         if line_edit_5:
-            line_edit_5.setAlignment(Qt.AlignCenter)
             line_edit_5.setPlaceholderText("Email")
 
 
