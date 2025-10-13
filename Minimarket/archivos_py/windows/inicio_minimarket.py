@@ -98,7 +98,7 @@ class DatosTab:
         self.visualizar_datos()
         
         # Conectar eventos de doble clic para copiar al portapapeles
-        table_widget = self.ui.frame_tabla_productos.findChild(QTableWidget, "tableWidget")
+        table_widget = self.ui.frame_34.findChild(QTableWidget, "tableWidget")
         if table_widget:
             corner_button = table_widget.findChild(QAbstractButton)
 
@@ -1705,9 +1705,9 @@ class DatosTab:
         if button_31:
             button_31.clicked.connect(self.clear_inputs_agregar_proveedores)
 
-        label_120 = self.ui.frame_20.findChild(QLabel, "label_120")
-        if label_120:
-            label_120.setStyleSheet("color: transparent")
+        label_121 = self.ui.frame_20.findChild(QLabel, "label_121")
+        if label_121:
+            label_121.setStyleSheet("color: transparent")
 
     
     def clear_inputs_agregar_proveedores(self):
@@ -1745,22 +1745,22 @@ class DatosTab:
             existe_telefono = proveedores_por_telefono_cache and lineEdit_14_value in proveedores_por_telefono_cache
 
             if existe_nombre or existe_telefono:
-                label_120 = self.ui.frame_20.findChild(QLabel, "label_120")
+                label_121 = self.ui.frame_20.findChild(QLabel, "label_121")
                 if button_30:
                     button_30.setEnabled(True)
                 if button_31:
                     button_31.setEnabled(True)
 
-                if label_120:
-                    label_120.setText("Está intentando cargar un proveedor o número existente")
-                    label_120.setStyleSheet("color: red; font-weight: bold")
+                if label_121:
+                    label_121.setText("Está intentando cargar un proveedor o número existente")
+                    label_121.setStyleSheet("color: red; font-weight: bold")
 
                 return
             else:
                 if lineEdit_16_value and lineEdit_14_value.isdigit():
-                    label_120 = self.ui.frame_20.findChild(QLabel, "label_120")
-                    label_120.setStyleSheet("color: green; font-weight: bold")
-                    label_120.setText("Cargando Proveedor...")
+                    label_121 = self.ui.frame_20.findChild(QLabel, "label_121")
+                    label_121.setStyleSheet("color: green; font-weight: bold")
+                    label_121.setText("Cargando Proveedor...")
 
                     # poner la primera letra del nombre del proveedor en mayuscula
                     lineEdit_16_value = lineEdit_16_value.capitalize()
@@ -1774,10 +1774,10 @@ class DatosTab:
                     if button_31:
                         button_31.setEnabled(True)
 
-                    label_120 = self.ui.frame_20.findChild(QLabel, "label_120")
-                    if label_120:
-                        label_120.setStyleSheet("color: red; font-weight: bold")
-                        label_120.setText("Por favor, complete todos los campos correctamente")
+                    label_121 = self.ui.frame_20.findChild(QLabel, "label_121")
+                    if label_121:
+                        label_121.setStyleSheet("color: red; font-weight: bold")
+                        label_121.setText("Por favor, complete todos los campos correctamente")
 
 
                     if not lineEdit_16_value:
@@ -1814,11 +1814,11 @@ class DatosTab:
             if button_31:
                 button_31.setEnabled(True)
 
-            label_120 = self.ui.frame_20.findChild(QLabel, "label_120")
-            if label_120:
-                label_120.setText("Proveedor cargado con éxito")
-                label_120.setStyleSheet("color: green; font-weight: bold")
-                QTimer.singleShot(6000, lambda: label_120.setStyleSheet("color: transparent"))
+            label_121 = self.ui.frame_20.findChild(QLabel, "label_121")
+            if label_121:
+                label_121.setText("Proveedor cargado con éxito")
+                label_121.setStyleSheet("color: green; font-weight: bold")
+                QTimer.singleShot(6000, lambda: label_121.setStyleSheet("color: transparent"))
 
             
         else:
