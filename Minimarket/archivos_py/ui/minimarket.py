@@ -15,12 +15,12 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QComboBox, QDoubleSpinBox, QFrame,
-    QGridLayout, QHBoxLayout, QHeaderView, QLabel,
-    QLineEdit, QMainWindow, QPushButton, QSizePolicy,
-    QSpacerItem, QStackedWidget, QStatusBar, QTabWidget,
-    QTableWidget, QTableWidgetItem, QTextEdit, QTimeEdit,
-    QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QAbstractItemView, QAbstractScrollArea, QApplication, QComboBox,
+    QDoubleSpinBox, QFrame, QGridLayout, QHBoxLayout,
+    QHeaderView, QLabel, QLineEdit, QMainWindow,
+    QPushButton, QSizePolicy, QSpacerItem, QStackedWidget,
+    QStatusBar, QTabWidget, QTableWidget, QTableWidgetItem,
+    QTextEdit, QTimeEdit, QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -219,8 +219,16 @@ class Ui_MainWindow(object):
         self.tableWidget.setHorizontalHeaderItem(6, __qtablewidgetitem6)
         __qtablewidgetitem7 = QTableWidgetItem()
         self.tableWidget.setHorizontalHeaderItem(7, __qtablewidgetitem7)
+        if (self.tableWidget.rowCount() < 1):
+            self.tableWidget.setRowCount(1)
         self.tableWidget.setObjectName(u"tableWidget")
-        self.tableWidget.setFont(font5)
+        self.tableWidget.setFont(font4)
+        self.tableWidget.setSizeAdjustPolicy(QAbstractScrollArea.SizeAdjustPolicy.AdjustToContents)
+        self.tableWidget.setDragEnabled(False)
+        self.tableWidget.setAlternatingRowColors(False)
+        self.tableWidget.setVerticalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+        self.tableWidget.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+        self.tableWidget.setShowGrid(False)
         self.tableWidget.horizontalHeader().setCascadingSectionResizes(False)
         self.tableWidget.horizontalHeader().setDefaultSectionSize(180)
         self.tableWidget.horizontalHeader().setProperty(u"showSortIndicator", False)
@@ -1516,6 +1524,12 @@ class Ui_MainWindow(object):
         self.tableWidget_2.setHorizontalHeaderItem(3, __qtablewidgetitem11)
         self.tableWidget_2.setObjectName(u"tableWidget_2")
         self.tableWidget_2.setFont(font5)
+        self.tableWidget_2.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        self.tableWidget_2.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        self.tableWidget_2.setSizeAdjustPolicy(QAbstractScrollArea.SizeAdjustPolicy.AdjustToContents)
+        self.tableWidget_2.setVerticalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+        self.tableWidget_2.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+        self.tableWidget_2.setShowGrid(False)
         self.tableWidget_2.horizontalHeader().setMinimumSectionSize(24)
         self.tableWidget_2.horizontalHeader().setDefaultSectionSize(345)
         self.tableWidget_2.horizontalHeader().setStretchLastSection(True)
@@ -1813,7 +1827,11 @@ class Ui_MainWindow(object):
         __qtablewidgetitem13 = QTableWidgetItem()
         self.tableWidget_3.setHorizontalHeaderItem(1, __qtablewidgetitem13)
         self.tableWidget_3.setObjectName(u"tableWidget_3")
-        self.tableWidget_3.setFont(font5)
+        self.tableWidget_3.setFont(font4)
+        self.tableWidget_3.setSizeAdjustPolicy(QAbstractScrollArea.SizeAdjustPolicy.AdjustToContents)
+        self.tableWidget_3.setVerticalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+        self.tableWidget_3.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+        self.tableWidget_3.setShowGrid(False)
         self.tableWidget_3.horizontalHeader().setMinimumSectionSize(40)
         self.tableWidget_3.horizontalHeader().setDefaultSectionSize(600)
         self.tableWidget_3.horizontalHeader().setStretchLastSection(True)
@@ -2459,7 +2477,11 @@ class Ui_MainWindow(object):
         __qtablewidgetitem20 = QTableWidgetItem()
         self.tableWidget_4.setHorizontalHeaderItem(6, __qtablewidgetitem20)
         self.tableWidget_4.setObjectName(u"tableWidget_4")
-        self.tableWidget_4.setFont(font5)
+        self.tableWidget_4.setFont(font4)
+        self.tableWidget_4.setSizeAdjustPolicy(QAbstractScrollArea.SizeAdjustPolicy.AdjustToContents)
+        self.tableWidget_4.setVerticalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+        self.tableWidget_4.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+        self.tableWidget_4.setShowGrid(False)
         self.tableWidget_4.horizontalHeader().setDefaultSectionSize(200)
         self.tableWidget_4.horizontalHeader().setStretchLastSection(True)
 
@@ -2522,7 +2544,11 @@ class Ui_MainWindow(object):
         __qtablewidgetitem27 = QTableWidgetItem()
         self.tableWidget_5.setHorizontalHeaderItem(6, __qtablewidgetitem27)
         self.tableWidget_5.setObjectName(u"tableWidget_5")
-        self.tableWidget_5.setFont(font5)
+        self.tableWidget_5.setFont(font4)
+        self.tableWidget_5.setSizeAdjustPolicy(QAbstractScrollArea.SizeAdjustPolicy.AdjustToContents)
+        self.tableWidget_5.setVerticalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+        self.tableWidget_5.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+        self.tableWidget_5.setShowGrid(False)
         self.tableWidget_5.horizontalHeader().setDefaultSectionSize(200)
         self.tableWidget_5.horizontalHeader().setStretchLastSection(True)
 
@@ -2760,7 +2786,11 @@ class Ui_MainWindow(object):
         __qtablewidgetitem33 = QTableWidgetItem()
         self.tableWidget_6.setHorizontalHeaderItem(5, __qtablewidgetitem33)
         self.tableWidget_6.setObjectName(u"tableWidget_6")
-        self.tableWidget_6.setFont(font5)
+        self.tableWidget_6.setFont(font4)
+        self.tableWidget_6.setSizeAdjustPolicy(QAbstractScrollArea.SizeAdjustPolicy.AdjustToContents)
+        self.tableWidget_6.setVerticalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+        self.tableWidget_6.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+        self.tableWidget_6.setShowGrid(False)
         self.tableWidget_6.horizontalHeader().setDefaultSectionSize(225)
         self.tableWidget_6.horizontalHeader().setStretchLastSection(True)
 
@@ -2874,7 +2904,11 @@ class Ui_MainWindow(object):
         __qtablewidgetitem41 = QTableWidgetItem()
         self.tableWidget_7.setHorizontalHeaderItem(7, __qtablewidgetitem41)
         self.tableWidget_7.setObjectName(u"tableWidget_7")
-        self.tableWidget_7.setFont(font5)
+        self.tableWidget_7.setFont(font4)
+        self.tableWidget_7.setSizeAdjustPolicy(QAbstractScrollArea.SizeAdjustPolicy.AdjustToContents)
+        self.tableWidget_7.setVerticalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+        self.tableWidget_7.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+        self.tableWidget_7.setShowGrid(False)
         self.tableWidget_7.horizontalHeader().setDefaultSectionSize(180)
         self.tableWidget_7.horizontalHeader().setStretchLastSection(True)
 
@@ -3252,7 +3286,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.stackedWidget.setCurrentIndex(2)
+        self.stackedWidget.setCurrentIndex(0)
         self.pushButton_49.setDefault(False)
         self.tabWidget.setCurrentIndex(0)
 

@@ -1134,7 +1134,7 @@ class DatosTab:
                 ))
                 
                 self.movimiento_thread = MovimientoAumentoPreciosThread(self.id_usuario_perfil, combobox_8_value, usuario_activo, s)
-                self.movimiento_thread.finished.connect(lambda: (self.load_product_data(), self.clear_doublespinbox_values(), pushbutton_28.setEnabled(True), boton_editar.setEnabled(True), boton_cancelar.setEnabled(True), push_button_42.setEnabled(True)))
+                self.movimiento_thread.finished.connect(lambda: (self.load_product_data(), self.clear_doublespinbox_values(), pushbutton_28.setEnabled(True), boton_editar.setEnabled(True), boton_cancelar.setEnabled(True), push_button_27.setEnabled(True)))
                 self.start_thread(self.movimiento_thread)
 
             else:
@@ -1453,25 +1453,25 @@ class DatosTab:
         self.populate_table_with_products()
 
         # Conectar el QLineEdit para filtrar productos
-        line_edit_1 = self.ui.frame_4.findChild(QLineEdit, "lineEdit1")
+        line_edit_1 = self.ui.frame_5.findChild(QLineEdit, "lineEdit")
         if line_edit_1:
             line_edit_1.textChanged.connect(self.filter_products)
       
 
-        comboboxselecc = self.ui.frame_3.findChild(QComboBox, "comboBox")
+        comboboxselecc = self.ui.frame_6.findChild(QComboBox, "comboBox")
         if comboboxselecc:
             comboboxselecc.currentIndexChanged.connect(self.update_combobox_2)
             comboboxselecc.currentIndexChanged.connect(self.filter_products)
             self.update_combobox_2()
 
         # Conectar el QComboBox_2 para filtrar productos
-        combobox_2 = self.ui.frame_3.findChild(QComboBox, "comboBox_2")
+        combobox_2 = self.ui.frame_6.findChild(QComboBox, "comboBox_2")
         if combobox_2:
             combobox_2.currentIndexChanged.connect(self.filter_products)
             
 
     def update_combobox_2(self):
-        comboboxselecc = self.ui.frame_3.findChild(QComboBox, "comboBox")
+        comboboxselecc = self.ui.frame_6.findChild(QComboBox, "comboBox")
         if comboboxselecc:
             combobox_value = comboboxselecc.currentText()
             if combobox_value == "Proveedor":
@@ -1480,7 +1480,7 @@ class DatosTab:
                 self.populate_combobox_categorias()
     
     def populate_combobox_frame_2(self):
-        combobox = self.ui.frame_3.findChild(QComboBox, "comboBox")
+        combobox = self.ui.frame_6.findChild(QComboBox, "comboBox")
         if combobox:
             combobox.clear()
             combobox.addItem("")
@@ -1489,7 +1489,7 @@ class DatosTab:
 
     
     def populate_combobox_proveedores(self):
-        combobox = self.ui.frame_3.findChild(QComboBox, "comboBox_2")
+        combobox = self.ui.frame_6.findChild(QComboBox, "comboBox_2")
         if combobox:
             global proveedores
             combobox.clear()
@@ -1499,7 +1499,7 @@ class DatosTab:
             
 
     def populate_combobox_categorias(self):
-        combobox = self.ui.frame_3.findChild(QComboBox, "comboBox_2")
+        combobox = self.ui.frame_6.findChild(QComboBox, "comboBox_2")
         if combobox:
             global categorias
             combobox.clear()
@@ -1508,14 +1508,14 @@ class DatosTab:
                 combobox.addItem(categoria[1])
 
     def populate_table_with_products(self):
-        table_widget = self.ui.frame_tabla_productos.findChild(QTableWidget, "tableWidget")
+        table_widget = self.ui.frame_34.findChild(QTableWidget, "tableWidget")
         if table_widget:
             global productos
 
             cantidad_productos = len(productos)
 
             if cantidad_productos == 0:
-                label_121 = self.ui.frame_59.findChild(QLabel, "label_121")
+                label_121 = self.ui.frame_35.findChild(QLabel, "label_62")
                 if label_121:
                     label_121.clear()
                     label_121.setText(f"0")
@@ -1528,7 +1528,7 @@ class DatosTab:
                 item.setTextAlignment(Qt.AlignCenter)
                 table_widget.setItem(0, 0, item)
             else:
-                label_121 = self.ui.frame_59.findChild(QLabel, "label_121")
+                label_121 = self.ui.frame_35.findChild(QLabel, "label_62")
                 if label_121:
                     label_121.clear()
                     label_121.setText(f"{cantidad_productos}")
@@ -1551,10 +1551,10 @@ class DatosTab:
                         table_widget.setItem(row, col, item)
 
     def filter_products(self):
-        line_edit = self.ui.frame_4.findChild(QLineEdit, "lineEdit1")
-        table_widget = self.ui.frame_tabla_productos.findChild(QTableWidget, "tableWidget")
-        combobox = self.ui.frame_3.findChild(QComboBox, "comboBox")
-        combobox_2 = self.ui.frame_3.findChild(QComboBox, "comboBox_2")
+        line_edit = self.ui.frame_5.findChild(QLineEdit, "lineEdit")
+        table_widget = self.ui.frame_34.findChild(QTableWidget, "tableWidget")
+        combobox = self.ui.frame_6.findChild(QComboBox, "comboBox")
+        combobox_2 = self.ui.frame_6.findChild(QComboBox, "comboBox_2")
 
         if line_edit and table_widget and combobox and combobox_2:
             filter_text = line_edit.text().lower()
@@ -1578,7 +1578,7 @@ class DatosTab:
 
             cantidad_productos = len(filtered_productos)
             if cantidad_productos == 0:
-                label_121 = self.ui.frame_59.findChild(QLabel, "label_121")
+                label_121 = self.ui.frame_35.findChild(QLabel, "label_62")
                 if label_121:
                     label_121.clear()
                     label_121.setText(f"0")
@@ -1591,7 +1591,7 @@ class DatosTab:
                 item.setTextAlignment(Qt.AlignCenter)
                 table_widget.setItem(0, 0, item)
             else:
-                label_121 = self.ui.frame_59.findChild(QLabel, "label_121")
+                label_121 = self.ui.frame_35.findChild(QLabel, "label_62")
                 if label_121:
                     label_121.clear()
                     label_121.setText(f"{cantidad_productos}")
@@ -1613,7 +1613,7 @@ class DatosTab:
 
     # Función para copiar una columna al portapapeles
     def copy_column_to_clipboard(self, column_index):
-        table_widget = self.ui.frame_tabla_productos.findChild(QTableWidget, "tableWidget")
+        table_widget = self.ui.frame_34.findChild(QTableWidget, "tableWidget")
         if table_widget:
             column_data = []
             for row in range(table_widget.rowCount()):
@@ -1626,7 +1626,7 @@ class DatosTab:
 
     # Función para copiar una fila al portapapeles
     def copy_row_to_clipboard(self, row_index):
-        table_widget = self.ui.frame_tabla_productos.findChild(QTableWidget, "tableWidget")
+        table_widget = self.ui.frame_34.findChild(QTableWidget, "tableWidget")
         if table_widget:
             row_data = []
             for col in range(table_widget.columnCount()):
@@ -1638,7 +1638,7 @@ class DatosTab:
             self.show_copied_message("Fila copiada al portapapeles")
 
     def copy_entire_table_to_clipboard(self):
-        table_widget = self.ui.frame_tabla_productos.findChild(QTableWidget, "tableWidget")
+        table_widget = self.ui.frame_34.findChild(QTableWidget, "tableWidget")
         if not table_widget:
             return
         row_count = table_widget.rowCount()

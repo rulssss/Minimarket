@@ -66,7 +66,7 @@ QComboBox {
        </size>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="widget">
        <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -336,8 +336,26 @@ QComboBox {
              <property name="font">
               <font>
                <pointsize>10</pointsize>
-               <bold>true</bold>
+               <bold>false</bold>
               </font>
+             </property>
+             <property name="sizeAdjustPolicy">
+              <enum>QAbstractScrollArea::SizeAdjustPolicy::AdjustToContents</enum>
+             </property>
+             <property name="dragEnabled">
+              <bool>false</bool>
+             </property>
+             <property name="alternatingRowColors">
+              <bool>false</bool>
+             </property>
+             <property name="verticalScrollMode">
+              <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
+             </property>
+             <property name="horizontalScrollMode">
+              <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
+             </property>
+             <property name="showGrid">
+              <bool>false</bool>
              </property>
              <attribute name="horizontalHeaderCascadingSectionResizes">
               <bool>false</bool>
@@ -354,6 +372,7 @@ QComboBox {
              <attribute name="verticalHeaderStretchLastSection">
               <bool>false</bool>
              </attribute>
+             <row/>
              <column>
               <property name="text">
                <string>ID</string>
@@ -3307,6 +3326,24 @@ QComboBox {
                   <bold>true</bold>
                  </font>
                 </property>
+                <property name="verticalScrollBarPolicy">
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                </property>
+                <property name="horizontalScrollBarPolicy">
+                 <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+                </property>
+                <property name="sizeAdjustPolicy">
+                 <enum>QAbstractScrollArea::SizeAdjustPolicy::AdjustToContents</enum>
+                </property>
+                <property name="verticalScrollMode">
+                 <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
+                </property>
+                <property name="horizontalScrollMode">
+                 <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
+                </property>
+                <property name="showGrid">
+                 <bool>false</bool>
+                </property>
                 <attribute name="horizontalHeaderMinimumSectionSize">
                  <number>24</number>
                 </attribute>
@@ -3981,8 +4018,20 @@ QComboBox {
                 <property name="font">
                  <font>
                   <pointsize>10</pointsize>
-                  <bold>true</bold>
+                  <bold>false</bold>
                  </font>
+                </property>
+                <property name="sizeAdjustPolicy">
+                 <enum>QAbstractScrollArea::SizeAdjustPolicy::AdjustToContents</enum>
+                </property>
+                <property name="verticalScrollMode">
+                 <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
+                </property>
+                <property name="horizontalScrollMode">
+                 <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
+                </property>
+                <property name="showGrid">
+                 <bool>false</bool>
                 </property>
                 <attribute name="horizontalHeaderMinimumSectionSize">
                  <number>40</number>
@@ -5512,8 +5561,20 @@ QComboBox {
              <property name="font">
               <font>
                <pointsize>10</pointsize>
-               <bold>true</bold>
+               <bold>false</bold>
               </font>
+             </property>
+             <property name="sizeAdjustPolicy">
+              <enum>QAbstractScrollArea::SizeAdjustPolicy::AdjustToContents</enum>
+             </property>
+             <property name="verticalScrollMode">
+              <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
+             </property>
+             <property name="horizontalScrollMode">
+              <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
+             </property>
+             <property name="showGrid">
+              <bool>false</bool>
              </property>
              <attribute name="horizontalHeaderDefaultSectionSize">
               <number>200</number>
@@ -5645,8 +5706,20 @@ QComboBox {
              <property name="font">
               <font>
                <pointsize>10</pointsize>
-               <bold>true</bold>
+               <bold>false</bold>
               </font>
+             </property>
+             <property name="sizeAdjustPolicy">
+              <enum>QAbstractScrollArea::SizeAdjustPolicy::AdjustToContents</enum>
+             </property>
+             <property name="verticalScrollMode">
+              <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
+             </property>
+             <property name="horizontalScrollMode">
+              <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
+             </property>
+             <property name="showGrid">
+              <bool>false</bool>
              </property>
              <attribute name="horizontalHeaderDefaultSectionSize">
               <number>200</number>
@@ -6154,8 +6227,20 @@ QComboBox {
                 <property name="font">
                  <font>
                   <pointsize>10</pointsize>
-                  <bold>true</bold>
+                  <bold>false</bold>
                  </font>
+                </property>
+                <property name="sizeAdjustPolicy">
+                 <enum>QAbstractScrollArea::SizeAdjustPolicy::AdjustToContents</enum>
+                </property>
+                <property name="verticalScrollMode">
+                 <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
+                </property>
+                <property name="horizontalScrollMode">
+                 <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
+                </property>
+                <property name="showGrid">
+                 <bool>false</bool>
                 </property>
                 <attribute name="horizontalHeaderDefaultSectionSize">
                  <number>225</number>
@@ -6368,8 +6453,20 @@ QComboBox {
              <property name="font">
               <font>
                <pointsize>10</pointsize>
-               <bold>true</bold>
+               <bold>false</bold>
               </font>
+             </property>
+             <property name="sizeAdjustPolicy">
+              <enum>QAbstractScrollArea::SizeAdjustPolicy::AdjustToContents</enum>
+             </property>
+             <property name="verticalScrollMode">
+              <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
+             </property>
+             <property name="horizontalScrollMode">
+              <enum>QAbstractItemView::ScrollMode::ScrollPerPixel</enum>
+             </property>
+             <property name="showGrid">
+              <bool>false</bool>
              </property>
              <attribute name="horizontalHeaderDefaultSectionSize">
               <number>180</number>
