@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QWidget, QLineEdit
+from PySide6.QtWidgets import QWidget, QLineEdit, QComboBox, QLabel, QPushButton
 from PySide6.QtGui import QIcon, Qt
 from PySide6.QtCore import QTimer, QThread
 from archivos_py.ui.login import Ui_Form_login  # Importa la clase generada por qt Designer
@@ -58,16 +58,19 @@ class Inicio(QWidget):
         
         self.ui.stackedWidget.setCurrentIndex(2)
 
-        label_9 = self.ui.stackedWidget.findChild(QWidget, "label_9")
-        combobox_2 = self.ui.stackedWidget.findChild(QWidget, "comboBox_2")
-        line_edit_4 = self.ui.stackedWidget.findChild(QWidget, "lineEdit_4")
-        pushButton = self.ui.stackedWidget.findChild(QWidget, "pushButton_2")
-        pushButton_3 = self.ui.stackedWidget.findChild(QWidget, "pushButton_3")
-        pushButton_4 = self.ui.stackedWidget.findChild(QWidget, "pushButton_4")
-        line_edit = self.ui.stackedWidget.findChild(QWidget, "lineEdit_3")
+        label_9 = self.ui.stackedWidget.findChild(QLabel, "label_9")
+        combobox_2 = self.ui.stackedWidget.findChild(QComboBox, "comboBox_2")
+        line_edit_4 = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_4")
+        pushButton = self.ui.stackedWidget.findChild(QPushButton, "pushButton_2")
+        pushButton_3 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_3")
+        pushButton_4 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_4")
+        line_edit = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_3")
 
         if combobox_2:
             combobox_2.clear()
+            combobox_2.setEditable(True)
+            combobox_2.lineEdit().setAlignment(Qt.AlignCenter)
+            combobox_2.setEditable(False)
             combobox_2.addItem("Administrador")
             combobox_2.addItem("Usuario")
 
@@ -103,16 +106,16 @@ class Inicio(QWidget):
             label_9.setStyleSheet("color: transparent;")
 
     def verificar_login(self):
-        combobox_2 = self.ui.stackedWidget.findChild(QWidget, "comboBox_2")
-        line_edit_3 = self.ui.stackedWidget.findChild(QWidget, "lineEdit_3")
-        line_edit_4 = self.ui.stackedWidget.findChild(QWidget, "lineEdit_4")
+        combobox_2 = self.ui.stackedWidget.findChild(QComboBox, "comboBox_2")
+        line_edit_3 = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_3")
+        line_edit_4 = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_4")
         value_line_edit = line_edit_3.text()
         value_line_edit_2 = line_edit_4.text()
         value_combobox = combobox_2.currentText()  
-        label_9 = self.ui.stackedWidget.findChild(QWidget, "label_9")
-        pushButton_2 = self.ui.stackedWidget.findChild(QWidget, "pushButton_2")
-        push_button_3 = self.ui.stackedWidget.findChild(QWidget, "pushButton_3")
-        push_button_4 = self.ui.stackedWidget.findChild(QWidget, "pushButton_4")
+        label_9 = self.ui.stackedWidget.findChild(QLabel, "label_9")
+        pushButton_2 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_2")
+        push_button_3 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_3")
+        push_button_4 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_4")
 
         if value_combobox and value_line_edit and value_line_edit_2:
 
@@ -197,13 +200,13 @@ class Inicio(QWidget):
         
         self.ui.stackedWidget.setCurrentIndex(0)
 
-        label_21 = self.ui.stackedWidget.findChild(QWidget, "label_21")
-        combobox = self.ui.stackedWidget.findChild(QWidget, "comboBox")
-        line_edit = self.ui.stackedWidget.findChild(QWidget, "lineEdit")
-        line_edit_5 = self.ui.stackedWidget.findChild(QWidget, "lineEdit_5")
-        line_edit_2 = self.ui.stackedWidget.findChild(QWidget, "lineEdit_2")
-        pushButton = self.ui.stackedWidget.findChild(QWidget, "pushButton")
-        pushButton_5 = self.ui.stackedWidget.findChild(QWidget, "pushButton_5")
+        label_21 = self.ui.stackedWidget.findChild(QLabel, "label_21")
+        combobox = self.ui.stackedWidget.findChild(QComboBox, "comboBox")
+        line_edit = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit")
+        line_edit_5 = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_5")
+        line_edit_2 = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_2")
+        pushButton = self.ui.stackedWidget.findChild(QPushButton, "pushButton")
+        pushButton_5 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_5")
 
 
         if combobox:    
@@ -247,9 +250,9 @@ class Inicio(QWidget):
 
     def volver_al_login_y_limpiar_campos(self):
 
-        line_edit = self.ui.stackedWidget.findChild(QWidget, "lineEdit")
-        line_edit_2 = self.ui.stackedWidget.findChild(QWidget, "lineEdit_2")
-        line_edit_5 = self.ui.stackedWidget.findChild(QWidget, "lineEdit_5")
+        line_edit = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit")
+        line_edit_2 = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_2")
+        line_edit_5 = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_5")
 
         if line_edit:
             line_edit.clear()
@@ -263,19 +266,19 @@ class Inicio(QWidget):
         self.open_login_window()
 
     def verificar_registro(self): 
-        push_button_5 = self.ui.stackedWidget.findChild(QWidget, "pushButton_5")
-        pushButton = self.ui.stackedWidget.findChild(QWidget, "pushButton")
-        combobox = self.ui.stackedWidget.findChild(QWidget, "comboBox")
-        line_edit = self.ui.stackedWidget.findChild(QWidget, "lineEdit")
-        line_edit_2 = self.ui.stackedWidget.findChild(QWidget, "lineEdit_2")
-        line_edit_5 = self.ui.stackedWidget.findChild(QWidget, "lineEdit_5")
+        push_button_5 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_5")
+        pushButton = self.ui.stackedWidget.findChild(QPushButton, "pushButton")
+        combobox = self.ui.stackedWidget.findChild(QComboBox, "comboBox")
+        line_edit = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit")
+        line_edit_2 = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_2")
+        line_edit_5 = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_5")
         value_combobox = combobox.currentText()
         value_line_edit_3 = line_edit.text().strip()
         value_line_edit_4 = line_edit_2.text().strip()
         value_line_edit_5 = line_edit_5.text().strip()
 
 
-        label_21 = self.ui.stackedWidget.findChild(QWidget, "label_21")
+        label_21 = self.ui.stackedWidget.findChild(QLabel, "label_21")
 
         if value_line_edit_3 and value_line_edit_4 and value_line_edit_5 and ("@gmail" in value_line_edit_5 or "@hotmail" in value_line_edit_5 or "@outlook" in value_line_edit_5) and value_combobox:
             pushButton.setEnabled(False)
@@ -296,7 +299,7 @@ class Inicio(QWidget):
             QTimer.singleShot(6000, lambda: label_21.setStyleSheet("color: transparent;"))
 
     def on_registro_check_finished(self, result, value_combobox, pushButton, pushButton_5):
-        label_21 = self.ui.stackedWidget.findChild(QWidget, "label_21")
+        label_21 = self.ui.stackedWidget.findChild(QLabel, "label_21")
 
         if value_combobox == "Administrador" and result["hay_admin"]:
             if result["usuario_existe"]:
@@ -348,9 +351,9 @@ class Inicio(QWidget):
         QTimer.singleShot(6000, lambda: label_21.setStyleSheet("color: transparent;"))
 
     def verificar_cuenta_usuario(self):
-        line_edit_5 = self.ui.stackedWidget.widget(0).findChild(QWidget, "lineEdit_5")
+        line_edit_5 = self.ui.stackedWidget.widget(0).findChild(QLineEdit, "lineEdit_5")
         mail = line_edit_5.text()
-        pushButton = self.ui.stackedWidget.findChild(QWidget, "pushButton")
+        pushButton = self.ui.stackedWidget.findChild(QPushButton, "pushButton")
         if pushButton:
                 pushButton.setEnabled(False)
 
@@ -367,15 +370,15 @@ class Inicio(QWidget):
         codigo_usuario = codigo
         
 
-        label_21 = self.ui.stackedWidget.findChild(QWidget, "label_21")
+        label_21 = self.ui.stackedWidget.findChild(QLabel, "label_21")
         if codigo_usuario is not None:
             self.open_verificar_codigo_cuent_admin()
         else:
-            pushButton = self.ui.stackedWidget.findChild(QWidget, "pushButton")
+            pushButton = self.ui.stackedWidget.findChild(QPushButton, "pushButton")
             if pushButton:
                 pushButton.setEnabled(True)
 
-            pushButton_5 = self.ui.stackedWidget.findChild(QWidget, "pushButton_5")
+            pushButton_5 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_5")
             if pushButton_5:
                 pushButton_5.setEnabled(True)
 
@@ -388,11 +391,11 @@ class Inicio(QWidget):
 
         self.ui.stackedWidget.setCurrentIndex(5)
 
-        label_17 = self.ui.stackedWidget.findChild(QWidget, "label_17")
-        label_15 = self.ui.stackedWidget.findChild(QWidget, "label_15")
-        line_edit_8 = self.ui.stackedWidget.findChild(QWidget, "lineEdit_8")
-        pushButton_11 = self.ui.stackedWidget.findChild(QWidget, "pushButton_11")
-        pushButton_12 = self.ui.stackedWidget.findChild(QWidget, "pushButton_12")
+        label_17 = self.ui.stackedWidget.findChild(QLabel, "label_17")
+        label_15 = self.ui.stackedWidget.findChild(QLabel, "label_15")
+        line_edit_8 = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_8")
+        pushButton_11 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_11")
+        pushButton_12 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_12")
 
         if label_15:
             label_15.setAlignment(Qt.AlignCenter)
@@ -423,10 +426,10 @@ class Inicio(QWidget):
     def verificar_codigo_para_luego_enviarle_al_admin(self):
         global codigo_usuario
 
-        line_edit_8 = self.ui.stackedWidget.findChild(QWidget, "lineEdit_8")
-        label_17 = self.ui.stackedWidget.findChild(QWidget, "label_17")
-        pushButton_11 = self.ui.stackedWidget.findChild(QWidget, "pushButton_11")
-        pushButton_12 = self.ui.stackedWidget.findChild(QWidget, "pushButton_12")
+        line_edit_8 = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_8")
+        label_17 = self.ui.stackedWidget.findChild(QLabel, "label_17")
+        pushButton_11 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_11")
+        pushButton_12 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_12")
 
         if line_edit_8:
             line_edit_8.setFocus()
@@ -452,7 +455,7 @@ class Inicio(QWidget):
                 
             else:
                 QTimer.singleShot(0, lambda: QTimer().stop())
-                label_17 = self.ui.stackedWidget.findChild(QWidget, "label_23")
+                label_17 = self.ui.stackedWidget.findChild(QLabel, "label_23")
                 label_17.setText("Codigo incorrecto")
                 label_17.setStyleSheet("color: red;")
                 QTimer.singleShot(6000, lambda: label_17.setStyleSheet("color: transparent;"))
@@ -467,7 +470,7 @@ class Inicio(QWidget):
                 pushButton_11.setEnabled(True)
                 pushButton_12.setEnabled(True)
             QTimer.singleShot(0, lambda: QTimer().stop())
-            label_17 = self.ui.stackedWidget.findChild(QWidget, "label_23")
+            label_17 = self.ui.stackedWidget.findChild(QLabel, "label_23")
             label_17.setText("Complete el código correctamente")
             label_17.setStyleSheet("color: red;")
             QTimer.singleShot(6000, lambda: label_17.setStyleSheet("color: transparent;"))
@@ -482,9 +485,9 @@ class Inicio(QWidget):
         global codigo_admin
         codigo_admin = codigo
 
-        pushButton_11 = self.ui.stackedWidget.findChild(QWidget, "pushButton_11")
-        pushButton_12 = self.ui.stackedWidget.findChild(QWidget, "pushButton_12")
-        label_17 = self.ui.stackedWidget.findChild(QWidget, "label_17")
+        pushButton_11 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_11")
+        pushButton_12 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_12")
+        label_17 = self.ui.stackedWidget.findChild(QLabel, "label_17")
 
         if codigo_admin is not None:
             self.open_verificar_codigo_admin()
@@ -502,11 +505,11 @@ class Inicio(QWidget):
     def open_verificar_codigo_admin(self):
 
 
-        label_17 = self.ui.stackedWidget.findChild(QWidget, "label_17")
-        label_15 = self.ui.stackedWidget.findChild(QWidget, "label_15")
-        line_edit_8 = self.ui.stackedWidget.findChild(QWidget, "lineEdit_8")
-        pushButton_11 = self.ui.stackedWidget.findChild(QWidget, "pushButton_11")
-        pushButton_12 = self.ui.stackedWidget.findChild(QWidget, "pushButton_12")
+        label_17 = self.ui.stackedWidget.findChild(QLabel, "label_17")
+        label_15 = self.ui.stackedWidget.findChild(QLabel, "label_15")
+        line_edit_8 = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_8")
+        pushButton_11 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_11")
+        pushButton_12 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_12")
 
         if label_15:
             label_15.setAlignment(Qt.AlignCenter)
@@ -535,10 +538,10 @@ class Inicio(QWidget):
     def verificar_codigo_admin(self):
         global codigo_admin
 
-        line_edit_8 = self.ui.stackedWidget.findChild(QWidget, "lineEdit_8")
-        label_17 = self.ui.stackedWidget.findChild(QWidget, "label_17")
-        pushButton_11 = self.ui.stackedWidget.findChild(QWidget, "pushButton_11")
-        pushButton_12 = self.ui.stackedWidget.findChild(QWidget, "pushButton_12")
+        line_edit_8 = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_8")
+        label_17 = self.ui.stackedWidget.findChild(QLabel, "label_17")
+        pushButton_11 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_11")
+        pushButton_12 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_12")
 
         if line_edit_8:
             value_line_edit_8 = line_edit_8.text()
@@ -550,9 +553,9 @@ class Inicio(QWidget):
                 pushButton_11.setEnabled(False)
                 pushButton_12.setEnabled(False)
                 combobox = "Administrador"
-                line_edit = self.ui.stackedWidget.widget(0).findChild(QWidget, "lineEdit")
-                line_edit_2 = self.ui.stackedWidget.widget(0).findChild(QWidget, "lineEdit_2")
-                line_edit_5 = self.ui.stackedWidget.widget(0).findChild(QWidget, "lineEdit_5")
+                line_edit = self.ui.stackedWidget.widget(0).findChild(QLineEdit, "lineEdit")
+                line_edit_2 = self.ui.stackedWidget.widget(0).findChild(QLineEdit, "lineEdit_2")
+                line_edit_5 = self.ui.stackedWidget.widget(0).findChild(QLineEdit, "lineEdit_5")
                 value_line_edit = line_edit.text()
                 value_line_edit_2 = line_edit_2.text()
                 value_line_edit_5 = line_edit_5.text()
@@ -604,7 +607,7 @@ class Inicio(QWidget):
 
     
     def verificar_codigo_para_agregar_otra_cuenta(self):
-        line_edit_5 = self.ui.stackedWidget.widget(2).findChild(QWidget, "lineEdit_5")
+        line_edit_5 = self.ui.stackedWidget.widget(2).findChild(QLineEdit, "lineEdit_5")
         mail = line_edit_5.text()
 
         self.enviar_codigo_cuenta_thread = EnviarCodigoThread(mail)
@@ -615,7 +618,7 @@ class Inicio(QWidget):
         global codigo_usuario
         codigo_usuario = codigo
 
-        label_21 = self.ui.stackedWidget.findChild(QWidget, "label_21")
+        label_21 = self.ui.stackedWidget.findChild(QLabel, "label_21")
         if codigo is not None:
             self.open_verificar_codigo_cuenta()
         else:
@@ -629,11 +632,11 @@ class Inicio(QWidget):
     def open_verificar_codigo_cuenta(self):
         self.ui.stackedWidget.setCurrentIndex(5)
 
-        label_17 = self.ui.stackedWidget.findChild(QWidget, "label_17")
-        label_15 = self.ui.stackedWidget.findChild(QWidget, "label_15")
-        line_edit_8 = self.ui.stackedWidget.findChild(QWidget, "lineEdit_8")
-        pushButton_11 = self.ui.stackedWidget.findChild(QWidget, "pushButton_11")
-        pushButton_12 = self.ui.stackedWidget.findChild(QWidget, "pushButton_12")
+        label_17 = self.ui.stackedWidget.findChild(QLabel, "label_17")
+        label_15 = self.ui.stackedWidget.findChild(QLabel, "label_15")
+        line_edit_8 = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_8")
+        pushButton_11 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_11")
+        pushButton_12 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_12")
 
         if label_15:
             label_15.setAlignment(Qt.AlignCenter)
@@ -663,10 +666,10 @@ class Inicio(QWidget):
         global codigo_usuario
 
 
-        line_edit_8 = self.ui.stackedWidget.findChild(QWidget, "lineEdit_8")
-        label_17 = self.ui.stackedWidget.findChild(QWidget, "label_17")
-        pushButton_11 = self.ui.stackedWidget.findChild(QWidget, "pushButton_11")
-        pushButton_12 = self.ui.stackedWidget.findChild(QWidget, "pushButton_12")
+        line_edit_8 = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_8")
+        label_17 = self.ui.stackedWidget.findChild(QLabel, "label_17")
+        pushButton_11 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_11")
+        pushButton_12 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_12")
 
 
         if pushButton_11:
@@ -682,10 +685,10 @@ class Inicio(QWidget):
 
         if value_line_edit_8:
             if int(codigo_usuario) == int(value_line_edit_8):
-                combobox = self.ui.stackedWidget.widget(0).findChild(QWidget, "comboBox")
-                line_edit = self.ui.stackedWidget.widget(0).findChild(QWidget, "lineEdit")
-                line_edit_2 = self.ui.stackedWidget.widget(0).findChild(QWidget, "lineEdit_2")
-                line_edit_5 = self.ui.stackedWidget.widget(0).findChild(QWidget, "lineEdit_5")
+                combobox = self.ui.stackedWidget.widget(0).findChild(QComboBox, "comboBox")
+                line_edit = self.ui.stackedWidget.widget(0).findChild(QLineEdit, "lineEdit")
+                line_edit_2 = self.ui.stackedWidget.widget(0).findChild(QLineEdit, "lineEdit_2")
+                line_edit_5 = self.ui.stackedWidget.widget(0).findChild(QLineEdit, "lineEdit_5")
                 value_line_edit = line_edit.text()
                 value_line_edit_2 = line_edit_2.text()
                 value_line_edit_5 = line_edit_5.text()
@@ -740,9 +743,9 @@ class Inicio(QWidget):
     def open_recover_window(self):
         self.ui.stackedWidget.setCurrentIndex(3)
 
-        label_18 = self.ui.stackedWidget.findChild(QWidget, "label_18")
-        pushButton_6 = self.ui.stackedWidget.findChild(QWidget, "pushButton_6")
-        push_Button_7 = self.ui.stackedWidget.findChild(QWidget, "pushButton_7")
+        label_18 = self.ui.stackedWidget.findChild(QLabel, "label_18")
+        pushButton_6 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_6")
+        push_Button_7 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_7")
 
         if pushButton_6:
             pushButton_6.setEnabled(True)
@@ -764,11 +767,11 @@ class Inicio(QWidget):
             label_18.setStyleSheet("color: transparent;")
 
     def verificar_existencia_mail(self):
-        line_edit_6 = self.ui.stackedWidget.findChild(QWidget, "lineEdit_6")
+        line_edit_6 = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_6")
         value_line_edit_6 = line_edit_6.text()
-        label_18 = self.ui.stackedWidget.findChild(QWidget, "label_18")
-        pushButton_6 = self.ui.stackedWidget.findChild(QWidget, "pushButton_6")
-        push_Button_7 = self.ui.stackedWidget.findChild(QWidget, "pushButton_7")
+        label_18 = self.ui.stackedWidget.findChild(QLabel, "label_18")
+        pushButton_6 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_6")
+        push_Button_7 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_7")
 
         if value_line_edit_6 and ("@gmail" in value_line_edit_6 or "@hotmail" in value_line_edit_6 or "@outlook" in value_line_edit_6):
             global email_guardado
@@ -789,10 +792,10 @@ class Inicio(QWidget):
             QTimer.singleShot(6000, lambda: label_18.setStyleSheet("color: transparent;"))
 
     def on_verificar_existencia_mail_finished(self, existe, codigo):
-        pushButton_6 = self.ui.stackedWidget.findChild(QWidget, "pushButton_6")
-        push_Button_7 = self.ui.stackedWidget.findChild(QWidget, "pushButton_7")
-        line_edit_6 = self.ui.stackedWidget.findChild(QWidget, "lineEdit_6")
-        label_18 = self.ui.stackedWidget.findChild(QWidget, "label_18")
+        pushButton_6 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_6")
+        push_Button_7 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_7")
+        line_edit_6 = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_6")
+        label_18 = self.ui.stackedWidget.findChild(QLabel, "label_18")
 
         if existe:
             pushButton_6.setEnabled(True)
@@ -860,7 +863,7 @@ class Inicio(QWidget):
             label_16.setStyleSheet("color: transparent;")
 
     def reenviar_mail(self):
-        label_16 = self.ui.stackedWidget.findChild(QWidget, "label_16")
+        label_16 = self.ui.stackedWidget.findChild(QLabel, "label_16")
         global email_guardado
 
         label_16.setText("Reenviando código...")
@@ -871,7 +874,7 @@ class Inicio(QWidget):
 
     def on_codigo_reenviado(self, codigo):
         global codigo_recuperar
-        label_16 = self.ui.stackedWidget.findChild(QWidget, "label_16")
+        label_16 = self.ui.stackedWidget.findChild(QLabel, "label_16")
         if codigo:
             codigo_recuperar = codigo
             label_16.setText("Código reenviado correctamente")
@@ -884,12 +887,12 @@ class Inicio(QWidget):
     def verificar_codigo(self):
         global codigo_usuario
 
-        line_edit_7 = self.ui.stackedWidget.findChild(QWidget, "lineEdit_7")
-        label_16 = self.ui.stackedWidget.findChild(QWidget, "label_16")
+        line_edit_7 = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_7")
+        label_16 = self.ui.stackedWidget.findChild(QLabel, "label_16")
         value_line_edit_7 = line_edit_7.text()
-        pushButton_8 = self.ui.stackedWidget.findChild(QWidget, "pushButton_8")
-        pushButton_9 = self.ui.stackedWidget.findChild(QWidget, "pushButton_9")
-        pushButton_10 = self.ui.stackedWidget.findChild(QWidget, "pushButton_10")
+        pushButton_8 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_8")
+        pushButton_9 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_9")
+        pushButton_10 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_10")
 
         if value_line_edit_7.isdigit():
 
@@ -915,11 +918,11 @@ class Inicio(QWidget):
     def open_recuperar_contra(self):
         self.ui.stackedWidget.setCurrentIndex(6)
 
-        label_28 = self.ui.stackedWidget.findChild(QWidget, "label_28")
-        pushButton_13 = self.ui.stackedWidget.findChild(QWidget, "pushButton_13")
-        pushButton_14 = self.ui.stackedWidget.findChild(QWidget, "pushButton_14")
-        line_edit_9 = self.ui.stackedWidget.findChild(QWidget, "lineEdit_9")
-        line_edit_10 = self.ui.stackedWidget.findChild(QWidget, "lineEdit_10")
+        label_28 = self.ui.stackedWidget.findChild(QLabel, "label_28")
+        pushButton_13 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_13")
+        pushButton_14 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_14")
+        line_edit_9 = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_9")
+        line_edit_10 = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_10")
 
         if line_edit_9:
             line_edit_9.clear()
@@ -948,13 +951,13 @@ class Inicio(QWidget):
 
 
     def verificar_repeticion_o_igualdad_de_contrasenias(self):
-        line_edit_9 = self.ui.stackedWidget.findChild(QWidget, "lineEdit_9")
-        line_edit_10 = self.ui.stackedWidget.findChild(QWidget, "lineEdit_10")
-        label_28 = self.ui.stackedWidget.findChild(QWidget, "label_28")
+        line_edit_9 = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_9")
+        line_edit_10 = self.ui.stackedWidget.findChild(QLineEdit, "lineEdit_10")
+        label_28 = self.ui.stackedWidget.findChild(QLabel, "label_28")
         value_line_edit_9 = line_edit_9.text()
         value_line_edit_10 = line_edit_10.text()
-        pushButton_13 = self.ui.stackedWidget.findChild(QWidget, "pushButton_13")
-        pushButton_14 = self.ui.stackedWidget.findChild(QWidget, "pushButton_14")
+        pushButton_13 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_13")
+        pushButton_14 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_14")
 
         global email_guardado
 
@@ -1000,8 +1003,8 @@ class Inicio(QWidget):
             label_28.setStyleSheet("color: green;")
             QTimer.singleShot(6000, lambda: (label_28.setStyleSheet("color: transparent;"), self.open_login_window()))
         else:
-            pushButton_13 = self.ui.stackedWidget.findChild(QWidget, "pushButton_13")
-            pushButton_14 = self.ui.stackedWidget.findChild(QWidget, "pushButton_14")
+            pushButton_13 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_13")
+            pushButton_14 = self.ui.stackedWidget.findChild(QPushButton, "pushButton_14")
 
             pushButton_13.setEnabled(True)
             pushButton_14.setEnabled(True)

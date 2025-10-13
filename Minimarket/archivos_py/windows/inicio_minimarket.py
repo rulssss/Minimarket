@@ -1693,98 +1693,98 @@ class DatosTab:
     def agregar_proveedor(self):
 
 
-        button_26 = self.ui.frame_10.findChild(QPushButton, "pushButton_26")
-        if button_26:
-            button_26.setStyleSheet("background-color: rgb(168, 225, 255)")
-            button_26.setShortcut(Qt.Key_Return)
+        button_30 = self.ui.frame_20.findChild(QPushButton, "pushButton_30") #pushbutton26 boton agregar
+        if button_30:
+            button_30.setStyleSheet("background-color: rgb(168, 225, 255)")
+            button_30.setShortcut(Qt.Key_Return)
             if not self.button_agregar:
                 self.button_agregar = True
-                button_26.clicked.connect(self.validate_and_process_inputs_proveedores)
+                button_30.clicked.connect(self.validate_and_process_inputs_proveedores)
 
-        button_25 = self.ui.frame_10.findChild(QPushButton, "pushButton_25")
-        if button_25:
-            button_25.clicked.connect(self.clear_inputs_agregar_proveedores)
-        
-        label_75 = self.ui.frame_10.findChild(QLabel, "label_75")
-        if label_75:
-            label_75.setStyleSheet("color: transparent")
+        button_31 = self.ui.frame_20.findChild(QPushButton, "pushButton_31")
+        if button_31:
+            button_31.clicked.connect(self.clear_inputs_agregar_proveedores)
+
+        label_120 = self.ui.frame_20.findChild(QLabel, "label_120")
+        if label_120:
+            label_120.setStyleSheet("color: transparent")
 
     
     def clear_inputs_agregar_proveedores(self):
-        lineEdit_14 = self.ui.frame_10.findChild(QLineEdit, "lineEdit_14")
-        lineEdit_15 = self.ui.frame_10.findChild(QLineEdit, "lineEdit_15")
-        lineEdit_17 = self.ui.frame_10.findChild(QLineEdit, "lineEdit_17")
+        lineEdit_16 = self.ui.frame_20.findChild(QLineEdit, "lineEdit_16")
+        lineEdit_14 = self.ui.frame_20.findChild(QLineEdit, "lineEdit_14")
+        lineEdit_15 = self.ui.frame_20.findChild(QLineEdit, "lineEdit_15")
 
-        if lineEdit_14 and lineEdit_15 and lineEdit_17:            
+        if lineEdit_14 and lineEdit_15 and lineEdit_16:            
             lineEdit_14.clear()
             lineEdit_15.clear()
-            lineEdit_17.clear()
-            lineEdit_14.setFocus()
+            lineEdit_16.clear()
+            lineEdit_16.setFocus()
 
     def validate_and_process_inputs_proveedores(self):
         global usuario_activo, proveedores_por_nombre_cache, proveedores_por_telefono_cache
 
-        lineEdit_14 = self.ui.frame_10.findChild(QLineEdit, "lineEdit_14")  # Nombre
-        lineEdit_15 = self.ui.frame_10.findChild(QLineEdit, "lineEdit_15")  # Teléfono
-        lineEdit_17 = self.ui.frame_10.findChild(QLineEdit, "lineEdit_17")  # Dirección
+        lineEdit_16 = self.ui.frame_20.findChild(QLineEdit, "lineEdit_16")  # Nombre
+        lineEdit_14 = self.ui.frame_20.findChild(QLineEdit, "lineEdit_14")  # Teléfono
+        lineEdit_15 = self.ui.frame_20.findChild(QLineEdit, "lineEdit_15")  # Dirección
 
-        button_26 = self.ui.frame_10.findChild(QPushButton, "pushButton_26")
-        button_25 = self.ui.frame_10.findChild(QPushButton, "pushButton_25")
-        if button_26:
-            button_26.setEnabled(False)
-        if button_25:
-            button_25.setEnabled(False)
+        button_30 = self.ui.frame_20.findChild(QPushButton, "pushButton_30")
+        button_31 = self.ui.frame_20.findChild(QPushButton, "pushButton_31")
+        if button_30:
+            button_30.setEnabled(False)
+        if button_31:
+            button_31.setEnabled(False)
 
-        if lineEdit_14 and lineEdit_15 and lineEdit_17:
+        if lineEdit_14 and lineEdit_15 and lineEdit_16:
             lineEdit_14_value = lineEdit_14.text().strip()
             lineEdit_15_value = lineEdit_15.text().strip()
-            lineEdit_17_value = lineEdit_17.text().strip()
+            lineEdit_16_value = lineEdit_16.text().strip()
 
             # Verificar si el proveedor ya existe por nombre o teléfono usando diccionarios
-            existe_nombre = proveedores_por_nombre_cache and lineEdit_14_value.lower() in proveedores_por_nombre_cache
-            existe_telefono = proveedores_por_telefono_cache and lineEdit_15_value in proveedores_por_telefono_cache
+            existe_nombre = proveedores_por_nombre_cache and lineEdit_16_value.lower() in proveedores_por_nombre_cache
+            existe_telefono = proveedores_por_telefono_cache and lineEdit_14_value in proveedores_por_telefono_cache
 
             if existe_nombre or existe_telefono:
-                label_75 = self.ui.frame_10.findChild(QLabel, "label_75")
-                if button_25:
-                    button_25.setEnabled(True)
-                if button_26:
-                    button_26.setEnabled(True)
+                label_120 = self.ui.frame_20.findChild(QLabel, "label_120")
+                if button_30:
+                    button_30.setEnabled(True)
+                if button_31:
+                    button_31.setEnabled(True)
 
-                if label_75:
-                    label_75.setText("Está intentando cargar un proveedor o número existente")
-                    label_75.setStyleSheet("color: red; font-weight: bold")
-                     
+                if label_120:
+                    label_120.setText("Está intentando cargar un proveedor o número existente")
+                    label_120.setStyleSheet("color: red; font-weight: bold")
+
                 return
             else:
-                if lineEdit_14_value and lineEdit_15_value.isdigit():
-                    label_75 = self.ui.frame_10.findChild(QLabel, "label_75")
-                    label_75.setStyleSheet("color: green; font-weight: bold")
-                    label_75.setText("Cargando Proveedor...")
+                if lineEdit_16_value and lineEdit_14_value.isdigit():
+                    label_120 = self.ui.frame_20.findChild(QLabel, "label_120")
+                    label_120.setStyleSheet("color: green; font-weight: bold")
+                    label_120.setText("Cargando Proveedor...")
 
                     # poner la primera letra del nombre del proveedor en mayuscula
-                    lineEdit_14_value = lineEdit_14_value.capitalize()
+                    lineEdit_16_value = lineEdit_16_value.capitalize()
                     
-                    self.proveedor_thread = ProveedorThread(self.id_usuario_perfil, lineEdit_14_value, lineEdit_15_value, lineEdit_17_value)
+                    self.proveedor_thread = ProveedorThread(self.id_usuario_perfil, lineEdit_16_value, lineEdit_14_value, lineEdit_15_value)
                     self.proveedor_thread.proveedor_cargado.connect(lambda exito: self.on_proveedor_cargado(exito, lineEdit_14_value))
                     self.start_thread(self.proveedor_thread)
                 else:
-                    if button_25:
-                        button_25.setEnabled(True)
-                    if button_26:
-                        button_26.setEnabled(True)
+                    if button_30:
+                        button_30.setEnabled(True)
+                    if button_31:
+                        button_31.setEnabled(True)
 
-                    label_75 = self.ui.frame_10.findChild(QLabel, "label_75")
-                    if label_75:
-                        label_75.setStyleSheet("color: red; font-weight: bold")
-                        label_75.setText("Por favor, complete todos los campos correctamente")
-                        
-                        
-                    if not lineEdit_14_value:
+                    label_120 = self.ui.frame_20.findChild(QLabel, "label_120")
+                    if label_120:
+                        label_120.setStyleSheet("color: red; font-weight: bold")
+                        label_120.setText("Por favor, complete todos los campos correctamente")
+
+
+                    if not lineEdit_16_value:
+                        lineEdit_16.setFocus()
+                    elif not lineEdit_14_value.isdigit():
                         lineEdit_14.setFocus()
-                    elif not lineEdit_15_value.isdigit():
-                        lineEdit_15.setFocus()
-    
+
 
     def on_proveedor_cargado(self, exito, nombre_proveedor):
         global usuario_activo
@@ -1799,26 +1799,26 @@ class DatosTab:
             proveedores_cache = None
             proveedores_por_nombre_cache = None
             proveedores_por_telefono_cache = None
-            self.actualizar_variables_globales_de_uso(2, lambda: (self.populate_combobox_with_proveedores(self.ui.frame_13.findChild(QComboBox, "comboBox_11")),
-                self.populate_combobox_with_proveedores(self.ui.frame_7.findChild(QComboBox, "comboBox_7")),
+            self.actualizar_variables_globales_de_uso(2, lambda: (self.populate_combobox_with_proveedores(self.ui.frame_24.findChild(QComboBox, "comboBox_12")),
+                self.populate_combobox_with_proveedores(self.ui.frame_9.findChild(QComboBox, "comboBox_7")),
                 self.populate_table_with_proveedores(),
                 self.proveedores(),
                 self.update_combobox_8(),
                 self.update_combobox_10()
             ))
 
-            button_26 = self.ui.frame_10.findChild(QPushButton, "pushButton_26")
-            button_25 = self.ui.frame_10.findChild(QPushButton, "pushButton_25")
-            if button_26:
-                button_26.setEnabled(True)
-            if button_25:
-                button_25.setEnabled(True)
-                
-            label_75 = self.ui.frame_10.findChild(QLabel, "label_75")
-            if label_75:
-                label_75.setText("Proveedor cargado con éxito")
-                label_75.setStyleSheet("color: green; font-weight: bold")
-                QTimer.singleShot(6000, lambda: label_75.setStyleSheet("color: transparent"))
+            button_30 = self.ui.frame_20.findChild(QPushButton, "pushButton_30")
+            button_31 = self.ui.frame_20.findChild(QPushButton, "pushButton_31")
+            if button_30:
+                button_30.setEnabled(True)
+            if button_31:
+                button_31.setEnabled(True)
+
+            label_120 = self.ui.frame_20.findChild(QLabel, "label_120")
+            if label_120:
+                label_120.setText("Proveedor cargado con éxito")
+                label_120.setStyleSheet("color: green; font-weight: bold")
+                QTimer.singleShot(6000, lambda: label_120.setStyleSheet("color: transparent"))
 
             
         else:
