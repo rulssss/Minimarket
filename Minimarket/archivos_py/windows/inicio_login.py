@@ -78,7 +78,6 @@ class Inicio(QWidget):
 
         if line_edit_4:
             line_edit_4.setEchoMode(QLineEdit.Password)
-            line_edit_4.setAlignment(Qt.AlignCenter)
             line_edit_4.setPlaceholderText("Contraseña")
 
 
