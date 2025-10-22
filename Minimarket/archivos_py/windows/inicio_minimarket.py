@@ -2336,11 +2336,7 @@ class DatosTab:
             label_118.setText("")
 
     def validate_and_process_inputs_categorias(self):
-        if getattr(self, "_categoria_en_proceso", False):
-            return  # Ya está en proceso, no ejecutar de nuevo
-        self._categoria_en_proceso = True
 
-        print("entro a validar la categoria ")
         global usuario_activo
 
         lineEdit_19 = self.ui.frame_28.findChild(QLineEdit, "lineEdit_19")
@@ -2374,7 +2370,6 @@ class DatosTab:
                     push_button_34.setEnabled(True)
                 lineEdit_19.selectAll()
                 lineEdit_19.setFocus()
-                self._categoria_en_proceso = False
                 return
 
             if label_118:
@@ -2384,7 +2379,6 @@ class DatosTab:
             # pasar primera letra de la categoria a mayuscula
             lineEdit_19_value = lineEdit_19_value.capitalize()
 
-            print("categoria:", lineEdit_19_value)
 
             self.cargar_categoria_thread = CargarCategoriaThread(self.id_usuario_perfil, lineEdit_19_value)
             def on_categoria_cargada(exito):
@@ -2396,7 +2390,6 @@ class DatosTab:
                 lineEdit_19 = self.ui.frame_28.findChild(QLineEdit, "lineEdit_19")
 
                 if exito:
-                    self._categoria_en_proceso = False
 
                     self.clear_inputs_agregar_categorias()
                     if label_118:
@@ -2429,7 +2422,6 @@ class DatosTab:
                     if push_button_34:
                         push_button_34.setEnabled(True)
                 else:
-                    self._categoria_en_proceso = False
 
                     if label_118:
                         label_118.setText("Categoría existente")
@@ -2446,8 +2438,7 @@ class DatosTab:
             self.cargar_categoria_thread.resultado.connect(on_categoria_cargada)
             self.start_thread(self.cargar_categoria_thread)
         else:
-            self._categoria_en_proceso = False
-            
+
             if label_118:
                 label_118.setText("Por favor, complete el campo")
                 label_118.setStyleSheet("color: red; font-weight: bold")
@@ -2457,7 +2448,6 @@ class DatosTab:
 
 
     def clear_inputs_agregar_categorias(self):
-        self._categoria_en_proceso = False
 
         lineEdit_19 = self.ui.frame_28.findChild(QLineEdit, "lineEdit_19")
         if lineEdit_19:
@@ -2472,78 +2462,87 @@ class DatosTab:
     # borrar categoria
 
     def borrar_categoria(self):
-        lineEdit_21 = self.ui.frame_20.findChild(QLineEdit, "lineEdit_21")
-        if lineEdit_21:
-            lineEdit_21.setFocus()
+        lineEdit_20 = self.ui.frame_39.findChild(QLineEdit, "lineEdit_20")
+        if lineEdit_20:
+            lineEdit_20.setFocus()
 
-        push_button_36 = self.ui.frame_20.findChild(QPushButton, "pushButton_36")
-        if push_button_36:
-            push_button_36.setStyleSheet("background-color: red; padding: 5px;")
-            push_button_36.clicked.connect(self.delete_categoria)
+        push_button_37 = self.ui.frame_39.findChild(QPushButton, "pushButton_37")
+        if push_button_37:
+            push_button_37.setStyleSheet("background-color: red; padding: 5px;")
+            push_button_37.clicked.connect(self.delete_categoria)
 
-        label_81 = self.ui.frame_20.findChild(QLabel, "label_81")
-        if label_81:
-            label_81.setStyleSheet("color: transparent")
+        label_117 = self.ui.frame_39.findChild(QLabel, "label_117")
+        if label_117:
+            label_117.setStyleSheet("color: transparent")
 
     def delete_categoria(self):
+
+        # Verificar si ya está en proceso
         if getattr(self, "_borrar_categoria_en_proceso", False):
             return  # Ya está en proceso, no ejecutar de nuevo
         self._borrar_categoria_en_proceso = True
 
         global usuario_activo, categorias_por_nombre_cache
-    
-        lineEdit_21 = self.ui.frame_20.findChild(QLineEdit, "lineEdit_21")
-        if lineEdit_21:
-            lineEdit_21_value = lineEdit_21.text().strip()
-        else:
-            lineEdit_21_value = ""
 
-        if lineEdit_21_value == "":
-            if lineEdit_21:
-                lineEdit_21.selectAll()
-            label_81 = self.ui.frame_20.findChild(QLabel, "label_81")
-            if label_81:
-                label_81.setText("Por favor, complete el campo")
-                label_81.setStyleSheet("color: red; font-weight: bold")
+
+        lineEdit_20 = self.ui.frame_39.findChild(QLineEdit, "lineEdit_20")
+        if lineEdit_20:
+            lineEdit_20_value = lineEdit_20.text().strip()
+
+
+        if lineEdit_20_value == "":
+            
+            label_117 = self.ui.frame_39.findChild(QLabel, "label_117")
+            if label_117:
+                label_117.setText("Por favor, complete el campo")
+                label_117.setStyleSheet("color: red; font-weight: bold")
+
+            self._borrar_categoria_en_proceso = False
             return
     
         # Verificar existencia en el cache
-        existe_categoria = categorias_por_nombre_cache and lineEdit_21_value.lower() in categorias_por_nombre_cache
+        existe_categoria = categorias_por_nombre_cache and lineEdit_20_value.lower() in categorias_por_nombre_cache
         if existe_categoria:
-            id_categoria = categorias_por_nombre_cache[lineEdit_21_value.lower()][0]
+            id_categoria = categorias_por_nombre_cache[lineEdit_20_value.lower()][0]
         else:
             id_categoria = None
-    
-        label_81 = self.ui.frame_20.findChild(QLabel, "label_81")
-    
-        if lineEdit_21_value != "Sin categoría":
+
+        label_117 = self.ui.frame_39.findChild(QLabel, "label_117")
+
+        if lineEdit_20_value != "Sin categoría":
+
             if id_categoria is None:
-                if label_81:
-                    label_81.setText("Categoría no encontrada")
-                    label_81.setStyleSheet("color: red; font-weight: bold")
-                if lineEdit_21:
-                    lineEdit_21.selectAll()
-                    lineEdit_21.setFocus()
+               
+                if label_117:
+                    label_117.setText("No se encontró la categoría")
+                    label_117.setStyleSheet("color: red; font-weight: bold")
+                if lineEdit_20:
+                    lineEdit_20.selectAll()
+                    lineEdit_20.setFocus()
+
+                self._borrar_categoria_en_proceso = False
 
                 return
-            
             
             push_button_36 = self.ui.frame_20.findChild(QPushButton, "pushButton_36")
             if push_button_36:
                 push_button_36.setEnabled(False)
             
-            if label_81:
-                label_81.setText("Borrando categoría...")
-                label_81.setStyleSheet("color: green; font-weight: bold")
+            if label_117:
+                label_117.setText("Borrando categoría...")
+                label_117.setStyleSheet("color: green; font-weight: bold")
 
             # Buscar la categoría en un hilo
-            self.buscar_categoria_thread = BuscarCategoriaThread(self.id_usuario_perfil, lineEdit_21_value)
+            self.buscar_categoria_thread = BuscarCategoriaThread(self.id_usuario_perfil, lineEdit_20_value)
             def on_busqueda_finalizada(existe):
+                
+                lineEdit_20 = self.ui.frame_39.findChild(QLineEdit, "lineEdit_20")
+                label_117 = self.ui.frame_39.findChild(QLabel, "label_117")
+
                 if existe:
-                    self._borrar_categoria_en_proceso = False
                 
                     # Cargar movimiento en hilo
-                    self.movimiento_categoria_thread = MovimientoCategoriaBorradaThread(self.id_usuario_perfil, lineEdit_21_value, id_categoria, usuario_activo)
+                    self.movimiento_categoria_thread = MovimientoCategoriaBorradaThread(self.id_usuario_perfil, lineEdit_20_value, id_categoria, usuario_activo)
                     self.start_thread(self.movimiento_categoria_thread)
     
                     # Limpiar cache de categorías
@@ -2553,7 +2552,7 @@ class DatosTab:
                     categorias_por_id_cache = None
                     # Actualizar cache, tablas y comboboxes
                     self.actualizar_variables_globales_de_uso(1, lambda: (
-                        self.populate_combobox_with_categorias(self.ui.frame_7.findChild(QComboBox, "comboBox_4")),
+                        self.populate_combobox_with_categorias(self.ui.frame_9.findChild(QComboBox, "comboBox_5")),
                         self.populate_table_with_categorias(),
                         self.populate_combobox_categorias(),
                         self.categorias(),
@@ -2569,35 +2568,53 @@ class DatosTab:
                         self.populate_table_with_products(),
                         
                     ))
+                    
+                    lineEdit_20.clear()
+                    if label_117:
+                        label_117.setText("Categoría borrada con éxito")
+                        label_117.setStyleSheet("color: green; font-weight: bold")
+                        QTimer.singleShot(6000, lambda: label_117.setStyleSheet("color: transparent"))
 
-                    lineEdit_21.clear()
-                    if label_81:
-                        label_81.setText("Categoría borrada con éxito")
-                        label_81.setStyleSheet("color: green; font-weight: bold")
-                        QTimer.singleShot(6000, lambda: label_81.setStyleSheet("color: transparent"))
-
-
-                    push_button_36 = self.ui.frame_20.findChild(QPushButton, "pushButton_36")
-                    if push_button_36:
-                        push_button_36.setEnabled(True)
-
-                else: 
                     self._borrar_categoria_en_proceso = False
-                    print("No se encontró la categoría en la base de datos")
+
+                    push_button_37 = self.ui.frame_39.findChild(QPushButton, "pushButton_37")
+                    if push_button_37:
+                        push_button_37.setEnabled(True)
+
+                else:
+                    label_117 = self.ui.frame_39.findChild(QLabel, "label_117")
+                    if label_117:
+                        label_117.setText("No se encontró la categoría")
+                        label_117.setStyleSheet("color: red; font-weight: bold")
+
+                    self._borrar_categoria_en_proceso = False
 
             self.buscar_categoria_thread.resultado.connect(on_busqueda_finalizada)
             self.start_thread(self.buscar_categoria_thread)
 
-            lineEdit_21 = self.ui.frame_20.findChild(QLineEdit, "lineEdit_21")
-            if lineEdit_21:
-                lineEdit_21.clear()
-                lineEdit_21.setFocus()
-                QTimer.singleShot(2000, lambda: lineEdit_21.setFocus())
+            lineEdit_20 = self.ui.frame_39.findChild(QLineEdit, "lineEdit_20")
+            if lineEdit_20:
+                lineEdit_20.clear()
+                lineEdit_20.setFocus()
+                QTimer.singleShot(2000, lambda: lineEdit_20.setFocus())
+
+        elif lineEdit_20_value == "Sin categoría":
+            label_117 = self.ui.frame_39.findChild(QLabel, "label_117")
+
+            if label_117:
+                label_117.setStyleSheet("color: red; font-weight: bold")
+                label_117.setText("No se puede borrar la categoría 'Sin categoría'")
+            
+            self._borrar_categoria_en_proceso = False
+            lineEdit_20.clear()
+
         else:
-            lineEdit_21.clear()
-            if label_81:
-                label_81.setText("No se puede borrar la categoría 'Sin categoría'")
-                label_81.setStyleSheet("color: red; font-weight: bold")
+            lineEdit_20.setFocus()
+            lineEdit_20.selectAll()
+            self._borrar_categoria_en_proceso = False
+            if label_117:
+                label_117.setText("No se encontró la categoría")
+                label_117.setStyleSheet("color: red; font-weight: bold")
                 
 
 ################
@@ -3310,7 +3327,6 @@ class DatosTab:
 
 ################
 ################
-
 class BuscarDatosTab:
     def __init__(self, ui, datos_tab, main_window, id_usuario_perfil):
         self.ui = ui
