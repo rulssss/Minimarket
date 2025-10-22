@@ -1800,7 +1800,7 @@ class DatosTab:
             proveedores_por_nombre_cache = None
             proveedores_por_telefono_cache = None
             self.actualizar_variables_globales_de_uso(2, lambda: (self.populate_combobox_with_proveedores(self.ui.frame_24.findChild(QComboBox, "comboBox_12")),
-                self.populate_combobox_with_proveedores(self.ui.frame_9.findChild(QComboBox, "comboBox_7")),
+                self.populate_combobox_with_proveedores(self.ui.frame_9.findChild(QComboBox, "comboBox_6")),
                 self.populate_table_with_proveedores(),
                 self.proveedores(),
                 self.update_combobox_8(),
@@ -1832,69 +1832,64 @@ class DatosTab:
 
     def borrar_proveedor(self):
 
-        button_34 = self.ui.frame_12.findChild(QPushButton, "pushButton_34")
-        if button_34:
-            button_34.setStyleSheet("background-color: red; padding: 5px;")
-            if not self.button34_connected:
-                self.button34_connected = True
-                button_34.clicked.connect(self.delete_proveedor)
+        button_36 = self.ui.frame_29.findChild(QPushButton, "pushButton_36")
+        if button_36:
+            button_36.setStyleSheet("background-color: red; padding: 5px;")
+            if not self.button36_connected:
+                self.button36_connected = True
+                button_36.clicked.connect(self.delete_proveedor)
 
-        label_77 = self.ui.frame_12.findChild(QLabel, "label_77")
-        if label_77:
-            label_77.setStyleSheet("color: transparent")
+        label_119 = self.ui.frame_29.findChild(QLabel, "label_119")
+        if label_119:
+            label_119.setStyleSheet("color: transparent")
 
-        label_82 = self.ui.frame_42.findChild(QLabel, "label_82")
-        if label_82:
-            label_82.setStyleSheet("font-size: 16pt;")
-            label_82.setText("¡Advertencia!\nSi borra un proveedor, los productos asociados a él se borrarán también")
-            label_82.setAlignment(Qt.AlignCenter)
 
     def delete_proveedor(self):
         global usuario_activo, proveedores_por_nombre_cache
-    
-        button_34 = self.ui.frame_12.findChild(QPushButton, "pushButton_34")
-        if button_34:
-            button_34.setEnabled(False)
-    
-        input_nombre = self.ui.frame_12.findChild(QLineEdit, "lineEdit_20")
+
+        button_36 = self.ui.frame_29.findChild(QPushButton, "pushButton_36")
+        if button_36:
+            button_36.setEnabled(False)
+
+        input_nombre = self.ui.frame_29.findChild(QLineEdit, "lineEdit_20")
         input_nombre_value = input_nombre.text().strip() if input_nombre else ""
-    
-        label_77 = self.ui.frame_12.findChild(QLabel, "label_77")
-        lineEdit_20 = self.ui.frame_12.findChild(QLineEdit, "lineEdit_20")
-    
+
+        label_119 = self.ui.frame_29.findChild(QLabel, "label_119")
+        lineEdit_22 = self.ui.frame_29.findChild(QLineEdit, "lineEdit_22")
+
         # Caso especial: Proveedor1
         if input_nombre_value == "Proveedor1":
-            if lineEdit_20:
-                lineEdit_20.selectAll()
-            if label_77:
-                label_77.setText("No se puede borrar el Proveedor1")
-                label_77.setStyleSheet("color: red; font-weight: bold")
+            if lineEdit_22:
+                lineEdit_22.selectAll()
+            if label_119:
+                label_119.setText("No se puede borrar el Proveedor1")
+                label_119.setStyleSheet("color: red; font-weight: bold")
             if input_nombre:
                 input_nombre.setFocus()
-            if button_34:
-                button_34.setEnabled(True)
+            if button_36:
+                button_36.setEnabled(True)
             return
     
         if input_nombre_value == "":
-            if lineEdit_20:
-                lineEdit_20.selectAll()
-            if label_77:
-                label_77.setText("Por favor, complete el campo")
-                label_77.setStyleSheet("color: red; font-weight: bold")
+            if lineEdit_22:
+                lineEdit_22.selectAll()
+            if label_119:
+                label_119.setText("Por favor, complete el campo")
+                label_119.setStyleSheet("color: red; font-weight: bold")
             if input_nombre:
                 input_nombre.setFocus()
-            if button_34:
-                button_34.setEnabled(True)
+            if button_36:
+                button_36.setEnabled(True)
             return
     
         # Verificar en cache si existe el proveedor
         existe_en_cache = proveedores_por_nombre_cache and input_nombre_value.lower() in proveedores_por_nombre_cache
     
         if existe_en_cache:
-            if label_77:
-                label_77.setText("Borrando Proveedor...")
-                label_77.setStyleSheet("color: green; font-weight: bold")
-    
+            if label_119:
+                label_119.setText("Borrando Proveedor...")
+                label_119.setStyleSheet("color: green; font-weight: bold")
+
             # 1. Traer el ID primero
             def on_id_obtenido(id_proveedor):
                 if id_proveedor:
@@ -1912,8 +1907,8 @@ class DatosTab:
                             proveedores_por_nombre_cache = None
                             proveedores_por_telefono_cache = None
     
-                            self.actualizar_variables_globales_de_uso(2, lambda: (self.populate_combobox_with_proveedores(self.ui.frame_13.findChild(QComboBox, "comboBox_11")),
-                                self.populate_combobox_with_proveedores(self.ui.frame_7.findChild(QComboBox, "comboBox_7")),
+                            self.actualizar_variables_globales_de_uso(2, lambda: (self.populate_combobox_with_proveedores(self.ui.frame_24.findChild(QComboBox, "comboBox_12")),
+                                self.populate_combobox_with_proveedores(self.ui.frame_9.findChild(QComboBox, "comboBox_6")),
                                 self.populate_table_with_proveedores(),
                                 self.populate_combobox_proveedores(),
                                 self.proveedores(),
@@ -1932,18 +1927,18 @@ class DatosTab:
                             ))
     
                             # Limpiar input y mostrar mensaje
-                            lineEdit_20 = self.ui.frame_12.findChild(QLineEdit, "lineEdit_20")
-                            if lineEdit_20:
-                                lineEdit_20.clear()
-                            label_77 = self.ui.frame_12.findChild(QLabel, "label_77")
-                            if label_77:
-                                label_77.setText("Proveedor borrado con éxito")
-                                label_77.setStyleSheet("color: green; font-weight: bold")
-                                QTimer.singleShot(6000, lambda: label_77.setStyleSheet("color: transparent"))
-    
-                            button_34 = self.ui.frame_12.findChild(QPushButton, "pushButton_34")
-                            if button_34:
-                                button_34.setEnabled(True)
+                            lineEdit_22 = self.ui.frame_12.findChild(QLineEdit, "lineEdit_22")
+                            if lineEdit_22:
+                                lineEdit_22.clear()
+                            label_119 = self.ui.frame_12.findChild(QLabel, "label_119")
+                            if label_119:
+                                label_119.setText("Proveedor borrado con éxito")
+                                label_119.setStyleSheet("color: green; font-weight: bold")
+                                QTimer.singleShot(6000, lambda: label_119.setStyleSheet("color: transparent"))
+
+                            button_36 = self.ui.frame_29.findChild(QPushButton, "pushButton_36")
+                            if button_36:
+                                button_36.setEnabled(True)
                         else:
                             print("No se encontró el proveedor en la base de datos")
                         if input_nombre:
@@ -1952,11 +1947,11 @@ class DatosTab:
                     self.start_thread(self.buscar_prov_thread)
                 else:
                     # Si no se encontró el ID válido
-                    if label_77:
-                        label_77.setText("No se encontró el proveedor")
-                        label_77.setStyleSheet("color: red; font-weight: bold")
-                    if button_34:
-                        button_34.setEnabled(True)
+                    if label_119:
+                        label_119.setText("No se encontró el proveedor")
+                        label_119.setStyleSheet("color: red; font-weight: bold")
+                    if button_36:
+                        button_36.setEnabled(True)
                     if input_nombre:
                         input_nombre.setFocus()
     
@@ -1964,16 +1959,16 @@ class DatosTab:
             self.traer_id_thread.resultado.connect(on_id_obtenido)
             self.start_thread(self.traer_id_thread)
         else:
-            if button_34:
-                button_34.setEnabled(True)
+            if button_36:
+                button_36.setEnabled(True)
             # No existe en cache
-            lineEdit_20 = self.ui.frame_12.findChild(QLineEdit, "lineEdit_20")
-            if lineEdit_20:
-                lineEdit_20.selectAll()
-            label_77 = self.ui.frame_12.findChild(QLabel, "label_77")
-            if label_77:
-                label_77.setText("Proveedor no encontrado")
-                label_77.setStyleSheet("color: red; font-weight: bold")
+            lineEdit_22 = self.ui.frame_12.findChild(QLineEdit, "lineEdit_22")
+            if lineEdit_22:
+                lineEdit_22.selectAll()
+            label_119 = self.ui.frame_12.findChild(QLabel, "label_119")
+            if label_119:
+                label_119.setText("Proveedor no encontrado")
+                label_119.setStyleSheet("color: red; font-weight: bold")
             if input_nombre:
                 input_nombre.setFocus()
 
@@ -2064,7 +2059,7 @@ class DatosTab:
 
                         #actualizar cache tablas y comboboxes
                         self.actualizar_variables_globales_de_uso(2, lambda: (
-                            self.populate_combobox_with_proveedores(self.ui.frame_7.findChild(QComboBox, "comboBox_7")),
+                            self.populate_combobox_with_proveedores(self.ui.frame_9.findChild(QComboBox, "comboBox_6")),
                             self.populate_table_with_proveedores(),
                             self.populate_combobox_proveedores(),
                             self.proveedores(),
