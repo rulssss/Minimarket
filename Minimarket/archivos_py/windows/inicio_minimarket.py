@@ -2631,7 +2631,7 @@ class DatosTab:
         self.populate_table_with_categorias()
 
         # Conectar el QLineEdit para filtrar productos
-        line_edit = self.ui.frame_26.findChild(QLineEdit, "lineEdit_19")
+        line_edit = self.ui.frame_43.findChild(QLineEdit, "lineEdit_21")
         if line_edit:
             line_edit.textChanged.connect(self.filter_categorias)
 
@@ -2639,12 +2639,12 @@ class DatosTab:
         global categorias, productos
         cantidad_categorias = len(categorias)
 
-        label_127 = self.ui.frame_62.findChild(QLabel, "label_127")
-        if label_127:
-            label_127.clear()
-            label_127.setText(f"{cantidad_categorias}")
+        label_68 = self.ui.frame_41.findChild(QLabel, "label_68")
+        if label_68:
+            label_68.clear()
+            label_68.setText(f"{cantidad_categorias}")
 
-        table_widget = self.ui.frame_tabla_productos_3.findChild(QTableWidget, "tableWidget_3")
+        table_widget = self.ui.frame_41.findChild(QTableWidget, "tableWidget_3")
         if table_widget:
             table_widget.setRowCount(len(categorias))
             table_widget.setColumnCount(2)
@@ -2674,8 +2674,8 @@ class DatosTab:
 
     def filter_categorias(self):
         global categorias, productos
-        line_edit = self.ui.frame_26.findChild(QLineEdit, "lineEdit_19")
-        table_widget = self.ui.frame_tabla_productos_3.findChild(QTableWidget, "tableWidget_3")
+        line_edit = self.ui.frame_43.findChild(QLineEdit, "lineEdit_21")
+        table_widget = self.ui.frame_41.findChild(QTableWidget, "tableWidget_3")
 
         if line_edit and table_widget:
             filter_text = line_edit.text().lower()
@@ -2689,10 +2689,10 @@ class DatosTab:
 
             # Si no se encuentran categorías, mostrar un mensaje en la tabla
             if len(filtered_categorias) == 0:
-                label_127 = self.ui.frame_62.findChild(QLabel, "label_127")
-                if label_127:
-                    label_127.clear()
-                    label_127.setText(f"0")
+                label_68 = self.ui.frame_41.findChild(QLabel, "label_68")
+                if label_68:
+                    label_68.clear()
+                    label_68.setText(f"0")
 
                 table_widget.setRowCount(1)
                 table_widget.setColumnCount(1)
@@ -2702,10 +2702,10 @@ class DatosTab:
                 item.setTextAlignment(Qt.AlignCenter)
                 table_widget.setItem(0, 0, item)
             else:
-                label_127 = self.ui.frame_62.findChild(QLabel, "label_127")
-                if label_127:
-                    label_127.clear()
-                    label_127.setText(f"{cantidad_categorias}")
+                label_68 = self.ui.frame_41.findChild(QLabel, "label_68")
+                if label_68:
+                    label_68.clear()
+                    label_68.setText(f"{cantidad_categorias}")
 
                 # Si hay categorías, llenar la tabla con los datos filtrados
                 table_widget.setRowCount(len(filtered_categorias))
@@ -2734,7 +2734,7 @@ class DatosTab:
 
     # Función para copiar una columna al portapapeles
     def copy_column_to_clipboard_categorias(self, column_index):
-        table_widget = self.ui.frame_tabla_productos_3.findChild(QTableWidget, "tableWidget_3")
+        table_widget = self.ui.frame_41.findChild(QTableWidget, "tableWidget_3")
         if table_widget:
             column_data = []
             for row in range(table_widget.rowCount()):
@@ -2747,7 +2747,7 @@ class DatosTab:
 
     # Función para copiar una fila al portapapeles
     def copy_row_to_clipboard_categorias(self, row_index):
-        table_widget = self.ui.frame_tabla_productos_3.findChild(QTableWidget, "tableWidget_3")
+        table_widget = self.ui.frame_41.findChild(QTableWidget, "tableWidget_3")
         if table_widget:
             row_data = []
             for col in range(table_widget.columnCount()):
@@ -2759,7 +2759,7 @@ class DatosTab:
             self.show_copied_message("Fila copiada al portapapeles")
 
     def copy_entire_table_to_clipboard_categorias(self):
-        table_widget = self.ui.frame_tabla_productos_3.findChild(QTableWidget, "tableWidget_3")
+        table_widget = self.ui.frame_41.findChild(QTableWidget, "tableWidget_3")
         if not table_widget:
             return
         row_count = table_widget.rowCount()

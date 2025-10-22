@@ -1812,7 +1812,7 @@ class Ui_MainWindow(object):
 
         self.label_68 = QLabel(self.frame_44)
         self.label_68.setObjectName(u"label_68")
-        self.label_68.setFont(font4)
+        self.label_68.setFont(font5)
 
         self.horizontalLayout_15.addWidget(self.label_68)
 
@@ -3286,7 +3286,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.stackedWidget.setCurrentIndex(8)
+        self.stackedWidget.setCurrentIndex(11)
         self.pushButton_49.setDefault(False)
         self.tabWidget.setCurrentIndex(0)
 
