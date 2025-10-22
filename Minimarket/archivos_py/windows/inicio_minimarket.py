@@ -2162,7 +2162,7 @@ class DatosTab:
         self.populate_table_with_proveedores()
 
         # Conectar el QLineEdit para filtrar productos
-        line_edit = self.ui.frame_18.findChild(QLineEdit, "lineEdit_27")
+        line_edit = self.ui.frame_32.findChild(QLineEdit, "lineEdit_23")
         if line_edit:
             line_edit.textChanged.connect(self.filter_proveedores)
 
@@ -2170,12 +2170,12 @@ class DatosTab:
         global proveedores, productos
         cantidad_proveedores = len(proveedores)
 
-        label_124 = self.ui.frame_61.findChild(QLabel, "label_124")
-        if label_124:
-            label_124.clear()
-            label_124.setText(f"{cantidad_proveedores}")
+        label_67 = self.ui.frame_36.findChild(QLabel, "label_67")
+        if label_67:
+            label_67.clear()
+            label_67.setText(f"{cantidad_proveedores}")
 
-        table_widget = self.ui.frame_tabla_productos_2.findChild(QTableWidget, "tableWidget_2")
+        table_widget = self.ui.frame_36.findChild(QTableWidget, "tableWidget_2")
         if table_widget:
             table_widget.setRowCount(len(proveedores))
             table_widget.setColumnCount(4)
@@ -2205,8 +2205,8 @@ class DatosTab:
 
     def filter_proveedores(self):
         global proveedores, productos
-        line_edit = self.ui.frame_16.findChild(QLineEdit, "lineEdit_27")
-        table_widget = self.ui.frame_tabla_productos_2.findChild(QTableWidget, "tableWidget_2")
+        line_edit = self.ui.frame_32.findChild(QLineEdit, "lineEdit_23")
+        table_widget = self.ui.frame_36.findChild(QTableWidget, "tableWidget_2")
 
 
         if line_edit and table_widget:
@@ -2221,10 +2221,10 @@ class DatosTab:
 
             # Si no se encuentran proveedores, mostrar un mensaje en la tabla
             if cantidad_proveedores == 0:
-                label_124 = self.ui.frame_61.findChild(QLabel, "label_124")
-                if label_124:
-                    label_124.clear()
-                    label_124.setText(f"0")
+                label_67 = self.ui.frame_36.findChild(QLabel, "label_67")
+                if label_67:
+                    label_67.clear()
+                    label_67.setText(f"0")
 
                 table_widget.setRowCount(1)
                 table_widget.setColumnCount(1)
@@ -2234,10 +2234,10 @@ class DatosTab:
                 item.setTextAlignment(Qt.AlignCenter)
                 table_widget.setItem(0, 0, item)
             else:
-                label_124 = self.ui.frame_61.findChild(QLabel, "label_124")
-                if label_124:
-                    label_124.clear()
-                    label_124.setText(f"{cantidad_proveedores}")
+                label_67 = self.ui.frame_36.findChild(QLabel, "label_67")
+                if label_67:
+                    label_67.clear()
+                    label_67.setText(f"{cantidad_proveedores}")
 
                 # Si hay proveedores, llenar la tabla con los datos filtrados
                 table_widget.setRowCount(len(filtered_proveedores))
@@ -2266,7 +2266,7 @@ class DatosTab:
     
     # Función para copiar una columna al portapapeles
     def copy_column_to_clipboard_proveedores(self, column_index):
-        table_widget = self.ui.frame_tabla_productos_2.findChild(QTableWidget, "tableWidget_2")
+        table_widget = self.ui.frame_36.findChild(QTableWidget, "tableWidget_2")
         if table_widget:
             column_data = []
             for row in range(table_widget.rowCount()):
@@ -2279,7 +2279,7 @@ class DatosTab:
     
     # Función para copiar una fila al portapapeles
     def copy_row_to_clipboard_proveedores(self, row_index):
-        table_widget = self.ui.frame_tabla_productos_2.findChild(QTableWidget, "tableWidget_2")
+        table_widget = self.ui.frame_36.findChild(QTableWidget, "tableWidget_2")
         if table_widget:
             row_data = []
             for col in range(table_widget.columnCount()):
@@ -2291,7 +2291,7 @@ class DatosTab:
             self.show_copied_message("Fila copiada al portapapeles")
 
     def copy_entire_table_to_clipboard_proveedores(self):
-        table_widget = self.ui.frame_tabla_productos_2.findChild(QTableWidget, "tableWidget_2")
+        table_widget = self.ui.frame_36.findChild(QTableWidget, "tableWidget_2")
         if not table_widget:
             return
         row_count = table_widget.rowCount()
