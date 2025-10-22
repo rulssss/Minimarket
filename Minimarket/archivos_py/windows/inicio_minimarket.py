@@ -55,7 +55,9 @@ class DatosTab:
     def __init__(self, ui, id_usuario_perfil):
         self.ui = ui
         self.id_usuario_perfil = id_usuario_perfil
-        self.button_agregar = False
+        self.button_agregar_productos = False
+        self.button_agregar_proveedor = False
+        
 
         global usuario_activo
 
@@ -398,10 +400,11 @@ class DatosTab:
 
         button23 = self.ui.frame_8.findChild(QPushButton, "pushButton_23")
         if button23:
-            
             button23.setStyleSheet("background-color: rgb(168, 225, 255)")
-            button23.clicked.connect(self.validate_and_process_inputs)
-            button23.setShortcut(Qt.Key_Return)
+            if not self.button_agregar_productos:
+                self.button_agregar_productos = True
+                button23.clicked.connect(self.validate_and_process_inputs)
+                button23.setShortcut(Qt.Key_Return)
                 
 
 
@@ -1695,8 +1698,8 @@ class DatosTab:
         if button_30:
             button_30.setStyleSheet("background-color: rgb(168, 225, 255)")
             button_30.setShortcut(Qt.Key_Return)
-            if not self.button_agregar:
-                self.button_agregar = True
+            if not self.button_agregar_proveedor:
+                self.button_agregar_proveedor = True
                 button_30.clicked.connect(self.validate_and_process_inputs_proveedores)
 
         button_31 = self.ui.frame_20.findChild(QPushButton, "pushButton_31")
