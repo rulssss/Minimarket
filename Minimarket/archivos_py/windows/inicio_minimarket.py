@@ -55,8 +55,6 @@ class DatosTab:
     def __init__(self, ui, id_usuario_perfil):
         self.ui = ui
         self.id_usuario_perfil = id_usuario_perfil
-        self.button23_connected = False
-        self.button34_connected = False
         self.button_agregar = False
 
         global usuario_activo
@@ -400,11 +398,11 @@ class DatosTab:
 
         button23 = self.ui.frame_8.findChild(QPushButton, "pushButton_23")
         if button23:
-            if not self.button23_connected:
-                button23.setStyleSheet("background-color: rgb(168, 225, 255)")
-                button23.clicked.connect(self.validate_and_process_inputs)
-                button23.setShortcut(Qt.Key_Return)
-                self.button23_connected = True
+            
+            button23.setStyleSheet("background-color: rgb(168, 225, 255)")
+            button23.clicked.connect(self.validate_and_process_inputs)
+            button23.setShortcut(Qt.Key_Return)
+                
 
 
         button24 = self.ui.frame_8.findChild(QPushButton, "pushButton_24")
@@ -1835,9 +1833,7 @@ class DatosTab:
         button_36 = self.ui.frame_29.findChild(QPushButton, "pushButton_36")
         if button_36:
             button_36.setStyleSheet("background-color: red; padding: 5px;")
-            if not self.button36_connected:
-                self.button36_connected = True
-                button_36.clicked.connect(self.delete_proveedor)
+            button_36.clicked.connect(self.delete_proveedor)
 
         label_119 = self.ui.frame_29.findChild(QLabel, "label_119")
         if label_119:
@@ -1851,16 +1847,15 @@ class DatosTab:
         if button_36:
             button_36.setEnabled(False)
 
-        input_nombre = self.ui.frame_29.findChild(QLineEdit, "lineEdit_20")
+        input_nombre = self.ui.frame_29.findChild(QLineEdit, "lineEdit_22")
         input_nombre_value = input_nombre.text().strip() if input_nombre else ""
 
         label_119 = self.ui.frame_29.findChild(QLabel, "label_119")
-        lineEdit_22 = self.ui.frame_29.findChild(QLineEdit, "lineEdit_22")
 
         # Caso especial: Proveedor1
         if input_nombre_value == "Proveedor1":
-            if lineEdit_22:
-                lineEdit_22.selectAll()
+            if input_nombre:
+                input_nombre.selectAll()
             if label_119:
                 label_119.setText("No se puede borrar el Proveedor1")
                 label_119.setStyleSheet("color: red; font-weight: bold")
@@ -1871,8 +1866,8 @@ class DatosTab:
             return
     
         if input_nombre_value == "":
-            if lineEdit_22:
-                lineEdit_22.selectAll()
+            if input_nombre:
+                input_nombre.selectAll()
             if label_119:
                 label_119.setText("Por favor, complete el campo")
                 label_119.setStyleSheet("color: red; font-weight: bold")
@@ -1927,10 +1922,10 @@ class DatosTab:
                             ))
     
                             # Limpiar input y mostrar mensaje
-                            lineEdit_22 = self.ui.frame_12.findChild(QLineEdit, "lineEdit_22")
-                            if lineEdit_22:
-                                lineEdit_22.clear()
-                            label_119 = self.ui.frame_12.findChild(QLabel, "label_119")
+                            input_nombre = self.ui.frame_29.findChild(QLineEdit, "lineEdit_22")
+                            if input_nombre:
+                                input_nombre.clear()
+                            label_119 = self.ui.frame_29.findChild(QLabel, "label_119")
                             if label_119:
                                 label_119.setText("Proveedor borrado con éxito")
                                 label_119.setStyleSheet("color: green; font-weight: bold")
@@ -1962,13 +1957,13 @@ class DatosTab:
             if button_36:
                 button_36.setEnabled(True)
             # No existe en cache
-            lineEdit_22 = self.ui.frame_12.findChild(QLineEdit, "lineEdit_22")
-            if lineEdit_22:
-                lineEdit_22.selectAll()
-            label_119 = self.ui.frame_12.findChild(QLabel, "label_119")
+           
             if label_119:
                 label_119.setText("Proveedor no encontrado")
                 label_119.setStyleSheet("color: red; font-weight: bold")
+            
+            if input_nombre:
+                input_nombre.selectAll()
             if input_nombre:
                 input_nombre.setFocus()
 
@@ -1977,7 +1972,7 @@ class DatosTab:
     # editar proveedor
     
     def editar_proveedor(self):
-        combobox_nombre = self.ui.frame_13.findChild(QComboBox, "comboBox_11")
+        combobox_nombre = self.ui.frame_24.findChild(QComboBox, "comboBox_12")
         if combobox_nombre:
             combobox_nombre.setEditable(True)
             combobox_nombre.setInsertPolicy(QComboBox.NoInsert)
@@ -1988,19 +1983,19 @@ class DatosTab:
             combobox_nombre.setFocus()
             combobox_nombre.lineEdit().selectAll()
 
-        button_37 = self.ui.frame_13.findChild(QPushButton, "pushButton_37")
-        if button_37:
-            button_37.setStyleSheet("background-color: rgb(255, 202, 96)")
-            button_37.setShortcut(Qt.Key_Return)
-            button_37.clicked.connect(self.update_proveedor)
+        button_32 = self.ui.frame_24.findChild(QPushButton, "pushButton_32")
+        if button_32:
+            button_32.setStyleSheet("background-color: rgb(255, 202, 96)")
+            button_32.setShortcut(Qt.Key_Return)
+            button_32.clicked.connect(self.update_proveedor)
 
-        button_38 = self.ui.frame_13.findChild(QPushButton, "pushButton_38")
-        if button_38:
-            button_38.clicked.connect(self.cancel_edit_proveedor)
-            
-        label_76 = self.ui.frame_13.findChild(QLabel, "label_76")
-        if label_76:
-            label_76.setStyleSheet("color: transparent")
+        button_33 = self.ui.frame_24.findChild(QPushButton, "pushButton_33")
+        if button_33:
+            button_33.clicked.connect(self.cancel_edit_proveedor)
+
+        label_120 = self.ui.frame_24.findChild(QLabel, "label_120")
+        if label_120:
+            label_120.setStyleSheet("color: transparent")
 
     def cancel_edit_proveedor(self):
         combobox_nombre = self.ui.frame_13.findChild(QComboBox, "comboBox_11")
