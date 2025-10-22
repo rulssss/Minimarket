@@ -144,7 +144,7 @@ class DatosTab:
         self.visualizar_categorias()
 
         # Conectar eventos de doble clic
-        table_widget3 = self.ui.frame_tabla_productos_3.findChild(QTableWidget, "tableWidget_3")
+        table_widget3 = self.ui.frame_41.findChild(QTableWidget, "tableWidget_3")
         if table_widget3:
             corner_button3 = table_widget3.findChild(QAbstractButton)
 
@@ -2319,83 +2319,93 @@ class DatosTab:
     # agregar categoria
 
     def agregar_categoria(self):
-        push_button_27 = self.ui.frame_17.findChild(QPushButton, "pushButton_27")
-        if push_button_27:
-            push_button_27.setStyleSheet("background-color: rgb(168, 225, 255)")
-            push_button_27.setShortcut(Qt.Key_Return)
-            push_button_27.clicked.connect(self.validate_and_process_inputs_categorias)
+        push_button_35 = self.ui.frame_28.findChild(QPushButton, "pushButton_35")
+        if push_button_35:
+            push_button_35.setStyleSheet("background-color: rgb(168, 225, 255)")
+            push_button_35.setShortcut(Qt.Key_Return)
+            push_button_35.clicked.connect(self.validate_and_process_inputs_categorias)
 
-        push_button_28 = self.ui.frame_17.findChild(QPushButton, "pushButton_28")
-        if push_button_28:
-            push_button_28.clicked.connect(self.clear_inputs_agregar_categorias)
+        push_button_34 = self.ui.frame_28.findChild(QPushButton, "pushButton_34")
+        if push_button_34:
+            push_button_34.clicked.connect(self.clear_inputs_agregar_categorias)
 
         #labels 
-        label_80 = self.ui.frame_17.findChild(QLabel, "label_80")
-        if label_80:
-            label_80.setStyleSheet("color: transparent")
-            label_80.setText("")
+        label_118 = self.ui.frame_28.findChild(QLabel, "label_118")
+        if label_118:
+            label_118.setStyleSheet("color: transparent")
+            label_118.setText("")
 
     def validate_and_process_inputs_categorias(self):
         if getattr(self, "_categoria_en_proceso", False):
             return  # Ya está en proceso, no ejecutar de nuevo
         self._categoria_en_proceso = True
 
+        print("entro a validar la categoria ")
         global usuario_activo
 
-        lineEdit_16 = self.ui.frame_17.findChild(QLineEdit, "lineEdit_16")
-        if lineEdit_16:
-            lineEdit_16_value = lineEdit_16.text().strip()
+        lineEdit_19 = self.ui.frame_28.findChild(QLineEdit, "lineEdit_19")
+        if lineEdit_19:
+            lineEdit_19_value = lineEdit_19.text().strip()
         else:
-            lineEdit_16_value = ""
+            lineEdit_19_value = ""
 
-        label_80 = self.ui.frame_17.findChild(QLabel, "label_80")
+        label_118 = self.ui.frame_28.findChild(QLabel, "label_118")
 
-        if lineEdit_16_value:
+        if lineEdit_19_value:
 
-            push_button_27 = self.ui.frame_17.findChild(QPushButton, "pushButton_27")
-            push_button_28 = self.ui.frame_17.findChild(QPushButton, "pushButton_28")
-            if push_button_27:
-                push_button_27.setEnabled(False)
+            push_button_35 = self.ui.frame_28.findChild(QPushButton, "pushButton_35")
+            push_button_34 = self.ui.frame_28.findChild(QPushButton, "pushButton_34")
+            if push_button_35:
+                push_button_35.setEnabled(False)
 
-            if push_button_28:
-                push_button_28.setEnabled(False)
+            if push_button_34:
+                push_button_34.setEnabled(False)
 
             global categorias_por_nombre_cache
-            categoria_existente = categorias_por_nombre_cache.get(lineEdit_16_value)
-            if categoria_existente or lineEdit_16_value == "Sin categoría":
-                if label_80:
-                    label_80.setText("Esta intentando cargar una categoría existente")
-                    label_80.setStyleSheet("color: red; font-weight: bold")
-                if push_button_27:
-                    push_button_27.setEnabled(True)
-                if push_button_28: 
-                    push_button_28.setEnabled(True)
-                lineEdit_16.selectAll()
-                lineEdit_16.setFocus()
+            categoria_existente = categorias_por_nombre_cache.get(lineEdit_19_value)
+
+            if categoria_existente or lineEdit_19_value == "Sin categoría":
+                if label_118:
+                    label_118.setText("Esta intentando cargar una categoría existente")
+                    label_118.setStyleSheet("color: red; font-weight: bold")
+                if push_button_35:
+                    push_button_35.setEnabled(True)
+                if push_button_34:
+                    push_button_34.setEnabled(True)
+                lineEdit_19.selectAll()
+                lineEdit_19.setFocus()
                 self._categoria_en_proceso = False
                 return
 
-            if label_80:
-                label_80.setStyleSheet("color: green; font-weight: bold")
-                label_80.setText("Cargando categoría...")
-            
-            # pasar primera letra de la categoria a mayuscula
-            lineEdit_16_value = lineEdit_16_value.capitalize()
+            if label_118:
+                label_118.setStyleSheet("color: green; font-weight: bold")
+                label_118.setText("Cargando categoría...")
 
-            self.cargar_categoria_thread = CargarCategoriaThread(self.id_usuario_perfil, lineEdit_16_value)
+            # pasar primera letra de la categoria a mayuscula
+            lineEdit_19_value = lineEdit_19_value.capitalize()
+
+            print("categoria:", lineEdit_19_value)
+
+            self.cargar_categoria_thread = CargarCategoriaThread(self.id_usuario_perfil, lineEdit_19_value)
             def on_categoria_cargada(exito):
+
+                
+                label_118 = self.ui.frame_28.findChild(QLabel, "label_118")
+                push_button_35 = self.ui.frame_28.findChild(QPushButton, "pushButton_35")
+                push_button_34 = self.ui.frame_28.findChild(QPushButton, "pushButton_34")
+                lineEdit_19 = self.ui.frame_28.findChild(QLineEdit, "lineEdit_19")
 
                 if exito:
                     self._categoria_en_proceso = False
 
                     self.clear_inputs_agregar_categorias()
-                    if label_80:
-                        label_80.setText("Categoría cargada con exito")
-                        label_80.setStyleSheet("color: green; font-weight: bold")
-                        QTimer.singleShot(6000, lambda: label_80.setStyleSheet("color: transparent"))
+                    if label_118:
+                        label_118.setText("Categoría cargada con exito")
+                        label_118.setStyleSheet("color: green; font-weight: bold")
+                        QTimer.singleShot(6000, lambda: label_118.setStyleSheet("color: transparent"))
 
                     # Hilo para cargar movimiento
-                    self.movimiento_categoria_thread = MovimientoAgregarCategoriaThread(self.id_usuario_perfil, lineEdit_16_value, usuario_activo)
+                    self.movimiento_categoria_thread = MovimientoAgregarCategoriaThread(self.id_usuario_perfil, lineEdit_19_value, usuario_activo)
                     self.start_thread(self.movimiento_categoria_thread)
 
                     # actualziar variables globales de uso
@@ -2404,7 +2414,7 @@ class DatosTab:
                     categorias_por_nombre_cache = None
 
                     self.actualizar_variables_globales_de_uso(1, lambda: (
-                        self.populate_combobox_with_categorias(self.ui.frame_7.findChild(QComboBox, "comboBox_4")),
+                        self.populate_combobox_with_categorias(self.ui.frame_9.findChild(QComboBox, "comboBox_5")),
                         self.populate_table_with_categorias(),
                         self.populate_combobox_categorias(),
                         self.categorias(),
@@ -2412,48 +2422,48 @@ class DatosTab:
                         self.update_combobox_10()
                     ))
 
-                    push_button_27 = self.ui.frame_17.findChild(QPushButton, "pushButton_27")
-                    push_button_28 = self.ui.frame_17.findChild(QPushButton, "pushButton_28")
-                    if push_button_27:
-                        push_button_27.setEnabled(True)
+                    
+                    if push_button_35:
+                        push_button_35.setEnabled(True)
 
-                    if push_button_28:
-                        push_button_28.setEnabled(True)
+                    if push_button_34:
+                        push_button_34.setEnabled(True)
                 else:
                     self._categoria_en_proceso = False
 
-                    push_button_27 = self.ui.frame_17.findChild(QPushButton, "pushButton_27")
-                    push_button_28 = self.ui.frame_17.findChild(QPushButton, "pushButton_28")
+                    if label_118:
+                        label_118.setText("Categoría existente")
+                        label_118.setStyleSheet("color: red; font-weight: bold")
+                    if push_button_35:
+                        push_button_35.setEnabled(True)
+                    if push_button_34:
+                        push_button_34.setEnabled(True)
 
-                    if label_80:
-                        label_80.setText("Esta intentando cargar una categoría existente")
-                        label_80.setStyleSheet("color: red; font-weight: bold")
-                    if push_button_27:
-                        push_button_27.setEnabled(True)
-                    if push_button_28:
-                        push_button_28.setEnabled(True)
+                    if lineEdit_19:
+                        lineEdit_19.selectAll()
+                        lineEdit_19.setFocus()
 
-                    lineEdit_16 = self.ui.frame_17.findChild(QLineEdit, "lineEdit_16")
-                    if lineEdit_16:
-                        lineEdit_16.selectAll()
-                        lineEdit_16.setFocus()
-                        
             self.cargar_categoria_thread.resultado.connect(on_categoria_cargada)
             self.start_thread(self.cargar_categoria_thread)
         else:
-            if label_80:
-                label_80.setText("Por favor, complete el campo")
-                label_80.setStyleSheet("color: red; font-weight: bold")
-                
-            if lineEdit_16:
-                lineEdit_16.setFocus()
+            self._categoria_en_proceso = False
+            
+            if label_118:
+                label_118.setText("Por favor, complete el campo")
+                label_118.setStyleSheet("color: red; font-weight: bold")
+
+            if lineEdit_19:
+                lineEdit_19.setFocus()
 
 
     def clear_inputs_agregar_categorias(self):
-        lineEdit_16 = self.ui.frame_17.findChild(QLineEdit, "lineEdit_16")
-        if lineEdit_16:
-            lineEdit_16.clear()
-            lineEdit_16.selectAll()
+        self._categoria_en_proceso = False
+
+        lineEdit_19 = self.ui.frame_28.findChild(QLineEdit, "lineEdit_19")
+        if lineEdit_19:
+            lineEdit_19.clear()
+            lineEdit_19.setFocus()
+
 
 
 ################
