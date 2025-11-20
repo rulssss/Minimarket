@@ -2996,74 +2996,74 @@ class DatosTab:
     # editar usuario
 
     def editar_usuario(self):
-        label_98 = self.ui.frame_45.findChild(QLabel, "label_98")
-        label_93 = self.ui.frame_45.findChild(QLabel, "label_93")
-        combobox_15 = self.ui.frame_45.findChild(QComboBox, "comboBox_15")
-        combobox_16 = self.ui.frame_45.findChild(QComboBox, "comboBox_16")
-        push_button_33 = self.ui.frame_45.findChild(QPushButton, "pushButton_33")
-        push_button_35 = self.ui.frame_45.findChild(QPushButton, "pushButton_35")
-        push_button_41 = self.ui.frame_45.findChild(QPushButton, "pushButton_41")
-        line_edit_25 = self.ui.frame_45.findChild(QLineEdit, "lineEdit_25")
+        label_113 = self.ui.frame_48.findChild(QLabel, "label_113")
+        label_114 = self.ui.frame_48.findChild(QLabel, "label_114")
+        combobox_14 = self.ui.frame_48.findChild(QComboBox, "comboBox_14")
+        combobox_15 = self.ui.frame_48.findChild(QComboBox, "comboBox_15")
+        push_button_42 = self.ui.frame_48.findChild(QPushButton, "pushButton_42") #31
+        push_button_41 = self.ui.frame_48.findChild(QPushButton, "pushButton_41") #35
+        push_button_43 = self.ui.frame_48.findChild(QPushButton, "pushButton_43") #41
+        line_edit_28 = self.ui.frame_48.findChild(QLineEdit, "lineEdit_28") #25 
 
-        if combobox_15:
-            combobox_15.clear()
-            combobox_15.addItem("Administrador")
-            combobox_15.addItem("Usuario")
+        if combobox_14:
+            combobox_14.clear()
+            combobox_14.addItem("Administrador")
+            combobox_14.addItem("Usuario")
         
-        if combobox_16:
-            combobox_16.setEditable(False)  # Deshabilitar la edición
-            combobox_16.setInsertPolicy(QComboBox.NoInsert)  # Evitar inserciones
-            combobox_16.currentIndexChanged.connect(self.load_user_data)  # Conectar al cambio de índice
-            self.populate_combobox_with_names(combobox_16)  # Llenar el combobox con los nombres de usuarios
+        if combobox_15:
+            combobox_15.setEditable(False)  # Deshabilitar la edición
+            combobox_15.setInsertPolicy(QComboBox.NoInsert)  # Evitar inserciones
+            combobox_15.currentIndexChanged.connect(self.load_user_data)  # Conectar al cambio de índice
+            self.populate_combobox_with_names(combobox_15)  # Llenar el combobox con los nombres de usuarios
             
-        if push_button_41:
+        if push_button_43:
             try:
-                push_button_41.clicked.disconnect()
+                push_button_43.clicked.disconnect()
             except Exception:
                 pass
+            push_button_43.setFocusPolicy(Qt.NoFocus)
+            push_button_43.setIcon(QIcon(eye_visible_path))
+            push_button_43.clicked.connect(self.setear_lineedit_avisual_editar)
+
+        if label_113:
+            label_113.setStyleSheet("color: transparent")
+            label_113.setText("")
+
+        if label_114:
+            label_114.setStyleSheet("color: transparent")
+            label_114.setText("")
+
+        if push_button_42:
+            push_button_42.setFocusPolicy(Qt.NoFocus)
+            push_button_42.setStyleSheet("background-color: rgb(255, 202, 96)")
+            push_button_42.setShortcut(Qt.Key_Return)
+            push_button_42.clicked.connect(lambda: self.validar_datos_iguales_usuario(usuario_selecc if usuario_selecc is not None else None))
+        if push_button_41:
             push_button_41.setFocusPolicy(Qt.NoFocus)
-            push_button_41.setIcon(QIcon(eye_visible_path))
-            push_button_41.clicked.connect(self.setear_lineedit_avisual_editar)
+            push_button_41.clicked.connect(self.clear_inputs_editar_usuario)
 
-        if label_98:
-            label_98.setStyleSheet("color: transparent")
-            label_98.setText("")
-
-        if label_93:
-            label_93.setStyleSheet("color: transparent")
-            label_93.setText("")
-
-        if push_button_33:
-            push_button_33.setFocusPolicy(Qt.NoFocus)
-            push_button_33.setStyleSheet("background-color: rgb(255, 202, 96)")
-            push_button_33.setShortcut(Qt.Key_Return)
-            push_button_33.clicked.connect(lambda: self.validar_datos_iguales_usuario(usuario_selecc if usuario_selecc is not None else None))
-
-        if push_button_35:
-            push_button_35.setFocusPolicy(Qt.NoFocus)
-            push_button_35.clicked.connect(self.clear_inputs_editar_usuario)
-
-        if line_edit_25:
-            line_edit_25.setEchoMode(QLineEdit.Password)
+        if line_edit_28:
+            line_edit_28.setEchoMode(QLineEdit.Password)
 
     def load_user_data(self):
         global usuario_selecc, usuarios_por_nombre_cache
 
-        combobox_16 = self.ui.frame_45.findChild(QComboBox, "comboBox_16")
-        if combobox_16:
-            nombre = combobox_16.currentText()
+        combobox_15 = self.ui.frame_48.findChild(QComboBox, "comboBox_15")
+        if combobox_15:
+            nombre = combobox_15.currentText()
             if nombre and usuarios_por_nombre_cache and nombre in usuarios_por_nombre_cache:
                 usuario = usuarios_por_nombre_cache[nombre]
                 usuario_selecc = [usuario]  # Para mantener el formato de lista
 
+
                 if usuario and nombre == str(usuario[1]):
                     if usuario[3]:  # admin (bool)
-                        self.ui.frame_45.findChild(QComboBox, "comboBox_15").setCurrentIndex(0)
+                        self.ui.frame_48.findChild(QComboBox, "comboBox_14").setCurrentIndex(0)
                     else:
-                        self.ui.frame_45.findChild(QComboBox, "comboBox_15").setCurrentIndex(1)
-                    self.ui.frame_45.findChild(QComboBox, "comboBox_16").setCurrentText(str(usuario[1]))
-                    self.ui.frame_45.findChild(QLineEdit, "lineEdit_25").setText(str(usuario[4]))  # email
-                    self.ui.frame_45.findChild(QLineEdit, "lineEdit_22").setText(str(usuario[2]))  # contraseña vacía o buscar aparte
+                        self.ui.frame_48.findChild(QComboBox, "comboBox_14").setCurrentIndex(1)
+                    self.ui.frame_48.findChild(QComboBox, "comboBox_15").setCurrentText(str(usuario[1]))
+                    self.ui.frame_48.findChild(QLineEdit, "lineEdit_28").setText(str(usuario[4]))  # passsword 28
+                    self.ui.frame_48.findChild(QLineEdit, "lineEdit_30").setText(str(usuario[2]))  # email 30
 
     def populate_combobox_with_names(self, combobox):
         global usuarios_por_nombre_cache
@@ -3078,24 +3078,24 @@ class DatosTab:
         self.load_user_data()
 
     def validar_datos_iguales_usuario(self, usuario_selecc):
-        label_93 = self.ui.frame_45.findChild(QLabel, "label_93")
-        label_98 = self.ui.frame_45.findChild(QLabel, "label_98")
+        label_113 = self.ui.frame_48.findChild(QLabel, "label_113")
+        label_114 = self.ui.frame_48.findChild(QLabel, "label_114")
 
         if usuario_selecc:
-            combobox_15 = self.ui.frame_45.findChild(QComboBox, "comboBox_15")
-            line_edit_25 = self.ui.frame_45.findChild(QLineEdit, "lineEdit_25")  # contraseña
-            line_edit_22 = self.ui.frame_45.findChild(QLineEdit, "lineEdit_22")  # email
+            combobox_14 = self.ui.frame_48.findChild(QComboBox, "comboBox_14")
+            line_edit_28 = self.ui.frame_48.findChild(QLineEdit, "lineEdit_28")  # contraseña
+            line_edit_30 = self.ui.frame_48.findChild(QLineEdit, "lineEdit_30")  # email
 
-            value_line_edit_25 = line_edit_25.text().strip()  # contraseña
-            value_combobox_15 = combobox_15.currentText()
-            value_combobox_15 = True if value_combobox_15 == "Administrador" else False
+            value_line_edit_28 = line_edit_28.text().strip()  # contraseña
+            value_combobox_14 = combobox_14.currentText()
+            value_combobox_14 = True if value_combobox_14 == "Administrador" else False
             
             # Comparar admin y contraseña Y email
-            if usuario_selecc[0][3] == value_combobox_15 and str(usuario_selecc[0][4]) == str(value_line_edit_25) and str(usuario_selecc[0][2]).strip() == line_edit_22.text().strip():
-                label_93.setText("Porfavor, edite")
-                label_98.setText("los campos")
-                label_98.setStyleSheet("color: red; font-weight: bold")
-                label_93.setStyleSheet("color: red; font-weight: bold")
+            if usuario_selecc[0][3] == value_combobox_14 and str(usuario_selecc[0][4]) == str(value_line_edit_28) and str(usuario_selecc[0][2]).strip() == line_edit_30.text().strip():
+                label_114.setStyleSheet("color: red; font-weight: bold")
+                label_113.setStyleSheet("color: red; font-weight: bold")
+                label_113.setText("Porfavor, edite")
+                label_114.setText("los campos")
             else:
                 self.validar_editar_usuario()
 
@@ -3106,86 +3106,86 @@ class DatosTab:
             return
         self._actualizar_usuario_en_proceso = True
 
-        push_button_33 = self.ui.frame_45.findChild(QPushButton, "pushButton_33")
-        push_button_35 = self.ui.frame_45.findChild(QPushButton, "pushButton_35")
+        push_button_42 = self.ui.frame_48.findChild(QPushButton, "pushButton_42")
+        push_button_41 = self.ui.frame_48.findChild(QPushButton, "pushButton_41")
 
-        combobox_15 = self.ui.frame_45.findChild(QComboBox, "comboBox_15")
-        line_edit_25 = self.ui.frame_45.findChild(QLineEdit, "lineEdit_25")  # mail
-        line_edit_22 = self.ui.frame_45.findChild(QLineEdit, "lineEdit_22")  # contraseña
-        value_line_edit_22 = line_edit_22.text().strip()  # contraseña
-        value_combobox_15 = combobox_15.currentText()
-        value_line_edit_25 = line_edit_25.text().strip()  # mail
-        label_93 = self.ui.frame_45.findChild(QLabel, "label_93")
-        label_98 = self.ui.frame_45.findChild(QLabel, "label_98")
-        combobox_16 = self.ui.frame_45.findChild(QComboBox, "comboBox_16")
-        value_combobox_16 = combobox_16.currentText().strip()
+        combobox_14 = self.ui.frame_48.findChild(QComboBox, "comboBox_14")
+        line_edit_28 = self.ui.frame_48.findChild(QLineEdit, "lineEdit_28")  # mail
+        line_edit_30 = self.ui.frame_48.findChild(QLineEdit, "lineEdit_30")  # contraseña
+        value_line_edit_30 = line_edit_30.text().strip()  # contraseña
+        value_combobox_14 = combobox_14.currentText()
+        value_line_edit_28 = line_edit_28.text().strip()  # mail
+        label_113 = self.ui.frame_48.findChild(QLabel, "label_113")
+        label_114 = self.ui.frame_48.findChild(QLabel, "label_114")
+        combobox_15 = self.ui.frame_48.findChild(QComboBox, "comboBox_15")
+        value_combobox_15 = combobox_15.currentText().strip()
 
         # Validar que la contraseña tenga al menos 8 caracteres
-        if len(value_line_edit_25) <= 8:
+        if len(value_line_edit_28) <= 8:
             self._actualizar_usuario_en_proceso = False
-            label_93.setText("La contraseña debe tener")
-            label_98.setText("al menos 8 caracteres")
-            label_98.setStyleSheet("color: red; font-weight: bold")
-            label_93.setStyleSheet("color: red; font-weight: bold")
-            line_edit_25.setFocus()
-            line_edit_25.selectAll()
+            label_114.setStyleSheet("color: red; font-weight: bold")
+            label_113.setStyleSheet("color: red; font-weight: bold")
+            label_113.setText("La contraseña debe tener")
+            label_114.setText("al menos 8 caracteres")
+           
+            line_edit_28.setFocus()
+            line_edit_28.selectAll()
             return
 
         # Validar si el email ya existe en otro usuario (excepto el usuario actual)
-        if any(u[2].strip().lower() == value_line_edit_22.lower() and u[0] != usuario_selecc[0][0] for u in usuarios):
+        if any(u[2].strip().lower() == value_line_edit_30.lower() and u[0] != usuario_selecc[0][0] for u in usuarios):
             self._actualizar_usuario_en_proceso = False
-            label_93.setText("El email ya está en uso")
-            label_98.setText("por otro usuario")
-            label_98.setStyleSheet("color: red; font-weight: bold")
-            label_93.setStyleSheet("color: red; font-weight: bold")
-            line_edit_22.setFocus()
-            line_edit_22.selectAll()
+            label_113.setText("El email ya está en uso")
+            label_114.setText("por otro usuario")
+            label_114.setStyleSheet("color: red; font-weight: bold")
+            label_113.setStyleSheet("color: red; font-weight: bold")
+            line_edit_30.setFocus()
+            line_edit_30.selectAll()
             return
 
-        if label_93 and label_98:
-            label_93.setText("Actualizando")
-            label_98.setText("usuario...")
-            label_98.setStyleSheet("color: green; font-weight: bold")
-            label_93.setStyleSheet("color: green; font-weight: bold")
-
+        if label_113 and label_114:
+            label_114.setStyleSheet("color: green; font-weight: bold")
+            label_113.setStyleSheet("color: green; font-weight: bold")
+            label_113.setText("Actualizando")
+            label_114.setText("usuario...")
         self.actualizar_usuario_thread = ActualizarUsuarioThread(self.id_usuario_perfil,
-            usuario_selecc[0][0], value_combobox_15, value_line_edit_25, value_line_edit_22
+            usuario_selecc[0][0], value_combobox_15, value_line_edit_28, value_line_edit_30
         )
         def on_actualizado(s):
             if s:
                 self.movimiento_thread = CargarMovimientoEditarUsuarioThread(self.id_usuario_perfil,
-                    usuario_selecc[0][0], value_combobox_16, usuario_activo
+                    usuario_selecc[0][0], value_combobox_15, usuario_activo
                 )
                 self.start_thread(self.movimiento_thread)
                 QTimer.singleShot(0, lambda: QTimer().stop())
         
                 global usuarios_cache
                 usuarios_cache = None
-                combobox_16 = self.ui.frame_45.findChild(QComboBox, "comboBox_16")
+                combobox_15 = self.ui.frame_48.findChild(QComboBox, "comboBox_15")
                 self.actualizar_variables_globales_de_uso(4, lambda: (
-                    self.populate_combobox_with_names(combobox_16)
+                    self.populate_combobox_with_names(combobox_15)
                 ))
 
                 self._actualizar_usuario_en_proceso = False
 
-                label_93.setText("Usuario")
-                label_98.setText("actualizado")
-                label_98.setStyleSheet("color: green; font-weight: bold")
-                label_93.setStyleSheet("color: green; font-weight: bold")
-                QTimer.singleShot(6000, lambda: label_93.setStyleSheet("color: transparent"))
-                QTimer.singleShot(6000, lambda: label_98.setStyleSheet("color: transparent"))
+                label_113.setText("Usuario")
+                label_114.setText("actualizado")
+                label_114.setStyleSheet("color: green; font-weight: bold")
+                label_113.setStyleSheet("color: green; font-weight: bold")
+                QTimer.singleShot(6000, lambda: label_113.setStyleSheet("color: transparent"))
+                QTimer.singleShot(6000, lambda: label_114.setStyleSheet("color: transparent"))
 
-                if push_button_33:
-                    push_button_33.setEnabled(True)
-                if push_button_35:
-                    push_button_35.setEnabled(True)
+                if push_button_42:
+                    push_button_42.setEnabled(True)
+                if push_button_41:
+                    push_button_41.setEnabled(True)
 
             else:
                 self._actualizar_usuario_en_proceso = False
-                if push_button_33:
-                    push_button_33.setEnabled(True)
-                if push_button_35:
-                    push_button_35.setEnabled(True)
+                if push_button_42:
+                    push_button_42.setEnabled(True)
+                if push_button_41:
+                    push_button_41.setEnabled(True)
                     
                 print("no se pudo actualizar el usuario")
                 
@@ -3194,12 +3194,12 @@ class DatosTab:
 
 
     def setear_lineedit_avisual_editar(self):
-        line_edit_25 = self.ui.frame_46.findChild(QLineEdit, "lineEdit_25")
-        if line_edit_25:
-            if line_edit_25.echoMode() == QLineEdit.Password:
-                line_edit_25.setEchoMode(QLineEdit.Normal)
+        line_edit_28 = self.ui.frame_48.findChild(QLineEdit, "lineEdit_28")
+        if line_edit_28:
+            if line_edit_28.echoMode() == QLineEdit.Password:
+                line_edit_28.setEchoMode(QLineEdit.Normal)
             else:
-                line_edit_25.setEchoMode(QLineEdit.Password)
+                line_edit_28.setEchoMode(QLineEdit.Password)
 
 
 
