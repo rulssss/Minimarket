@@ -3209,21 +3209,20 @@ class DatosTab:
     # Borrar usuario
 
     def borrar_usuario(self):
-        label_95 = self.ui.frame_47.findChild(QLabel, "label_95")
-        push_buttton_40 = self.ui.frame_47.findChild(QPushButton, "pushButton_40")
-        label_100 = self.ui.stackedWidget.findChild(QLabel, "label_100")
+        label_112 = self.ui.frame_50.findChild(QLabel, "label_112")
+        push_buttton_44 = self.ui.frame_50.findChild(QPushButton, "pushButton_44")
+        label_84 = self.ui.stackedWidget.findChild(QLabel, "label_84")
 
-        if label_100:
-            label_100.setAlignment(Qt.AlignCenter)
-            label_100.setText("ADVERTENCIA!\n"
+        if label_84:
+            label_84.setAlignment(Qt.AlignCenter)
+            label_84.setText("ADVERTENCIA!\n"
             "Si borra un usuario con ventas y compras realizadas tambien seran borradas.")
 
-        if label_95:
-            label_95.setStyleSheet("color: transparent")
-
-        if push_buttton_40:
-            push_buttton_40.setStyleSheet("background-color: red; padding: 5px;")
-            push_buttton_40.clicked.connect(self.delete_usuario)
+        if label_112:
+            label_112.setStyleSheet("color: transparent")
+        if push_buttton_44:
+            push_buttton_44.setStyleSheet("background-color: red; padding: 5px;")
+            push_buttton_44.clicked.connect(self.delete_usuario)
 
     def delete_usuario(self):
         global usuarios  # Asegúrate de tener la variable global usuarios cargada
@@ -3232,24 +3231,25 @@ class DatosTab:
             return
         self._borrar_usuario_en_proceso = True
 
-        line_edit_29 = self.ui.frame_47.findChild(QLineEdit, "lineEdit_29")
-        label_95 = self.ui.frame_47.findChild(QLabel, "label_95")
-        value_line_edit_29 = line_edit_29.text().strip()
+        line_edit_27 = self.ui.frame_50.findChild(QLineEdit, "lineEdit_27")
+        label_112 = self.ui.frame_50.findChild(QLabel, "label_112")
+        value_line_edit_27 = line_edit_27.text().strip()
 
-        if value_line_edit_29 == "":
+        if value_line_edit_27 == "":
             self._borrar_usuario_en_proceso = False
-            label_95.setText("Complete el campo")
-            label_95.setStyleSheet("color: red; font-weight: bold")
-            line_edit_29.setFocus()
+            label_112.setText("Complete el campo")
+            label_112.setStyleSheet("color: red; font-weight: bold")
+            line_edit_27.setFocus()
             return
 
-        if str(usuario_activo) == str(value_line_edit_29):
+        if str(usuario_activo).strip() == str(value_line_edit_27):
             self._borrar_usuario_en_proceso = False
-            label_95.setText("No se puede borrar el usuario activo")
-            label_95.setStyleSheet("color: red; font-weight: bold")
-            QTimer.singleShot(6000, lambda: label_95.setStyleSheet("color: transparent"))
-            line_edit_29.clear()
-            line_edit_29.setFocus()
+            label_112.setStyleSheet("color: red; font-weight: bold")
+            label_112.setText("No se puede borrar el usuario activo")
+            
+            QTimer.singleShot(6000, lambda: label_112.setStyleSheet("color: transparent"))
+            line_edit_27.clear()
+            line_edit_27.setFocus()
             return
 
         # Buscar el id_usuario en la variable global usuarios (lista de tuplas)
@@ -3257,24 +3257,24 @@ class DatosTab:
         if usuarios:
             for u in usuarios:
                 # u[1] es el nombre, u[0] es el id_usuario
-                if str(u[1]).strip() == value_line_edit_29:
+                if str(u[1]).strip() == value_line_edit_27:
                     id_usuario = u[0]
                     break
 
         if id_usuario is not None:
-            push_buttton_40 = self.ui.frame_47.findChild(QPushButton, "pushButton_40")
-            if push_buttton_40:
-                push_buttton_40.setEnabled(False)
+            push_buttton_44 = self.ui.frame_50.findChild(QPushButton, "pushButton_44")
+            if push_buttton_44:
+                push_buttton_44.setEnabled(False)
 
-            label_95.setText("Borrando usuario...")
-            label_95.setStyleSheet("color: green; font-weight: bold")
+            label_112.setText("Borrando usuario...")
+            label_112.setStyleSheet("color: green; font-weight: bold")
 
             # Hilo para borrar el usuario
-            self.borrar_usuario_thread = BorrarUsuarioThread(self.id_usuario_perfil, value_line_edit_29)
+            self.borrar_usuario_thread = BorrarUsuarioThread(self.id_usuario_perfil, value_line_edit_27)
             def on_usuario_borrado(exito):
                 if exito:
                     # Hilo para cargar el movimiento de usuario borrado
-                    self.movimiento_usuario_borrado_thread = MovimientoUsuarioBorradoThread(self.id_usuario_perfil, value_line_edit_29, id_usuario, usuario_activo)
+                    self.movimiento_usuario_borrado_thread = MovimientoUsuarioBorradoThread(self.id_usuario_perfil, value_line_edit_27, id_usuario, usuario_activo)
                     self.start_thread(self.movimiento_usuario_borrado_thread)
 
                     self._borrar_usuario_en_proceso = False
@@ -3283,18 +3283,18 @@ class DatosTab:
                     usuarios_cache = None
                     usuarios_por_nombre_cache = None
                     self.actualizar_variables_globales_de_uso(4, lambda: (
-                        self.populate_combobox_with_names(self.ui.frame_45.findChild(QComboBox, "comboBox_16"))
+                        self.populate_combobox_with_names(self.ui.frame_48.findChild(QComboBox, "comboBox_15"))
                     ))
 
-                    label_95.setText("Usuario borrado con éxito")
-                    label_95.setStyleSheet("color: green; font-weight: bold")
-                    QTimer.singleShot(6000, lambda: label_95.setStyleSheet("color: transparent"))
+                    label_112.setText("Usuario borrado con éxito")
+                    label_112.setStyleSheet("color: green; font-weight: bold")
+                    QTimer.singleShot(6000, lambda: label_112.setStyleSheet("color: transparent"))
 
-                    line_edit_29.clear()
-                    line_edit_29.setFocus()
+                    line_edit_27.clear()
+                    line_edit_27.setFocus()
 
-                    if push_buttton_40:
-                        push_buttton_40.setEnabled(True)
+                    if push_buttton_44:
+                        push_buttton_44.setEnabled(True)
                 
                 else:
                     print("Error al borrar el usuario")
@@ -3302,18 +3302,18 @@ class DatosTab:
             self.borrar_usuario_thread.resultado.connect(on_usuario_borrado)
             self.start_thread(self.borrar_usuario_thread)
         else:
-            label_95.setText("Usuario no encontrado")
-            label_95.setStyleSheet("color: red; font-weight: bold")
+            self._borrar_usuario_en_proceso = False
+            label_112.setText("Usuario no encontrado")
+            label_112.setStyleSheet("color: red; font-weight: bold")
             
-            push_buttton_40 = self.ui.frame_47.findChild(QPushButton, "pushButton_40")
-            if push_buttton_40:
-                push_buttton_40.setEnabled(True)
-
-            line_edit_29 = self.ui.frame_47.findChild(QLineEdit, "lineEdit_29")
-            if line_edit_29:
-                line_edit_29.selectAll()
-                line_edit_29.setFocus()
-
+            push_buttton_44 = self.ui.frame_50.findChild(QPushButton, "pushButton_44")
+            if push_buttton_44:
+                push_buttton_44.setEnabled(True)
+            line_edit_27 = self.ui.frame_50.findChild(QLineEdit, "lineEdit_27")
+            if line_edit_27:
+                line_edit_27.setFocus()
+                line_edit_27.selectAll()
+                
             
 
  
