@@ -3323,13 +3323,13 @@ class DatosTab:
     # funcion para mostrar nombre del usuario activo
 
     def mostrar_usuario_activo(self, usuario):
-        label_31 = self.ui.frame_9.findChild(QLabel, "label_31")
-        if label_31:
-            label_31.setText(usuario)
+        label_4 = self.ui.frame_2.findChild(QLabel, "label_4")
+        if label_4:
+            label_4.setText(usuario)
 
-        label_69 = self.ui.frame_39.findChild(QLabel, "label_69")
-        if label_69:
-            label_69.setText(usuario)    
+        label_11 = self.ui.frame_3.findChild(QLabel, "label_11")
+        if label_11:
+            label_11.setText(usuario)    
 
 ################
 ################
@@ -3371,15 +3371,15 @@ class BuscarDatosTab:
 
     def boton_cerrar_sesion(self):
 
-        push_button_51 = self.ui.tab_3.findChild(QPushButton, "pushButton_51")
-        if push_button_51:
-            push_button_51.setFocusPolicy(Qt.NoFocus)
-            push_button_51.setStyleSheet("background-color: red")
+        push_button_20 = self.ui.tab_3.findChild(QPushButton, "pushButton_20")
+        if push_button_20:
+            push_button_20.setFocusPolicy(Qt.NoFocus)
+            push_button_20.setStyleSheet("background-color: red")
             try:
-                push_button_51.clicked.disconnect()
+                push_button_20.clicked.disconnect()
             except Exception:
                 pass
-            push_button_51.clicked.connect(self.cerrar_sesion)
+            push_button_20.clicked.connect(self.cerrar_sesion)
 
 
     def cerrar_sesion(self):
@@ -7309,7 +7309,7 @@ class MainWindow(QMainWindow):
                 self.start_thread(self.thread_cambiar_false_open)
 
 
-                # Limpiar la sesión
+                # Limpiar la sesión 
                 self.session_manager.clear_session()
 
                 # Mostrar mensaje de confirmación
@@ -7651,7 +7651,7 @@ class MainWindow(QMainWindow):
 
         #boton de cerrar sesion
         # Si no se encuentra, intentar búsqueda directa
-        logout_button = self.findChild(QPushButton, "pushButton_16")
+        logout_button = self.ui.tab_1.findChild(QPushButton, "pushButton_16")
         if logout_button:
             logout_button.clicked.connect(self.logout)
             logout_button.setStyleSheet("background-color: rgb(255, 127, 127); font-weight: bold;")
