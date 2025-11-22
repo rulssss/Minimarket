@@ -16,11 +16,11 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QAbstractItemView, QAbstractScrollArea, QApplication, QComboBox,
-    QDoubleSpinBox, QFrame, QGridLayout, QHBoxLayout,
-    QHeaderView, QLabel, QLineEdit, QMainWindow,
-    QPushButton, QSizePolicy, QSpacerItem, QStackedWidget,
-    QStatusBar, QTabWidget, QTableWidget, QTableWidgetItem,
-    QTextEdit, QTimeEdit, QVBoxLayout, QWidget)
+    QDateEdit, QDoubleSpinBox, QFrame, QGridLayout,
+    QHBoxLayout, QHeaderView, QLabel, QLineEdit,
+    QMainWindow, QPushButton, QSizePolicy, QSpacerItem,
+    QStackedWidget, QStatusBar, QTabWidget, QTableWidget,
+    QTableWidgetItem, QTextEdit, QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -2736,6 +2736,18 @@ class Ui_MainWindow(object):
         self.frame_60.setFrameShadow(QFrame.Shadow.Raised)
         self.gridLayout_32 = QGridLayout(self.frame_60)
         self.gridLayout_32.setObjectName(u"gridLayout_32")
+        self.dateEdit = QDateEdit(self.frame_60)
+        self.dateEdit.setObjectName(u"dateEdit")
+        self.dateEdit.setFont(font5)
+
+        self.gridLayout_32.addWidget(self.dateEdit, 2, 1, 1, 1)
+
+        self.label_107 = QLabel(self.frame_60)
+        self.label_107.setObjectName(u"label_107")
+        self.label_107.setFont(font4)
+
+        self.gridLayout_32.addWidget(self.label_107, 0, 0, 1, 1, Qt.AlignmentFlag.AlignRight)
+
         self.comboBox_21 = QComboBox(self.frame_60)
         self.comboBox_21.setObjectName(u"comboBox_21")
         self.comboBox_21.setMinimumSize(QSize(140, 0))
@@ -2744,19 +2756,13 @@ class Ui_MainWindow(object):
 
         self.gridLayout_32.addWidget(self.comboBox_21, 0, 1, 1, 1)
 
-        self.label_107 = QLabel(self.frame_60)
-        self.label_107.setObjectName(u"label_107")
-        self.label_107.setFont(font4)
+        self.comboBox_22 = QComboBox(self.frame_60)
+        self.comboBox_22.setObjectName(u"comboBox_22")
+        font11 = QFont()
+        font11.setPointSize(10)
+        self.comboBox_22.setFont(font11)
 
-        self.gridLayout_32.addWidget(self.label_107, 0, 0, 1, 1, Qt.AlignmentFlag.AlignRight)
-
-        self.timeEdit = QTimeEdit(self.frame_60)
-        self.timeEdit.setObjectName(u"timeEdit")
-        self.timeEdit.setMinimumSize(QSize(100, 0))
-        self.timeEdit.setMaximumSize(QSize(100, 16777215))
-        self.timeEdit.setFont(font5)
-
-        self.gridLayout_32.addWidget(self.timeEdit, 1, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+        self.gridLayout_32.addWidget(self.comboBox_22, 1, 1, 1, 1)
 
 
         self.horizontalLayout_16.addWidget(self.frame_60)
@@ -3286,9 +3292,9 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.stackedWidget.setCurrentIndex(11)
+        self.stackedWidget.setCurrentIndex(17)
         self.pushButton_49.setDefault(False)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
 
 
         QMetaObject.connectSlotsByName(MainWindow)

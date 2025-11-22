@@ -3445,25 +3445,25 @@ class BuscarDatosTab:
         return "Método desconocido"
 
     def boton_mov(self):
-        push_button_48 = self.ui.tab_3.findChild(QPushButton, "pushButton_48")
-        if push_button_48:
-            push_button_48.clicked.connect(self.movimientos)
+        push_button_19 = self.ui.tab_3.findChild(QPushButton, "pushButton_19")
+        if push_button_19:
+            push_button_19.clicked.connect(self.movimientos)
 
     def movimientos(self):
         # Iniciar combobox y tabla
-        combobox_17 = self.ui.frame_53.findChild(QComboBox, "comboBox_17")
-        combobox_18 = self.ui.frame_54.findChild(QComboBox, "comboBox_18")
-        date_edit = self.ui.frame_54.findChild(QDateEdit, "dateEdit_3")
+        combobox_21 = self.ui.frame_60.findChild(QComboBox, "comboBox_21") # 17 es el 21
+        combobox_22 = self.ui.frame_60.findChild(QComboBox, "comboBox_22") # 18 es el 22
+        date_edit = self.ui.frame_60.findChild(QDateEdit, "dateEdit")
 
-        if combobox_18:
-            combobox_18.setVisible(False)
+        if combobox_22:
+            combobox_22.setVisible(False)
 
         if date_edit:
             date_edit.setDisplayFormat("dd MM yyyy")
             date_edit.setDate(QDate.currentDate())  # Establecer la fecha actual como predeterminada
         
          # Conectar eventos de doble clic
-        table_widget = self.ui.frame_52.findChild(QTableWidget, "tableWidget_5")
+        table_widget = self.ui.frame_61.findChild(QTableWidget, "tableWidget_6")
         if table_widget:
             corner_button = table_widget.findChild(QAbstractButton)
             table_widget.horizontalHeader().sectionDoubleClicked.connect(self.copy_column_to_clipboard)
@@ -3471,54 +3471,54 @@ class BuscarDatosTab:
             corner_button.clicked.connect(self.copy_entire_table_to_clipboard)
 
         # Bandera para evitar ejecución en la primera inicialización
-        self._combobox_17_initialized = getattr(self, "_combobox_17_initialized", False)
+        self._combobox_21_initialized = getattr(self, "_combobox_21_initialized", False)
 
-        if combobox_17:
-            if combobox_17.count() == 0:
-                combobox_17.addItem("Fecha")
-                combobox_17.addItem("Usuario")
-                combobox_17.addItem("Acción")
+        if combobox_21:
+            if combobox_21.count() == 0:
+                combobox_21.addItem("Fecha")
+                combobox_21.addItem("Usuario")
+                combobox_21.addItem("Acción")
             else:
-                combobox_17.setCurrentIndex(0)  # Reiniciar a "Fecha" si ya tiene elementos
+                combobox_21.setCurrentIndex(0)  # Reiniciar a "Fecha" si ya tiene elementos
 
             # Conectar el evento de cambio de texto al método
-            if not self._combobox_17_initialized:
-                combobox_17.currentTextChanged.connect(self.setear_combobox_18)
-                self._combobox_17_initialized = True  # Marcar como inicializado
+            if not self._combobox_21_initialized:
+                combobox_21.currentTextChanged.connect(self.setear_combobox_22)
+                self._combobox_21_initialized = True  # Marcar como inicializado
                 
         # Inicializar la tabla con todos los movimientos
-        self.setear_combobox_18()
+        self.setear_combobox_22()
 
-    def setear_combobox_18(self):
-        combobox_17 = self.ui.frame_53.findChild(QComboBox, "comboBox_17")
-        combobox_18 = self.ui.frame_54.findChild(QComboBox, "comboBox_18")
-        date_edit = self.ui.frame_54.findChild(QDateEdit, "dateEdit_3")
+    def setear_combobox_22(self):
+        combobox_21 = self.ui.frame_60.findChild(QComboBox, "comboBox_21")
+        combobox_22 = self.ui.frame_60.findChild(QComboBox, "comboBox_22")
+        date_edit = self.ui.frame_60.findChild(QDateEdit, "dateEdit")
 
-        if combobox_17 and combobox_18 and date_edit:
-            if combobox_17.currentText() == "Usuario":
-                combobox_18.setVisible(True)
+        if combobox_21 and combobox_22 and date_edit:
+            if combobox_21.currentText() == "Usuario":
+                combobox_22.setVisible(True)
                 date_edit.setDate(QDate())  
                 date_edit.setHidden(True)
-                self.populate_combobox_with_names(combobox_18)
-                self.filtro(combobox_17, combobox_18)
-                combobox_18.currentTextChanged.connect(lambda: self.filtro(combobox_17, combobox_18))
+                self.populate_combobox_with_names(combobox_22)
+                self.filtro(combobox_21, combobox_22)
+                combobox_22.currentTextChanged.connect(lambda: self.filtro(combobox_21, combobox_22))
 
-            elif combobox_17.currentText() == "Fecha":
-                combobox_18.setVisible(False)
+            elif combobox_21.currentText() == "Fecha":
+                combobox_22.setVisible(False)
                 date_edit.setHidden(False)
                 date_edit.setStyleSheet("font-weight: bold;")
                 date_edit.setDate(QDate.currentDate())  # Establecer la fecha actual como predeterminada
-                self.filtro(combobox_17, combobox_18)
-                date_edit.dateChanged.connect(lambda: self.filtro(combobox_17, combobox_18))
+                self.filtro(combobox_21, combobox_22)
+                date_edit.dateChanged.connect(lambda: self.filtro(combobox_21, combobox_22))
                 
 
-            elif combobox_17.currentText() == "Acción":
-                combobox_18.setVisible(True)
+            elif combobox_21.currentText() == "Acción":
+                combobox_22.setVisible(True)
                 date_edit.setDate(QDate())  
                 date_edit.setHidden(True)
-                self.populate_combobox_acciones(combobox_18)
-                self.filtro(combobox_17, combobox_18)
-                combobox_18.currentTextChanged.connect(lambda: self.filtro(combobox_17, combobox_18))
+                self.populate_combobox_acciones(combobox_22)
+                self.filtro(combobox_21, combobox_22)
+                combobox_22.currentTextChanged.connect(lambda: self.filtro(combobox_21, combobox_22))
     
     def populate_combobox_acciones(self, combobox):
         combobox.clear()
@@ -3532,13 +3532,13 @@ class BuscarDatosTab:
             nombres = sorted(usuarios_por_nombre_cache.keys())
             combobox.addItems(nombres)
 
-    def filtro(self, combobox_17, combobox_18):
-        date_edit = self.ui.frame_54.findChild(QDateEdit, "dateEdit_3")
-        filtro = combobox_17.currentText()
+    def filtro(self, combobox_21, combobox_22):
+        date_edit = self.ui.frame_60.findChild(QDateEdit, "dateEdit")
+        filtro = combobox_21.currentText()
         global movimientos
 
-        if filtro == "Usuario" and combobox_18:
-            usuario_seleccionado = combobox_18.currentText()
+        if filtro == "Usuario" and combobox_22:
+            usuario_seleccionado = combobox_22.currentText()
             if usuario_seleccionado:
                 self.mov_thread = MovimientosPorUsuarioThread(self.id_usuario_perfil, usuario_seleccionado)
                 self.mov_thread.resultado.connect(self._on_movimientos_obtenidos)
@@ -3551,9 +3551,9 @@ class BuscarDatosTab:
             self.mov_thread.resultado.connect(self._on_movimientos_obtenidos)
             self.start_thread(self.mov_thread)
 
-        elif filtro == "Acción" and combobox_18:
+        elif filtro == "Acción" and combobox_22:
             
-            accion_seleccionada = combobox_18.currentText()
+            accion_seleccionada = combobox_22.currentText()
 
             if accion_seleccionada:
                 self.mov_thread = MovimientosPorAccionThread(self.id_usuario_perfil, accion_seleccionada)
@@ -3569,7 +3569,7 @@ class BuscarDatosTab:
     def setear_tabla_movimientos(self):
         global movimientos
 
-        table = self.ui.frame_52.findChild(QTableWidget, "tableWidget_5")
+        table = self.ui.frame_61.findChild(QTableWidget, "tableWidget_6")
         
         if table:
 
@@ -3655,7 +3655,7 @@ class BuscarDatosTab:
                     table.setItem(row, 5, item)
 
     def copy_entire_table_to_clipboard(self):
-        table_widget = self.ui.frame_52.findChild(QTableWidget, "tableWidget_5")
+        table_widget = self.ui.frame_61.findChild(QTableWidget, "tableWidget_6")
         if not table_widget:
             return
         row_count = table_widget.rowCount()
@@ -3678,7 +3678,7 @@ class BuscarDatosTab:
 
     # Función para copiar una columna al portapapeles
     def copy_column_to_clipboard(self, column_index):
-        table_widget = self.ui.frame_52.findChild(QTableWidget, "tableWidget_5")
+        table_widget = self.ui.frame_61.findChild(QTableWidget, "tableWidget_6")
         if table_widget:
             column_data = []
             for row in range(table_widget.rowCount()):
@@ -3691,7 +3691,7 @@ class BuscarDatosTab:
 
     # Función para copiar una fila al portapapeles
     def copy_row_to_clipboard(self, row_index):
-        table_widget = self.ui.frame_52.findChild(QTableWidget, "tableWidget_5")
+        table_widget = self.ui.frame_61.findChild(QTableWidget, "tableWidget_6")
         if table_widget:
             row_data = []
             for col in range(table_widget.columnCount()):
@@ -7907,7 +7907,7 @@ class MainWindow(QMainWindow):
             """)
 
     def change_table_headers_color_visualizar_movimientos(self):
-        table = self.ui.frame_52.findChild(QTableWidget, "tableWidget_6")
+        table = self.ui.frame_61.findChild(QTableWidget, "tableWidget_6")
         # Aplicar estilo mediante stylesheet con el color especificado
         table.setStyleSheet("""
             QHeaderView::section {
