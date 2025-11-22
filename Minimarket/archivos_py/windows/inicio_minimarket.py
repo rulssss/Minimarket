@@ -3735,35 +3735,36 @@ class BuscarDatosTab:
     # cortes y arqueo
 
     def boton_arqueo(self):
-        push_button_15 = self.ui.tab_3.findChild(QPushButton, "pushButton_15")
-        if push_button_15:
-            push_button_15.clicked.connect(self.inicializar_comboboxes_y_boton)
+        push_button_17 = self.ui.tab_3.findChild(QPushButton, "pushButton_17")
+        if push_button_17:
+            push_button_17.clicked.connect(self.inicializar_comboboxes_y_boton)
 
          # Conectar eventos de doble clic
-        table_widget_6 = self.ui.frame_27.findChild(QTableWidget, "tableWidget_6")
-        if table_widget_6:
-            corner_button_6 = table_widget_6.findChild(QAbstractButton)
+        table_widget_4 = self.ui.frame_52.findChild(QTableWidget, "tableWidget_4")
+        if table_widget_4:
+            corner_button_4 = table_widget_4.findChild(QAbstractButton)
 
-            table_widget_6.horizontalHeader().sectionDoubleClicked.connect(self.copy_column_to_clipboard_ventas)
-            table_widget_6.verticalHeader().sectionDoubleClicked.connect(self.copy_row_to_clipboard_ventas)
-            corner_button_6.clicked.connect(self.copy_entire_table_to_clipboard_ventas)
+            table_widget_4.horizontalHeader().sectionDoubleClicked.connect(self.copy_column_to_clipboard_ventas)
+            table_widget_4.verticalHeader().sectionDoubleClicked.connect(self.copy_row_to_clipboard_ventas)
+            corner_button_4.clicked.connect(self.copy_entire_table_to_clipboard_ventas)
 
-        table_widget_7 = self.ui.frame_23.findChild(QTableWidget, "tableWidget_7")
-        if table_widget_7:
-            corner_button_7 = table_widget_7.findChild(QAbstractButton)
-            table_widget_7.horizontalHeader().sectionDoubleClicked.connect(self.copy_column_to_clipboard_compras)
-            table_widget_7.verticalHeader().sectionDoubleClicked.connect(self.copy_row_to_clipboard_compras)
-            corner_button_7.clicked.connect(self.copy_entire_table_to_clipboard_compras)
+        table_widget_5 = self.ui.frame_51.findChild(QTableWidget, "tableWidget_5")
+        if table_widget_5:
+            corner_button_5 = table_widget_5.findChild(QAbstractButton)
+
+            table_widget_5.horizontalHeader().sectionDoubleClicked.connect(self.copy_column_to_clipboard_compras)
+            table_widget_5.verticalHeader().sectionDoubleClicked.connect(self.copy_row_to_clipboard_compras)
+            corner_button_5.clicked.connect(self.copy_entire_table_to_clipboard_compras)
     
 
     def inicializar_comboboxes_y_boton(self):
         # Obtener los QComboBox
-        combobox_10_dia = self.ui.frame_32.findChild(QComboBox, "comboBox_10")
-        combobox_9_mes = self.ui.frame_32.findChild(QComboBox, "comboBox_9")
-        combobox_8_anio = self.ui.frame_32.findChild(QComboBox, "comboBox_8")
-        combobox_12 = self.ui.frame_31.findChild(QComboBox, "comboBox_12")
-        combobox_13 = self.ui.frame_31.findChild(QComboBox, "comboBox_13")
-        push_button_47 = self.ui.frame_31.findChild(QPushButton, "pushButton_47")
+        combobox_18_dia = self.ui.frame_53.findChild(QComboBox, "comboBox_18") # 10 es el 18
+        combobox_16_mes = self.ui.frame_53.findChild(QComboBox, "comboBox_16") # 9 es el 16
+        combobox_17_anio = self.ui.frame_53.findChild(QComboBox, "comboBox_17") # 8 es el 17
+        combobox_19 = self.ui.frame_54.findChild(QComboBox, "comboBox_19") # 12 es el 19
+        combobox_20 = self.ui.frame_54.findChild(QComboBox, "comboBox_20") # 13 es el 20
+        push_button_45 = self.ui.frame_54.findChild(QPushButton, "pushButton_45")
 
         # Obtener la fecha actual
         hoy = datetime.now()
@@ -3772,77 +3773,77 @@ class BuscarDatosTab:
         dia_actual = hoy.day
     
         # Inicializar ComboBox de años
-        if combobox_8_anio:
+        if combobox_17_anio:
             global anios_obtenidos
             
-            combobox_8_anio.setStyleSheet("background-color: rgb(226, 245, 255);")
-            combobox_8_anio.clear()
-            combobox_8_anio.addItems([str(anio) for anio in anios_obtenidos])
-            combobox_8_anio.setCurrentText(str(anio_actual))
+            combobox_17_anio.setStyleSheet("background-color: rgb(226, 245, 255);")
+            combobox_17_anio.clear()
+            combobox_17_anio.addItems([str(anio) for anio in anios_obtenidos])
+            combobox_17_anio.setCurrentText(str(anio_actual))
             
             # En la inicialización del combobox :
-            combobox_8_anio.currentTextChanged.connect(lambda: self.timer_dia.start(2000))
+            combobox_17_anio.currentTextChanged.connect(lambda: self.timer_dia.start(2000))
 
-        if combobox_8_anio != "":
-            if combobox_9_mes and combobox_8_anio and combobox_10_dia:
-                combobox_9_mes.currentIndexChanged.connect(
+        if combobox_17_anio != "":
+            if combobox_16_mes and combobox_17_anio and combobox_18_dia:
+                combobox_16_mes.currentIndexChanged.connect(
                     lambda: self.actualizar_dias_combobox(
-                        combobox_10_dia,
-                        combobox_9_mes.currentIndex() + 1,
-                        int(combobox_8_anio.currentText()) if combobox_8_anio.currentText().isdigit() else 0
+                        combobox_18_dia,
+                        combobox_16_mes.currentIndex() + 1,
+                        int(combobox_17_anio.currentText()) if combobox_17_anio.currentText().isdigit() else 0
                     )
                 )
-                combobox_8_anio.currentTextChanged.connect(
+                combobox_17_anio.currentTextChanged.connect(
                     lambda: self.actualizar_dias_combobox(
-                        combobox_10_dia,
-                        combobox_9_mes.currentIndex() + 1,
-                        int(combobox_8_anio.currentText()) if combobox_8_anio.currentText().isdigit() else 0
+                        combobox_18_dia,
+                        combobox_16_mes.currentIndex() + 1,
+                        int(combobox_17_anio.currentText()) if combobox_17_anio.currentText().isdigit() else 0
                     )
                 )
 
         # Inicializar ComboBox de meses
-        if combobox_9_mes:
-            combobox_9_mes.clear()  # Limpiar el combobox antes de agregar elementos
-            combobox_9_mes.setStyleSheet("background-color: rgb(226, 245, 255);")
-            combobox_9_mes.addItems(["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+        if combobox_16_mes:
+            combobox_16_mes.clear()  # Limpiar el combobox antes de agregar elementos
+            combobox_16_mes.setStyleSheet("background-color: rgb(226, 245, 255);")
+            combobox_16_mes.addItems(["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
                                      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"])
-            combobox_9_mes.setCurrentIndex(mes_actual)  # Los índices comienzan en 0
+            combobox_16_mes.setCurrentIndex(mes_actual)  # Los índices comienzan en 0
             
             # En la inicialización del combobox:
-            combobox_9_mes.currentTextChanged.connect(lambda: self.timer_dia.start(2000))
+            combobox_16_mes.currentTextChanged.connect(lambda: self.timer_dia.start(2000))
 
         # Inicializar ComboBox de días
-        if combobox_10_dia:
-            combobox_10_dia.setStyleSheet("background-color: rgb(226, 245, 255);")
-            combobox_10_dia.setMaxVisibleItems(5)  # Mostrar un máximo de 5 elementos visibles
-            self.actualizar_dias_combobox(combobox_10_dia, mes_actual, anio_actual)
-            combobox_10_dia.setCurrentText(str(dia_actual))
+        if combobox_18_dia:
+            combobox_18_dia.setStyleSheet("background-color: rgb(226, 245, 255);")
+            combobox_18_dia.setMaxVisibleItems(5)  # Mostrar un máximo de 5 elementos visibles
+            self.actualizar_dias_combobox(combobox_18_dia, mes_actual, anio_actual)
+            combobox_18_dia.setCurrentText(str(dia_actual))
             
             # En la inicialización del combobox de días:
-            combobox_10_dia.currentTextChanged.connect(lambda: self.timer_dia.start(2000))
+            combobox_18_dia.currentTextChanged.connect(lambda: self.timer_dia.start(2000))
 
         # Inicializar ComboBox de métodos de pago o usuarios solo si esta vacio
-        if combobox_12:
-            combobox_12.clear()
-            if combobox_12.count() == 0:
-                combobox_12.addItem("")
-                combobox_12.addItem("Metodo de Pago")
-                combobox_12.addItem("Usuario")
-                combobox_12.addItem("Categoría")
+        if combobox_19:
+            combobox_19.clear()
+            if combobox_19.count() == 0:
+                combobox_19.addItem("")
+                combobox_19.addItem("Metodo de Pago")
+                combobox_19.addItem("Usuario")
+                combobox_19.addItem("Categoría")
 
             # Conectar el evento de cambio de texto para actualizar el combobox_13
-            combobox_12.currentTextChanged.connect(lambda: self.actualizar_combobox_13(combobox_12, combobox_13))
+            combobox_19.currentTextChanged.connect(lambda: self.actualizar_combobox_13(combobox_19, combobox_20))
             
         
-        if combobox_13:
+        if combobox_20:
             # Conectar el evento de cambio de texto para actualizar los datos
             # En la inicialización del combobox:
-            combobox_13.currentTextChanged.connect(lambda: self.timer_dia.start(2000))  
+            combobox_20.currentTextChanged.connect(lambda: self.timer_dia.start(2000))  
 
-        if push_button_47:
+        if push_button_45:
             if not self.check_open:
                 self.check_open = True
-                push_button_47.clicked.connect(self.hacer_corte)
+                push_button_45.clicked.connect(self.hacer_corte)
 
           # *** CARGAR DATOS DE HOY AUTOMÁTICAMENTE ***
         # Usar QTimer para asegurar que todos los comboboxes estén configurados
@@ -3904,58 +3905,57 @@ class BuscarDatosTab:
     
     def enviar_a_setear_tables(self):
         # Obtener elementos UI una sola vez
-        push_button_47 = self.ui.frame_31.findChild(QPushButton, "pushButton_47")
-        if push_button_47:
-            push_button_47.setEnabled(False)
+        push_button_45 = self.ui.frame_54.findChild(QPushButton, "pushButton_45")
+        if push_button_45:
+            push_button_45.setEnabled(False)
 
-        combobox_10_dia = self.ui.frame_32.findChild(QComboBox, "comboBox_10")
-        combobox_9_mes = self.ui.frame_32.findChild(QComboBox, "comboBox_9")
-        combobox_8_anio = self.ui.frame_32.findChild(QComboBox, "comboBox_8")
-        combobox_12 = self.ui.frame_31.findChild(QComboBox, "comboBox_12")
-        combobox_13 = self.ui.frame_31.findChild(QComboBox, "comboBox_13")
-        tablewidget_compras = self.ui.frame_23.findChild(QTableWidget, "tableWidget_7")
-        tablewidget_ventas = self.ui.frame_27.findChild(QTableWidget, "tableWidget_6")
-        label_58 = self.ui.frame_31.findChild(QLabel, "label_58")
-        label_47 = self.ui.frame_30.findChild(QLabel, "label_47")
+        combobox_18_dia = self.ui.frame_53.findChild(QComboBox, "comboBox_18")
+        combobox_16_mes = self.ui.frame_53.findChild(QComboBox, "comboBox_16")
+        combobox_17_anio = self.ui.frame_53.findChild(QComboBox, "comboBox_17")
+        combobox_19 = self.ui.frame_54.findChild(QComboBox, "comboBox_19")
+        combobox_20 = self.ui.frame_54.findChild(QComboBox, "comboBox_20")
+        tablewidget_compras = self.ui.frame_51.findChild(QTableWidget, "tableWidget_5")
+        tablewidget_ventas = self.ui.frame_52.findChild(QTableWidget, "tableWidget_4")
+        label_94 = self.ui.frame_54.findChild(QLabel, "label_94")
+        label_96 = self.ui.frame_55.findChild(QLabel, "label_96")
 
         # Obtener valores una sola vez
-        valor_combobox_12 = combobox_12.currentText()
-        valor_combobox_13 = combobox_13.currentText()
-        valor_combobox_10_dia = combobox_10_dia.currentText()
-        valor_combobox_9_mes = combobox_9_mes.currentText()
-        valor_combobox_8_anio = combobox_8_anio.currentText()
-
+        valor_combobox_19 = combobox_19.currentText()
+        valor_combobox_20 = combobox_20.currentText()
+        valor_combobox_18_dia = combobox_18_dia.currentText()
+        valor_combobox_16_mes = combobox_16_mes.currentText()
+        valor_combobox_17_anio = combobox_17_anio.currentText()
+        
         # Configurar tablewidgets
         self._configurar_tablewidgets(tablewidget_compras, tablewidget_ventas)
 
         # Configurar labels
-        if label_58:
-            label_58.setStyleSheet("color: green; font-weight: bold")
-            label_58.setText("$0.00")  # Inicializar
-        if label_47:
-            label_47.setStyleSheet("color: rgb(230, 180, 80); font-weight: bold")
-            label_47.setText("$0.00")  # Inicializar
+        if label_94:
+            label_94.setStyleSheet("color: green; font-weight: bold")
+            label_94.setText("$0.00")  # Inicializar
+        if label_96:
+            label_96.setStyleSheet("color: rgb(230, 180, 80); font-weight: bold")
+            label_96.setText("$0.00")  # Inicializar
 
-        if not valor_combobox_8_anio:
+        if not valor_combobox_17_anio:
             return
 
         # Construir fecha
-        fecha = self._construir_fecha(valor_combobox_8_anio, valor_combobox_9_mes, valor_combobox_10_dia, combobox_9_mes)
-
+        fecha = self._construir_fecha(valor_combobox_17_anio, valor_combobox_16_mes, valor_combobox_18_dia, combobox_16_mes)
         # Verificar cache de métodos de pago
         if not self._verificar_cache_metodos_pago():
             QTimer.singleShot(500, self.enviar_a_setear_tables)
             return
 
         # Procesar según el tipo de filtro
-        if valor_combobox_12 == "Metodo de Pago" and valor_combobox_13:
-            self._procesar_por_metodo_pago(valor_combobox_13, fecha, tablewidget_ventas, tablewidget_compras, label_58, label_47)
-        elif valor_combobox_12 == "Usuario" and valor_combobox_13:
-            self._procesar_por_usuario(valor_combobox_13, fecha, tablewidget_ventas, tablewidget_compras, label_58, label_47)
-        elif valor_combobox_12 == "Categoría" and valor_combobox_13:
-            self._procesar_por_categoria(valor_combobox_13, fecha, tablewidget_ventas, tablewidget_compras, label_58, label_47)
+        if valor_combobox_19 == "Metodo de Pago" and valor_combobox_20:
+            self._procesar_por_metodo_pago(valor_combobox_20, fecha, tablewidget_ventas, tablewidget_compras, label_94, label_96)
+        elif valor_combobox_19 == "Usuario" and valor_combobox_20:
+            self._procesar_por_usuario(valor_combobox_20, fecha, tablewidget_ventas, tablewidget_compras, label_94, label_96)
+        elif valor_combobox_19 == "Categoría" and valor_combobox_20:
+            self._procesar_por_categoria(valor_combobox_20, fecha, tablewidget_ventas, tablewidget_compras, label_94, label_96)
         else:
-            self._procesar_arqueo(fecha, tablewidget_ventas, tablewidget_compras, label_58, label_47)
+            self._procesar_arqueo(fecha, tablewidget_ventas, tablewidget_compras, label_94, label_96)
 
     def _configurar_tablewidgets(self, tablewidget_compras, tablewidget_ventas):
         """Configurar headers para ambos tablewidgets"""
@@ -4111,28 +4111,27 @@ class BuscarDatosTab:
             self.resultados_arqueo["compras_totales"] = total
             self.resultados_arqueo["numero_de_compras"] = len(datos)
 
-        push_button_47 = self.ui.frame_31.findChild(QPushButton, "pushButton_47")
-        if push_button_47:
-            push_button_47.setEnabled(True)
+        push_button_45 = self.ui.frame_54.findChild(QPushButton, "pushButton_45")
+        if push_button_45:
+            push_button_45.setEnabled(True)
 
-    def _procesar_por_metodo_pago(self, metodo_pago_nombre, fecha, tablewidget_ventas, tablewidget_compras, label_58, label_47):
+    def _procesar_por_metodo_pago(self, metodo_pago_nombre, fecha, tablewidget_ventas, tablewidget_compras, label_94, label_96):
         """Procesar datos filtrados por método de pago"""
         resultados = {}
         def on_metodo_pago_id_obtenido(metodo_pago_id):
             
             resultados.clear()  # Limpiar resultados previos
             def on_ventas_obtenidas(datos_ventas):
-                self._procesar_datos_optimizado(datos_ventas, True, tablewidget_ventas, label_58)
+                self._procesar_datos_optimizado(datos_ventas, True, tablewidget_ventas, label_94)
 
             def on_compras_obtenidas(datos_compras):
-                self._procesar_datos_optimizado(datos_compras, False, tablewidget_compras, label_47)
-
+                self._procesar_datos_optimizado(datos_compras, False, tablewidget_compras, label_96)
             self.obtener_datos_ventas(metodo_pago_id, fecha, "id_metodo", on_ventas_obtenidas)
             self.obtener_datos_compras(metodo_pago_id, fecha, "id_metodo", on_compras_obtenidas)
 
         self.obtener_metodo_pago_id(metodo_pago_nombre, on_metodo_pago_id_obtenido)
 
-    def _procesar_por_usuario(self, usuario_nombre, fecha, tablewidget_ventas, tablewidget_compras, label_58, label_47):
+    def _procesar_por_usuario(self, usuario_nombre, fecha, tablewidget_ventas, tablewidget_compras, label_94, label_96):
         """Procesar datos filtrados por usuario"""
         global usuarios_por_nombre_cache
 
@@ -4144,15 +4143,15 @@ class BuscarDatosTab:
             return
 
         def on_ventas_obtenidas(datos_ventas):
-            self._procesar_datos_optimizado(datos_ventas, True, tablewidget_ventas, label_58)
+            self._procesar_datos_optimizado(datos_ventas, True, tablewidget_ventas, label_94)
 
         def on_compras_obtenidas(datos_compras):
-            self._procesar_datos_optimizado(datos_compras, False, tablewidget_compras, label_47)
+            self._procesar_datos_optimizado(datos_compras, False, tablewidget_compras, label_96)
 
         self.obtener_datos_ventas(usuario_id, fecha, "id_usuario", on_ventas_obtenidas)
         self.obtener_datos_compras(usuario_id, fecha, "id_usuario", on_compras_obtenidas)
 
-    def _procesar_por_categoria(self, nombre_categoria, fecha, tablewidget_ventas, tablewidget_compras, label_58, label_47):
+    def _procesar_por_categoria(self, nombre_categoria, fecha, tablewidget_ventas, tablewidget_compras, label_94, label_96):
         """Procesar datos filtrados por categoría"""
         global categorias_por_nombre_cache
 
@@ -4164,21 +4163,21 @@ class BuscarDatosTab:
             return
 
         def on_ventas_obtenidas(datos_ventas):
-            self._procesar_datos_optimizado(datos_ventas, True, tablewidget_ventas, label_58)
+            self._procesar_datos_optimizado(datos_ventas, True, tablewidget_ventas, label_94)
 
         def on_compras_obtenidas(datos_compras):
-            self._procesar_datos_optimizado(datos_compras, False, tablewidget_compras, label_47)
+            self._procesar_datos_optimizado(datos_compras, False, tablewidget_compras, label_96)
 
         self.obtener_datos_ventas(categoria_id, fecha, "id_categoria", on_ventas_obtenidas)
         self.obtener_datos_compras(categoria_id, fecha, "id_categoria", on_compras_obtenidas)
 
-    def _procesar_arqueo(self, fecha, tablewidget_ventas, tablewidget_compras, label_58, label_47):
+    def _procesar_arqueo(self, fecha, tablewidget_ventas, tablewidget_compras, label_94, label_96):
         """Procesar datos de arqueo (sin filtros específicos)"""
         def on_ventas_arqueo_obtenidas(datos_ventas):
-            self._procesar_datos_optimizado(datos_ventas, True, tablewidget_ventas, label_58)
+            self._procesar_datos_optimizado(datos_ventas, True, tablewidget_ventas, label_94)
 
         def on_compras_arqueo_obtenidas(datos_compras):
-            self._procesar_datos_optimizado(datos_compras, False, tablewidget_compras, label_47)
+            self._procesar_datos_optimizado(datos_compras, False, tablewidget_compras, label_96)
 
         self.obtener_datos_arqueo_ventas_fecha(fecha, on_ventas_arqueo_obtenidas)
         self.obtener_datos_arqueo_compras_fecha(fecha, on_compras_arqueo_obtenidas)
@@ -4191,31 +4190,31 @@ class BuscarDatosTab:
             return metodos_pago_por_id_cache[str(id_metodo)]
         return "Método desconocido"
     
-    def actualizar_combobox_13(self, combobox_12, combobox_13):
-        combobox_13.clear()
+    def actualizar_combobox_13(self, combobox_19, combobox_20):
+        combobox_20.clear()
 
-        if combobox_12.currentText() == "Metodo de Pago":
+        if combobox_19.currentText() == "Metodo de Pago":
             global metodos_pago_cache, metodos_pago_por_id_cache
-            combobox_13.addItems(sorted(metodos_pago_por_id_cache.values()))
+            combobox_20.addItems(sorted(metodos_pago_por_id_cache.values()))
 
-        elif combobox_12.currentText() == "Usuario":
+        elif combobox_19.currentText() == "Usuario":
             # Usar el cache global de usuarios
             global usuarios_por_nombre_cache
             if usuarios_por_nombre_cache:
                 nombres = sorted(usuarios_por_nombre_cache.keys())
-                combobox_13.addItems(nombres)
+                combobox_20.addItems(nombres)
 
-        elif combobox_12.currentText() == "Categoría":
+        elif combobox_19.currentText() == "Categoría":
             # Usar el cache global de categorías
             global categorias_por_nombre_cache
             if categorias_por_nombre_cache:
                 nombres = sorted(categorias_por_nombre_cache.keys())
-                combobox_13.addItems(nombres)
+                combobox_20.addItems(nombres)
 
         else:
-            combobox_13.addItem("")
+            combobox_20.addItem("")
 
-    def actualizar_dias_combobox(self, combobox_10_dia, mes, anio):
+    def actualizar_dias_combobox(self, combobox_18_dia, mes, anio):
         # Determinar el número de días en el mes
         if mes in [1, 3, 5, 7, 8, 10, 12]:  # Meses con 31 días
             dias = 31
@@ -4226,9 +4225,9 @@ class BuscarDatosTab:
             dias = 29 if (anio % 4 == 0 and (anio % 100 != 0 or anio % 400 == 0)) else 28
     
         # Actualizar los días en el ComboBox
-        combobox_10_dia.clear()
-        combobox_10_dia.addItem("")  # Agregar un elemento vacío como primera opción
-        combobox_10_dia.addItems([str(dia) for dia in range(1, dias + 1)])
+        combobox_18_dia.clear()
+        combobox_18_dia.addItem("")  # Agregar un elemento vacío como primera opción
+        combobox_18_dia.addItems([str(dia) for dia in range(1, dias + 1)])
 
 
     def hacer_corte(self):
@@ -4239,20 +4238,20 @@ class BuscarDatosTab:
 
         self.corte_id = uuid4()  # Generar un ID único para el corte actual
 
-        combobox_12 = self.ui.frame_31.findChild(QComboBox, "comboBox_12")
-        combobox_13 = self.ui.frame_31.findChild(QComboBox, "comboBox_13")
-        filtro_tipo = combobox_12.currentText() if combobox_12 else ""
-        filtro_valor = combobox_13.currentText() if combobox_13 else ""
+        combobox_19 = self.ui.frame_54.findChild(QComboBox, "comboBox_19")
+        combobox_20 = self.ui.frame_54.findChild(QComboBox, "comboBox_20")
+        filtro_tipo = combobox_19.currentText() if combobox_19 else ""
+        filtro_valor = combobox_20.currentText() if combobox_20 else ""
 
-        combobox_10_dia = self.ui.frame_32.findChild(QComboBox, "comboBox_10")
-        combobox_9_mes = self.ui.frame_32.findChild(QComboBox, "comboBox_9")
-        combobox_8_anio = self.ui.frame_32.findChild(QComboBox, "comboBox_8")
+        combobox_18_dia = self.ui.frame_53.findChild(QComboBox, "comboBox_18")
+        combobox_16_mes = self.ui.frame_53.findChild(QComboBox, "comboBox_16")
+        combobox_17_anio = self.ui.frame_53.findChild(QComboBox, "comboBox_17")
 
-        dia = combobox_10_dia.currentText()
-        mes = combobox_9_mes.currentIndex()
+        dia = combobox_18_dia.currentText()
+        mes = combobox_16_mes.currentIndex()
         if mes == 0:
             mes = None
-        anio = combobox_8_anio.currentText()
+        anio = combobox_17_anio.currentText()
 
         # Usar los datos ya procesados en la pantalla
         resultados = getattr(self, "resultados_arqueo", {})
@@ -4345,7 +4344,7 @@ class BuscarDatosTab:
     # Función para copiar una columna al portapapeles
     
     def copy_entire_table_to_clipboard_ventas(self):
-        table_widget = self.ui.frame_27.findChild(QTableWidget, "tableWidget_6")
+        table_widget = self.ui.frame_52.findChild(QTableWidget, "tableWidget_4")
         if not table_widget:
             return
         row_count = table_widget.rowCount()
@@ -4368,7 +4367,7 @@ class BuscarDatosTab:
     def copy_column_to_clipboard_ventas(self, column_index):
 
         # Intentar encontrar tableWidget_6 primero (ventas)
-        table_widget = self.ui.frame_27.findChild(QTableWidget, "tableWidget_6")
+        table_widget = self.ui.frame_52.findChild(QTableWidget, "tableWidget_4")
         
         if table_widget:
             column_data = []
@@ -4383,7 +4382,7 @@ class BuscarDatosTab:
     # Función para copiar una fila al portapapeles
     def copy_row_to_clipboard_ventas(self, row_index):
         # Intentar encontrar tableWidget_6 primero (ventas)
-        table_widget = self.ui.frame_27.findChild(QTableWidget, "tableWidget_6")
+        table_widget = self.ui.frame_52.findChild(QTableWidget, "tableWidget_4")
 
         if table_widget:
             row_data = []
@@ -4396,7 +4395,7 @@ class BuscarDatosTab:
             self.show_copied_message("Fila copiada al portapapeles")
 
     def copy_entire_table_to_clipboard_compras(self):
-        table_widget = self.ui.frame_23.findChild(QTableWidget, "tableWidget_7")
+        table_widget = self.ui.frame_51.findChild(QTableWidget, "tableWidget_5")
         if not table_widget:
             return
         row_count = table_widget.rowCount()
@@ -4419,7 +4418,7 @@ class BuscarDatosTab:
     def copy_column_to_clipboard_compras(self, column_index):
 
         # Intentar encontrar tableWidget_7 primero (compras)
-        table_widget = self.ui.frame_23.findChild(QTableWidget, "tableWidget_7")
+        table_widget = self.ui.frame_51.findChild(QTableWidget, "tableWidget_5")
 
         if table_widget:
             column_data = []
@@ -4434,7 +4433,7 @@ class BuscarDatosTab:
     # Función para copiar una fila al portapapeles
     def copy_row_to_clipboard_compras(self, row_index):
         # Intentar encontrar tableWidget_7 primero (compras)
-        table_widget = self.ui.frame_23.findChild(QTableWidget, "tableWidget_7")
+        table_widget = self.ui.frame_51.findChild(QTableWidget, "tableWidget_5")
 
         if table_widget:
             row_data = []
