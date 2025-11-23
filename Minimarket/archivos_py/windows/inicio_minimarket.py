@@ -4478,35 +4478,35 @@ class BuscarDatosTab:
     # estadisticas
 
     def boton_estadisticas(self):
-        push_button_13 = self.ui.tab_3.findChild(QPushButton, "pushButton_13")
-        if push_button_13:
-            push_button_13.clicked.connect(self.mostrar_estadisticas)
+        push_button_18 = self.ui.tab_3.findChild(QPushButton, "pushButton_18")
+        if push_button_18:
+            push_button_18.clicked.connect(self.mostrar_estadisticas)
 
     def mostrar_estadisticas(self):
-        label_101  = self.ui.stackedWidget.findChild(QLabel, "label_101")
-        label_108 = self.ui.stackedWidget.findChild(QLabel, "label_108")
-        label_109 = self.ui.stackedWidget.findChild(QLabel, "label_109")
-        label_110 = self.ui.stackedWidget.findChild(QLabel, "label_110")
-        label_111 = self.ui.stackedWidget.findChild(QLabel, "label_111")
-        semana_actual = self.ui.stackedWidget.findChild(QPushButton, "pushButton_46")
-        mes_anteriror = self.ui.stackedWidget.findChild(QPushButton, "pushButton_45")
-        mes_actual = self.ui.stackedWidget.findChild(QPushButton, "pushButton_44")
-        ano_actual = self.ui.stackedWidget.findChild(QPushButton, "pushButton_43")
+        label_98 = self.ui.stackedWidget.findChild(QLabel, "label_108") #108 ES 98
+        label_101 = self.ui.stackedWidget.findChild(QLabel, "label_109") # 109 ES 101
+        label_103 = self.ui.stackedWidget.findChild(QLabel, "label_110") #110 es 103 
+        label_105 = self.ui.stackedWidget.findChild(QLabel, "label_111") # 111 es 105
+        semana_actual = self.ui.stackedWidget.findChild(QPushButton, "pushButton_49") #46 es 49
+        mes_anteriror = self.ui.stackedWidget.findChild(QPushButton, "pushButton_48") # 45 Es 48
+        mes_actual = self.ui.stackedWidget.findChild(QPushButton, "pushButton_47")# 44 es 47
+        ano_actual = self.ui.stackedWidget.findChild(QPushButton, "pushButton_46") # 43 ES 46
+        label_97  = self.ui.stackedWidget.findChild(QLabel, "label_97")
+
+        if label_97:
+            label_97.setText("Ventas")
+
+        if label_98:
+            label_98.setText("$0.00")
 
         if label_101:
-            label_101.setText(f"Ventas")
+            label_101.setText("0")
 
-        if label_108:
-            label_108.setText("$0.00")
+        if label_103:
+            label_103.setText("$0.00")
 
-        if label_109:
-            label_109.setText("0")
-
-        if label_110:
-            label_110.setText("$0.00")
-
-        if label_111:
-            label_111.setText("$0.00")
+        if label_105:
+            label_105.setText("$0.00")
 
         
         # acciones  
@@ -4540,7 +4540,7 @@ class BuscarDatosTab:
             semana_actual.clicked.connect(self.mostrar_estadisticas_semana_actual)
 
         # Limpiar el gráfico en el widget
-        parent_widget = self.ui.stackedWidget.findChild(QWidget, "widget")
+        parent_widget = self.ui.stackedWidget.findChild(QWidget, "widget_2")
         if parent_widget:
             layout = parent_widget.layout()
             if layout:
@@ -4550,7 +4550,7 @@ class BuscarDatosTab:
                         child.widget().deleteLater()
 
         # Limpiar el gráfico en el widget_2
-        widget_2 = self.ui.stackedWidget.findChild(QWidget, "widget_2")
+        widget_2 = self.ui.stackedWidget.findChild(QWidget, "widget_3")
         if widget_2:
             layout = widget_2.layout()
             if layout:
@@ -4560,44 +4560,32 @@ class BuscarDatosTab:
                         child.widget().deleteLater()
 
     def mostrar_estadisticas_ano_actual(self):
-        label_102 = self.ui.stackedWidget.findChild(QLabel, "label_102")
+        label_97  = self.ui.stackedWidget.findChild(QLabel, "label_97") # 101 es 97
+        label_98 = self.ui.stackedWidget.findChild(QLabel, "label_98")
+        label_101 = self.ui.stackedWidget.findChild(QLabel, "label_101")
         label_103 = self.ui.stackedWidget.findChild(QLabel, "label_103")
-        date_edit1 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit")
-        date_edit2 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit_2")
-        label_101  = self.ui.stackedWidget.findChild(QLabel, "label_101")
-        label_108 = self.ui.stackedWidget.findChild(QLabel, "label_108")
-        label_109 = self.ui.stackedWidget.findChild(QLabel, "label_109")
-        label_110 = self.ui.stackedWidget.findChild(QLabel, "label_110")
-        label_111 = self.ui.stackedWidget.findChild(QLabel, "label_111")
-        widget_2 = self.ui.stackedWidget.findChild(QWidget, "widget_2")
-        parent_widget = self.ui.stackedWidget.findChild(QWidget, "widget")
+        label_105 = self.ui.stackedWidget.findChild(QLabel, "label_105")
+        widget_2 = self.ui.stackedWidget.findChild(QWidget, "widget_3")
+        parent_widget = self.ui.stackedWidget.findChild(QWidget, "widget_2")
 
         ano_actual = datetime.now().year
 
-        if label_102:
-            label_102.setStyleSheet("color: transparent")
-        if label_103:
-            label_103.setStyleSheet("color: transparent")
-        if date_edit1:
-            date_edit1.setVisible(False)
-        if date_edit2:
-            date_edit2.setVisible(False)
-        if label_101:
-            label_101.setText(f"Ventas del Año {ano_actual}")
+        if label_97:
+            label_97.setText(f"Ventas del Año {ano_actual}")
 
         # --- Hilos para los labels ---
         resultados = {}
 
         def check_and_update_labels():
             if len(resultados) == 4:
-                if label_108:
-                    label_108.setText(f"${resultados['ventas_totales']:.2f}")
-                if label_109:
-                    label_109.setText(f"{resultados['numero_de_ventas']}")
-                if label_110:
-                    label_110.setText(f"${resultados['venta_promedio']:.2f}")
-                if label_111:
-                    label_111.setText(f"${resultados['ganancias_totales']:.2f}")
+                if label_98:
+                    label_98.setText(f"${resultados['ventas_totales']:.2f}")
+                if label_101:
+                    label_101.setText(f"{resultados['numero_de_ventas']}")
+                if label_103:
+                    label_103.setText(f"${resultados['venta_promedio']:.2f}")
+                if label_105:
+                    label_105.setText(f"${resultados['ganancias_totales']:.2f}")
 
         self.ventas_totales_ano_thread = TraerVentasTotalesAnoThread(self.id_usuario_perfil, ano_actual)
         self.numero_de_ventas_ano_thread = TraerNumeroDeVentasAnoThread(self.id_usuario_perfil, ano_actual)
@@ -4740,45 +4728,34 @@ class BuscarDatosTab:
             self.start_thread(self.metodos_pago_y_id_thread)
 
     def mostrar_estadisticas_mes_actual(self):
-        label_102 = self.ui.stackedWidget.findChild(QLabel, "label_102")
-        label_103 = self.ui.stackedWidget.findChild(QLabel, "label_103")
-        date_edit1 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit")
-        date_edit2 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit_2")
+        label_97  = self.ui.stackedWidget.findChild(QLabel, "label_97") # 101 es 97
+        label_98 = self.ui.stackedWidget.findChild(QLabel, "label_98")
         label_101 = self.ui.stackedWidget.findChild(QLabel, "label_101")
-        label_108 = self.ui.stackedWidget.findChild(QLabel, "label_108")
-        label_109 = self.ui.stackedWidget.findChild(QLabel, "label_109")
-        label_110 = self.ui.stackedWidget.findChild(QLabel, "label_110")
-        label_111 = self.ui.stackedWidget.findChild(QLabel, "label_111")
-        widget_2 = self.ui.stackedWidget.findChild(QWidget, "widget_2")
-        widget = self.ui.stackedWidget.findChild(QWidget, "widget")
+        label_103 = self.ui.stackedWidget.findChild(QLabel, "label_103")
+        label_105 = self.ui.stackedWidget.findChild(QLabel, "label_105")
+        widget_2 = self.ui.stackedWidget.findChild(QWidget, "widget_3")
+        widget = self.ui.stackedWidget.findChild(QWidget, "widget_2")
+
 
         mes_actual = datetime.now().month
         ano_actual = datetime.now().year
 
-        if label_102:
-            label_102.setStyleSheet("color: transparent")
-        if label_103:
-            label_103.setStyleSheet("color: transparent")
-        if date_edit1:
-            date_edit1.setVisible(False)
-        if date_edit2:
-            date_edit2.setVisible(False)
-        if label_101:
-            label_101.setText(f"Ventas del Mes {mes_actual}")
+        if label_97:
+            label_97.setText(f"Ventas del Mes {mes_actual}")
 
         # --- Hilos para los labels ---
         resultados = {}
 
         def check_and_update_labels():
             if len(resultados) == 4:
-                if label_108:
-                    label_108.setText(f"${resultados['ventas_totales']:.2f}")
-                if label_109:
-                    label_109.setText(f"{resultados['numero_de_ventas']}")
-                if label_110:
-                    label_110.setText(f"${resultados['venta_promedio']:.2f}")
-                if label_111:
-                    label_111.setText(f"${resultados['ganancias_totales']:.2f}")  
+                if label_98:
+                    label_98.setText(f"${resultados['ventas_totales']:.2f}")
+                if label_101:
+                    label_101.setText(f"{resultados['numero_de_ventas']}")
+                if label_103:
+                    label_103.setText(f"${resultados['venta_promedio']:.2f}")
+                if label_105:
+                    label_105.setText(f"${resultados['ganancias_totales']:.2f}")  
  
         self.ventas_totales_mes_thread = TraerVentasTotalesMesThread(self.id_usuario_perfil, ano_actual, mes_actual)
         self.numero_de_ventas_mes_thread = TraerNumeroDeVentasMesThread(self.id_usuario_perfil, ano_actual, mes_actual)
@@ -4922,45 +4899,34 @@ class BuscarDatosTab:
 
 
     def mostrar_estadisticas_mes_anterior(self):
-        label_102 = self.ui.stackedWidget.findChild(QLabel, "label_102")
-        label_103 = self.ui.stackedWidget.findChild(QLabel, "label_103")
-        date_edit1 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit")
-        date_edit2 = self.ui.stackedWidget.findChild(QDateEdit, "dateEdit_2")
+        label_97  = self.ui.stackedWidget.findChild(QLabel, "label_97") # 101 es 97
+        label_98 = self.ui.stackedWidget.findChild(QLabel, "label_98")
         label_101 = self.ui.stackedWidget.findChild(QLabel, "label_101")
-        label_108 = self.ui.stackedWidget.findChild(QLabel, "label_108")
-        label_109 = self.ui.stackedWidget.findChild(QLabel, "label_109")
-        label_110 = self.ui.stackedWidget.findChild(QLabel, "label_110")
-        label_111 = self.ui.stackedWidget.findChild(QLabel, "label_111")
-        widget_2 = self.ui.stackedWidget.findChild(QWidget, "widget_2")
-        widget = self.ui.stackedWidget.findChild(QWidget, "widget")
+        label_103 = self.ui.stackedWidget.findChild(QLabel, "label_103")
+        label_105 = self.ui.stackedWidget.findChild(QLabel, "label_105")
+        widget_2 = self.ui.stackedWidget.findChild(QWidget, "widget_3")
+        widget = self.ui.stackedWidget.findChild(QWidget, "widget_2")
+
 
         mes_anterior = datetime.now().month - 1
         ano_actual = datetime.now().year
 
-        if label_102:
-            label_102.setStyleSheet("color: transparent")
-        if label_103:
-            label_103.setStyleSheet("color: transparent")
-        if date_edit1:
-            date_edit1.setVisible(False)
-        if date_edit2:
-            date_edit2.setVisible(False)
-        if label_101:
-            label_101.setText(f"Ventas del Mes {mes_anterior}")
+        if label_97:
+            label_97.setText(f"Ventas del Mes {mes_anterior}")
 
         # --- Hilos para los labels ---
         resultados = {}
 
         def check_and_update_labels():
             if len(resultados) == 4:
-                if label_108:
-                    label_108.setText(f"${resultados['ventas_totales']:.2f}")
-                if label_109:
-                    label_109.setText(f"{resultados['numero_de_ventas']}")
-                if label_110:
-                    label_110.setText(f"${resultados['venta_promedio']:.2f}")
-                if label_111:
-                    label_111.setText(f"${resultados['ganancias_totales']:.2f}")
+                if label_98:
+                    label_98.setText(f"${resultados['ventas_totales']:.2f}")
+                if label_101:
+                    label_101.setText(f"{resultados['numero_de_ventas']}")
+                if label_103:
+                    label_103.setText(f"${resultados['venta_promedio']:.2f}")
+                if label_105:
+                    label_105.setText(f"${resultados['ganancias_totales']:.2f}")
 
         self.ventas_totales_mes_thread = TraerVentasTotalesMesThread(self.id_usuario_perfil, ano_actual, mes_anterior)
         self.numero_de_ventas_mes_thread = TraerNumeroDeVentasMesThread(self.id_usuario_perfil, ano_actual, mes_anterior)
@@ -5103,33 +5069,34 @@ class BuscarDatosTab:
 
 
     def mostrar_estadisticas_semana_actual(self):
+        label_97  = self.ui.stackedWidget.findChild(QLabel, "label_97") # 101 es 97
+        label_98 = self.ui.stackedWidget.findChild(QLabel, "label_98")
         label_101 = self.ui.stackedWidget.findChild(QLabel, "label_101")
-        label_108 = self.ui.stackedWidget.findChild(QLabel, "label_108")
-        label_109 = self.ui.stackedWidget.findChild(QLabel, "label_109")
-        label_110 = self.ui.stackedWidget.findChild(QLabel, "label_110")
-        label_111 = self.ui.stackedWidget.findChild(QLabel, "label_111")
-        widget_2 = self.ui.stackedWidget.findChild(QWidget, "widget_2")
-        widget = self.ui.stackedWidget.findChild(QWidget, "widget")
+        label_103 = self.ui.stackedWidget.findChild(QLabel, "label_103")
+        label_105 = self.ui.stackedWidget.findChild(QLabel, "label_105")
+        widget_2 = self.ui.stackedWidget.findChild(QWidget, "widget_3")
+        widget = self.ui.stackedWidget.findChild(QWidget, "widget_2")
+
 
         semana_actual = datetime.now().isocalendar()[1]
         ano_actual = datetime.now().year
 
-        if label_101:
-            label_101.setText(f"Ventas de la Semana {semana_actual}")
+        if label_97:
+            label_97.setText(f"Ventas de la Semana {semana_actual}")
 
         # --- Hilos para los labels ---
         resultados = {}
 
         def check_and_update_labels():
             if len(resultados) == 4:
-                if label_108:
-                    label_108.setText(f"${resultados['ventas_totales']:.2f}")
-                if label_109:
-                    label_109.setText(f"{resultados['numero_de_ventas']}")
-                if label_110:
-                    label_110.setText(f"${resultados['venta_promedio']:.2f}")
-                if label_111:
-                    label_111.setText(f"${resultados['ganancias_totales']:.2f}")
+                if label_98:
+                    label_98.setText(f"${resultados['ventas_totales']:.2f}")
+                if label_101:
+                    label_101.setText(f"{resultados['numero_de_ventas']}")
+                if label_103:
+                    label_103.setText(f"${resultados['venta_promedio']:.2f}")
+                if label_105:
+                    label_105.setText(f"${resultados['ganancias_totales']:.2f}")
 
         self.ventas_totales_semana_thread = TraerVentasTotalesSemanaThread(self.id_usuario_perfil, ano_actual, semana_actual)
         self.numero_de_ventas_semana_thread = TraerNumeroDeVentasSemanaThread(self.id_usuario_perfil, ano_actual, semana_actual)

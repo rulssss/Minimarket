@@ -3490,7 +3490,7 @@ class Ui_MainWindow(object):
         self.label_103.setText(QCoreApplication.translate("MainWindow", u"$0.00", None))
         self.label_105.setText(QCoreApplication.translate("MainWindow", u"$0.00", None))
         self.label_98.setText(QCoreApplication.translate("MainWindow", u"$0.00", None))
-        self.label_101.setText(QCoreApplication.translate("MainWindow", u"$0.00", None))
+        self.label_101.setText(QCoreApplication.translate("MainWindow", u"0", None))
         self.label_100.setText(QCoreApplication.translate("MainWindow", u"N\u00famero de Ventas", None))
         self.label_104.setText(QCoreApplication.translate("MainWindow", u"Ganancia", None))
         self.label_102.setText(QCoreApplication.translate("MainWindow", u"Venta Promedio", None))
