@@ -90,15 +90,15 @@ class Ui_Form_ventas(object):
 
         self.gridLayout_3.addWidget(self.comboBox_2, 6, 1, 1, 1)
 
-        self.pushButton = QPushButton(self.frame_2)
-        self.pushButton.setObjectName(u"pushButton")
-        self.pushButton.setMinimumSize(QSize(120, 30))
-        self.pushButton.setMaximumSize(QSize(120, 30))
+        self.pushButton_2 = QPushButton(self.frame_2)
+        self.pushButton_2.setObjectName(u"pushButton_2")
+        self.pushButton_2.setMinimumSize(QSize(120, 30))
+        self.pushButton_2.setMaximumSize(QSize(120, 30))
         font2 = QFont()
         font2.setPointSize(11)
-        self.pushButton.setFont(font2)
+        self.pushButton_2.setFont(font2)
 
-        self.gridLayout_3.addWidget(self.pushButton, 8, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
+        self.gridLayout_3.addWidget(self.pushButton_2, 8, 1, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
@@ -153,13 +153,13 @@ class Ui_Form_ventas(object):
 
         self.gridLayout_3.addWidget(self.lineEdit_2, 2, 1, 1, 1)
 
-        self.pushButton_2 = QPushButton(self.frame_2)
-        self.pushButton_2.setObjectName(u"pushButton_2")
-        self.pushButton_2.setMinimumSize(QSize(0, 25))
-        self.pushButton_2.setMaximumSize(QSize(16777215, 25))
-        self.pushButton_2.setFont(font1)
+        self.pushButton = QPushButton(self.frame_2)
+        self.pushButton.setObjectName(u"pushButton")
+        self.pushButton.setMinimumSize(QSize(0, 25))
+        self.pushButton.setMaximumSize(QSize(16777215, 25))
+        self.pushButton.setFont(font1)
 
-        self.gridLayout_3.addWidget(self.pushButton_2, 8, 0, 1, 1, Qt.AlignmentFlag.AlignBottom)
+        self.gridLayout_3.addWidget(self.pushButton, 8, 0, 1, 1, Qt.AlignmentFlag.AlignBottom)
 
         self.frame_5 = QFrame(self.frame_2)
         self.frame_5.setObjectName(u"frame_5")
@@ -337,13 +337,13 @@ class Ui_Form_ventas(object):
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
         self.label_8.setText(QCoreApplication.translate("Form", u"Facturero Ventas", None))
-        self.pushButton.setText(QCoreApplication.translate("Form", u"Agregar", None))
+        self.pushButton_2.setText(QCoreApplication.translate("Form", u"Agregar", None))
         self.label_6.setText(QCoreApplication.translate("Form", u"Proveedor", None))
         self.label_2.setText(QCoreApplication.translate("Form", u"Nombre del Producto", None))
         self.label_7.setText(QCoreApplication.translate("Form", u"M\u00e9todo de Pago", None))
         self.label_9.setText(QCoreApplication.translate("Form", u"label error", None))
         self.label_5.setText(QCoreApplication.translate("Form", u"Categor\u00eda", None))
-        self.pushButton_2.setText(QCoreApplication.translate("Form", u"Borrar \u00daltimo Agregado", None))
+        self.pushButton.setText(QCoreApplication.translate("Form", u"Borrar \u00daltimo Agregado", None))
         self.pushButton_5.setText(QCoreApplication.translate("Form", u"+", None))
         self.pushButton_6.setText(QCoreApplication.translate("Form", u"-", None))
         self.label.setText(QCoreApplication.translate("Form", u"ID", None))

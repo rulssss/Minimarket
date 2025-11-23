@@ -5330,7 +5330,7 @@ class AdministracionTab:
                 combobox_metodo_pago.addItems([metodo for metodo in self.traer_metodos_de_pago()])
                 
              # Configuración del botón "Agregar"
-            boton_agregar = self.facturero_ventas_window.findChild(QPushButton, "pushButton")
+            boton_agregar = self.facturero_ventas_window.findChild(QPushButton, "pushButton_2")
             if boton_agregar:
                 boton_agregar.setShortcut("Return")  # Conectar el botón al enter
                 boton_agregar.clicked.connect(self.agregar_producto_a_tablewidget_ventas)
@@ -5350,7 +5350,7 @@ class AdministracionTab:
                 push_button_4.clicked.connect(self.cerrar_facturero_venta)
                 push_button_4.setFocusPolicy(Qt.NoFocus)
             
-            push_button = self.facturero_ventas_window.findChild(QPushButton, "pushButton_2")
+            push_button = self.facturero_ventas_window.findChild(QPushButton, "pushButton")
             if push_button:
                 push_button.clicked.connect(self.borrar_ultimo_agregado_ventas)
                 push_button.setFocusPolicy(Qt.NoFocus)  
@@ -5987,19 +5987,19 @@ class AdministracionTab:
         s = True
         global productos_seleccionados_facturero_ventas, total_facturero_ventas, usuario_activo, productos_cache_temporal, productos_cache
 
-        boton_agregar = self.facturero_ventas_window.findChild(QPushButton, "pushButton")
+        boton_agregar = self.facturero_ventas_window.findChild(QPushButton, "pushButton_2") # boton agregar
         if boton_agregar:
             boton_agregar.setEnabled(False)
 
-        push_button = self.facturero_ventas_window.findChild(QPushButton, "pushButton_2")
+        push_button = self.facturero_ventas_window.findChild(QPushButton, "pushButton") # boton borrar ultimo agregado
         if push_button:
             push_button.setEnabled(False)
 
-        pushbutton_3 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_3")
+        pushbutton_3 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_3") # boton procesar factura
         if pushbutton_3:
             pushbutton_3.setEnabled(False)
 
-        push_button_4 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_4")
+        push_button_4 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_4") # boton cerrar facturero
         if push_button_4:
             push_button_4.setEnabled(False)
 
@@ -6388,9 +6388,9 @@ class AdministracionTab:
             global total_facturero_compras
             total_facturero_compras = 0
 
-            line_edit_18 = self.ui.frame_38.findChild(QLineEdit, "lineEdit_18")
-            if line_edit_18:
-                line_edit_18.clear()  # Limpiar el QLineEdit al abrir la ventana
+            line_edit_29 = self.ui.frame_64.findChild(QLineEdit, "lineEdit_29")
+            if line_edit_29:
+                line_edit_29.clear()  # Limpiar el QLineEdit al abrir la ventana
 
             # Inicializar los QLineEdit en blanco y no editables
             self.initialize_lineedits_compras()
@@ -6410,16 +6410,14 @@ class AdministracionTab:
                 combobox_id.currentIndexChanged.connect(self.load_facturero_data_compras)
                 self.populate_combobox_with_ids(combobox_id)
                 
-
             
             # Configuración del QComboBox de método de pago
-            combobox_metodo_pago = self.facturero_compras_window.findChild(QComboBox, "comboBox_3")
+            combobox_metodo_pago = self.facturero_compras_window.findChild(QComboBox, "comboBox_2")
             if combobox_metodo_pago:
                 combobox_metodo_pago.clear()
                 combobox_metodo_pago.addItems([metodo for metodo in self.traer_metodos_de_pago()])
                 
                 
-            
              # Configuración del botón "Agregar"
             boton_agregar = self.facturero_compras_window.findChild(QPushButton, "pushButton_2")
             if boton_agregar:
@@ -6434,13 +6432,6 @@ class AdministracionTab:
             label_12 = self.facturero_compras_window.findChild(QLabel, "label_12")
             if label_12:
                 label_12.setStyleSheet("color: rgb(230, 180, 80); font-weight: bold")
-
-            text_edit = self.facturero_compras_window.findChild(QTextEdit, "textEdit")
-            if text_edit:
-                text_edit.setFont(QFont("Segoe UI", 12))  # Set the font to Segoe UI with size 12
-                text_edit.setReadOnly(True)
-                text_edit.setFocusPolicy(Qt.NoFocus)
-                
 
 
             push_button_4 = self.facturero_compras_window.findChild(QPushButton, "pushButton_4")
@@ -6459,18 +6450,18 @@ class AdministracionTab:
                 pushbutton_3.setFocusPolicy(Qt.NoFocus)
 
 
-            push_button_5 = self.facturero_compras_window.findChild(QPushButton, "pushButton_7")
+            push_button_5 = self.facturero_compras_window.findChild(QPushButton, "pushButton_5") # 7 es el 5
             if push_button_5:
                 push_button_5.clicked.connect(self.ventana_agregar_mp_compras)  # Conectar al método
                 push_button_5.setFocusPolicy(Qt.NoFocus)                                 
  
-            push_button_6 = self.facturero_compras_window.findChild(QPushButton, "pushButton_8")
+            push_button_6 = self.facturero_compras_window.findChild(QPushButton, "pushButton_6") # 8 es el 6
             if push_button_6:
                 push_button_6.clicked.connect(self.ventana_borrar_mp_compras)
                 push_button_6.setFocusPolicy(Qt.NoFocus)
 
             # Limitar el QLineEdit de cantidad a 5 caracteres
-            lineedit_cantidad = self.facturero_compras_window.findChild(QLineEdit, "lineEdit_2")
+            lineedit_cantidad = self.facturero_compras_window.findChild(QLineEdit, "lineEdit_3")
             if lineedit_cantidad:
                 lineedit_cantidad.setMaxLength(5)
 
@@ -6486,7 +6477,7 @@ class AdministracionTab:
                 qtablewidget.setColumnCount(7)
                 qtablewidget.setHorizontalHeaderLabels(["Producto", "Precio", "Cantidad", "Categoría", "Proveedor", "MP", "Total"])
                 header = qtablewidget.horizontalHeader()
-                header.setFont(QFont("Segoe UI", 12))
+                header.setFont(QFont("Segoe UI", 10))
 
             
             # Desactivar la cruz de cierre de la ventana
@@ -6531,7 +6522,7 @@ class AdministracionTab:
         lineEdit = dialog.findChild(QLineEdit, "lineEdit")
         label_2 = dialog.findChild(QLabel, "label_2")
         # Obtener el combobox del facturero principal, no del diálogo
-        combobox_metodo_pago_facturero = self.facturero_compras_window.findChild(QComboBox, "comboBox_3")
+        combobox_metodo_pago_facturero = self.facturero_compras_window.findChild(QComboBox, "comboBox_2")
 
         if lineEdit:
             lineEdit_value = lineEdit.text()
@@ -6665,7 +6656,7 @@ class AdministracionTab:
     def borrar_metodo_de_pago_compras(self, dialog):
         combobox_mp = dialog.findChild(QComboBox, "comboBox")
         label_2 = dialog.findChild(QLabel, "label_2")
-        combobox_mp_facturero = self.facturero_compras_window.findChild(QComboBox,"comboBox_3")
+        combobox_mp_facturero = self.facturero_compras_window.findChild(QComboBox,"comboBox_2")
 
         pushButton = dialog.findChild(QPushButton, "pushButton")
         if pushButton:
@@ -6780,13 +6771,12 @@ class AdministracionTab:
 
     def initialize_lineedits_compras(self):
         # Inicializar los QLineEdit en blanco y no editables
-        lineedit_nombre = self.facturero_compras_window.findChild(QLineEdit, "lineEdit_5")
-        lineedit_precio = self.facturero_compras_window.findChild(QLineEdit, "lineEdit")
-        lineedit_cantidad = self.facturero_compras_window.findChild(QLineEdit, "lineEdit_2")
-        lineedit_categoria = self.facturero_compras_window.findChild(QLineEdit, "lineEdit_3")
-        lineedit_proveedor = self.facturero_compras_window.findChild(QLineEdit, "lineEdit_4")
+        lineedit_nombre = self.facturero_compras_window.findChild(QLineEdit, "lineEdit")
+        lineedit_precio = self.facturero_compras_window.findChild(QLineEdit, "lineEdit_2")
+        lineedit_cantidad = self.facturero_compras_window.findChild(QLineEdit, "lineEdit_3")
+        lineedit_categoria = self.facturero_compras_window.findChild(QLineEdit, "lineEdit_4")
+        lineedit_proveedor = self.facturero_compras_window.findChild(QLineEdit, "lineEdit_5")
         
-
 
         if lineedit_nombre:
             lineedit_nombre.setText("")
@@ -6819,7 +6809,7 @@ class AdministracionTab:
         productos_cache_temporal = copy.deepcopy(productos_cache)  # Actualizar el cache temporal con el cache global
 
         # Se actualiza la tabla de productos
-        self.borrar_lineedit_18()
+        self.borrar_lineedit_buscador()
         self.filter_products_facturero()
 
         self.facturero_compras_window.close()
@@ -6844,12 +6834,11 @@ class AdministracionTab:
             if producto:
                 # Suponiendo que `producto` es una tupla con los datos en este orden:
                 # (nombre, precio_venta, cantidad, categoria, proveedor)
-                lineedit_nombre = self.facturero_compras_window.findChild(QLineEdit, "lineEdit_5")
-                lineedit_precio = self.facturero_compras_window.findChild(QLineEdit, "lineEdit")
-                lineedit_cantidad = self.facturero_compras_window.findChild(QLineEdit, "lineEdit_2")
-                lineedit_categoria = self.facturero_compras_window.findChild(QLineEdit, "lineEdit_3")
-                lineedit_proveedor = self.facturero_compras_window.findChild(QLineEdit, "lineEdit_4")
-                
+                lineedit_nombre = self.facturero_compras_window.findChild(QLineEdit, "lineEdit")
+                lineedit_precio = self.facturero_compras_window.findChild(QLineEdit, "lineEdit_2")
+                lineedit_cantidad = self.facturero_compras_window.findChild(QLineEdit, "lineEdit_3")
+                lineedit_categoria = self.facturero_compras_window.findChild(QLineEdit, "lineEdit_4")
+                lineedit_proveedor = self.facturero_compras_window.findChild(QLineEdit, "lineEdit_5")
                 
 
                 # Convertir los valores a cadenas antes de asignarlos
@@ -6857,11 +6846,10 @@ class AdministracionTab:
                     lineedit_nombre.setText(str(producto[1]))  # Nombre del producto
 
                 if lineedit_precio:
-                    lineedit_precio.setText(str(producto[2]))  # Precio de venta
+                    lineedit_precio.setText(str(producto[2]))  # Precio de compra
 
                 if lineedit_cantidad:
                     lineedit_cantidad.setText(str(1)) #cantidad
-                    
 
                 if lineedit_categoria:
                     lineedit_categoria.setText(str(producto[6]))  # Categoría
@@ -6886,12 +6874,12 @@ class AdministracionTab:
 
         combobox_id = self.facturero_compras_window.findChild(QComboBox, "comboBox")
         combobox_id_value = combobox_id.currentText()
-        line_edit_nombre = self.facturero_compras_window.findChild(QLineEdit, "lineEdit_5")
-        line_edit_precio = self.facturero_compras_window.findChild(QLineEdit, "lineEdit")
-        line_edit_cantidad = self.facturero_compras_window.findChild(QLineEdit, "lineEdit_2")
-        line_edit_categoria = self.facturero_compras_window.findChild(QLineEdit, "lineEdit_3")
-        line_edit_proveedor = self.facturero_compras_window.findChild(QLineEdit, "lineEdit_4")
-        combobox_metodo_pago = self.facturero_compras_window.findChild(QComboBox, "comboBox_3")
+        line_edit_nombre = self.facturero_compras_window.findChild(QLineEdit, "lineEdit")
+        line_edit_precio = self.facturero_compras_window.findChild(QLineEdit, "lineEdit_2")
+        line_edit_cantidad = self.facturero_compras_window.findChild(QLineEdit, "lineEdit_3")
+        line_edit_categoria = self.facturero_compras_window.findChild(QLineEdit, "lineEdit_4")
+        line_edit_proveedor = self.facturero_compras_window.findChild(QLineEdit, "lineEdit_5")
+        combobox_metodo_pago = self.facturero_compras_window.findChild(QComboBox, "comboBox_2")
         
         bandera = False
         if combobox_id_value.isdecimal() and productos_por_id_cache and combobox_id_value in productos_por_id_cache:
@@ -6900,6 +6888,9 @@ class AdministracionTab:
         if bandera:
             
             qtablewidget = self.facturero_compras_window.findChild(QTableWidget, "tableWidget")  
+            if qtablewidget:
+                qtablewidget.setEditTriggers(QTableWidget.NoEditTriggers)
+
             # Verificar si hay una cantidad seleccionado
             if line_edit_cantidad:
                 if "," in line_edit_cantidad.text():
@@ -6983,19 +6974,19 @@ class AdministracionTab:
         
         s = False
 
-        boton_agregar = self.facturero_compras_window.findChild(QPushButton, "pushButton_2")
+        boton_agregar = self.facturero_compras_window.findChild(QPushButton, "pushButton_2") #agregar
         if boton_agregar:
             boton_agregar.setEnabled(False)
 
-        push_button = self.facturero_compras_window.findChild(QPushButton, "pushButton")
+        push_button = self.facturero_compras_window.findChild(QPushButton, "pushButton") #borrar ultimo
         if push_button:
             push_button.setEnabled(False)
 
-        pushbutton_3 = self.facturero_compras_window.findChild(QPushButton, "pushButton_3")
+        pushbutton_3 = self.facturero_compras_window.findChild(QPushButton, "pushButton_3") #procesar
         if pushbutton_3:
             pushbutton_3.setEnabled(False)
 
-        push_button_4 = self.facturero_compras_window.findChild(QPushButton, "pushButton_4")
+        push_button_4 = self.facturero_compras_window.findChild(QPushButton, "pushButton_4") #cerrar
         if push_button_4:
             push_button_4.setEnabled(False)
 
@@ -7033,19 +7024,19 @@ class AdministracionTab:
                         label_9.setStyleSheet("color: green; font-weight: bold")
                         QTimer.singleShot(6000, lambda: label_9.setStyleSheet("color: transparent"))
 
-                    pushbutton_3 = self.facturero_compras_window.findChild(QPushButton, "pushButton_3")
+                    pushbutton_3 = self.facturero_compras_window.findChild(QPushButton, "pushButton_3") #procesar
                     if pushbutton_3:
                         pushbutton_3.setEnabled(True)
 
-                    push_button_4 = self.facturero_compras_window.findChild(QPushButton, "pushButton_4")
+                    push_button_4 = self.facturero_compras_window.findChild(QPushButton, "pushButton_4") #cerrar
                     if push_button_4:
                         push_button_4.setEnabled(True)
 
-                    boton_agregar = self.facturero_compras_window.findChild(QPushButton, "pushButton_2")
+                    boton_agregar = self.facturero_compras_window.findChild(QPushButton, "pushButton_2") #agregar
                     if boton_agregar:
                         boton_agregar.setEnabled(True)
 
-                    push_button = self.facturero_compras_window.findChild(QPushButton, "pushButton")
+                    push_button = self.facturero_compras_window.findChild(QPushButton, "pushButton") #borrar ultimo
                     if push_button:
                         push_button.setEnabled(True)
 
@@ -7149,19 +7140,19 @@ class AdministracionTab:
         # Configuración de botones
         button = window.findChild(QPushButton, "pushButton_2")
         if button:
-            button.setStyleSheet(f"background-color: {color}")
+            button.setStyleSheet(f"background-color: {color}") # color personalizado
 
         button3 = window.findChild(QPushButton, "pushButton_3")
         if button3:
-            button3.setStyleSheet("background-color: rgb(200, 200, 200)")
+            button3.setStyleSheet("background-color: rgb(200, 200, 200)") # color gris claro
 
         button2 = window.findChild(QPushButton, "pushButton")
         if button2:
-            button2.setStyleSheet("background-color: rgb(255, 127, 127)")
+            button2.setStyleSheet("background-color: rgb(255, 127, 127)") # color rosado
 
         button4 = window.findChild(QPushButton, "pushButton_4")
         if button4:
-            button4.setStyleSheet("background-color: rgb(200, 16, 16)")
+            button4.setStyleSheet("background-color: rgb(200, 16, 16)") # color rojo oscuro
 
 
 class MainWindow(QMainWindow):
