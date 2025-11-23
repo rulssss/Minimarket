@@ -101,7 +101,7 @@ QLineEdit {
          </font>
         </property>
         <property name="text">
-         <string>Metodo de Pago</string>
+         <string>Método de Pago</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignmentFlag::AlignCenter</set>

@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'ventana_borrar_metodo_de_pago.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.8.2
+## Created by: Qt User Interface Compiler version 6.9.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -16,15 +16,35 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QComboBox, QFrame, QGridLayout,
-    QLabel, QPushButton, QSizePolicy, QSpacerItem,
-    QVBoxLayout, QWidget)
+    QLabel, QPushButton, QSizePolicy, QVBoxLayout,
+    QWidget)
 
 class Ui_Form_borrar_mp(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(280, 220)
-        Form.setMaximumSize(QSize(280, 220))
+        Form.resize(250, 190)
+        Form.setMinimumSize(QSize(250, 190))
+        Form.setMaximumSize(QSize(250, 190))
+        Form.setStyleSheet(u"QWidget {\n"
+"    background-color: #ffffff; /* Fondo blanco */\n"
+"}\n"
+"\n"
+"QPushButton {\n"
+"    background-color: #f8f9fa;      /* Gris muy claro */\n"
+"    color: #222222;                 /* Texto oscuro */\n"
+"\n"
+"}\n"
+"QPushButton:hover {\n"
+"    background-color: #e2e6ea;      /* Un poco m\u00e1s oscuro al pasar el mouse */\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background-color: #d1d5d8;      /* Gris m\u00e1s oscuro al presionar */\n"
+"}\n"
+"\n"
+"QComboBox {\n"
+"    background-color: #f0f0f0;\n"
+"}")
         self.gridLayout = QGridLayout(Form)
         self.gridLayout.setObjectName(u"gridLayout")
         self.frame = QFrame(Form)
@@ -35,48 +55,48 @@ class Ui_Form_borrar_mp(object):
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.label = QLabel(self.frame)
         self.label.setObjectName(u"label")
-        self.label.setMaximumSize(QSize(16777215, 30))
+        self.label.setMinimumSize(QSize(0, 25))
         font = QFont()
         font.setPointSize(12)
-        font.setBold(False)
+        font.setBold(True)
         self.label.setFont(font)
+        self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.verticalLayout.addWidget(self.label, 0, Qt.AlignmentFlag.AlignHCenter)
-
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.verticalLayout.addItem(self.horizontalSpacer)
+        self.verticalLayout.addWidget(self.label)
 
         self.comboBox = QComboBox(self.frame)
         self.comboBox.setObjectName(u"comboBox")
-        self.comboBox.setMinimumSize(QSize(200, 0))
-        self.comboBox.setMaximumSize(QSize(200, 16777215))
+        self.comboBox.setMinimumSize(QSize(150, 0))
+        self.comboBox.setMaximumSize(QSize(150, 16777215))
+        font1 = QFont()
+        font1.setPointSize(10)
+        self.comboBox.setFont(font1)
 
         self.verticalLayout.addWidget(self.comboBox, 0, Qt.AlignmentFlag.AlignHCenter)
 
         self.label_2 = QLabel(self.frame)
         self.label_2.setObjectName(u"label_2")
+        self.label_2.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.verticalLayout.addWidget(self.label_2, 0, Qt.AlignmentFlag.AlignHCenter)
 
         self.pushButton = QPushButton(self.frame)
         self.pushButton.setObjectName(u"pushButton")
         self.pushButton.setMinimumSize(QSize(100, 30))
-        self.pushButton.setMaximumSize(QSize(200, 30))
+        self.pushButton.setMaximumSize(QSize(100, 30))
+        font2 = QFont()
+        font2.setPointSize(11)
+        self.pushButton.setFont(font2)
 
         self.verticalLayout.addWidget(self.pushButton, 0, Qt.AlignmentFlag.AlignHCenter)
 
-        self.label_3 = QLabel(self.frame)
-        self.label_3.setObjectName(u"label_3")
-
-        self.verticalLayout.addWidget(self.label_3)
-
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.verticalLayout.addItem(self.verticalSpacer)
-
 
         self.gridLayout.addWidget(self.frame, 0, 0, 1, 1)
+
+        self.label_3 = QLabel(Form)
+        self.label_3.setObjectName(u"label_3")
+
+        self.gridLayout.addWidget(self.label_3, 1, 0, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
 
         self.retranslateUi(Form)
@@ -86,9 +106,9 @@ class Ui_Form_borrar_mp(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
-        self.label.setText(QCoreApplication.translate("Form", u"Metodo de Pago", None))
+        self.label.setText(QCoreApplication.translate("Form", u"M\u00e9todo de Pago", None))
         self.label_2.setText(QCoreApplication.translate("Form", u"label error", None))
         self.pushButton.setText(QCoreApplication.translate("Form", u"Quitar", None))
-        self.label_3.setText(QCoreApplication.translate("Form", u"label adv", None))
+        self.label_3.setText(QCoreApplication.translate("Form", u"Label advertencia", None))
     # retranslateUi
 

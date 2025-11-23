@@ -5299,9 +5299,9 @@ class AdministracionTab:
             global total_facturero_ventas
             total_facturero_ventas = 0
 
-            line_edit_18 = self.ui.frame_38.findChild(QLineEdit, "lineEdit_18")
-            if line_edit_18:
-                line_edit_18.clear()  # Limpiar el QLineEdit al abrir la ventana
+            line_edit_29 = self.ui.frame_64.findChild(QLineEdit, "lineEdit_29")
+            if line_edit_29:
+                line_edit_29.clear()  # Limpiar el QLineEdit al abrir la ventana
 
              # Inicializar los QLineEdit en blanco y no editables
             self.initialize_lineedits_ventas()
@@ -5324,13 +5324,13 @@ class AdministracionTab:
 
             
             # Configuración del QComboBox de método de pago
-            combobox_metodo_pago = self.facturero_ventas_window.findChild(QComboBox, "comboBox_3")
+            combobox_metodo_pago = self.facturero_ventas_window.findChild(QComboBox, "comboBox_2")
             if combobox_metodo_pago:
                 combobox_metodo_pago.clear()
                 combobox_metodo_pago.addItems([metodo for metodo in self.traer_metodos_de_pago()])
                 
              # Configuración del botón "Agregar"
-            boton_agregar = self.facturero_ventas_window.findChild(QPushButton, "pushButton_2")
+            boton_agregar = self.facturero_ventas_window.findChild(QPushButton, "pushButton")
             if boton_agregar:
                 boton_agregar.setShortcut("Return")  # Conectar el botón al enter
                 boton_agregar.clicked.connect(self.agregar_producto_a_tablewidget_ventas)
@@ -5343,12 +5343,6 @@ class AdministracionTab:
             label_12 = self.facturero_ventas_window.findChild(QLabel, "label_12")
             if label_12:
                 label_12.setStyleSheet("color: green; font-weight: bold")
-
-            text_edit = self.facturero_ventas_window.findChild(QTextEdit, "textEdit")
-            if text_edit:
-                text_edit.setFont(QFont("Segoe UI", 12))  # Set the font to Segoe UI with size 12
-                text_edit.setReadOnly(True)
-                text_edit.setFocusPolicy(Qt.NoFocus)
                 
 
             push_button_4 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_4")
@@ -5356,7 +5350,7 @@ class AdministracionTab:
                 push_button_4.clicked.connect(self.cerrar_facturero_venta)
                 push_button_4.setFocusPolicy(Qt.NoFocus)
             
-            push_button = self.facturero_ventas_window.findChild(QPushButton, "pushButton")
+            push_button = self.facturero_ventas_window.findChild(QPushButton, "pushButton_2")
             if push_button:
                 push_button.clicked.connect(self.borrar_ultimo_agregado_ventas)
                 push_button.setFocusPolicy(Qt.NoFocus)  
@@ -5378,7 +5372,7 @@ class AdministracionTab:
                 push_button_6.setFocusPolicy(Qt.NoFocus)
 
             # Limitar el QLineEdit de cantidad a 5 caracteres
-            lineedit_cantidad = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_2")
+            lineedit_cantidad = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_5")
             if lineedit_cantidad:
                 lineedit_cantidad.setMaxLength(5)
 
@@ -5392,9 +5386,9 @@ class AdministracionTab:
                 """)
                 #edicion y agregacion de datos a la table widget
                 qtablewidget.setColumnCount(7)
-                qtablewidget.setHorizontalHeaderLabels(["Producto", "Precio", "Cantidad", "Categoría", "Proveedor", "MP", "Total"])
+                qtablewidget.setHorizontalHeaderLabels(["Producto", "Precio", "Cantidad", "Categoría", "Proveedor", "M.P.", "Total"])
                 header = qtablewidget.horizontalHeader()
-                header.setFont(QFont("Segoe UI", 12))
+                header.setFont(QFont("Segoe UI", 10))
 
             
             # Desactivar la cruz de cierre de la ventana
@@ -5439,7 +5433,7 @@ class AdministracionTab:
     def agregar_metodo_de_pago_ventas(self, dialog):
         lineEdit = dialog.findChild(QLineEdit, "lineEdit")
         label_2 = dialog.findChild(QLabel, "label_2")
-        combobox_metodo_pago_facturero = self.facturero_ventas_window.findChild(QComboBox, "comboBox_3")
+        combobox_metodo_pago_facturero = self.facturero_ventas_window.findChild(QComboBox, "comboBox_2")
         
         pushButton = dialog.findChild(QPushButton, "pushButton")
         if pushButton:
@@ -5542,9 +5536,6 @@ class AdministracionTab:
             combobox.addItems(metodos_disponibles)
             combobox.setFocus()
 
-        label = dialogo_borrar_mp.findChild(QLabel, "label")
-        if label:
-            label.setText("Método de Pago")
 
         label_2 = dialogo_borrar_mp.findChild(QLabel, "label_2")
         if label_2:
@@ -5568,7 +5559,7 @@ class AdministracionTab:
     def borrar_metodo_de_pago_ventas(self, dialog):
         combobox_mp = dialog.findChild(QComboBox, "comboBox")
         label_2 = dialog.findChild(QLabel, "label_2")
-        combobox_mp_facturero = self.facturero_ventas_window.findChild(QComboBox, "comboBox_3")
+        combobox_mp_facturero = self.facturero_ventas_window.findChild(QComboBox, "comboBox_2")
 
         if combobox_mp_facturero:
             combobox_mp_facturero.setEnabled(False)
@@ -5686,13 +5677,13 @@ class AdministracionTab:
 
     def initialize_lineedits_ventas(self):
         # Inicializar los QLineEdit en blanco y no editables
-        lineedit_nombre = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_5")
-        lineedit_precio = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit")
-        lineedit_cantidad = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_2")
-        lineedit_categoria = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_3")
-        lineedit_proveedor = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_4")
+        lineedit_nombre = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit")
+        lineedit_precio = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_2")
+        lineedit_cantidad = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_5")
+        lineedit_categoria = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_4")
+        lineedit_proveedor = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_3")
         
-
+        
         if lineedit_nombre:
             lineedit_nombre.setText("")
             lineedit_nombre.setReadOnly(True)
@@ -5755,7 +5746,7 @@ class AdministracionTab:
         productos_cache_temporal = copy.deepcopy(productos_cache)
 
         # Se actualiza la tabla de productos
-        self.borrar_lineedit_18()
+        self.borrar_lineedit_buscador()
         self.filter_products_facturero()
 
     
@@ -5764,10 +5755,10 @@ class AdministracionTab:
 
         self.facturero_activo = None  # Reiniciar la bandera de facturero activo
 
-    def borrar_lineedit_18(self):
-        line_edit_18 = self.ui.frame_38.findChild(QLineEdit, "lineEdit_18")
-        if line_edit_18:
-            line_edit_18.clear()
+    def borrar_lineedit_buscador(self):
+        line_edit_29 = self.ui.frame_64.findChild(QLineEdit, "lineEdit_29")
+        if line_edit_29:
+            line_edit_29.clear()
 
     def load_facturero_data_ventas(self):
         # Cargar datos relacionados con el ID seleccionado en el QComboBox
@@ -5785,11 +5776,11 @@ class AdministracionTab:
             if producto:
                 # Suponiendo que `producto` es una tupla con los datos en este orden:
                 # (id, nombre, precio_compra, precio_venta, stock, stock_ideal, categoria, proveedor)
-                lineedit_nombre = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_5")
-                lineedit_precio = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit")
-                lineedit_cantidad = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_2")
-                lineedit_categoria = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_3")
-                lineedit_proveedor = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_4")
+                lineedit_nombre = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit")
+                lineedit_precio = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_2")
+                lineedit_cantidad = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_5")
+                lineedit_categoria = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_4")
+                lineedit_proveedor = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_3")
 
                 # Convertir los valores a cadenas antes de asignarlos
                 if lineedit_nombre:
@@ -5845,12 +5836,12 @@ class AdministracionTab:
 
         combobox_id = self.facturero_ventas_window.findChild(QComboBox, "comboBox")
         combobox_id_value = combobox_id.currentText()
-        line_edit_nombre = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_5")
-        line_edit_precio = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit")
-        line_edit_cantidad = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_2")
-        line_edit_categoria = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_3")
-        line_edit_proveedor = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_4")
-        combobox_metodo_pago = self.facturero_ventas_window.findChild(QComboBox, "comboBox_3")
+        line_edit_nombre = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit")
+        line_edit_precio = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_2")
+        line_edit_cantidad = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_5")
+        line_edit_categoria = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_4")
+        line_edit_proveedor = self.facturero_ventas_window.findChild(QLineEdit, "lineEdit_3")
+        combobox_metodo_pago = self.facturero_ventas_window.findChild(QComboBox, "comboBox_2")
 
         # Usar cache para verificar si el ID existe
         bandera = False
@@ -5858,7 +5849,9 @@ class AdministracionTab:
             bandera = True
 
         if bandera:
-            qtablewidget = self.facturero_ventas_window.findChild(QTableWidget, "tableWidget")  
+            qtablewidget = self.facturero_ventas_window.findChild(QTableWidget, "tableWidget")
+            if qtablewidget:
+                qtablewidget.setEditTriggers(QTableWidget.NoEditTriggers)
 
             # Verificar si hay una cantidad seleccionada
             if line_edit_cantidad:
@@ -5994,11 +5987,11 @@ class AdministracionTab:
         s = True
         global productos_seleccionados_facturero_ventas, total_facturero_ventas, usuario_activo, productos_cache_temporal, productos_cache
 
-        boton_agregar = self.facturero_ventas_window.findChild(QPushButton, "pushButton_2")
+        boton_agregar = self.facturero_ventas_window.findChild(QPushButton, "pushButton")
         if boton_agregar:
             boton_agregar.setEnabled(False)
 
-        push_button = self.facturero_ventas_window.findChild(QPushButton, "pushButton")
+        push_button = self.facturero_ventas_window.findChild(QPushButton, "pushButton_2")
         if push_button:
             push_button.setEnabled(False)
 
@@ -6040,6 +6033,7 @@ class AdministracionTab:
                         label_9.setText("Factura procesada con éxito")
                         label_9.setStyleSheet("color: green; font-weight: bold")
                         QTimer.singleShot(6000, lambda: label_9.setStyleSheet("color: transparent"))
+
                     pushbutton_3 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_3")
                     if pushbutton_3:
                         pushbutton_3.setEnabled(True)
@@ -6054,6 +6048,7 @@ class AdministracionTab:
                     push_button = self.facturero_ventas_window.findChild(QPushButton, "pushButton")
                     if push_button:
                         push_button.setEnabled(True)
+
                     # Llamar a inicializar_comboboxes_y_boton de la clase buscar datos
                     self.buscar_datos_tab.enviar_a_setear_tables()
 
@@ -6094,7 +6089,7 @@ class AdministracionTab:
 
 
     def borrar_ultimo_agregado_ventas(self): 
-        global productos_seleccionados_facturero_ventas, productos_cache_temporal
+        global productos_seleccionados_facturero_ventas, productos_cache_temporal, total_facturero_ventas
 
         if productos_seleccionados_facturero_ventas:
             
@@ -6128,18 +6123,18 @@ class AdministracionTab:
         self.populate_table_with_products_facturero()
         
         # Conectar el QLineEdit para filtrar productos
-        line_edit_18 = self.ui.frame_38.findChild(QLineEdit, "lineEdit_18")
-        if line_edit_18:
-            line_edit_18.setFocus()
-            line_edit_18.textChanged.connect(self.filter_products_facturero)
+        line_edit_29 = self.ui.frame_64.findChild(QLineEdit, "lineEdit_29")
+        if line_edit_29:
+            line_edit_29.setFocus()
+            line_edit_29.textChanged.connect(self.filter_products_facturero)
     
     def filter_products_facturero(self):
         
-        line_edit_18 = self.ui.frame_38.findChild(QLineEdit, "lineEdit_18")
-        table_widget = self.ui.frame_tabla_productos_4.findChild(QTableWidget, "tableWidget_4")
+        line_edit_29 = self.ui.frame_64.findChild(QLineEdit, "lineEdit_29")
+        table_widget = self.ui.frame_63.findChild(QTableWidget, "tableWidget_7")
 
-        if line_edit_18 and table_widget:
-            filter_text = line_edit_18.text().lower()
+        if line_edit_29 and table_widget:
+            filter_text = line_edit_29.text().lower()
 
             # Configurar la tabla 
             corner_button = table_widget.findChild(QAbstractButton)
@@ -6168,10 +6163,10 @@ class AdministracionTab:
 
             # Si no se encuentran productos, mostrar un mensaje en la tabla
             if cantidad == 0:
-                label_123 = self.ui.frame_60.findChild(QLabel, "label_123")
-                if label_123:
-                    label_123.clear()
-                    label_123.setText("0")
+                label_110 = self.ui.frame_65.findChild(QLabel, "label_110")
+                if label_110:
+                    label_110.clear()
+                    label_110.setText("0")
 
                 table_widget.setRowCount(1)
                 table_widget.setColumnCount(1)
@@ -6181,10 +6176,10 @@ class AdministracionTab:
                 item.setTextAlignment(Qt.AlignCenter)
                 table_widget.setItem(0, 0, item)
             else:
-                label_123 = self.ui.frame_60.findChild(QLabel, "label_123")
-                if label_123:
-                    label_123.clear()
-                    label_123.setText(f"{cantidad}")
+                label_110 = self.ui.frame_65.findChild(QLabel, "label_110")
+                if label_110:
+                    label_110.clear()
+                    label_110.setText(f"{cantidad}")
 
                 # Si hay productos, llenar la tabla con los datos filtrados
                 table_widget.setRowCount(len(filtered_productos))
@@ -6214,9 +6209,9 @@ class AdministracionTab:
             # line_edit_18.setFocus()  # Esta línea también puede interferir
 
     def populate_table_with_products_facturero(self):
-        table_widget = self.ui.frame_tabla_productos_4.findChild(QTableWidget, "tableWidget_4")
+        table_widget = self.ui.frame_63.findChild(QTableWidget, "tableWidget_7")
+        line_edit_29 = self.ui.frame_64.findChild(QLineEdit, "lineEdit_29")
 
-        line_edit_18 = self.ui.frame_38.findChild(QLineEdit, "lineEdit_18")
         if table_widget:
             corner_button = table_widget.findChild(QAbstractButton)
 
@@ -6225,7 +6220,7 @@ class AdministracionTab:
             table_widget.verticalHeader().sectionDoubleClicked.connect(self.copy_row_to_clipboard)
             table_widget.setEditTriggers(QTableWidget.NoEditTriggers)
 
-            filter_text = line_edit_18.text().lower()
+            filter_text = line_edit_29.text().lower()
 
             # Usar el cache global de productos
             global productos_cache
@@ -6241,10 +6236,10 @@ class AdministracionTab:
             
             # Si no se encuentran productos, mostrar un mensaje en la tabla
             if cantidad == 0:
-                label_123 = self.ui.frame_60.findChild(QLabel, "label_123")
-                if label_123:
-                    label_123.clear()
-                    label_123.setText("0")
+                label_110 = self.ui.frame_65.findChild(QLabel, "label_110")
+                if label_110:
+                    label_110.clear()
+                    label_110.setText("0")
 
                 table_widget.setRowCount(1)
                 table_widget.setColumnCount(1)
@@ -6254,10 +6249,10 @@ class AdministracionTab:
                 item.setTextAlignment(Qt.AlignCenter)
                 table_widget.setItem(0, 0, item)
             else:
-                label_123 = self.ui.frame_60.findChild(QLabel, "label_123")
-                if label_123:
-                    label_123.clear()
-                    label_123.setText(f"{cantidad}")
+                label_110 = self.ui.frame_65.findChild(QLabel, "label_110")
+                if label_110:
+                    label_110.clear()
+                    label_110.setText(f"{cantidad}")
                     
                 # Si hay productos, llenar la tabla con los datos
                 table_widget.setRowCount(len(productos_a_usar))
@@ -6274,12 +6269,13 @@ class AdministracionTab:
                             item.setForeground(Qt.red)
                         table_widget.setItem(row, col, item)
 
-            line_edit_18.setText(filter_text)
-            line_edit_18.setFocus()
+            line_edit_29.setText(filter_text)
+            line_edit_29.setFocus()
 
     # Función para copiar una columna al portapapeles
     def copy_column_to_clipboard(self, column_index):
-        table_widget = self.ui.frame_tabla_productos_4.findChild(QTableWidget, "tableWidget_4")
+        table_widget = self.ui.frame_63.findChild(QTableWidget, "tableWidget_7")
+
         if table_widget:
             column_data = []
             for row in range(table_widget.rowCount()):
@@ -6292,7 +6288,7 @@ class AdministracionTab:
 
     # Función para copiar una fila al portapapeles
     def copy_row_to_clipboard(self, row_index):
-        table_widget = self.ui.frame_tabla_productos_4.findChild(QTableWidget, "tableWidget_4")
+        table_widget = self.ui.frame_63.findChild(QTableWidget, "tableWidget_7")
         if table_widget:
             row_data = []
             for col in range(table_widget.columnCount()):
@@ -6304,7 +6300,7 @@ class AdministracionTab:
             self.show_copied_message("Fila copiada al portapapeles")
 
     def copy_entire_table_to_clipboard(self):
-        table_widget = self.ui.frame_tabla_productos_4.findChild(QTableWidget, "tableWidget_4")
+        table_widget = self.ui.frame_63.findChild(QTableWidget, "tableWidget_7")
         if not table_widget:
             return
         row_count = table_widget.rowCount()

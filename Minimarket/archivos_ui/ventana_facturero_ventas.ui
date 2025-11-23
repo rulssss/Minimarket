@@ -185,7 +185,7 @@ QComboBox {
                </font>
               </property>
               <property name="text">
-               <string>Metodo de Pago</string>
+               <string>Método de Pago</string>
               </property>
              </widget>
             </item>
