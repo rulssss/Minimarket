@@ -5746,7 +5746,7 @@ class AdministracionTab:
         productos_cache_temporal = copy.deepcopy(productos_cache)
 
         # Se actualiza la tabla de productos
-        self.borrar_lineedit_buscador()
+        #self.borrar_lineedit_buscador()
         self.filter_products_facturero()
 
     
@@ -6809,7 +6809,7 @@ class AdministracionTab:
         productos_cache_temporal = copy.deepcopy(productos_cache)  # Actualizar el cache temporal con el cache global
 
         # Se actualiza la tabla de productos
-        self.borrar_lineedit_buscador()
+        #self.borrar_lineedit_buscador()
         self.filter_products_facturero()
 
         self.facturero_compras_window.close()
