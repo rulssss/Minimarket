@@ -1,0 +1,143 @@
+-- WARNING: This schema is for context only and is not meant to be run.
+-- Table order and constraints may not be valid for execution.
+
+CREATE TABLE public.Actualizacion (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  version text NOT NULL,
+  update_url text,
+  CONSTRAINT Actualizacion_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.anotador (
+  id_anotador integer NOT NULL DEFAULT nextval('anotador_id_anotador_seq'::regclass),
+  id_nota integer NOT NULL,
+  contenido text NOT NULL,
+  tipo_cambio character NOT NULL,
+  usuario_id integer NOT NULL,
+  fecha_modificacion timestamp with time zone NOT NULL,
+  u_id uuid NOT NULL,
+  CONSTRAINT anotador_pkey PRIMARY KEY (id_anotador),
+  CONSTRAINT usuario_id FOREIGN KEY (usuario_id) REFERENCES public.usuarios(id_usuario),
+  CONSTRAINT anotador_u_id_fkey FOREIGN KEY (u_id) REFERENCES public.profiles(id)
+);
+CREATE TABLE public.categorias (
+  id_categoria integer NOT NULL DEFAULT nextval('categorias_id_categoria_seq'::regclass),
+  nombre_descrip text NOT NULL,
+  u_id uuid NOT NULL,
+  CONSTRAINT categorias_pkey PRIMARY KEY (id_categoria),
+  CONSTRAINT categorias_u_id_fkey FOREIGN KEY (u_id) REFERENCES public.profiles(id)
+);
+CREATE TABLE public.compras (
+  id_compra integer NOT NULL DEFAULT nextval('compras_id_compra_seq'::regclass),
+  id_usuario integer NOT NULL,
+  fecha_hora timestamp with time zone NOT NULL,
+  id_metodo_pago integer NOT NULL,
+  u_id uuid NOT NULL,
+  CONSTRAINT compras_pkey PRIMARY KEY (id_compra),
+  CONSTRAINT usuario FOREIGN KEY (id_usuario) REFERENCES public.usuarios(id_usuario),
+  CONSTRAINT compras_u_id_fkey FOREIGN KEY (u_id) REFERENCES public.profiles(id)
+);
+CREATE TABLE public.contrasenas (
+  id_contrasena integer NOT NULL DEFAULT nextval('contrasenas_id_contrasena_seq'::regclass),
+  id_usuario integer NOT NULL,
+  contrasena text NOT NULL,
+  u_id uuid NOT NULL,
+  CONSTRAINT contrasenas_pkey PRIMARY KEY (id_contrasena),
+  CONSTRAINT usu FOREIGN KEY (id_usuario) REFERENCES public.usuarios(id_usuario),
+  CONSTRAINT contrasenas_u_id_fkey FOREIGN KEY (u_id) REFERENCES public.profiles(id)
+);
+CREATE TABLE public.detalle_compras (
+  id_detalle integer NOT NULL DEFAULT nextval('detalle_compras_id_detalle_seq'::regclass),
+  id_compra integer NOT NULL,
+  id_producto bigint NOT NULL,
+  cantidad numeric NOT NULL,
+  precio_unitario numeric NOT NULL,
+  u_id uuid NOT NULL,
+  CONSTRAINT detalle_compras_pkey PRIMARY KEY (id_detalle),
+  CONSTRAINT id_compra FOREIGN KEY (id_compra) REFERENCES public.compras(id_compra),
+  CONSTRAINT id_producto FOREIGN KEY (id_producto) REFERENCES public.productos(id_producto),
+  CONSTRAINT detalle_compras_u_id_fkey FOREIGN KEY (u_id) REFERENCES public.profiles(id)
+);
+CREATE TABLE public.detalle_ventas (
+  id_detalle integer NOT NULL DEFAULT nextval('detalle_ventas_id_detalle_seq'::regclass),
+  id_venta integer NOT NULL,
+  id_producto bigint NOT NULL,
+  cantidad numeric NOT NULL,
+  precio_unitario_venta numeric NOT NULL,
+  precio_unitario_compra numeric NOT NULL,
+  u_id uuid NOT NULL,
+  CONSTRAINT detalle_ventas_pkey PRIMARY KEY (id_detalle),
+  CONSTRAINT id_venta FOREIGN KEY (id_venta) REFERENCES public.ventas(id_venta),
+  CONSTRAINT detalle_ventas_u_id_fkey FOREIGN KEY (u_id) REFERENCES public.profiles(id),
+  CONSTRAINT detalle_ventas_id_producto_fkey FOREIGN KEY (id_producto) REFERENCES public.productos(id_producto)
+);
+CREATE TABLE public.metodos_pago (
+  id_mp integer NOT NULL DEFAULT nextval('metodos_pago_id_mp_seq'::regclass),
+  nombre_mp text NOT NULL,
+  u_id uuid NOT NULL,
+  CONSTRAINT metodos_pago_pkey PRIMARY KEY (id_mp),
+  CONSTRAINT metodos_pago_u_id_fkey FOREIGN KEY (u_id) REFERENCES public.profiles(id)
+);
+CREATE TABLE public.movimientos (
+  id_movimiento integer NOT NULL DEFAULT nextval('movimientos_id_movimiento_seq'::regclass),
+  id_usuario integer NOT NULL DEFAULT nextval('movimientos_id_usuario_seq'::regclass),
+  fecha_hora timestamp with time zone NOT NULL,
+  tipo_accion text NOT NULL,
+  entidad_afectada text NOT NULL,
+  id_entidad bigint,
+  descripcion text NOT NULL,
+  u_id uuid NOT NULL,
+  CONSTRAINT movimientos_pkey PRIMARY KEY (id_movimiento),
+  CONSTRAINT id_usuario FOREIGN KEY (id_usuario) REFERENCES public.usuarios(id_usuario),
+  CONSTRAINT movimientos_u_id_fkey FOREIGN KEY (u_id) REFERENCES public.profiles(id)
+);
+CREATE TABLE public.productos (
+  id_producto bigint NOT NULL DEFAULT nextval('productos_id_producto_seq'::regclass),
+  nombre text NOT NULL,
+  precio_de_compra numeric NOT NULL,
+  precio_de_venta numeric NOT NULL,
+  stock numeric NOT NULL,
+  id_categoria integer NOT NULL,
+  id_proveedor integer NOT NULL,
+  stock_ideal numeric NOT NULL,
+  u_id uuid NOT NULL,
+  CONSTRAINT productos_pkey PRIMARY KEY (id_producto),
+  CONSTRAINT categoria_id FOREIGN KEY (id_categoria) REFERENCES public.categorias(id_categoria),
+  CONSTRAINT pord_id FOREIGN KEY (id_producto) REFERENCES public.productos(id_producto),
+  CONSTRAINT productos_u_id_fkey FOREIGN KEY (u_id) REFERENCES public.profiles(id),
+  CONSTRAINT productos_id_proveedor_fkey FOREIGN KEY (id_proveedor) REFERENCES public.proveedores(id_proveedor)
+);
+CREATE TABLE public.profiles (
+  id uuid NOT NULL,
+  email text NOT NULL,
+  primer_inicio timestamp with time zone DEFAULT timezone('utc'::text, now()),
+  CONSTRAINT profiles_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.proveedores (
+  id_proveedor integer NOT NULL DEFAULT nextval('proveedores_id_proveedor_seq'::regclass),
+  nombre_proveedor text NOT NULL,
+  telefono bigint NOT NULL,
+  mail character varying,
+  u_id uuid NOT NULL,
+  CONSTRAINT proveedores_pkey PRIMARY KEY (id_proveedor),
+  CONSTRAINT proveedores_u_id_fkey FOREIGN KEY (u_id) REFERENCES public.profiles(id)
+);
+CREATE TABLE public.usuarios (
+  id_usuario integer NOT NULL DEFAULT nextval('usuarios_id_usuario_seq'::regclass),
+  nombre text NOT NULL,
+  admin boolean NOT NULL,
+  mail text NOT NULL,
+  u_id uuid NOT NULL,
+  CONSTRAINT usuarios_pkey PRIMARY KEY (id_usuario),
+  CONSTRAINT usuarios_u_id_fkey FOREIGN KEY (u_id) REFERENCES public.profiles(id)
+);
+CREATE TABLE public.ventas (
+  id_venta integer NOT NULL DEFAULT nextval('ventas_id_venta_seq'::regclass),
+  id_usuario integer NOT NULL,
+  fecha_hora timestamp with time zone NOT NULL,
+  id_metodo_pago integer NOT NULL,
+  u_id uuid NOT NULL,
+  CONSTRAINT ventas_pkey PRIMARY KEY (id_venta),
+  CONSTRAINT id_metodo_pago FOREIGN KEY (id_metodo_pago) REFERENCES public.metodos_pago(id_mp),
+  CONSTRAINT usuario FOREIGN KEY (id_usuario) REFERENCES public.usuarios(id_usuario),
+  CONSTRAINT ventas_u_id_fkey FOREIGN KEY (u_id) REFERENCES public.profiles(id)
+);{
