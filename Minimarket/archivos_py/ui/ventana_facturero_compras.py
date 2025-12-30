@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'ventana_facturero_compras.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.9.1
+## Created by: Qt User Interface Compiler version 6.9.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -321,6 +321,19 @@ class Ui_Form_compras(object):
 
         self.gridLayout.addWidget(self.frame, 0, 0, 1, 1)
 
+        QWidget.setTabOrder(self.comboBox, self.lineEdit)
+        QWidget.setTabOrder(self.lineEdit, self.lineEdit_2)
+        QWidget.setTabOrder(self.lineEdit_2, self.lineEdit_3)
+        QWidget.setTabOrder(self.lineEdit_3, self.lineEdit_4)
+        QWidget.setTabOrder(self.lineEdit_4, self.lineEdit_5)
+        QWidget.setTabOrder(self.lineEdit_5, self.comboBox_2)
+        QWidget.setTabOrder(self.comboBox_2, self.pushButton_5)
+        QWidget.setTabOrder(self.pushButton_5, self.pushButton_6)
+        QWidget.setTabOrder(self.pushButton_6, self.pushButton)
+        QWidget.setTabOrder(self.pushButton, self.pushButton_2)
+        QWidget.setTabOrder(self.pushButton_2, self.tableWidget)
+        QWidget.setTabOrder(self.tableWidget, self.pushButton_3)
+        QWidget.setTabOrder(self.pushButton_3, self.pushButton_4)
 
         self.retranslateUi(Form)
 
