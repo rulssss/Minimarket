@@ -38,7 +38,7 @@ proveedores_por_telefono_cache = None
 categorias_por_nombre_cache = None
 usuarios_por_nombre_cache = None
 metodos_pago_por_id_cache = None
-
+ventas_por_producto_cache = None
 
 # -----------------------------------------------------
 
@@ -201,7 +201,7 @@ class DatosTab:
         global productos_por_id_cache, productos_por_nombre_cache
         global proveedores_por_nombre_cache, proveedores_por_telefono_cache
         global categorias_por_nombre_cache, usuarios_por_nombre_cache, metodos_pago_por_id_cache, metodos_pago_cache
-        global anios_obtenidos
+        global anios_obtenidos,  ventas_por_producto_cache
         
             # Si ya hay cache, úsalo y llama al callback
         if r == 1 and categorias_cache is not None:
@@ -230,10 +230,16 @@ class DatosTab:
             if callback:
                 callback()  
             return
+        
+        if r == 6 and ventas_por_producto_cache is not None:
+            ventas_por_producto_cache = ventas_por_producto_cache
+            if callback:
+                callback()  
+            return
 
 
         if r == 0:
-            self._datos_cargados = {"categorias": False, "proveedores": False, "productos": False, "usuarios": False, "metodos_pago": False}
+            self._datos_cargados = {"categorias": False, "proveedores": False, "productos": False, "usuarios": False, "metodos_pago": False, "ventas_por_producto": False}
 
             def check_all_loaded():
                 if all(self._datos_cargados.values()):
@@ -320,6 +326,18 @@ class DatosTab:
             self.usuarios_thread.resultado.connect(on_usuarios_obtenidos)
             self.start_thread(self.usuarios_thread)
 
+            # obtener todas las ventas por producto
+            self.ventas_por_producto_thread = TraerVentasPorProductoThread(self.id_usuario_perfil)
+            def on_ventas_por_producto_obtenidos(ventas_obtenidos):
+                global ventas_por_producto_cache
+                ventas_por_producto_cache = ventas_obtenidos
+                print("ventas por producto :", ventas_por_producto_cache)
+                self._datos_cargados["ventas_por_producto"] = True
+                check_all_loaded()
+            
+            self.ventas_por_producto_thread.resultado.connect(on_ventas_por_producto_obtenidos)
+            self.start_thread(self.ventas_por_producto_thread)
+
         else:
             if r == 1:
                 # Obtener todas las categorías y asignarlas a la variable global 'categorias'
@@ -388,6 +406,19 @@ class DatosTab:
                         callback()
                 self.metodos_pago_thread.resultado.connect(on_metodos_pago_obtenidos)
                 self.start_thread(self.metodos_pago_thread)
+
+            elif r == 6:
+                # Obtener todas las ventas por producto y asignarlas a la variable global 'ventas_por_producto_cache'
+                self.ventas_por_producto_thread = TraerVentasPorProductoThread(self.id_usuario_perfil)
+                def on_ventas_por_producto_obtenidos(ventas_obtenidos):
+                    global ventas_por_producto_cache
+                    ventas_por_producto_cache = ventas_obtenidos
+                    
+                    if callback:
+                        callback()
+                self.ventas_por_producto_thread.resultado.connect(on_ventas_por_producto_obtenidos)
+                self.start_thread(self.ventas_por_producto_thread)
+
 
         #################
         #################
@@ -7187,6 +7218,7 @@ class MainWindow(QMainWindow):
         
         QTimer.singleShot(500, self.inicializar_aplicacion)  # Esperar 500ms antes de inicializar
 
+
     # enviar signal de vida a firebase
     def enviar_heartbeat(self):
         API_URL = "https://web-production-aa989.up.railway.app"
@@ -7353,6 +7385,7 @@ class MainWindow(QMainWindow):
         # Edicion de anotador
         self.inicializar_anotador(self.usuario)
         self.anotador(self.usuario)
+
 
         # Ocultar el overlay después de 9 segundos
         QTimer.singleShot(9000, self.ocultar_overlay_inicial)

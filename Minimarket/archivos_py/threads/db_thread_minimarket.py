@@ -2132,3 +2132,28 @@ class HeartbeatThread(QThread):
             requests.post(url, json={"uid": self.uid}, timeout=5)
         except Exception as e:
             print(f"Error enviando heartbeat minimarket: {e}")
+
+
+class TraerVentasPorProductoThread(QThread):
+    resultado = Signal(object)
+
+    def __init__(self, id_usuario_perfil):
+        super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
+
+    def run(self):
+        import requests
+        try:
+            url = f"{API_URL}/api/traer_ventas_por_producto"
+            payload = {"id_usuario_perfil": self.id_usuario_perfil}
+            response = requests.get(url, params=payload)
+            if response.status_code == 200:
+                data = response.json()
+                ventas_por_producto = data.get("ventas_por_producto", {})
+                self.resultado.emit(ventas_por_producto)
+            else:
+                print(f"Error al traer ventas por producto: {response.text}")
+                self.resultado.emit({})
+        except Exception as e:
+            print(f"Error en TraerVentasPorProductoThread: {e}")
+            self.resultado.emit({})
