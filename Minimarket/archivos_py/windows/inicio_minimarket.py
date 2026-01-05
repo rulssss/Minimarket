@@ -52,9 +52,10 @@ eye_visible_path = os.path.join(BASE_DIR, "archivos_py", "resources", "eye_visib
 
 #------------------------------------------------------ 
 class DatosTab:
-    def __init__(self, ui, id_usuario_perfil):
+    def __init__(self, ui, id_usuario_perfil, mainwindow):
         self.ui = ui
         self.id_usuario_perfil = id_usuario_perfil
+        self.mainwindow = mainwindow
         self.button_agregar_productos = False
         self.button_agregar_proveedor = False
         
@@ -80,8 +81,8 @@ class DatosTab:
             self.verificar_mp_thread.finished.connect(on_mp_verificado)
             self.start_thread(self.verificar_mp_thread)
 
-        # se crean variables globales de uso para actualizar datos
-        self.actualizar_variables_globales_de_uso(0, self.inicializar_ui_con_datos) 
+        self.inicializar_ui_con_datos()
+
 
     def inicializar_ui_con_datos(self):
         #agregar productos
@@ -193,232 +194,6 @@ class DatosTab:
             except ValueError:
                 return False
             
-            
-    def actualizar_variables_globales_de_uso(self, r, callback=None):
-        global categorias , proveedores, productos, usuarios, metodos_pago, usuarios_cache
-     
-        global categorias_cache, proveedores_cache, productos_cache
-        global productos_por_id_cache, productos_por_nombre_cache
-        global proveedores_por_nombre_cache, proveedores_por_telefono_cache
-        global categorias_por_nombre_cache, usuarios_por_nombre_cache, metodos_pago_por_id_cache, metodos_pago_cache
-        global anios_obtenidos,  ventas_por_producto_cache
-        
-            # Si ya hay cache, úsalo y llama al callback
-        if r == 1 and categorias_cache is not None:
-            categorias = categorias_cache
-            if callback:
-                callback()
-            return
-        if r == 2 and proveedores_cache is not None:
-            proveedores = proveedores_cache
-            if callback:
-                callback()
-            return
-        if r == 3 and productos_cache is not None:
-            productos = productos_cache
-            if callback:
-                callback()
-            return
-        if r == 4 and usuarios_cache is not None:
-            usuarios = usuarios_cache
-            if callback:
-                callback()
-            return
-
-        if r == 5 and metodos_pago_cache is not None:
-            metodos_pago = metodos_pago_cache
-            if callback:
-                callback()  
-            return
-        
-        if r == 6 and ventas_por_producto_cache is not None:
-            ventas_por_producto_cache = ventas_por_producto_cache
-            if callback:
-                callback()  
-            return
-
-
-        if r == 0:
-            self._datos_cargados = {"categorias": False, "proveedores": False, "productos": False, "usuarios": False, "metodos_pago": False, "ventas_por_producto": False}
-
-            def check_all_loaded():
-                if all(self._datos_cargados.values()):
-                    if callback:
-                        callback()
-
-            self.anios_thread = TraerAnios(self.id_usuario_perfil)
-            def on_anios_obtenidos(anios):
-                global anios_obtenidos
-
-                anio_actual = datetime.now().year
-                # Asegurarse de que el año actual esté presente
-                if anio_actual not in anios:
-                    anios.append(anio_actual)
-                anios = sorted(set(anios))  # Opcional: ordena y elimina duplicados
-                anios_obtenidos = anios
-               
-
-            self.anios_thread.resultado.connect(on_anios_obtenidos)
-            self.start_thread(self.anios_thread)
-        
-
-            # obetener todos los metodos de pago al iniciar
-            self.metodos_pago_thread = TraerMetodosPagoYSuIdThread(self.id_usuario_perfil)
-            def on_metodos_obtenidos(metodos):
-                global metodos_pago_cache, metodos_pago_por_id_cache
-                
-                metodos_pago_cache = metodos
-                metodos_pago_por_id_cache = {str(m[0]): m[1] for m in metodos}
-                self._datos_cargados["metodos_pago"] = True
-                check_all_loaded()
-                
-
-            self.metodos_pago_thread.resultado.connect(on_metodos_obtenidos)
-            self.start_thread(self.metodos_pago_thread)
-           
-            # Obtener todas las categorías y asignarlas a la variable global 'categorias'
-            self.categorias_thread = CategoriasThread(self.id_usuario_perfil)
-            def on_categorias_obtenidas(cats):
-                global categorias, categorias_por_nombre_cache
-                categorias = cats
-                categorias_por_nombre_cache = {c[1].strip().lower(): c for c in categorias}
-                self._datos_cargados["categorias"] = True
-                check_all_loaded()
-                
-            self.categorias_thread.categorias_obtenidas.connect(on_categorias_obtenidas)
-            self.start_thread(self.categorias_thread)
-        
-            # Obtener todos los proveedores y asignarlos a la variable global 'proveedores'
-            self.proveedores_thread = ProveedoresThread(self.id_usuario_perfil)
-            def on_proveedores_obtenidos(provs):
-                global proveedores, proveedores_por_nombre_cache, proveedores_por_telefono_cache
-                proveedores = provs
-                proveedores_por_nombre_cache = {p[0].strip().lower(): p for p in proveedores}
-                proveedores_por_telefono_cache = {str(p[1]).strip(): p for p in proveedores}
-                self._datos_cargados["proveedores"] = True
-                check_all_loaded()
-            
-            self.proveedores_thread.proveedores_obtenidos.connect(on_proveedores_obtenidos)
-            self.start_thread(self.proveedores_thread)
-        
-            # Obtener todos los productos y asignarlos a la variable global 'productos'
-            self.productos_thread = TraerTodosLosProductosThread(self.id_usuario_perfil)
-            def on_productos_obtenidos(productos_obtenidos):
-                global productos, productos_por_id_cache, productos_por_nombre_cache
-                productos = productos_obtenidos
-                productos_por_id_cache = {str(p[0]): p for p in productos}
-                productos_por_nombre_cache = {p[1].strip().lower(): p for p in productos}
-                self._datos_cargados["productos"] = True
-                check_all_loaded()
-                
-            self.productos_thread.resultado.connect(on_productos_obtenidos)
-            self.start_thread(self.productos_thread)
-
-            # obtener todos los usuarios
-            self.usuarios_thread = TraerTodosLosUsuariosThread(self.id_usuario_perfil)
-            def on_usuarios_obtenidos(usuarios_obtenidos):
-                global usuarios, usuarios_por_nombre_cache
-                usuarios = usuarios_obtenidos
-                usuarios_por_nombre_cache = {u[1].strip(): u for u in usuarios}
-                self._datos_cargados["usuarios"] = True
-                check_all_loaded()
-                
-            self.usuarios_thread.resultado.connect(on_usuarios_obtenidos)
-            self.start_thread(self.usuarios_thread)
-
-            # obtener todas las ventas por producto
-            self.ventas_por_producto_thread = TraerVentasPorProductoThread(self.id_usuario_perfil)
-            def on_ventas_por_producto_obtenidos(ventas_obtenidos):
-                global ventas_por_producto_cache
-                ventas_por_producto_cache = ventas_obtenidos
-                print("ventas por producto :", ventas_por_producto_cache)
-                self._datos_cargados["ventas_por_producto"] = True
-                check_all_loaded()
-            
-            self.ventas_por_producto_thread.resultado.connect(on_ventas_por_producto_obtenidos)
-            self.start_thread(self.ventas_por_producto_thread)
-
-        else:
-            if r == 1:
-                # Obtener todas las categorías y asignarlas a la variable global 'categorias'
-                self.categorias_thread = CategoriasThread(self.id_usuario_perfil)
-                def on_categorias_obtenidas(cats):
-                    global categorias, categorias_cache, categorias_por_nombre_cache
-                    categorias = cats
-                    categorias_cache = cats
-                    categorias_por_nombre_cache = {c[1].strip().lower(): c for c in categorias}
-                
-                    if callback:
-                        callback()
-                self.categorias_thread.categorias_obtenidas.connect(on_categorias_obtenidas)
-                self.start_thread(self.categorias_thread)
-            elif r == 2:
-                # Obtener todos los proveedores y asignarlos a la variable global 'proveedores'
-                self.proveedores_thread = ProveedoresThread(self.id_usuario_perfil)
-                def on_proveedores_obtenidos(provs):
-                    global proveedores, proveedores_cache, proveedores_por_nombre_cache, proveedores_por_telefono_cache
-                    proveedores = provs
-                    proveedores_cache = provs
-                    proveedores_por_nombre_cache = {p[0].strip().lower(): p for p in proveedores}
-                    proveedores_por_telefono_cache = {str(p[1]).strip(): p for p in proveedores}
-                    
-                    if callback:
-                        callback()
-                self.proveedores_thread.proveedores_obtenidos.connect(on_proveedores_obtenidos)
-                self.start_thread(self.proveedores_thread)
-            elif r == 3:
-                # Obtener todos los productos y asignarlos a la variable global 'productos'
-                self.productos_thread = TraerTodosLosProductosThread(self.id_usuario_perfil)
-                def on_productos_obtenidos(productos_obtenidos):
-                    global productos, productos_cache, productos_por_id_cache, productos_por_nombre_cache
-                    productos = productos_obtenidos
-                    productos_cache = productos_obtenidos
-                    productos_por_id_cache = {str(p[0]): p for p in productos}
-                    productos_por_nombre_cache = {p[1].strip().lower(): p for p in productos}
-                
-                    if callback:
-                        callback()
-                self.productos_thread.resultado.connect(on_productos_obtenidos)
-                self.start_thread(self.productos_thread)
-            elif r == 4:
-                 # obtener todos los usuarios
-                self.usuarios_thread = TraerTodosLosUsuariosThread(self.id_usuario_perfil)
-                def on_usuarios_obtenidos(usuarios_obtenidos):
-                    global usuarios, usuarios_por_nombre_cache
-                    usuarios = usuarios_obtenidos
-                    usuarios_por_nombre_cache = {u[1].strip(): u for u in usuarios}
-                    
-                    if callback:
-                        callback()
-                self.usuarios_thread.resultado.connect(on_usuarios_obtenidos)
-                self.start_thread(self.usuarios_thread)
-
-            elif r == 5:
-                # Obtener todos los métodos de pago y asignarlos a la variable global 'metodos_pago'
-                self.metodos_pago_thread = TraerTodosLosMetodosPagoThread(self.id_usuario_perfil)
-                def on_metodos_pago_obtenidos(metodos_obtenidos):
-                    global metodos_pago, metodos_pago_cache, metodos_pago_por_id_cache
-                    metodos_pago = metodos_obtenidos
-                    metodos_pago_cache = metodos_obtenidos
-                    metodos_pago_por_id_cache = {str(m[0]): m for m in metodos_pago}
-                    
-                    if callback:
-                        callback()
-                self.metodos_pago_thread.resultado.connect(on_metodos_pago_obtenidos)
-                self.start_thread(self.metodos_pago_thread)
-
-            elif r == 6:
-                # Obtener todas las ventas por producto y asignarlas a la variable global 'ventas_por_producto_cache'
-                self.ventas_por_producto_thread = TraerVentasPorProductoThread(self.id_usuario_perfil)
-                def on_ventas_por_producto_obtenidos(ventas_obtenidos):
-                    global ventas_por_producto_cache
-                    ventas_por_producto_cache = ventas_obtenidos
-                    
-                    if callback:
-                        callback()
-                self.ventas_por_producto_thread.resultado.connect(on_ventas_por_producto_obtenidos)
-                self.start_thread(self.ventas_por_producto_thread)
-
 
         #################
         #################
@@ -636,7 +411,7 @@ class DatosTab:
             productos_cache = None
             productos_por_id_cache = None
     
-            self.actualizar_variables_globales_de_uso(3, lambda: (
+            self.mainwindow.actualizar_variables_globales_de_uso(3, lambda: (
                 self.populate_table_with_products(),
                 self.populate_combobox_with_ids(self.ui.frame_9.findChild(QComboBox, "comboBox_7"))
             ))
@@ -857,7 +632,7 @@ class DatosTab:
         productos_por_id_cache = None
 
         # Actualizar productos y refrescar la tabla y combobox cuando termine
-        self.actualizar_variables_globales_de_uso(3, lambda: (
+        self.mainwindow.actualizar_variables_globales_de_uso(3, lambda: (
             self.populate_table_with_products(),
             self.populate_combobox_with_ids(self.ui.frame_9.findChild(QComboBox, "comboBox_7"))
         ))
@@ -1035,7 +810,7 @@ class DatosTab:
                 # Limpiar solo el cache de productos antes de actualizar
                 productos_cache = None
                 # Actualizar productos y refrescar la tabla y combobox cuando termine
-                self.actualizar_variables_globales_de_uso(3, lambda: (
+                self.mainwindow.actualizar_variables_globales_de_uso(3, lambda: (
                     self.populate_table_with_products(),
             
                 ))
@@ -1160,7 +935,7 @@ class DatosTab:
                 # Limpiar solo el cache de productos antes de actualizar
                 productos_cache = None
                 # Actualizar productos y refrescar la tabla y combobox cuando termine
-                self.actualizar_variables_globales_de_uso(3, lambda: (
+                self.mainwindow.actualizar_variables_globales_de_uso(3, lambda: (
                     self.populate_table_with_products(),
             
                 ))
@@ -1190,7 +965,7 @@ class DatosTab:
             if selected_id and selected_id.isdigit():
                 # Si el cache está vacío, actualizalo primero
                 if productos_cache is None or productos_por_id_cache is None:
-                    self.actualizar_variables_globales_de_uso(3, lambda: self.load_product_data())
+                    self.mainwindow.actualizar_variables_globales_de_uso(3, lambda: self.load_product_data())
                     return
                 # Buscar el producto usando el diccionario (más rápido)
                 producto = productos_por_id_cache.get(selected_id)
@@ -1290,7 +1065,7 @@ class DatosTab:
         productos_por_id_cache = None
 
         # Actualizar productos y refrescar la tabla y combobox cuando termine
-        self.actualizar_variables_globales_de_uso(3, lambda: (
+        self.mainwindow.actualizar_variables_globales_de_uso(3, lambda: (
             self.populate_table_with_products(),
             self.load_product_data(),
             self.populate_table_with_categorias(),
@@ -1831,7 +1606,7 @@ class DatosTab:
             proveedores_cache = None
             proveedores_por_nombre_cache = None
             proveedores_por_telefono_cache = None
-            self.actualizar_variables_globales_de_uso(2, lambda: (self.populate_combobox_with_proveedores(self.ui.frame_24.findChild(QComboBox, "comboBox_12")),
+            self.mainwindow.actualizar_variables_globales_de_uso(2, lambda: (self.populate_combobox_with_proveedores(self.ui.frame_24.findChild(QComboBox, "comboBox_12")),
                 self.populate_combobox_with_proveedores(self.ui.frame_9.findChild(QComboBox, "comboBox_6")),
                 self.populate_table_with_proveedores(),
                 self.proveedores(),
@@ -1936,7 +1711,7 @@ class DatosTab:
                             proveedores_por_nombre_cache = None
                             proveedores_por_telefono_cache = None
     
-                            self.actualizar_variables_globales_de_uso(2, lambda: (self.populate_combobox_with_proveedores(self.ui.frame_24.findChild(QComboBox, "comboBox_12")),
+                            self.mainwindow.actualizar_variables_globales_de_uso(2, lambda: (self.populate_combobox_with_proveedores(self.ui.frame_24.findChild(QComboBox, "comboBox_12")),
                                 self.populate_combobox_with_proveedores(self.ui.frame_9.findChild(QComboBox, "comboBox_6")),
                                 self.populate_table_with_proveedores(),
                                 self.populate_combobox_proveedores(),
@@ -1950,7 +1725,7 @@ class DatosTab:
                             productos_por_id_cache = None
                             productos_por_nombre_cache = None
 
-                            self.actualizar_variables_globales_de_uso(3, lambda: (
+                            self.mainwindow.actualizar_variables_globales_de_uso(3, lambda: (
                                 self.populate_table_with_products(),
                                 
                             ))
@@ -2088,7 +1863,7 @@ class DatosTab:
                         proveedores_por_telefono_cache = None
 
                         #actualizar cache tablas y comboboxes
-                        self.actualizar_variables_globales_de_uso(2, lambda: (
+                        self.mainwindow.actualizar_variables_globales_de_uso(2, lambda: (
                             self.populate_combobox_with_proveedores(self.ui.frame_9.findChild(QComboBox, "comboBox_6")),
                             self.populate_table_with_proveedores(),
                             self.populate_combobox_proveedores(),
@@ -2437,7 +2212,7 @@ class DatosTab:
                     categorias_cache = None
                     categorias_por_nombre_cache = None
 
-                    self.actualizar_variables_globales_de_uso(1, lambda: (
+                    self.mainwindow.actualizar_variables_globales_de_uso(1, lambda: (
                         self.populate_combobox_with_categorias(self.ui.frame_9.findChild(QComboBox, "comboBox_5")),
                         self.populate_table_with_categorias(),
                         self.populate_combobox_categorias(),
@@ -2582,7 +2357,7 @@ class DatosTab:
                     categorias_por_nombre_cache = None
                     categorias_por_id_cache = None
                     # Actualizar cache, tablas y comboboxes
-                    self.actualizar_variables_globales_de_uso(1, lambda: (
+                    self.mainwindow.actualizar_variables_globales_de_uso(1, lambda: (
                         self.populate_combobox_with_categorias(self.ui.frame_9.findChild(QComboBox, "comboBox_5")),
                         self.populate_table_with_categorias(),
                         self.populate_combobox_categorias(),
@@ -2595,7 +2370,7 @@ class DatosTab:
                     productos_cache = None
                     productos_por_nombre_cache = None
                     productos_por_id_cache = None
-                    self.actualizar_variables_globales_de_uso(3, lambda: (
+                    self.mainwindow.actualizar_variables_globales_de_uso(3, lambda: (
                         self.populate_table_with_products(),
                         
                     ))
@@ -2940,18 +2715,12 @@ class DatosTab:
                             usuarios_cache = None
                             usuarios_por_nombre_cache = None
 
-                            #lineas que estan de mas creo.
-
-                            #self.actualizar_variables_globales_de_uso(4, lambda: (
-                            #    self.populate_combobox_with_names(self.ui.frame_45.findChild(QComboBox, "comboBox_16"))
-                            #))
-#
                         
                             # Actualizar cache de usuarios
                             global usuarios
                             usuarios = None
                             
-                            self.actualizar_variables_globales_de_uso(4, lambda: (
+                            self.mainwindow.actualizar_variables_globales_de_uso(4, lambda: (
                                 self.populate_combobox_with_names(self.ui.frame_48.findChild(QComboBox, "comboBox_15")),
                             ))
 
@@ -3193,7 +2962,7 @@ class DatosTab:
                 global usuarios_cache
                 usuarios_cache = None
                 combobox_15 = self.ui.frame_48.findChild(QComboBox, "comboBox_15")
-                self.actualizar_variables_globales_de_uso(4, lambda: (
+                self.mainwindow.actualizar_variables_globales_de_uso(4, lambda: (
                     self.populate_combobox_with_names(combobox_15)
                 ))
 
@@ -3313,7 +3082,7 @@ class DatosTab:
                     global usuarios_cache, usuarios_por_nombre_cache
                     usuarios_cache = None
                     usuarios_por_nombre_cache = None
-                    self.actualizar_variables_globales_de_uso(4, lambda: (
+                    self.mainwindow.actualizar_variables_globales_de_uso(4, lambda: (
                         self.populate_combobox_with_names(self.ui.frame_48.findChild(QComboBox, "comboBox_15"))
                     ))
 
@@ -3365,10 +3134,10 @@ class DatosTab:
 ################
 ################
 class BuscarDatosTab:
-    def __init__(self, ui, datos_tab, main_window, id_usuario_perfil):
+    def __init__(self, ui, datos_tab, mainwindow, id_usuario_perfil, ):
         self.ui = ui
         self.datos_tab = datos_tab
-        self.main_window = main_window
+        self.mainwindow = mainwindow
         self.id_usuario_perfil = id_usuario_perfil
         #crear arreglo con threads abiertos
         self.threads = []
@@ -3380,8 +3149,7 @@ class BuscarDatosTab:
         self.timer_dia.setSingleShot(True)
         self.timer_dia.timeout.connect(self.enviar_a_setear_tables)
 
-        # se crean variables globales de uso para actualizar datos, 
-        self.datos_tab.actualizar_variables_globales_de_uso(0, self.inicializar_ui_con_datos)
+        self.inicializar_ui_con_datos()
 
     def inicializar_ui_con_datos(self):
         self.boton_mov()
@@ -3420,7 +3188,7 @@ class BuscarDatosTab:
     
         # Mostrar diálogo de confirmación
         from PySide6.QtWidgets import QMessageBox
-        dialog = QMessageBox(self.main_window)
+        dialog = QMessageBox(self.mainwindow)
         dialog.setWindowTitle("Cerrar sesión rls")
         dialog.setText("¿Está seguro que desea cerrar sesión rls?")
         dialog.setIcon(QMessageBox.Question)
@@ -3455,7 +3223,7 @@ class BuscarDatosTab:
         usuarios_por_nombre_cache = None
         metodos_pago_por_id_cache = None
     
-        self.main_window.close()
+        self.mainwindow.close()
         from archivos_py.windows.inicio_login import Inicio
         self.inicio_window = Inicio(self.id_usuario_perfil)
         self.inicio_window.show()
@@ -5276,7 +5044,7 @@ class BuscarDatosTab:
 ################
 
 class AdministracionTab:    
-    def __init__(self, ui, buscar_datos_tab, datos_tab, id_usuario_perfil):
+    def __init__(self, ui, buscar_datos_tab, datos_tab, id_usuario_perfil, mainwindow):
         self.ui = ui
         self.facturero_ventas_window = None
         self.facturero_compras_window = None
@@ -6054,7 +5822,7 @@ class AdministracionTab:
                     productos_por_id_cache = None  
                     productos_por_nombre_cache = None
                     # Actualizar el cache desde la base de datos
-                    self.datos_tab.actualizar_variables_globales_de_uso(3, lambda: (
+                    self.mainwindow.actualizar_variables_globales_de_uso(3, lambda: (
                         self.filter_products_facturero(),
                         self.datos_tab.visualizar_datos()
                     ))
@@ -7043,7 +6811,7 @@ class AdministracionTab:
                     productos_por_nombre_cache = None
 
                     # Actualizar el cache desde la base de datos
-                    self.datos_tab.actualizar_variables_globales_de_uso(3, lambda: (
+                    self.mainwindow.actualizar_variables_globales_de_uso(3, lambda: (
                         self.filter_products_facturero(),
                         self.datos_tab.visualizar_datos()
                     ))
@@ -7202,6 +6970,8 @@ class MainWindow(QMainWindow):
         global usuario_activo
         usuario_activo = self.usuario # se inicializa la variable global usuario para que sea la misma que la del mainwindow
         
+        self.threads = []
+
         self.heartbeat_timer = QTimer(self)
         self.heartbeat_timer.timeout.connect(self.enviar_heartbeat)
         self.heartbeat_timer.start(30000)  # 30 segundos
@@ -7215,8 +6985,10 @@ class MainWindow(QMainWindow):
 
         # Mostrar overlay de carga al iniciar
         QTimer.singleShot(0, lambda: self.mostrar_overlay(i=False))
+
+        # se crean variables globales de uso para actualizar datos
+        self.actualizar_variables_globales_de_uso(0, callback=self.inicializar_aplicacion) 
         
-        QTimer.singleShot(500, self.inicializar_aplicacion)  # Esperar 500ms antes de inicializar
 
 
     # enviar signal de vida a firebase
@@ -7337,6 +7109,7 @@ class MainWindow(QMainWindow):
 
     def inicializar_aplicacion(self):
         """Inicializar la aplicación después de mostrar el overlay"""
+        
 
         # Cambia las tab si es usuario
         tab_widget = self.ui.tabWidget
@@ -7351,9 +7124,9 @@ class MainWindow(QMainWindow):
                 tab_widget.setTabText(tab_widget.indexOf(self.ui.tab), "Administración")
 
         # Crear instancias de las clases de las pestañas
-        self.datos_tab = DatosTab(self.ui, self.id_usuario_perfil)
+        self.datos_tab = DatosTab(self.ui, self.id_usuario_perfil, self)
         self.buscar_datos_tab = BuscarDatosTab(self.ui, self.datos_tab, self, self.id_usuario_perfil)
-        self.administracion_tab = AdministracionTab(self.ui, self.buscar_datos_tab, self.datos_tab, self.id_usuario_perfil)
+        self.administracion_tab = AdministracionTab(self.ui, self.buscar_datos_tab, self.datos_tab, self.id_usuario_perfil, self)
 
         # Cerrar factureros al cambiar a la pestaña "Datos"
         tab_widget = self.ui.tabWidget
@@ -7389,6 +7162,232 @@ class MainWindow(QMainWindow):
 
         # Ocultar el overlay después de 9 segundos
         QTimer.singleShot(9000, self.ocultar_overlay_inicial)
+
+    def actualizar_variables_globales_de_uso(self, r, callback=None):
+        global categorias , proveedores, productos, usuarios, metodos_pago, usuarios_cache
+     
+        global categorias_cache, proveedores_cache, productos_cache
+        global productos_por_id_cache, productos_por_nombre_cache
+        global proveedores_por_nombre_cache, proveedores_por_telefono_cache
+        global categorias_por_nombre_cache, usuarios_por_nombre_cache, metodos_pago_por_id_cache, metodos_pago_cache
+        global anios_obtenidos,  ventas_por_producto_cache
+        
+            # Si ya hay cache, úsalo y llama al callback
+        if r == 1 and categorias_cache is not None:
+            categorias = categorias_cache
+            if callback:
+                callback()
+            return
+        if r == 2 and proveedores_cache is not None:
+            proveedores = proveedores_cache
+            if callback:
+                callback()
+            return
+        if r == 3 and productos_cache is not None:
+            productos = productos_cache
+            if callback:
+                callback()
+            return
+        if r == 4 and usuarios_cache is not None:
+            usuarios = usuarios_cache
+            if callback:
+                callback()
+            return
+
+        if r == 5 and metodos_pago_cache is not None:
+            metodos_pago = metodos_pago_cache
+            if callback:
+                callback()  
+            return
+        
+        if r == 6 and ventas_por_producto_cache is not None:
+            ventas_por_producto_cache = ventas_por_producto_cache
+            if callback:
+                callback()  
+            return
+
+
+        if r == 0:
+            self._datos_cargados = {"categorias": False, "proveedores": False, "productos": False, "usuarios": False, "metodos_pago": False, "ventas_por_producto": False}
+
+            def check_all_loaded():
+                if all(self._datos_cargados.values()):
+                    if callback:
+                        callback()
+
+            self.anios_thread = TraerAnios(self.id_usuario_perfil)
+            def on_anios_obtenidos(anios):
+                global anios_obtenidos
+
+                anio_actual = datetime.now().year
+                # Asegurarse de que el año actual esté presente
+                if anio_actual not in anios:
+                    anios.append(anio_actual)
+                anios = sorted(set(anios))  # Opcional: ordena y elimina duplicados
+                anios_obtenidos = anios
+               
+
+            self.anios_thread.resultado.connect(on_anios_obtenidos)
+            self.start_thread(self.anios_thread)
+        
+
+            # obetener todos los metodos de pago al iniciar
+            self.metodos_pago_thread = TraerMetodosPagoYSuIdThread(self.id_usuario_perfil)
+            def on_metodos_obtenidos(metodos):
+                global metodos_pago_cache, metodos_pago_por_id_cache
+                
+                metodos_pago_cache = metodos
+                metodos_pago_por_id_cache = {str(m[0]): m[1] for m in metodos}
+                self._datos_cargados["metodos_pago"] = True
+                check_all_loaded()
+                
+
+            self.metodos_pago_thread.resultado.connect(on_metodos_obtenidos)
+            self.start_thread(self.metodos_pago_thread)
+           
+            # Obtener todas las categorías y asignarlas a la variable global 'categorias'
+            self.categorias_thread = CategoriasThread(self.id_usuario_perfil)
+            def on_categorias_obtenidas(cats):
+                global categorias, categorias_por_nombre_cache
+                categorias = cats
+                categorias_por_nombre_cache = {c[1].strip().lower(): c for c in categorias}
+                self._datos_cargados["categorias"] = True
+                check_all_loaded()
+                
+            self.categorias_thread.categorias_obtenidas.connect(on_categorias_obtenidas)
+            self.start_thread(self.categorias_thread)
+        
+            # Obtener todos los proveedores y asignarlos a la variable global 'proveedores'
+            self.proveedores_thread = ProveedoresThread(self.id_usuario_perfil)
+            def on_proveedores_obtenidos(provs):
+                global proveedores, proveedores_por_nombre_cache, proveedores_por_telefono_cache
+                proveedores = provs
+                proveedores_por_nombre_cache = {p[0].strip().lower(): p for p in proveedores}
+                proveedores_por_telefono_cache = {str(p[1]).strip(): p for p in proveedores}
+                self._datos_cargados["proveedores"] = True
+                check_all_loaded()
+            
+            self.proveedores_thread.proveedores_obtenidos.connect(on_proveedores_obtenidos)
+            self.start_thread(self.proveedores_thread)
+        
+            # Obtener todos los productos y asignarlos a la variable global 'productos'
+            self.productos_thread = TraerTodosLosProductosThread(self.id_usuario_perfil)
+            def on_productos_obtenidos(productos_obtenidos):
+                global productos, productos_por_id_cache, productos_por_nombre_cache
+                productos = productos_obtenidos
+                productos_por_id_cache = {str(p[0]): p for p in productos}
+                productos_por_nombre_cache = {p[1].strip().lower(): p for p in productos}
+                self._datos_cargados["productos"] = True
+                check_all_loaded()
+                
+            self.productos_thread.resultado.connect(on_productos_obtenidos)
+            self.start_thread(self.productos_thread)
+
+            # obtener todos los usuarios
+            self.usuarios_thread = TraerTodosLosUsuariosThread(self.id_usuario_perfil)
+            def on_usuarios_obtenidos(usuarios_obtenidos):
+                global usuarios, usuarios_por_nombre_cache
+                usuarios = usuarios_obtenidos
+                usuarios_por_nombre_cache = {u[1].strip(): u for u in usuarios}
+                self._datos_cargados["usuarios"] = True
+                check_all_loaded()
+                
+            self.usuarios_thread.resultado.connect(on_usuarios_obtenidos)
+            self.start_thread(self.usuarios_thread)
+
+            # obtener todas las ventas por producto
+            self.ventas_por_producto_thread = TraerVentasPorProductoThread(self.id_usuario_perfil)
+            def on_ventas_por_producto_obtenidos(ventas_obtenidos):
+                global ventas_por_producto_cache
+                ventas_por_producto_cache = ventas_obtenidos
+                print("ventas por producto :", ventas_por_producto_cache)
+                self._datos_cargados["ventas_por_producto"] = True
+                check_all_loaded()
+            
+            self.ventas_por_producto_thread.resultado.connect(on_ventas_por_producto_obtenidos)
+            self.start_thread(self.ventas_por_producto_thread)
+
+        else:
+            if r == 1:
+                # Obtener todas las categorías y asignarlas a la variable global 'categorias'
+                self.categorias_thread = CategoriasThread(self.id_usuario_perfil)
+                def on_categorias_obtenidas(cats):
+                    global categorias, categorias_cache, categorias_por_nombre_cache
+                    categorias = cats
+                    categorias_cache = cats
+                    categorias_por_nombre_cache = {c[1].strip().lower(): c for c in categorias}
+                
+                    if callback:
+                        callback()
+                self.categorias_thread.categorias_obtenidas.connect(on_categorias_obtenidas)
+                self.start_thread(self.categorias_thread)
+            elif r == 2:
+                # Obtener todos los proveedores y asignarlos a la variable global 'proveedores'
+                self.proveedores_thread = ProveedoresThread(self.id_usuario_perfil)
+                def on_proveedores_obtenidos(provs):
+                    global proveedores, proveedores_cache, proveedores_por_nombre_cache, proveedores_por_telefono_cache
+                    proveedores = provs
+                    proveedores_cache = provs
+                    proveedores_por_nombre_cache = {p[0].strip().lower(): p for p in proveedores}
+                    proveedores_por_telefono_cache = {str(p[1]).strip(): p for p in proveedores}
+                    
+                    if callback:
+                        callback()
+                self.proveedores_thread.proveedores_obtenidos.connect(on_proveedores_obtenidos)
+                self.start_thread(self.proveedores_thread)
+            elif r == 3:
+                # Obtener todos los productos y asignarlos a la variable global 'productos'
+                self.productos_thread = TraerTodosLosProductosThread(self.id_usuario_perfil)
+                def on_productos_obtenidos(productos_obtenidos):
+                    global productos, productos_cache, productos_por_id_cache, productos_por_nombre_cache
+                    productos = productos_obtenidos
+                    productos_cache = productos_obtenidos
+                    productos_por_id_cache = {str(p[0]): p for p in productos}
+                    productos_por_nombre_cache = {p[1].strip().lower(): p for p in productos}
+                
+                    if callback:
+                        callback()
+                self.productos_thread.resultado.connect(on_productos_obtenidos)
+                self.start_thread(self.productos_thread)
+            elif r == 4:
+                 # obtener todos los usuarios
+                self.usuarios_thread = TraerTodosLosUsuariosThread(self.id_usuario_perfil)
+                def on_usuarios_obtenidos(usuarios_obtenidos):
+                    global usuarios, usuarios_por_nombre_cache
+                    usuarios = usuarios_obtenidos
+                    usuarios_por_nombre_cache = {u[1].strip(): u for u in usuarios}
+                    
+                    if callback:
+                        callback()
+                self.usuarios_thread.resultado.connect(on_usuarios_obtenidos)
+                self.start_thread(self.usuarios_thread)
+
+            elif r == 5:
+                # Obtener todos los métodos de pago y asignarlos a la variable global 'metodos_pago'
+                self.metodos_pago_thread = TraerTodosLosMetodosPagoThread(self.id_usuario_perfil)
+                def on_metodos_pago_obtenidos(metodos_obtenidos):
+                    global metodos_pago, metodos_pago_cache, metodos_pago_por_id_cache
+                    metodos_pago = metodos_obtenidos
+                    metodos_pago_cache = metodos_obtenidos
+                    metodos_pago_por_id_cache = {str(m[0]): m for m in metodos_pago}
+                    
+                    if callback:
+                        callback()
+                self.metodos_pago_thread.resultado.connect(on_metodos_pago_obtenidos)
+                self.start_thread(self.metodos_pago_thread)
+
+            elif r == 6:
+                # Obtener todas las ventas por producto y asignarlas a la variable global 'ventas_por_producto_cache'
+                self.ventas_por_producto_thread = TraerVentasPorProductoThread(self.id_usuario_perfil)
+                def on_ventas_por_producto_obtenidos(ventas_obtenidos):
+                    global ventas_por_producto_cache
+                    ventas_por_producto_cache = ventas_obtenidos
+                    
+                    if callback:
+                        callback()
+                self.ventas_por_producto_thread.resultado.connect(on_ventas_por_producto_obtenidos)
+                self.start_thread(self.ventas_por_producto_thread)
+
 
 
     def ocultar_overlay_inicial(self):
