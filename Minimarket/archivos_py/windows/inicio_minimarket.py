@@ -5051,6 +5051,7 @@ class AdministracionTab:
         self.buscar_datos_tab = buscar_datos_tab  # Guarda la referenciaBuscarDatosTab
         self.datos_tab = datos_tab
         self.id_usuario_perfil = id_usuario_perfil
+        self.mainwindow = mainwindow
 
         #crear arreglo con threads abiertos
         self.threads = []
