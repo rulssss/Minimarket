@@ -1,5 +1,5 @@
-from PySide6.QtWidgets import QMainWindow, QPushButton, QLineEdit, QDialog, QVBoxLayout, QComboBox, QTableWidget, QLabel, QDoubleSpinBox, QTableWidgetItem, QApplication, QAbstractButton, QMessageBox, QCheckBox, QDateEdit, QTextEdit, QWidget
-from PySide6.QtCore import QTimer, Qt, QDate
+from PySide6.QtWidgets import QMainWindow, QPushButton, QLineEdit, QDialog, QVBoxLayout, QComboBox, QTableWidget, QLabel, QApplication, QDoubleSpinBox, QTableWidgetItem, QApplication, QAbstractButton, QMessageBox, QCheckBox, QDateEdit, QTextEdit, QWidget
+from PySide6.QtCore import QTimer, Qt, QDate, QObject
 from PySide6.QtGui import QIcon, QFont, QIntValidator
 from archivos_py.ui.minimarket import Ui_MainWindow
 from archivos_py.ui.ventana_facturero_ventas import Ui_Form_ventas as Ui_VentanaFactureroVentas
@@ -51,8 +51,9 @@ icon_path = os.path.join(BASE_DIR, "archivos_py", "resources", "r.ico")
 eye_visible_path = os.path.join(BASE_DIR, "archivos_py", "resources", "eye_visible_hide_hidden_show_icon_145988.png")
 
 #------------------------------------------------------ 
-class DatosTab:
+class DatosTab(QObject):
     def __init__(self, ui, id_usuario_perfil, mainwindow):
+        super().__init__()
         self.ui = ui
         self.id_usuario_perfil = id_usuario_perfil
         self.mainwindow = mainwindow
@@ -106,6 +107,7 @@ class DatosTab:
             corner_button.clicked.connect(self.copy_entire_table_to_clipboard)
             table_widget.horizontalHeader().sectionDoubleClicked.connect(self.copy_column_to_clipboard)
             table_widget.verticalHeader().sectionDoubleClicked.connect(self.copy_row_to_clipboard)
+            table_widget.cellClicked.connect(self.mostrar_estado_ventas_producto)
             table_widget.setEditTriggers(QTableWidget.NoEditTriggers)
 
         #-----------------------
@@ -1357,6 +1359,8 @@ class DatosTab:
                             item.setForeground(Qt.red)
                         table_widget.setItem(row, col, item)
 
+        self.conectar_estado_ventas_producto()
+
     def filter_products(self):
         line_edit = self.ui.frame_5.findChild(QLineEdit, "lineEdit")
         table_widget = self.ui.frame_34.findChild(QTableWidget, "tableWidget")
@@ -1416,7 +1420,111 @@ class DatosTab:
                         if col == 4 and float(producto[4]) < float(producto[5]):
                             item.setForeground(Qt.red)
                         table_widget.setItem(row, col, item)
+                        
+        self.conectar_estado_ventas_producto()
 
+
+    def conectar_estado_ventas_producto(self):
+        table_widget = self.ui.frame_34.findChild(QTableWidget, "tableWidget")
+        if table_widget:
+            table_widget.cellClicked.connect(self.mostrar_estado_ventas_producto)
+
+    
+
+        # Cerrar la ventana si se hace clic en otra parte del frame o en otra fila
+        def cerrar_ventana_estado_ventas(event):
+            if self._ventana_estado_ventas:
+                self._ventana_estado_ventas.close()
+                self._ventana_estado_ventas = None
+
+        # Conectar el evento de clic en el frame para cerrar la ventana
+        self.ui.frame_35.mousePressEvent = cerrar_ventana_estado_ventas
+        # También cerrar si se hace clic en otra fila
+        table_widget.viewport().installEventFilter(self)
+
+    def mostrar_estado_ventas_producto(self, row, col):
+        global ventas_por_producto_cache, productos
+
+        # Elimina la ventana anterior si existe
+        if hasattr(self, "_ventana_estado_ventas") and self._ventana_estado_ventas:
+            QApplication.instance().removeEventFilter(self)
+            self._ventana_estado_ventas.close()
+            self._ventana_estado_ventas = None
+
+        table_widget = self.ui.frame_34.findChild(QTableWidget, "tableWidget")
+        if not table_widget:
+            return
+        item_id = table_widget.item(row, 0)
+        if not item_id:
+            return
+        id_producto = int(item_id.text())
+        venta_info = next((v for v in ventas_por_producto_cache if int(v["id_producto"]) == id_producto), None)
+        if not venta_info:
+            return
+        nombre = venta_info["nombre"]
+        total_vendido = venta_info["total_vendido"]
+
+        # Calcular participación y categoría
+        total_global = sum(p["total_vendido"] for p in ventas_por_producto_cache) if ventas_por_producto_cache else 0
+        participacion = (total_vendido / total_global * 100) if total_global > 0 else 0
+
+        if participacion >= 20:
+            categoria = "estrella"
+            color = "#2ecc40"  # verde
+        elif participacion >= 8:
+            categoria = "importante"
+            color = "#ffae42"  # amarillo-anaranjado
+        else:
+            categoria = "marginal"
+            color = "#e74c3c"  # rojo
+
+        # Crear una mini ventana flotante abajo a la derecha de la ventana principal
+        self._ventana_estado_ventas = QWidget(self.mainwindow)
+        self._ventana_estado_ventas.setWindowFlags(Qt.ToolTip)
+        self._ventana_estado_ventas.setStyleSheet(
+            "background: #f9f9f9; border-radius: 10px; border: 2px solid black;"
+        )
+        self._ventana_estado_ventas.setFixedSize(300, 110)
+
+        # Posicionar abajo a la derecha de la pantalla principal
+        self.mover_ventana_estado_ventas()
+
+        label = QLabel(self._ventana_estado_ventas)
+        label.setText(
+            f"\n"
+            f" Producto: <b>{nombre}</b><br>"
+            f" Categoría: <b style='color:{color}'>{categoria}</b><br>"
+            f" Participación: <b>{participacion:.2f}%</b><br>"
+            f" Unidades vendidas: <b>{total_vendido}</b><br>"
+            
+        )
+        label.setTextFormat(Qt.RichText)
+        label.setStyleSheet("font-size: 11pt; color: black; background: transparent;")
+        label_height = 90
+        ventana_height = 110
+        y = (ventana_height - label_height) // 2
+        label.setGeometry(10, y, 280, label_height)
+        label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+
+        self._ventana_estado_ventas.show()
+
+        QApplication.instance().installEventFilter(self)
+
+    def eventFilter(self, obj, event):
+        from PySide6.QtCore import QEvent
+        if hasattr(self, "_ventana_estado_ventas") and self._ventana_estado_ventas:
+            if event.type() == QEvent.MouseButtonPress:
+                self._ventana_estado_ventas.close()
+                self._ventana_estado_ventas = None
+                self.mainwindow.removeEventFilter(self)
+        return super().eventFilter(obj, event)
+
+    def mover_ventana_estado_ventas(self):
+        if hasattr(self, "_ventana_estado_ventas") and self._ventana_estado_ventas:
+            main_rect = self.mainwindow.geometry()
+            x = main_rect.x() + main_rect.width() - self._ventana_estado_ventas.width() - 20
+            y = main_rect.y() + main_rect.height() - self._ventana_estado_ventas.height() - 20
+            self._ventana_estado_ventas.move(x, y)
 
     # Función para copiar una columna al portapapeles
     def copy_column_to_clipboard(self, column_index):
@@ -3134,6 +3242,7 @@ class DatosTab:
 ################
 ################
 class BuscarDatosTab:
+
     def __init__(self, ui, datos_tab, mainwindow, id_usuario_perfil, ):
         self.ui = ui
         self.datos_tab = datos_tab
@@ -7389,7 +7498,20 @@ class MainWindow(QMainWindow):
                 self.ventas_por_producto_thread.resultado.connect(on_ventas_por_producto_obtenidos)
                 self.start_thread(self.ventas_por_producto_thread)
 
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        # Si existe la ventana flotante, actualizar su posición
+        if hasattr(self, 'datos_tab') and hasattr(self.datos_tab, '_ventana_estado_ventas') and self.datos_tab._ventana_estado_ventas:
+            self.datos_tab.mover_ventana_estado_ventas()
+        # Si existe el overlay, redimensionarlo para que cubra toda la ventana
+        if hasattr(self, 'overlay') and self.overlay.isVisible():
+            self.overlay.setGeometry(self.rect())
 
+    def moveEvent(self, event):
+        super().moveEvent(event)
+        # Si existe la ventana flotante, actualizar su posición
+        if hasattr(self, 'datos_tab') and hasattr(self.datos_tab, '_ventana_estado_ventas') and self.datos_tab._ventana_estado_ventas:
+            self.datos_tab.mover_ventana_estado_ventas()
 
     def ocultar_overlay_inicial(self):
         """Ocultar el overlay de carga inicial, pero no si es de reconexión"""
