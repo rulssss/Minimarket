@@ -7700,10 +7700,9 @@ class MainWindow(QMainWindow):
                 self.administracion_tab.cerrar_facturero_venta()
             if self.administracion_tab.facturero_compras_window:
                 self.administracion_tab.cerrar_facturero_compras()
-            if hasattr(self.administracion_tab, "_ventana_estado_ventas") and self.administracion_tab._ventana_estado_ventas:
+            if self.administracion_tab._ventana_estado_ventas:
                 self.administracion_tab.cerrar_ventana_estado_ventas()
-            if hasattr(self.datos_tab, "_ventana_estado_ventas") and self.datos_tab._ventana_estado_ventas:
-                self.datos_tab.cerrar_ventana_estado_ventas()
+            
 
         # Si ya está en proceso de cierre, permitir el cierre
         if hasattr(self, '_cerrando') and self._cerrando:
