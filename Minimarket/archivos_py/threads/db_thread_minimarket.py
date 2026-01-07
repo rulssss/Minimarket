@@ -2157,3 +2157,28 @@ class TraerVentasPorProductoThread(QThread):
         except Exception as e:
             print(f"Error en TraerVentasPorProductoThread: {e}")
             self.resultado.emit({})
+
+class TraerVentasPorProductoFechaThread(QThread):
+    resultado = Signal(object)
+
+    def __init__(self, id_usuario_perfil, fecha):
+        super().__init__()
+        self.id_usuario_perfil = id_usuario_perfil
+        self.fecha = fecha
+
+    def run(self):
+        import requests
+        try:
+            url = f"{API_URL}/api/traer_ventas_por_producto_fecha"
+            payload = {"id_usuario_perfil": self.id_usuario_perfil, "fecha": self.fecha}
+            response = requests.get(url, params=payload)
+            if response.status_code == 200:
+                data = response.json()
+                ventas_por_producto = data.get("ventas_por_producto", {})
+                self.resultado.emit(ventas_por_producto)
+            else:
+                print(f"Error al traer ventas por producto por fecha: {response.text}")
+                self.resultado.emit({})
+        except Exception as e:
+            print(f"Error en TraerVentasPorProductoFechaThread: {e}")
+            self.resultado.emit({})

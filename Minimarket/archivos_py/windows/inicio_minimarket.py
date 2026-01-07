@@ -3668,11 +3668,11 @@ class BuscarDatosTab:
 
     def inicializar_comboboxes_y_boton(self):
         # Obtener los QComboBox
-        combobox_18_dia = self.ui.frame_53.findChild(QComboBox, "comboBox_18") # 10 es el 18
-        combobox_16_mes = self.ui.frame_53.findChild(QComboBox, "comboBox_16") # 9 es el 16
-        combobox_17_anio = self.ui.frame_53.findChild(QComboBox, "comboBox_17") # 8 es el 17
-        combobox_19 = self.ui.frame_54.findChild(QComboBox, "comboBox_19") # 12 es el 19
-        combobox_20 = self.ui.frame_54.findChild(QComboBox, "comboBox_20") # 13 es el 20
+        combobox_18_dia = self.ui.frame_53.findChild(QComboBox, "comboBox_18") 
+        combobox_16_mes = self.ui.frame_53.findChild(QComboBox, "comboBox_16") 
+        combobox_17_anio = self.ui.frame_53.findChild(QComboBox, "comboBox_17") 
+        combobox_19 = self.ui.frame_54.findChild(QComboBox, "comboBox_19")
+        combobox_20 = self.ui.frame_54.findChild(QComboBox, "comboBox_20") 
         push_button_45 = self.ui.frame_54.findChild(QPushButton, "pushButton_45")
 
         # Obtener la fecha actual
@@ -4139,6 +4139,9 @@ class BuscarDatosTab:
         combobox_18_dia.addItems([str(dia) for dia in range(1, dias + 1)])
 
 
+    ###################################################
+    ###################################################
+
     def hacer_corte(self):
         import tempfile
         from reportlab.lib.pagesizes import letter
@@ -4146,11 +4149,6 @@ class BuscarDatosTab:
         import webbrowser
 
         self.corte_id = uuid4()  # Generar un ID único para el corte actual
-
-        combobox_19 = self.ui.frame_54.findChild(QComboBox, "comboBox_19")
-        combobox_20 = self.ui.frame_54.findChild(QComboBox, "comboBox_20")
-        filtro_tipo = combobox_19.currentText() if combobox_19 else ""
-        filtro_valor = combobox_20.currentText() if combobox_20 else ""
 
         combobox_18_dia = self.ui.frame_53.findChild(QComboBox, "comboBox_18")
         combobox_16_mes = self.ui.frame_53.findChild(QComboBox, "comboBox_16")
@@ -4162,91 +4160,144 @@ class BuscarDatosTab:
             mes = None
         anio = combobox_17_anio.currentText()
 
-        # Usar los datos ya procesados en la pantalla
-        resultados = getattr(self, "resultados_arqueo", {})
-
-        # Validar que hay datos suficientes
-        if not resultados or "ventas_totales" not in resultados or "compras_totales" not in resultados:
-            print("No hay datos suficientes para el corte. Realiza el arqueo primero.")
-            return
-
-        ventas_totales = resultados.get('ventas_totales', 0)
-        ganancias_totales = resultados.get('ganancias_totales', 0)
-        compras_totales = resultados.get('compras_totales', 0)
-        numero_de_compras = resultados.get('numero_de_compras', 0)
-        ventas_por_metodo = resultados.get('ventas_por_metodo', {})
-        numero_de_ventas = resultados.get('numero_de_ventas', 0)
-
-        filtro_texto = ""
-        if filtro_tipo == "Metodo de Pago" and filtro_valor:
-            filtro_texto = f"Filtrado por Método de Pago: {filtro_valor}"
-        elif filtro_tipo == "Usuario" and filtro_valor:
-            filtro_texto = f"Filtrado por Usuario: {filtro_valor}"
-        elif filtro_tipo == "Categoría" and filtro_valor:
-            filtro_texto = f"Filtrado por Categoría: {filtro_valor}"
-
+        # Construir la fecha para la query
         if dia and mes and anio:
-            titulo_corte = f"Corte del Día {dia}/{int(mes):02d}/{anio}"
+            fecha = f"{anio}-{mes:02d}-{int(dia):02d}"
         elif mes and anio:
-            titulo_corte = f"Corte del Mes {int(mes):02d}/{anio}"
+            fecha = f"{anio}-{mes:02d}"
         else:
-            titulo_corte = f"Corte del Año {anio}"
+            fecha = f"{anio}"
 
-        fecha_actual = datetime.now().strftime("%d/%m/%Y")
-        hora_actual = datetime.now().strftime("%I:%M %p")
+        # Lanzar el hilo para traer ventas por producto
+        self.ventas_por_producto_thread = TraerVentasPorProductoFechaThread(self.id_usuario_perfil, fecha)
+        def on_ventas_por_producto_obtenidos(ventas_por_producto_cache):
+            # ... tu código de corte PDF ...
+            resultados = getattr(self, "resultados_arqueo", {})
+            if not resultados or "ventas_totales" not in resultados or "compras_totales" not in resultados:
+                print("No hay datos suficientes para el corte. Realiza el arqueo primero.")
+                return
 
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_pdf:
-            ruta_pdf = temp_pdf.name
+            ventas_totales = resultados.get('ventas_totales', 0)
+            ganancias_totales = resultados.get('ganancias_totales', 0)
+            compras_totales = resultados.get('compras_totales', 0)
+            numero_de_compras = resultados.get('numero_de_compras', 0)
+            ventas_por_metodo = resultados.get('ventas_por_metodo', {})
+            numero_de_ventas = resultados.get('numero_de_ventas', 0)
 
-        c = canvas.Canvas(ruta_pdf, pagesize=letter)
-        c.setFont("Helvetica", 12)
-        c.setFont("Helvetica-Bold", 16)
-        c.drawString(200, 750, titulo_corte)
-        c.setFont("Helvetica-Bold", 10)
-        c.drawString(50, 730, f"Fecha de corte realizado: {fecha_actual}")
-        c.drawString(50, 715, f"Hora de corte realizado: {hora_actual}")
+            filtro_tipo = self.ui.frame_54.findChild(QComboBox, "comboBox_19").currentText()
+            filtro_valor = self.ui.frame_54.findChild(QComboBox, "comboBox_20").currentText()
+            filtro_texto = ""
+            if filtro_tipo == "Metodo de Pago" and filtro_valor:
+                filtro_texto = f"Filtrado por Método de Pago: {filtro_valor}"
+            elif filtro_tipo == "Usuario" and filtro_valor:
+                filtro_texto = f"Filtrado por Usuario: {filtro_valor}"
+            elif filtro_tipo == "Categoría" and filtro_valor:
+                filtro_texto = f"Filtrado por Categoría: {filtro_valor}"
 
-        if filtro_texto:
+            if dia and mes and anio:
+                titulo_corte = f"Corte del Día {dia}/{int(mes):02d}/{anio}"
+            elif mes and anio:
+                titulo_corte = f"Corte del Mes {int(mes):02d}/{anio}"
+            else:
+                titulo_corte = f"Corte del Año {anio}"
+
+            fecha_actual = datetime.now().strftime("%d/%m/%Y")
+            hora_actual = datetime.now().strftime("%I:%M %p")
+
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_pdf:
+                ruta_pdf = temp_pdf.name
+
+            c = canvas.Canvas(ruta_pdf, pagesize=letter)
+            c.setFont("Helvetica", 12)
+            c.setFont("Helvetica-Bold", 16)
+            c.drawString(200, 750, titulo_corte)
             c.setFont("Helvetica-Bold", 10)
-            c.drawString(50, 700, filtro_texto)
-            y_base = 685
-        else:
-            y_base = 700
+            c.drawString(50, 730, f"Fecha de corte realizado: {fecha_actual}")
+            c.drawString(50, 715, f"Hora de corte realizado: {hora_actual}")
 
-        c.setFont("Helvetica-Bold", 14)
-        c.drawString(50, y_base, f"Ventas Totales: ${ventas_totales:.2f}")
-        c.drawString(300, y_base, f"Ganancias: ${ganancias_totales:.2f}")
+            if filtro_texto:
+                c.setFont("Helvetica-Bold", 10)
+                c.drawString(50, 700, filtro_texto)
+                y_base = 685
+            else:
+                y_base = 700
 
-        c.setFont("Helvetica-Bold", 12)
-        c.drawString(50, y_base - 30, "Ventas:")
-        c.setFont("Helvetica", 10)
-        y_pos = y_base - 45
-        c.drawString(70, y_pos, f"Número de Ventas: {numero_de_ventas}")
-        y_pos -= 15
+            c.setFont("Helvetica-Bold", 14)
+            c.drawString(50, y_base, f"Ventas Totales: ${ventas_totales:.2f}")
+            c.drawString(300, y_base, f"Ganancias: ${ganancias_totales:.2f}")
 
-        # Mostrar ventas por método de pago (sin ganancia)
-        for metodo, total in ventas_por_metodo.items():
-            metodo_pago_nombre = str(metodo)
-            global metodos_pago_por_id_cache
-            if metodos_pago_por_id_cache and str(metodo) in metodos_pago_por_id_cache:
-                metodo_pago_nombre = metodos_pago_por_id_cache[str(metodo)]
-            c.drawString(70, y_pos, f"{metodo_pago_nombre}: ${total:.2f}")
+            c.setFont("Helvetica-Bold", 12)
+            c.drawString(50, y_base - 30, "Ventas:")
+            c.setFont("Helvetica", 10)
+            y_pos = y_base - 45
+            c.drawString(70, y_pos, f"Número de Ventas: {numero_de_ventas}")
             y_pos -= 15
 
-        c.setFont("Helvetica-Bold", 12)
-        c.drawString(50, y_pos - 20, "Compras:")
-        c.setFont("Helvetica", 10)
-        y_pos -= 35
-        c.drawString(70, y_pos, f"Total Compras: ${compras_totales:.2f}")
-        c.drawString(70, y_pos - 15, f"Número de Compras: {numero_de_compras}")
+            # Mostrar ventas por método de pago (sin ganancia)
+            for metodo, total in ventas_por_metodo.items():
+                metodo_pago_nombre = str(metodo)
+                global metodos_pago_por_id_cache
+                if metodos_pago_por_id_cache and str(metodo) in metodos_pago_por_id_cache:
+                    metodo_pago_nombre = metodos_pago_por_id_cache[str(metodo)]
+                c.drawString(70, y_pos, f"{metodo_pago_nombre}: ${total:.2f}")
+                y_pos -= 15
 
-        c.setFont("Helvetica-Oblique", 8)
-        c.drawString(50, 50, "Generado automáticamente por el sistema rls.")
+            c.setFont("Helvetica-Bold", 12)
+            c.drawString(50, y_pos - 20, "Compras:")
+            c.setFont("Helvetica", 10)
+            y_pos -= 35
+            c.drawString(70, y_pos, f"Total Compras: ${compras_totales:.2f}")
+            c.drawString(70, y_pos - 15, f"Número de Compras: {numero_de_compras}")
 
-        c.setTitle(f"Corte - {fecha_actual}")  # Título del PDF
+            # --------------- TOP 3 PRODUCTOS POR CATEGORÍA -----------------
+            # Calcular participación y categoría
+            total_global = sum(p["total_vendido"] for p in ventas_por_producto_cache) if ventas_por_producto_cache else 0
+            for p in ventas_por_producto_cache:
+                participacion = (p["total_vendido"] / total_global * 100) if total_global > 0 else 0
+                if participacion >= 20:
+                    p["categoria"] = "estrella"
+                elif participacion >= 8:
+                    p["categoria"] = "importante"
+                else:
+                    p["categoria"] = "marginal"
 
-        c.save()
-        webbrowser.open(f"file://{ruta_pdf}")
+            # Agrupar y ordenar
+            categorias = ["estrella", "importante", "marginal"]
+            top_productos = {cat: [] for cat in categorias}
+            for cat in categorias:
+                productos_cat = [p for p in ventas_por_producto_cache if p["categoria"] == cat]
+                productos_cat.sort(key=lambda x: x["total_vendido"], reverse=True)
+                top_productos[cat] = productos_cat[:3]
+
+            y_top = y_pos - 50
+
+            # Centrar vertical y horizontalmente
+            c.setFont("Helvetica-Bold", 14)
+            c.drawCentredString(300, y_top, "TOP 3 PRODUCTOS POR CATEGORÍA")
+            y_top -= 20
+            for cat in categorias:
+                color = "#2ecc40" if cat == "estrella" else "#ffae42" if cat == "importante" else "#e74c3c"
+                c.setFont("Helvetica-Bold", 12)
+                c.setFillColor(color)
+                c.drawCentredString(300, y_top, cat.upper())
+                c.setFillColor("black")
+                y_top -= 15
+                c.setFont("Helvetica", 10)
+                for prod in top_productos[cat]:
+                    c.drawCentredString(300, y_top, f"{prod['nombre']} - Vendido: {prod['total_vendido']}")
+                    y_top -= 15
+                y_top -= 10  # Espacio entre categorías
+
+            c.setFont("Helvetica-Oblique", 8)
+            c.drawString(50, 50, "Generado automáticamente por el sistema rls.")
+
+            c.setTitle(f"Corte - {fecha_actual}")  # Título del PDF
+
+            c.save()
+            webbrowser.open(f"file://{ruta_pdf}")
+
+        self.ventas_por_producto_thread.resultado.connect(on_ventas_por_producto_obtenidos)
+        self.start_thread(self.ventas_por_producto_thread)
         
 
 
@@ -5929,11 +5980,19 @@ class AdministracionTab(QObject):
             def on_registro_agregado(exito):
                 if exito:
                     #  ACTUALIZAR DESDE LA BASE DE DATOS, NO DESDE CACHE TEMPORAL
-                    global productos_cache, productos_por_id_cache, productos_por_nombre_cache
+                    global productos_cache, productos_por_id_cache, productos_por_nombre_cache, ventas_por_producto_cache
                     productos_cache = None
                     productos_por_id_cache = None  
                     productos_por_nombre_cache = None
-                    # Actualizar el cache desde la base de datos
+                    ventas_por_producto_cache = None
+
+                    # Actualizar el cache 
+
+                    self.mainwindow.actualizar_variables_globales_de_uso(6, lambda: (
+                        self.filter_products_facturero(),
+                        
+                    ))
+
                     self.mainwindow.actualizar_variables_globales_de_uso(3, lambda: (
                         self.filter_products_facturero(),
                         self.datos_tab.visualizar_datos()
@@ -7038,8 +7097,10 @@ class AdministracionTab(QObject):
                     productos_cache = None
                     productos_por_id_cache = None  
                     productos_por_nombre_cache = None
+                    
 
-                    # Actualizar el cache desde la base de datos
+                    # Actualizar el cache 
+                
                     self.mainwindow.actualizar_variables_globales_de_uso(3, lambda: (
                         self.filter_products_facturero(),
                         self.datos_tab.visualizar_datos()
