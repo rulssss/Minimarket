@@ -1365,6 +1365,17 @@ class DatosTab(QObject):
 
         comboboxselecc = self.ui.frame_6.findChild(QComboBox, "comboBox")
         if comboboxselecc:
+            comboboxselecc.setStyleSheet("""
+                QComboBox {
+                    color: black;
+                    font-size: 10pt;
+                }
+                QComboBox QAbstractItemView {
+                    color: black;
+                    selection-background-color: rgb(200, 220, 255);
+                    selection-color: black;
+                }
+            """)
             comboboxselecc.currentIndexChanged.connect(self.update_combobox_2)
             comboboxselecc.currentIndexChanged.connect(self.filter_products)
             self.update_combobox_2()
@@ -1372,6 +1383,17 @@ class DatosTab(QObject):
         # Conectar el QComboBox_2 para filtrar productos
         combobox_2 = self.ui.frame_6.findChild(QComboBox, "comboBox_2")
         if combobox_2:
+            combobox_2.setStyleSheet("""
+                QComboBox {
+                    color: black;
+                    font-size: 10pt;
+                }
+                QComboBox QAbstractItemView {
+                    color: black;
+                    selection-background-color: rgb(200, 220, 255);
+                    selection-color: black;
+                }
+            """)
             combobox_2.currentIndexChanged.connect(self.filter_products)
             
 
@@ -2814,6 +2836,17 @@ class DatosTab(QObject):
 
 
         if combobox_13:
+            combobox_13.setStyleSheet("""
+                QComboBox {
+                    color: black;
+                    font-size: 10pt;
+                }
+                QComboBox QAbstractItemView {
+                    color: black;
+                    selection-background-color: rgb(200, 220, 255);
+                    selection-color: black;
+                }
+            """)
             combobox_13.clear()
             combobox_13.addItem("Administrador")
             combobox_13.addItem("Usuario")
@@ -3011,11 +3044,33 @@ class DatosTab(QObject):
         line_edit_28 = self.ui.frame_48.findChild(QLineEdit, "lineEdit_28") #25 
 
         if combobox_14:
+            combobox_14.setStyleSheet("""
+                QComboBox {
+                    color: black;
+                    font-size: 10pt;
+                }
+                QComboBox QAbstractItemView {
+                    color: black;
+                    selection-background-color: rgb(200, 220, 255);
+                    selection-color: black;
+                }
+            """)
             combobox_14.clear()
             combobox_14.addItem("Administrador")
             combobox_14.addItem("Usuario")
         
         if combobox_15:
+            combobox_15.setStyleSheet("""
+                QComboBox {
+                    color: black;
+                    font-size: 10pt;
+                }
+                QComboBox QAbstractItemView {
+                    color: black;
+                    selection-background-color: rgb(200, 220, 255);
+                    selection-color: black;
+                }
+            """)
             combobox_15.setEditable(False)  # Deshabilitar la edición
             combobox_15.setInsertPolicy(QComboBox.NoInsert)  # Evitar inserciones
             combobox_15.currentIndexChanged.connect(self.load_user_data)  # Conectar al cambio de índice
@@ -3456,11 +3511,22 @@ class BuscarDatosTab:
 
     def movimientos(self):
         # Iniciar combobox y tabla
-        combobox_21 = self.ui.frame_60.findChild(QComboBox, "comboBox_21") # 17 es el 21
-        combobox_22 = self.ui.frame_60.findChild(QComboBox, "comboBox_22") # 18 es el 22
+        combobox_21 = self.ui.frame_60.findChild(QComboBox, "comboBox_21") 
+        combobox_22 = self.ui.frame_60.findChild(QComboBox, "comboBox_22") 
         date_edit = self.ui.frame_60.findChild(QDateEdit, "dateEdit")
 
         if combobox_22:
+            combobox_22.setStyleSheet("""
+                QComboBox {
+                    color: black;
+                    font-size: 10pt;
+                }
+                QComboBox QAbstractItemView {
+                    color: black;
+                    selection-background-color: rgb(200, 220, 255);
+                    selection-color: black;
+                }
+            """)
             combobox_22.setVisible(False)
 
         if date_edit:
@@ -3479,6 +3545,17 @@ class BuscarDatosTab:
         self._combobox_21_initialized = getattr(self, "_combobox_21_initialized", False)
 
         if combobox_21:
+            combobox_21.setStyleSheet("""
+                QComboBox {
+                    color: black;
+                    font-size: 10pt;
+                }
+                QComboBox QAbstractItemView {
+                    color: black;
+                    selection-background-color: rgb(200, 220, 255);
+                    selection-color: black;
+                }
+            """)
             if combobox_21.count() == 0:
                 combobox_21.addItem("Fecha")
                 combobox_21.addItem("Usuario")
@@ -5444,6 +5521,17 @@ class AdministracionTab(QObject):
             # Configuración del QComboBox de método de pago
             combobox_metodo_pago = self.facturero_ventas_window.findChild(QComboBox, "comboBox_2")
             if combobox_metodo_pago:
+                combobox_metodo_pago.setStyleSheet("""
+                QComboBox {
+                    color: black;
+                    font-size: 10pt;
+                }
+                QComboBox QAbstractItemView {
+                    color: black;
+                    selection-background-color: rgb(200, 220, 255);
+                    selection-color: black;
+                }
+            """)
                 combobox_metodo_pago.clear()
                 combobox_metodo_pago.addItems([metodo for metodo in self.traer_metodos_de_pago()])
                 
@@ -5645,6 +5733,17 @@ class AdministracionTab(QObject):
         # --- 3. Configurar widgets ---
         combobox = dialogo_borrar_mp.findChild(QComboBox, "comboBox")
         if combobox:
+            combobox.setStyleSheet("""
+                QComboBox {
+                    color: black;
+                    font-size: 10pt;
+                }
+                QComboBox QAbstractItemView {
+                    color: black;
+                    selection-background-color: rgb(200, 220, 255);
+                    selection-color: black;
+                }
+            """)
             combobox.clear()
             metodos_protegidos = {"Efectivo", "Transferencia", "Tarjeta de Crédito", "Tarjeta de Débito"}
             metodos_disponibles = [
@@ -6657,6 +6756,17 @@ class AdministracionTab(QObject):
             # Configuración del QComboBox de método de pago
             combobox_metodo_pago = self.facturero_compras_window.findChild(QComboBox, "comboBox_2")
             if combobox_metodo_pago:
+                combobox_metodo_pago.setStyleSheet("""
+                QComboBox {
+                    color: black;
+                    font-size: 10pt;
+                }
+                QComboBox QAbstractItemView {
+                    color: black;
+                    selection-background-color: rgb(200, 220, 255);
+                    selection-color: black;
+                }
+            """)
                 combobox_metodo_pago.clear()
                 combobox_metodo_pago.addItems([metodo for metodo in self.traer_metodos_de_pago()])
                 
@@ -6856,6 +6966,17 @@ class AdministracionTab(QObject):
        # --- 3. Configurar widgets ---
         combobox = dialogo_borrar_mp.findChild(QComboBox, "comboBox")
         if combobox:
+            combobox.setStyleSheet("""
+                QComboBox {
+                    color: black;
+                    font-size: 10pt;
+                }
+                QComboBox QAbstractItemView {
+                    color: black;
+                    selection-background-color: rgb(200, 220, 255);
+                    selection-color: black;
+                }
+            """)
             combobox.clear()
             #  Filtrar métodos de pago para excluir "Efectivo" y "Transferencia"
             metodos_protegidos = {"Efectivo", "Transferencia", "Tarjeta de Crédito", "Tarjeta de Débito"}
