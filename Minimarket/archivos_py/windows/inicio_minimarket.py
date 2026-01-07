@@ -6079,6 +6079,10 @@ class AdministracionTab(QObject):
 
             if qtablewidget: 
                 if (self.es_decimal(lineEdit_cantidad_value) or lineEdit_cantidad_value.isdigit()) and combobox_metodo_pago.currentText() != "":
+                    
+                    label_9 = self.facturero_ventas_window.findChild(QLabel, "label_9")
+                    if label_9:
+                        label_9.setStyleSheet("color: transparent")
 
                     # Crear el producto para agregar
                     producto_a_agregar = [
@@ -6317,6 +6321,10 @@ class AdministracionTab(QObject):
         global productos_seleccionados_facturero_ventas, productos_cache_temporal, total_facturero_ventas
 
         if productos_seleccionados_facturero_ventas:
+
+            label_9 = self.facturero_ventas_window.findChild(QLabel, "label_9")
+            if label_9:
+                label_9.setStyleSheet("color: transparent")
             
             self.actualizar_stock_producto(productos_seleccionados_facturero_ventas[-1], s=False)  # Actualizar el stock del último producto agregado
 
@@ -7264,6 +7272,10 @@ class AdministracionTab(QObject):
          
             if qtablewidget:
                 if (self.es_decimal(lineEdit_cantidad_value)or lineEdit_cantidad_value.isdigit()) and combobox_metodo_pago.currentText() != "":
+                    
+                    label_9 = self.facturero_compras_window.findChild(QLabel, "label_9")
+                    if label_9:
+                        label_9.setStyleSheet("color: transparent")
 
                     # Crear el producto para agregar
                     producto_a_agregar = [
@@ -7449,6 +7461,11 @@ class AdministracionTab(QObject):
         global usuario_activo, productos_seleccionados_facturero_compras, total_facturero_compras, productos_cache_temporal
 
         if productos_seleccionados_facturero_compras:
+
+            label_9 = self.facturero_compras_window.findChild(QLabel, "label_9")
+            if label_9:
+                label_9.setStyleSheet("color: transparent")
+
             self.actualizar_stock_producto(productos_seleccionados_facturero_compras[-1], s=True)
 
             #actualiza tabla de productos
