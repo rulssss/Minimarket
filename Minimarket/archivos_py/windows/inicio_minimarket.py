@@ -4181,6 +4181,8 @@ class BuscarDatosTab:
                 self.resultados_arqueo["compras_totales"] = 0
                 self.resultados_arqueo["numero_de_compras"] = 0
             return
+
+        datos = list(reversed(datos))
     
         tablewidget.setRowCount(len(datos))
         tablewidget.setColumnCount(7)
