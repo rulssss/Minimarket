@@ -6249,38 +6249,30 @@ class AdministracionTab(QObject):
 
                     self.mainwindow.actualizar_variables_globales_de_uso(6, lambda: (
                         self.filter_products_facturero(),
-                        
                     ))
-
                     self.mainwindow.actualizar_variables_globales_de_uso(3, lambda: (
                         self.filter_products_facturero(),
                         self.datos_tab.visualizar_datos()
-                    ))
+                    )),
+
                     label_9 = self.facturero_ventas_window.findChild(QLabel, "label_9")
                     if label_9:
                         label_9.setAlignment(Qt.AlignCenter)
                         label_9.setText("Factura procesada con éxito")
                         label_9.setStyleSheet("color: green; font-weight: bold")
                         QTimer.singleShot(6000, lambda: label_9.setStyleSheet("color: transparent"))
+                    
 
                     pushbutton_3 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_3")
-                    if pushbutton_3:
-                        pushbutton_3.setEnabled(True)
+                    pushbutton_3 and pushbutton_3.setEnabled(True)
                     push_button_4 = self.facturero_ventas_window.findChild(QPushButton, "pushButton_4")
-                    if push_button_4:
-                        push_button_4.setEnabled(True)
-
+                    push_button_4 and push_button_4.setEnabled(True)
                     boton_agregar = self.facturero_ventas_window.findChild(QPushButton, "pushButton_2")
-                    if boton_agregar:
-                        boton_agregar.setEnabled(True)
-
+                    boton_agregar and boton_agregar.setEnabled(True)
                     push_button = self.facturero_ventas_window.findChild(QPushButton, "pushButton")
-                    if push_button:
-                        push_button.setEnabled(True)
-
-                    # Llamar a inicializar_comboboxes_y_boton de la clase buscar datos
+                    push_button and push_button.setEnabled(True)
                     self.buscar_datos_tab.enviar_a_setear_tables()
-
+                    
 
                 else:
                     print("Error al agregar a registro")
@@ -6545,6 +6537,8 @@ class AdministracionTab(QObject):
         if not item_id:
             return
         id_producto = int(item_id.text())
+        if not ventas_por_producto_cache:
+            return  
         venta_info = next((v for v in ventas_por_producto_cache if int(v["id_producto"]) == id_producto), None)
         if not venta_info:
             return
@@ -7884,7 +7878,7 @@ class MainWindow(QMainWindow):
             def on_ventas_por_producto_obtenidos(ventas_obtenidos):
                 global ventas_por_producto_cache
                 ventas_por_producto_cache = ventas_obtenidos
-                print("ventas por producto :", ventas_por_producto_cache)
+                
                 self._datos_cargados["ventas_por_producto"] = True
                 check_all_loaded()
             
