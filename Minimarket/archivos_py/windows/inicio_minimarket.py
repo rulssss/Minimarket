@@ -5684,7 +5684,7 @@ class AdministracionTab(QObject):
                             if label_2:
                                 label_2.setText("Método de pago agregado")
                                 label_2.setStyleSheet("color: green; font-weight: bold")
-                                QTimer.singleShot(1000, lambda: label_2.setStyleSheet("color: transparent"))
+                                QTimer.singleShot(2000, lambda: label_2.setStyleSheet("color: transparent"))
                                 lineEdit.clear()
                                 lineEdit.setFocus()
 
@@ -5703,7 +5703,7 @@ class AdministracionTab(QObject):
                         if label_2:
                             label_2.setText("El método de pago ya existe")
                             label_2.setStyleSheet("color: red; font-weight: bold")
-                            QTimer.singleShot(1000, lambda: label_2.setStyleSheet("color: transparent"))
+                            
     
                 self.agregar_mp_thread.resultado.connect(on_resultado)
                 self.start_thread(self.agregar_mp_thread)
@@ -5715,7 +5715,7 @@ class AdministracionTab(QObject):
                 if label_2:
                     label_2.setText("Por favor, complete el campo")
                     label_2.setStyleSheet("color: red; font-weight: bold")
-                    QTimer.singleShot(1000, lambda: label_2.setStyleSheet("color: transparent"))
+                    
                        
     def ventana_borrar_mp_ventas(self):
         
@@ -5868,7 +5868,7 @@ class AdministracionTab(QObject):
                             if label_2:
                                 label_2.setText("Error al borrar el método de pago")
                                 label_2.setStyleSheet("color: red; font-weight: bold")
-                                QTimer.singleShot(1000, lambda: label_2.setStyleSheet("color: transparent"))
+                                
 
                     self.borrar_mp_thread.resultado.connect(on_resultado)
                     self.start_thread(self.borrar_mp_thread)
@@ -5881,7 +5881,7 @@ class AdministracionTab(QObject):
                     if label_2:
                         label_2.setText("Operación cancelada")
                         label_2.setStyleSheet("color: blue; font-weight: bold")
-                        QTimer.singleShot(1500, lambda: label_2.setStyleSheet("color: transparent"))
+                        
             else:
                 pushButton = dialog.findChild(QPushButton, "pushButton")
                 if pushButton:
@@ -6119,7 +6119,7 @@ class AdministracionTab(QObject):
                             label_9.setAlignment(Qt.AlignCenter)
                             label_9.setText(f"Stock restante: {stock}")
                             label_9.setStyleSheet("color: red; font-weight: bold")
-                            QTimer.singleShot(6000, lambda: label_9.setStyleSheet("color: transparent"))
+                            
                         
                         # Remover el último producto agregado si las cantidades no son válidas
                         #if productos_seleccionados_facturero_ventas:
@@ -6137,7 +6137,7 @@ class AdministracionTab(QObject):
                         label_9.setAlignment(Qt.AlignCenter)
                         label_9.setText("Complete todos los\ncampos correctamente")
                         label_9.setStyleSheet("color: red; font-weight: bold")
-                        QTimer.singleShot(2000, lambda: label_9.setStyleSheet("color: transparent"))
+                        
 
         else:
             label_9 = self.facturero_ventas_window.findChild(QLabel, "label_9")
@@ -6145,7 +6145,7 @@ class AdministracionTab(QObject):
                 label_9.setAlignment(Qt.AlignCenter)
                 label_9.setText("Seleccione un ID válido")
                 label_9.setStyleSheet("color: red; font-weight: bold")
-                QTimer.singleShot(2000, lambda: label_9.setStyleSheet("color: transparent"))
+                
 
         # Seleccionar todo el texto del QComboBox para facilitar el borrado
         combobox_id.setFocus()
@@ -6289,7 +6289,7 @@ class AdministracionTab(QObject):
                 label_9.setAlignment(Qt.AlignCenter)
                 label_9.setText("No hay productos agregados")
                 label_9.setStyleSheet("color: red; font-weight: bold")
-                QTimer.singleShot(6000, lambda: label_9.setStyleSheet("color: transparent"))
+                
 
             if push_button_4 and pushbutton_3 and push_button and boton_agregar:
                 push_button_4.setEnabled(True)
@@ -7108,7 +7108,7 @@ class AdministracionTab(QObject):
                             if label_2:
                                 label_2.setText("Error al borrar el método de pago")
                                 label_2.setStyleSheet("color: red; font-weight: bold")
-                                QTimer.singleShot(1000, lambda: label_2.setStyleSheet("color: transparent"))
+                                
 
                     self.borrar_mp_thread.resultado.connect(on_resultado)
                     self.start_thread(self.borrar_mp_thread)
@@ -7121,7 +7121,7 @@ class AdministracionTab(QObject):
                     if label_2:
                         label_2.setText("Operación cancelada")
                         label_2.setStyleSheet("color: blue; font-weight: bold")
-                        QTimer.singleShot(1500, lambda: label_2.setStyleSheet("color: transparent"))
+                        
             else:
                 pushButton = dialog.findChild(QPushButton, "pushButton")
                 if pushButton:
@@ -7130,7 +7130,7 @@ class AdministracionTab(QObject):
                 if label_2:
                     label_2.setStyleSheet("color: red; font-weight: bold")
                     label_2.setText("Por favor, seleccione un método de pago")
-                    QTimer.singleShot(1000, lambda: label_2.setStyleSheet("color: transparent"))
+                    
 
 
     def initialize_lineedits_compras(self):
@@ -7300,7 +7300,7 @@ class AdministracionTab(QObject):
                         label_9.setAlignment(Qt.AlignCenter)
                         label_9.setText(f"Inserte una cantidad razonable")
                         label_9.setStyleSheet("color: red; font-weight: bold")
-                        QTimer.singleShot(6000, lambda: label_9.setStyleSheet("color: transparent"))
+                        
 
 
                     #agregar total 
@@ -7317,7 +7317,7 @@ class AdministracionTab(QObject):
                         label_9.setAlignment(Qt.AlignCenter)
                         label_9.setText("Complete los campos correctamente")
                         label_9.setStyleSheet("color: red; font-weight: bold")
-                        QTimer.singleShot(2000, lambda: label_9.setStyleSheet("color: transparent"))
+                        
             
         else:
             label_9 = self.facturero_compras_window.findChild(QLabel, "label_9")
@@ -7325,7 +7325,7 @@ class AdministracionTab(QObject):
                 label_9.setAlignment(Qt.AlignCenter)
                 label_9.setText("Seleccione un ID válido")
                 label_9.setStyleSheet("color: red; font-weight: bold")
-                QTimer.singleShot(2000, lambda: label_9.setStyleSheet("color: transparent"))
+                
 
          
         # Seleccionar todo el texto del QComboBox para facilitar el borrado
@@ -7421,7 +7421,7 @@ class AdministracionTab(QObject):
                 label_9.setAlignment(Qt.AlignCenter)
                 label_9.setText("No hay productos agregados")
                 label_9.setStyleSheet("color: red; font-weight: bold")
-                QTimer.singleShot(6000, lambda: label_9.setStyleSheet("color: transparent"))
+                
 
             if pushbutton_3 and push_button_4 and boton_agregar and push_button:
                 pushbutton_3.setEnabled(True)
