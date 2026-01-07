@@ -240,6 +240,18 @@ class DatosTab(QObject):
     #actualiza las categorias del combobox de la ventana agregar productos
     def categorias(self):
         input_categoria = self.ui.frame_8.findChild(QComboBox, "comboBox_3")
+        if input_categoria:
+            input_categoria.setStyleSheet("""
+                QComboBox {
+                    color: black;
+                    font-size: 10pt;
+                }
+                QComboBox QAbstractItemView {
+                    color: black;
+                    selection-background-color: rgb(200, 220, 255);
+                    selection-color: black;
+                }
+            """)
         input_categoria.clear()
         #se importa variable global categorias
         global categorias
@@ -250,6 +262,18 @@ class DatosTab(QObject):
     #actualiza los proveedores del combobox de la ventana agregar productos
     def proveedores(self):
         input_proveedor = self.ui.frame_8.findChild(QComboBox, "comboBox_4")
+        if input_proveedor:
+            input_proveedor.setStyleSheet("""
+                QComboBox {
+                    color: black;
+                    font-size: 10pt;
+                }
+                QComboBox QAbstractItemView {
+                    color: black;
+                    selection-background-color: rgb(200, 220, 255);
+                    selection-color: black;
+                }
+            """)
         input_proveedor.clear()
         #se importa varable global proveedores
         global proveedores
@@ -715,6 +739,17 @@ class DatosTab(QObject):
 
         combobox_9 = self.ui.frame_10.findChild(QComboBox, "comboBox_9")
         if combobox_9:
+            combobox_9.setStyleSheet("""
+                QComboBox {
+                    color: black;
+                    font-size: 10pt;
+                }
+                QComboBox QAbstractItemView {
+                    color: black;
+                    selection-background-color: rgb(200, 220, 255);
+                    selection-color: black;
+                }
+            """)
             if combobox_9.count() == 0:
                 combobox_9.addItem("Categoría")
                 combobox_9.addItem("Proveedor")
@@ -724,6 +759,17 @@ class DatosTab(QObject):
         # corre la funcion por si no hay nada en el combobox 8
         combobox_8 = self.ui.frame_10.findChild(QComboBox, "comboBox_8")
         if combobox_8:
+            combobox_8.setStyleSheet("""
+                QComboBox {
+                    color: black;
+                    font-size: 10pt;
+                }
+                QComboBox QAbstractItemView {
+                    color: black;
+                    selection-background-color: rgb(200, 220, 255);
+                    selection-color: black;
+                }
+            """)
             if combobox_8.count() == 0:
                 self.update_combobox_8()
         
@@ -738,8 +784,47 @@ class DatosTab(QObject):
 
         # edicion frame bajar precios
 
+        combobox_categorias = self.ui.frame_9.findChild(QComboBox, "comboBox_5")
+        if combobox_categorias:
+            combobox_categorias.setStyleSheet("""
+                QComboBox {
+                    color: black;
+                    font-size: 10pt;
+                }
+                QComboBox QAbstractItemView {
+                    color: black;
+                    selection-background-color: rgb(200, 220, 255);
+                    selection-color: black;
+                }
+            """)
+            
+        combobox_proveedores = self.ui.frame_9.findChild(QComboBox, "comboBox_6")
+        if combobox_proveedores:
+            combobox_proveedores.setStyleSheet("""
+                QComboBox {
+                    color: black;
+                    font-size: 10pt;
+                }
+                QComboBox QAbstractItemView {
+                    color: black;
+                    selection-background-color: rgb(200, 220, 255);
+                    selection-color: black;
+                }
+            """)
+
         combobox_11 = self.ui.frame_14.findChild(QComboBox, "comboBox_11")
         if combobox_11:
+            combobox_11.setStyleSheet("""
+                QComboBox {
+                    color: black;
+                    font-size: 10pt;
+                }
+                QComboBox QAbstractItemView {
+                    color: black;
+                    selection-background-color: rgb(200, 220, 255);
+                    selection-color: black;
+                }
+            """)
             if combobox_11.count() == 0:
                 combobox_11.addItem("Categoría")
                 combobox_11.addItem("Proveedor")
@@ -748,6 +833,17 @@ class DatosTab(QObject):
 
         combobox_10 = self.ui.frame_14.findChild(QComboBox, "comboBox_10")
         if combobox_10:
+            combobox_10.setStyleSheet("""
+                QComboBox {
+                    color: black;
+                    font-size: 10pt;
+                }
+                QComboBox QAbstractItemView {
+                    color: black;
+                    selection-background-color: rgb(200, 220, 255);
+                    selection-color: black;
+                }
+            """)
             if combobox_10.count() == 0:
                 self.update_combobox_10()
 
@@ -3685,7 +3781,19 @@ class BuscarDatosTab:
         if combobox_17_anio:
             global anios_obtenidos
             
-            combobox_17_anio.setStyleSheet("background-color: rgb(226, 245, 255);")
+            combobox_17_anio.setStyleSheet("""
+                QComboBox {
+                    background-color: rgb(226, 245, 255);
+                    color: black;
+                    font-size: 10pt;
+                }
+                QComboBox QAbstractItemView {
+                    background-color: rgb(226, 245, 255);
+                    color: black;
+                    selection-background-color: rgb(200, 220, 255);
+                    selection-color: black;
+                }
+            """)
             combobox_17_anio.clear()
             combobox_17_anio.addItems([str(anio) for anio in anios_obtenidos])
             combobox_17_anio.setCurrentText(str(anio_actual))
@@ -3713,7 +3821,19 @@ class BuscarDatosTab:
         # Inicializar ComboBox de meses
         if combobox_16_mes:
             combobox_16_mes.clear()  # Limpiar el combobox antes de agregar elementos
-            combobox_16_mes.setStyleSheet("background-color: rgb(226, 245, 255);")
+            combobox_16_mes.setStyleSheet("""
+                QComboBox {
+                    background-color: rgb(226, 245, 255);
+                    color: black;
+                    font-size: 10pt;
+                }
+                QComboBox QAbstractItemView {
+                    background-color: rgb(226, 245, 255);
+                    color: black;
+                    selection-background-color: rgb(200, 220, 255);
+                    selection-color: black;
+                }
+            """)
             combobox_16_mes.addItems(["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
                                      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"])
             combobox_16_mes.setCurrentIndex(mes_actual)  # Los índices comienzan en 0
@@ -3723,7 +3843,19 @@ class BuscarDatosTab:
 
         # Inicializar ComboBox de días
         if combobox_18_dia:
-            combobox_18_dia.setStyleSheet("background-color: rgb(226, 245, 255);")
+            combobox_18_dia.setStyleSheet("""
+                QComboBox {
+                    background-color: rgb(226, 245, 255);
+                    color: black;
+                    font-size: 10pt;
+                }
+                QComboBox QAbstractItemView {
+                    background-color: rgb(226, 245, 255);
+                    color: black;
+                    selection-background-color: rgb(200, 220, 255);
+                    selection-color: black;
+                }
+            """)
             combobox_18_dia.setMaxVisibleItems(5)  # Mostrar un máximo de 5 elementos visibles
             self.actualizar_dias_combobox(combobox_18_dia, mes_actual, anio_actual)
             combobox_18_dia.setCurrentText(str(dia_actual))
@@ -3733,6 +3865,18 @@ class BuscarDatosTab:
 
         # Inicializar ComboBox de métodos de pago o usuarios solo si esta vacio
         if combobox_19:
+            combobox_19.setStyleSheet("""
+                QComboBox {
+                    color: black;
+                    font-size: 10pt;
+                }
+                QComboBox QAbstractItemView {
+                    color: black;
+                    selection-background-color: rgb(200, 220, 255);
+                    selection-color: black;
+                }
+            """)
+
             combobox_19.clear()
             if combobox_19.count() == 0:
                 combobox_19.addItem("")
@@ -3747,6 +3891,18 @@ class BuscarDatosTab:
         if combobox_20:
             # Conectar el evento de cambio de texto para actualizar los datos
             # En la inicialización del combobox:
+            combobox_20.setStyleSheet("""
+                QComboBox {
+                    color: black;
+                    font-size: 10pt;
+                }
+                QComboBox QAbstractItemView {
+                    color: black;
+                    selection-background-color: rgb(200, 220, 255);
+                    selection-color: black;
+                }
+            """)
+
             combobox_20.currentTextChanged.connect(lambda: self.timer_dia.start(2000))  
 
         if push_button_45:
