@@ -1564,7 +1564,7 @@ class DatosTab(QObject):
         total_global = sum(p["total_vendido"] for p in ventas_por_producto_cache) if ventas_por_producto_cache else 0
         participacion = (total_vendido / total_global * 100) if total_global > 0 else 0
 
-        if participacion >= 20:
+        if participacion >= 15:
             categoria = "estrella"
             color = "#2ecc40"  # verde
         elif participacion >= 8:
@@ -4410,7 +4410,7 @@ class BuscarDatosTab:
             total_global = sum(p["total_vendido"] for p in ventas_por_producto_cache) if ventas_por_producto_cache else 0
             for p in ventas_por_producto_cache:
                 participacion = (p["total_vendido"] / total_global * 100) if total_global > 0 else 0
-                if participacion >= 20:
+                if participacion >= 15:
                     p["categoria"] = "estrella"
                 elif participacion >= 8:
                     p["categoria"] = "importante"
